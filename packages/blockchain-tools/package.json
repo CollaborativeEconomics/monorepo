@@ -1,0 +1,45 @@
+{
+  "name": "@cfce/blockchain-tools",
+  "version": "0.3.1",
+  "description": "Common tools for interacting with diverse blockchains. Used in the CFCE ecosystem.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && tsc-alias",
+    "prepublishOnly": "npm run build",
+    "addChain": "node src/utils/createChainFromTemplate.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CollaborativeEconomics/blockchain-tools.git"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "web3",
+    "cfce",
+    "blockchain",
+    "tools"
+  ],
+  "author": "Julian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CollaborativeEconomics/blockchain-tools/issues"
+  },
+  "homepage": "https://github.com/CollaborativeEconomics/blockchain-tools#readme",
+  "devDependencies": {
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "@stellar/freighter-api": "^2.0.0",
+    "@stellar/stellar-sdk": "^11.3.0",
+    "@types/lodash": "^4.17.0",
+    "lodash": "^4.17.21",
+    "web3": "^4.6.0",
+    "xrpl": "^3.0.0",
+    "xumm": "^1.7.7",
+    "xumm-sdk": "^1.11.1"
+  }
+}

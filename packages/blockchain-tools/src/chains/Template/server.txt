@@ -1,0 +1,34 @@
+import Web3 from "web3";
+import Abi721 from "@/contracts/erc721-abi.json";
+import Blockchain from "./common";
+
+class BlockchainServer extends Blockchain {
+  web3: Web3
+  contract: string;
+  walletSeed: string;
+
+  constructor({ network, contract, walletSeed } = { network: 'mainnet', contract: '', walletSeed: '' }) {
+    super()
+    this.network = network
+    this.contract = contract;
+    this.walletSeed = walletSeed;
+    this.provider = this.network === 'mainnet' ? this.mainnet : this.testnet
+    this.web3 = new Web3(this.provider.rpcurl)
+  }
+  
+  async mintNFT(uri: string, address: string, taxon: number, transfer: boolean = false) {
+    console.log('Minting NFT...', uri, address);
+    // TODO: Implementation for minting NFT
+    throw new Error("mintNFT method not implemented.");
+  }
+
+  async createSellOffer(tokenId: string, destinationAddress: string, offerExpirationDate?: string) {
+    console.log('Creating sell offer', tokenId, destinationAddress);
+    // TODO: Implementation for creating a sell offer
+    throw new Error("createSellOffer method not implemented.");
+  }
+
+  // TODO: Additional server-specific methods
+}
+
+export default BlockchainServer;

@@ -1,0 +1,24 @@
+{
+  "name": "@cfce/registry-hooks",
+  "version": "0.7.3",
+  "description": "Registry events can trigger web3 actions, such as adding metadata to an NFT, or creating story certificates",
+  "main": "dist/index.js",
+  "repository": "https://github.com/CollaborativeEconomics/registry-hooks",
+  "author": "Julian Kingman",
+  "scripts": {
+    "test": "bun test",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.0.8",
+    "@types/lodash": "^4.17.0",
+    "@types/luxon": "^3.4.2",
+    "msw": "^2.2.7",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "luxon": "^3.4.4",
+    "react-query": "^3.39.3"
+  }
+}
