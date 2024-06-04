@@ -15,7 +15,7 @@ interface EmailBody {
 const mailgun = new Mailgun(formData)
 const mailgunClient = mailgun.client({
   username: 'api',
-  key: process.env.MAILGUN_API_KEY || ''
+  key: process.env.MAILGUN_API_KEY
 })
 
 const emailReceipt = async (email: string, body: EmailBody) => {
