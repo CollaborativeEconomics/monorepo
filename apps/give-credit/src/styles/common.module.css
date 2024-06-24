@@ -1,0 +1,272 @@
+.Hbox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-primary);
+  background-color: var(--back-secondary);
+}
+
+.Vbox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+  padding: 2rem;
+  color: var(--text-primary);
+  background-color: var(--back-secondary);
+  border-radius: 8px;
+}
+
+.textSmall {
+  font-size: small;
+}
+
+.textLarge {
+  font-size: large;
+}
+
+.action {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 2rem auto;
+  padding: 0.5rem 2rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  background-color: #ffffff22;
+}
+
+.action:hover {
+  background-color: #ffffff33;
+}
+
+.backButton {
+  margin-left: 0;
+  margin-bottom: 1rem; 
+  margin-top: 1.5rem; 
+  padding-top: 0.25rem 0.75rem; 
+  color: #ffffff;
+  background-color: var(--back-button);
+}
+
+.backButton:hover {
+  background-color: var(--back-highlight);
+}
+
+.title {
+  margin: 1rem 0;
+  font-size: 2em;
+  text-align: center;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+  align-items: flex-start;
+  text-align: center;
+  margin-bottom: 1rem;
+  background-color: var(--back-card);
+  border-radius: 0.75rem;
+}
+
+.cardTitle {
+  align-self: center;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.cardTitle:hover {
+  color: var(--text-highlight);
+}
+
+.container{
+  width: 100%;
+  max-width: 48rem;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+}
+/*
+@media (min-width: 1536px){
+  .container {
+    max-width: 1536px;
+  }
+}
+@media (min-width: 1280px){
+  .container {
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1024px){
+  .container {
+    max-width: 1024px;
+  }
+}
+@media (min-width: 768px){
+  .container {
+    max-width: 768px;
+  }
+}
+@media (min-width: 640px){
+  .container {
+    max-width: 640px;
+  }
+}
+*/
+
+.buttonChain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  width: 10rem;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 8px;
+  background-color: var(--back-button);
+}
+
+.buttonChain:hover{
+  background-color: var(--back-highlight);
+}
+
+.textRow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.textLabel {
+  color: var(--text-secondary);
+  font-size: small;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.textInfo {
+  color: var(--text-primary);
+  text-align: left;
+  font-size: large;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nftContainer {
+  display: flex; 
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%; 
+}
+
+.nftLeft {
+  display: flex; 
+  padding: 1.5rem; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+}
+
+.nftRight {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: flex-start; 
+  align-items: flex-start; 
+  width: 100%; 
+  padding: 1.5rem; 
+  line-height: 2rem;   
+  font-size: 1.5rem;
+}
+
+.nftImage {
+  border-radius: 0.75rem; 
+}
+
+.nftDate {
+  line-height: 1.25rem;
+  font-size: .875rem;
+  color: var(--text-secondary);
+}
+
+.nftOrgname {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.nftTitle {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.nftImpact {
+  font-size: 1rem;
+  line-height: 1.5rem; 
+  color: var(--text-secondary);
+}
+
+.nftValue {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.nftChain {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.orgPanel {
+  position: relative;
+  overflow: hidden;
+  padding: 0 0 1.5rem;
+  border-radius: 0.75rem;
+}
+
+.orgContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.orgTitle {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: var(--back-secondary);
+  border-radius: 0 0 0.75rem 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.intro {
+  margin: 20px 0;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.intro h1 {
+  font-size: 2rem;
+}
+
+.profileForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px){
+  .profileForm {
+    flex-direction: column;
+  }
+}

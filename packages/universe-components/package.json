@@ -1,0 +1,18 @@
+{
+  "name": "@cfce/universe-components",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./home/ActionBar": {
+      "types": "./src/ActionBar.ts",
+      "default": "./dist/ActionBar.js"
+    }
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "latest"
+  }
+}

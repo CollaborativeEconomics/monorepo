@@ -2,10 +2,12 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Default",
   "compilerOptions": {
+    "allowJs": true,
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
     "incremental": false,
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],
     "module": "NodeNext",
