@@ -19,8 +19,11 @@
       "default": "./src/api/credits/route.ts"
     }
   },
+  "dependencies": {
+    "@cfce/universe-components": "workspace:*"
+  },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@cfce/typescript-config": "workspace:*",
     "typescript": "latest",
     "next": "latest",
     "next-auth": "latest",

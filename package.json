@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@cfce/typescript-config": "workspace:*",
     "prettier": "^3.2.5",
     "turbo": "latest"
   },

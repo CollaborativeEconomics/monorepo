@@ -5,8 +5,8 @@ import Image from 'next/image'
 import Link  from 'next/link'
 import { getProviders, signIn } from "next-auth/react"
 import { isConnected, requestAccess } from "@stellar/freighter-api"
-import { ConfigContext } from '@/components/config' 
-import ButtonWallet from '@/components/ButtonWallet'
+import { ConfigContext } from '@cfce/universe-components/config' 
+import ButtonWallet from '@cfce/universe-components/ButtonWallet'
 import { fetchApi, postApi } from '@/utils/api'
 
 

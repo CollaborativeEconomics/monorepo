@@ -1,0 +1,23 @@
+{
+  "name": "@cfce/database",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "prisma": "prisma generate",
+    "postinstall": "prisma generate",
+    "migrateDB": "prisma migrate dev",
+    "migrateDBToProd": "prisma migrate deploy",
+    "test": "jest",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.11.0",
+    "prisma": "^5.9.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "latest"
+  }
+}

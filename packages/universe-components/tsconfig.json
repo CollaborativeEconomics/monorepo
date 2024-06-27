@@ -1,9 +1,19 @@
 {
-  "extends": "@repo/typescript-config/base.json",
+  "extends": "@cfce/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "jsx": "react", // Choose "react", "react-jsx", or "react-jsxdev" based on your React version and preference,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../apps/give-credit/tailwind.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

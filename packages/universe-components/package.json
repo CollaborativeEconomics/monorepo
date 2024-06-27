@@ -6,13 +6,30 @@
     "build": "tsc"
   },
   "exports": {
-    "./home/ActionBar": {
-      "types": "./src/ActionBar.ts",
-      "default": "./dist/ActionBar.js"
+    "./ActionBar": {
+      "types": "./src/home/ActionBar.ts",
+      "default": "./dist/home/ActionBar.js"
     }
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@cfce/theme": "workspace:*",
+    "@cfce/typescript-config": "workspace:*",
+    "@types/react": "^18.3.3",
     "typescript": "latest"
+  },
+  "peerDependencies": {
+    "next": "latest"
+  },
+  "dependencies": {
+    "@radix-ui/react-aspect-ratio": "^1.0.3",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-checkbox": "^1.0.4",
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.352.0",
+    "tailwind": "^4.0.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss": "^3.4.4"
   }
 }

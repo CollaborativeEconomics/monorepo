@@ -1,9 +1,13 @@
 {
-  "extends": "@repo/typescript-config/base.json",
+  "extends": "@cfce/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "moduleResolution": "Bundler"
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowJs": true,
+    "jsx": "preserve",
+    "noEmit": true
   },
   "include": [
     "src",

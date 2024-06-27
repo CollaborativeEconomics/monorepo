@@ -1,0 +1,4 @@
+/* packages/tailwind-config/styles/global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

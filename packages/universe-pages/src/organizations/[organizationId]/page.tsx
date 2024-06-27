@@ -2,14 +2,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { Document } from "@contentful/rich-text-types";
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { OrgStats } from '@/components/ui/org-stats';
-import { OrgSocials } from '@/components/ui/org-socials';
-import StoryCard from '@/components/StoryCard';
-import InitiativeCard from '@/components/InitiativeCard';
-import OrganizationAvatar from '@/components/OrganizationAvatar';
-import NotFound from '@/components/NotFound';
+import { Button } from '@cfce/universe-components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@cfce/universe-components/ui/tabs"
+import { OrgStats } from '@cfce/universe-components/ui/org-stats';
+import { OrgSocials } from '@cfce/universe-components/ui/org-socials';
+import StoryCard from '@cfce/universe-components/StoryCard';
+import InitiativeCard from '@cfce/universe-components/InitiativeCard';
+import OrganizationAvatar from '@cfce/universe-components/OrganizationAvatar';
+import NotFound from '@cfce/universe-components/NotFound';
 import { getOrganizationById, getStoriesByOrganization } from '@/utils/registry'
 
 export default async function Home(props: any) {

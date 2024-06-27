@@ -1,11 +1,11 @@
 import Link from "next/link"
 import Image from "next/image"
-import OrganizationAvatar from '@/components/OrganizationAvatar'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { DateDisplay } from '@/components/ui/date-posted'
-import Gallery from '@/components/ui/gallery'
-import ShareModal from '@/components/ShareModal'
-import NotFound  from '@/components/NotFound'
+import OrganizationAvatar from '@cfce/universe-components/OrganizationAvatar'
+import { Card, CardContent, CardHeader } from '@cfce/universe-components/ui/card'
+import { DateDisplay } from '@cfce/universe-components/ui/date-posted'
+import Gallery from '@cfce/universe-components/ui/gallery'
+import ShareModal from '@cfce/universe-components/ShareModal'
+import NotFound  from '@cfce/universe-components/NotFound'
 import { getStoryById } from '@/utils/registry'
 
 export default async function Story(props: {params:{id:string}}) {

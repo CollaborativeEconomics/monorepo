@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import x from 'next';
-import ActionBar from '@/components/home/ActionBar';
-import InstructionPanes from '@/components/home/InstructionPanes';
-import ParallaxHero from '@/components/home/ParallaxHero';
-import MainChart from '@/components/mainchart';
-import StoryCard from '@/components/StoryCardCompactVert';
+import x from '@cfce/universe-components';
+import { ActionBar } from '@cfce/universe-components';
+import InstructionPanes from '@cfce/universe-components/home/InstructionPanes';
+import ParallaxHero from '@cfce/universe-components/home/ParallaxHero';
+import MainChart from '@cfce/universe-components/mainchart';
+import StoryCard from '@cfce/universe-components/StoryCardCompactVert';
 import { getRecentStories, getCreditsByInitiative } from '@/utils/registry';
 
 export default async function Home(props: any) {

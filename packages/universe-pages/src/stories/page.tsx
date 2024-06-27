@@ -1,6 +1,6 @@
-import Page from '@/components/page'
-import Title from '@/components/title'
-import StoryCard from '@/components/StoryCard'
+import Page from '@cfce/universe-components/page'
+import Title from '@cfce/universe-components/title'
+import StoryCard from '@cfce/universe-components/StoryCard'
 //import styles from '@/styles/common.module.css'
 import { getRecentStories, getStoriesByInitiative } from '@/utils/registry'
 

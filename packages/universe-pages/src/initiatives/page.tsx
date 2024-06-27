@@ -1,6 +1,6 @@
-import { Card } from '@/components/ui/card'
-import SearchBar from '@/components/search/SearchBar'
-import InitiativeCard from '@/components/InitiativeCard'
+import { Card } from '@cfce/universe-components/ui/card'
+import SearchBar from '@cfce/universe-components/search/SearchBar'
+import InitiativeCard from '@cfce/universe-components/InitiativeCard'
 import { searchInitiatives } from '@/utils/registry'
 
 export default async function Initiatives(props: any) {

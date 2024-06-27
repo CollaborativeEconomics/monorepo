@@ -1,8 +1,8 @@
 import Link from "next/link"
 import Image from "next/image"
-import OrganizationAvatar from '@/components/OrganizationAvatar'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import NotFound  from '@/components/NotFound'
+import OrganizationAvatar from '@cfce/universe-components/OrganizationAvatar'
+import { Card, CardContent, CardHeader } from '@cfce/universe-components/ui/card'
+import NotFound  from '@cfce/universe-components/NotFound'
 import { getDonationById } from '@/utils/registry'
 
 export default async function NFT(props: {params:{id:string}}) {

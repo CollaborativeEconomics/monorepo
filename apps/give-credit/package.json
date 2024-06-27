@@ -1,5 +1,5 @@
 {
-  "name": "GiveCredits",
+  "name": "give-credits",
   "version": "1.2.5",
   "private": true,
   "scripts": {
@@ -15,7 +15,11 @@
     "@aws-sdk/client-pinpoint": "^3.95.0",
     "@aws-sdk/client-pinpoint-email": "^3.95.0",
     "@aws-sdk/client-s3": "^3.216.0",
-    "@cfce/registry-hooks": "^0.7.1",
+    "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/registry-hooks": "workspace:*",
+    "@cfce/theme": "workspace:*",
+    "@cfce/universe-components": "workspace:*",
+    "@cfce/universe-pages": "workspace:*",
     "@contentful/rich-text-react-renderer": "^15.19.6",
     "@contentful/rich-text-types": "^16.3.5",
     "@lighthouse-web3/sdk": "^0.1.12",

@@ -1,6 +1,6 @@
-import { Card } from '@/components/ui/card'
-import SearchBar from '@/components/search/SearchBar'
-import OrganizationCard from '@/components/OrganizationCard'
+import { Card } from '@cfce/universe-components/ui/card'
+import SearchBar from '@cfce/universe-components/search/SearchBar'
+import OrganizationCard from '@cfce/universe-components/OrganizationCard'
 import { searchOrganizations } from '@/utils/registry'
 
 export default async function Organizations(props: any) {
