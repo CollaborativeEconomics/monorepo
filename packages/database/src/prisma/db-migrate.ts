@@ -1,7 +1,7 @@
 //import { sql } from '@vercel/postgres' // {sql} connect once per query
 //import { db } from '@vercel/postgres'    // {db} connect once then queries
 //const client = await db.connect()        // it's recommended to use db instead of sql
-import prismaClient from "prisma/client"
+// import prismaClient from "prisma/client"
 
 //export async function insert() {
 //  const res = await prismaClient.Organization.createMany({data:[]})

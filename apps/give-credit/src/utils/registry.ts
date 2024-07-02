@@ -2,9 +2,9 @@ const apiUrl = process.env.CFCE_REGISTRY_API_URL || ''
 const apiKey = process.env.OFFICIAL_CFCE_API_KEY || ''
 //const apiKey = process.env.CFCE_REGISTRY_API_KEY || ''
 
-type Dictionary = { [key:string]:any }
+type Dictionary = { [key: string]: any }
 
-const fetchRegistry = async (url:string) => {
+const fetchRegistry = async (url: string) => {
   try {
     console.log('Fetching', url)
     const options = {
@@ -17,9 +17,9 @@ const fetchRegistry = async (url:string) => {
     const result = await response.json()
     //console.log('DBRES', result)
     return result.data
-  } catch(ex:any) {
+  } catch (ex: any) {
     console.error(ex)
-    return {error:ex.message}
+    return { error: ex.message }
   }
 }
 
@@ -37,21 +37,21 @@ const postRegistry = async (url: string, body: Dictionary) => {
     const response = await fetch(url, options)
     const result = await response.json()
     return result
-  } catch(ex:any) {
+  } catch (ex: any) {
     console.error(ex)
-    return {error:ex.message}
+    return { error: ex.message }
   }
 }
 
 // DATABASE
 
-async function dbQuery(endpoint: string){
+async function dbQuery(endpoint: string) {
   const url = `${apiUrl}/${endpoint}`
   const res = await fetchRegistry(url)
   return res
 }
 
-async function dbPost(endpoint: string, body: Dictionary){
+async function dbPost(endpoint: string, body: Dictionary) {
   const url = `${apiUrl}/${endpoint}`
   const res = await postRegistry(url, body)
   return res
@@ -64,17 +64,17 @@ export const getOrganizationByEmail = (email: string) => dbQuery(`organizations?
 export const getOrganizationsByCategory = (categorySlug: string) => dbQuery(`organizations?category=${categorySlug}`)
 export const getOrganizationsByWallet = (walletAddress: string) => dbQuery(`organizations?wallet=${walletAddress}`)
 export const getOrganizationsByChain = (chain: string) => dbQuery(`organizations?chain=${chain}`)
-export const searchOrganizations = (q:string, c:string, l:string) => dbQuery(`organizations?search=${q}&category=${c}&location=${l}`)
+export const searchOrganizations = (q: string, c: string, l: string) => dbQuery(`organizations?search=${q}&category=${c}&location=${l}`)
 
 export const getCategories = () => dbQuery('categories')
-export const getCategoriesDistinct = (val:string) => dbQuery('categories?distinct='+val)
+export const getCategoriesDistinct = (val: string) => dbQuery('categories?distinct=' + val)
 
 export const newInitiative = (body: Dictionary) => dbPost('initiatives', body)
 export const getInitiativeById = (id: string) => dbQuery(`initiatives/${id}`)
 export const getInitiativeByTag = (tag: string) => dbQuery(`initiatives?tag=${tag}`)
 export const getInitiatives = () => dbQuery('initiatives')
 export const getInitiativesByOrganization = (id: string) => dbQuery(`initiatives?orgid=${id}`)
-export const searchInitiatives = (q:string, c:string, l:string) => dbQuery(`initiatives?search=${q}&category=${c}&location=${l}`)
+export const searchInitiatives = (q: string, c: string, l: string) => dbQuery(`initiatives?search=${q}&category=${c}&location=${l}`)
 
 export const newProvider = (body: Dictionary) => dbPost('providers', body)
 export const getProviderById = (id: string) => dbQuery(`providers/${id}`)
@@ -98,28 +98,28 @@ export const getNFTsByOrganization = (id: string) => dbQuery(`nft?orgid=${id}`)
 
 export const newUser = (body: Dictionary) => dbPost('users', body)
 export const getUsers = () => dbQuery('users')
-export const getUserByWallet = (wallet: string) => dbQuery('users?wallet='+wallet)
-export const getUserByEmail = (email: string) => dbQuery('users?email='+email)
-export const getUserById = (id: string) => dbQuery('users/'+id)
-export const updateUser = (id: string, body: Dictionary) => dbPost('users/'+id, body)
-export const getUserWallets = (userid: string) => dbQuery('userwallets?userid='+userid)
+export const getUserByWallet = (wallet: string) => dbQuery('users?wallet=' + wallet)
+export const getUserByEmail = (email: string) => dbQuery('users?email=' + email)
+export const getUserById = (id: string) => dbQuery('users/' + id)
+export const updateUser = (id: string, body: Dictionary) => dbPost('users/' + id, body)
+export const getUserWallets = (userid: string) => dbQuery('userwallets?userid=' + userid)
 export const newUserWallet = (body: Dictionary) => dbPost('userwallets', body)
 
 export const newStory = (body: Dictionary) => dbPost('stories', body)
 export const getStories = () => dbQuery('stories')
-export const getStoryById = (id: string) => dbQuery('stories/'+id)
-export const getStoriesByOrganization = (id: string) => dbQuery('stories?orgid='+id)
-export const getStoriesByInitiative = (id: string) => dbQuery('stories?initid='+id)
-export const getRecentStories = (qty:number) => dbQuery('stories?recent='+qty)
+export const getStoryById = (id: string) => dbQuery('stories/' + id)
+export const getStoriesByOrganization = (id: string) => dbQuery('stories?orgid=' + id)
+export const getStoriesByInitiative = (id: string) => dbQuery('stories?initid=' + id)
+export const getRecentStories = (qty: number) => dbQuery('stories?recent=' + qty)
 
 export const getLocations = () => dbQuery('locations')
 
 export const newDonation = (body: Dictionary) => dbPost('donations', body)
 export const getDonations = () => dbQuery('donations')
-export const getDonationById = (id: string) => dbQuery('donations?id='+id)
-export const getDonationsByUser = (id: string) => dbQuery('donations?userid='+id)
+export const getDonationById = (id: string) => dbQuery('donations/' + id)
+export const getDonationsByUser = (id: string) => dbQuery('donations?userid=' + id)
 
-export const getFavoriteOrganizations = (userid: string) => dbQuery('donations?favs='+userid)
-export const getUserBadges = (userid: string) => dbQuery('donations?badges='+userid)
+export const getFavoriteOrganizations = (userid: string) => dbQuery('donations?favs=' + userid)
+export const getUserBadges = (userid: string) => dbQuery('donations?badges=' + userid)
 
 // END

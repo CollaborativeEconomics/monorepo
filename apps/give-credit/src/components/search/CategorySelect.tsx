@@ -18,7 +18,6 @@ import {
 } from '@/src/components/ui/popover';
 import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 
-
 /*
 const categories = [
   { value: 'poverty', label: 'No Poverty' },
@@ -42,31 +41,37 @@ const categories = [
 */
 
 type CategoryType = {
-  value:string,
-  label:string
-}
+  value: string;
+  label: string;
+};
 
-export default function CategorySelect(props:any) {
+export default function CategorySelect(props: any) {
   const onChange = props?.onChange;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
   const [categories, setCategories] = useState([]);
   // TODO: get from properties
-  const distinct = 'initiatives' // organizations
+  const distinct = 'initiatives'; // organizations
 
   useEffect(() => {
-    async function loadCategories(){
-      const res = await fetch('/api/categories?distinct='+distinct)
-      const list = await res.json()
-      console.log('CATS', list)
-      setCategories(list)
+    async function loadCategories() {
+      const res = await fetch('/api/categories?distinct=' + distinct);
+      let list = await res.json();
+      list = list.map(category => ({
+        value: category.slug,
+        label: category.title,
+      }));
+      console.log('CATS', list);
+      setCategories(list);
     }
-    loadCategories()
-  },[])
+    loadCategories();
+  }, []);
 
-  function findCategory(value:string){
-    const found = categories.find((item:CategoryType) => item?.value === value)
-    return found ? found['label'] : ''
+  function findCategory(value: string) {
+    const found = categories.find(
+      (item: CategoryType) => item?.value === value,
+    );
+    return found ? found['label'] : '';
   }
 
   return (
@@ -78,9 +83,7 @@ export default function CategorySelect(props:any) {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {value
-            ? findCategory(value)
-            : 'Select category...'}
+          {value ? findCategory(value) : 'Select category...'}
           <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -93,8 +96,8 @@ export default function CategorySelect(props:any) {
               return (
                 <CommandItem
                   key={item?.value}
-                  onSelect={(currentValue) => {
-                    console.log('CAT', currentValue, 'OLD', value||'?')
+                  onSelect={currentValue => {
+                    console.log('CAT', currentValue, 'OLD', value || '?');
                     setValue(item?.value);
                     onChange(item?.value);
                     setOpen(false);
@@ -108,7 +111,7 @@ export default function CategorySelect(props:any) {
                   />
                   {item?.label}
                 </CommandItem>
-              )
+              );
             })}
           </CommandGroup>
         </Command>

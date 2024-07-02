@@ -1,7 +1,7 @@
 import prismaClient from "prisma/client"
 import { UserWallet } from "prisma/models"
 
-export async function getWallets(query): Promise<UserWallet|Array<UserWallet>> {
+export async function getUserWallets(query): Promise<UserWallet|Array<UserWallet>> {
   let where = {}
   let skip = 0
   let take = 100
@@ -31,19 +31,19 @@ export async function getWallets(query): Promise<UserWallet|Array<UserWallet>> {
   return data
 }
 
-export async function newWallet(data): Promise<UserWallet> {
+export async function newUserWallet(data): Promise<UserWallet> {
   console.log('DATA', data)
   const result = await prismaClient.UserWallet.create({data})
   console.log('NEWUSERWALLET', result)
   return result
 }
 
-export async function getWalletById(id): Promise<UserWallet> {
+export async function getUserWalletById(id): Promise<UserWallet> {
   const result = await prismaClient.UserWallet.findUnique({ where: { id }, include: { users: true } })
   return result;
 }
 
-export async function getWalletByAddress(address, chain): Promise<UserWallet> {
+export async function getUserWalletByAddress(address, chain): Promise<UserWallet> {
   const result = await prismaClient.UserWallet.findFirst({ 
     where: { 
       chain, 

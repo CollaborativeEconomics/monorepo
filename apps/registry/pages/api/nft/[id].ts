@@ -1,5 +1,5 @@
 import checkApiKey from "lib/checkApiKey"
-import {getNFTbyTokenId} from "lib/database/nftData"
+import { getNFTById } from "@cfce/database"
 
 export default async function handler(req, res) {
   const { method, query } = req
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         if (!authorized) {
           return res.status(403).json({ success: false })
         }
-        let nft = await getNFTbyTokenId(query.id)
+        let nft = await getNFTById(query.id)
         res.status(200).json({ success: true, data: nft })
       } catch (error) {
         console.log({ error })

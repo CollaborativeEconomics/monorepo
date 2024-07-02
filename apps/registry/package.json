@@ -15,8 +15,9 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",
-    "@cfce/blockchain-tools": "^0.2.18",
-    "@cfce/registry-hooks": "^0.6.0",
+    "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/registry-hooks": "workspace:*",
+    "@cfce/database": "workspace:*",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^5.11.0",
     "@vercel/blob": "^0.22.1",

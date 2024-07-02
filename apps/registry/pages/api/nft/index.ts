@@ -1,5 +1,5 @@
+import { getNFTbyTokenId, getNftData, newNftData } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getNftData, newNftData} from "lib/database/nftData"
 
 
 export default async function handler(req, res) {
@@ -13,7 +13,12 @@ export default async function handler(req, res) {
     // gets a list of recently minted nfts order by created desc
     case "GET":
       try {
-        let result = await getNftData(query)
+        let result;
+        if (query?.tokenId) {
+          result = await getNFTbyTokenId(query.tokenId)
+        } else {
+          result = await getNftData(query)
+        }
         return res.status(201).json({ success: true, data: result })
       } catch (error) {
         console.log({ error })
