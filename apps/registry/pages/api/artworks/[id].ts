@@ -1,5 +1,5 @@
+import { getArtworkById } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getArtworkById} from "lib/database/artworks"
 
 // GET /api/artworks/[id]
 // get artwork by id

@@ -1,11 +1,14 @@
-import prismaClient from "prisma/client"
-import { Story } from '@prisma/client'
-import mintStoryNFT from "@/lib/xdc/mintStoryNFT"
-import uploadFileToIPFS from "@/lib/ipfs/uploadFileToIPFS"
-import uploadDataToIPFS from "@/lib/ipfs/uploadDataToIPFS"
-import { put } from "@vercel/blob"
+import { Prisma, Story } from "@prisma/client"
+import { prismaClient } from "index"
+import { ListQuery } from "types"
 
-export async function getStories(query): Promise<Story | Array<Story>> {
+interface StoryQuery extends ListQuery {
+  orgId?: string
+  initId?: string
+  recent?: string
+}
+
+export async function getStories(query: StoryQuery): Promise<Story | Array<Story>> {
   let where = {}
   let include = {
     media: true,
@@ -18,24 +21,24 @@ export async function getStories(query): Promise<Story | Array<Story>> {
   }
   let skip = 0
   let take = 100
-  let orderBy = { created: 'desc' }
+  let orderBy = { created: 'desc' } as Prisma.StoryOrderByWithRelationInput
 
   if (query?.recent) {
     const qty = parseInt(query.recent) || 10
-    const result = await prismaClient.Story.findMany({ include, take: qty, orderBy: { created: 'desc' } })
+    const result = await prismaClient.story.findMany({ include, take: qty, orderBy: { created: 'desc' } })
     return result
   }
 
-  if (query?.orgid) {
+  if (query?.orgId) {
     where = { organizationId: query.orgId }
-  } else if (query?.initid) {
-    where = { initiativeId: query.initid }
+  } else if (query?.initId) {
+    where = { initiativeId: query.initId }
   }
 
   let filter = { where, include, skip, take, orderBy }
   if (query?.page || query?.size) {
-    let page = parseInt(query?.page || 0)
-    let size = parseInt(query?.size || 100)
+    let page = parseInt(query?.page || '0')
+    let size = parseInt(query?.size || '100')
     if (page < 0) { page = 0 }
     if (size < 0) { size = 100 }
     if (size > 200) { size = 200 }
@@ -44,11 +47,11 @@ export async function getStories(query): Promise<Story | Array<Story>> {
     filter.take = size
     //filter.orderBy = { name: 'asc' }
   }
-  const result = await prismaClient.Story.findMany(filter)
+  const result = await prismaClient.story.findMany(filter)
   return result
 }
 
-export async function getStoryById(id): Promise<Story> {
+export async function getStoryById(id: string): Promise<Story | null> {
   const include = {
     media: true,
     organization: true,
@@ -58,13 +61,13 @@ export async function getStoryById(id): Promise<Story> {
       }
     }
   }
-  const result = await prismaClient.Story.findUnique({ where: { id }, include })
+  const result = await prismaClient.story.findUnique({ where: { id }, include })
   return result
 }
 
-export async function addStory(data): Promise<Story> {
+export async function addStory(data: Story): Promise<Story> {
   console.log('DATA', data)
-  const result = await prismaClient.Story.create({ data })
+  const result = await prismaClient.story.create({ data })
   return result
 }
 
@@ -98,11 +101,11 @@ export async function newStory({ organizationId, initiativeId, amount, ...story 
     }
 
     // Get the related organization and initiative
-    const organization = await prismaClient.Organization.findUnique({ where: { id: organizationId } })
-    const initiative = await prismaClient.Initiative.findUnique({ where: { id: initiativeId } })
+    const organization = await prismaClient.organization.findUnique({ where: { id: organizationId } })
+    const initiative = await prismaClient.initiative.findUnique({ where: { id: initiativeId } })
 
     // Create the story DB entry with the data
-    let dbStory = await prismaClient.Story.create({
+    let dbStory = await prismaClient.story.create({
       data: {
         ...story,
         amount: amount ?? 0,
@@ -139,7 +142,7 @@ export async function newStory({ organizationId, initiativeId, amount, ...story 
     const { tokenId } = await mintStoryNFT(storyId, tokenCID)
     console.log('Minted NFT', tokenCID, nftMetadata)
 
-    dbStory = await prismaClient.Story.update({
+    dbStory = await prismaClient.story.update({
       where: { id: dbStory.id },
       data: {
         tokenId,
@@ -149,13 +152,13 @@ export async function newStory({ organizationId, initiativeId, amount, ...story 
     return dbStory
   } catch (error) {
     // If it failed, delete the DB entry and throw the error
-    prismaClient.Story.delete({ where: { id: storyId } })
+    prismaClient.story.delete({ where: { id: storyId } })
     throw error;
   }
 }
 
 export async function updateStory(id: string, data): Promise<Story> {
-  let result = await prismaClient.Story.update({ where: { id }, data })
+  let result = await prismaClient.story.update({ where: { id }, data })
   console.log('UPDATE', result)
   return result
 }

@@ -1,5 +1,5 @@
+import { getOffers, newOffer, updateOffer } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getOffers, newOffer, updateOffer} from "lib/database/offers"
 
 export default async function handler(req, res) {
   let { method, headers, query, body } = req

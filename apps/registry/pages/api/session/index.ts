@@ -1,5 +1,5 @@
+import { deleteSession, getSession, newSession } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {newSession, getSession, deleteSession} from "lib/database/session"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req

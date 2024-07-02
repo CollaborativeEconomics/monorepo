@@ -1,5 +1,5 @@
+import { getOrganizations, newOrganization } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getOrganizations, newOrganization} from "lib/database/organizations"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req

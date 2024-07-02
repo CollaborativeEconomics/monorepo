@@ -1,5 +1,5 @@
+import { getSettings, newSetting } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getSettings, newSetting} from "lib/database/settings"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req

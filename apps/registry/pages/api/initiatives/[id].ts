@@ -1,5 +1,5 @@
+import { getInitiativeById } from "@cfce/database";
 import checkApiKey from "lib/checkApiKey"
-import { getInitiativeById } from "lib/database/initiatives"
 
 export default async function handler(req, res) {
   const { method, header, query } = req;

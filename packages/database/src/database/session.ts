@@ -1,27 +1,31 @@
-import prismaClient from "prisma/client"
-import { Session } from "prisma/models"
+import { Session, prismaClient } from "index"
+import { ListQuery } from "types"
 
-export async function getSession(query): Promise<Session> {
-  if(query?.token){
-    const token   = query.token.toString()
-    const where   = { sessionToken: token }
+interface SessionQuery extends ListQuery {
+  token?: string
+}
+
+export async function getSession(query: SessionQuery): Promise<Session | null> {
+  if (query?.token) {
+    const token = query.token.toString()
+    const where = { sessionToken: token }
     const include = { user: true }
-    const session = await prismaClient.Session.findUnique({ where, include })
+    const session = await prismaClient.session.findUnique({ where, include })
     return session
   }
   return null
 }
 
-export async function newSession(data): Promise<Session> {
-  let session = await prismaClient.Session.create({ data })
+export async function newSession(data: Session): Promise<Session> {
+  let session = await prismaClient.session.create({ data })
   console.log('NEW SESSION', session)
   return session
 }
 
-export async function deleteSession(query): Promise<Session> {
-  if(query?.token){
+export async function deleteSession(query: { token: string }): Promise<Session | null> {
+  if (query?.token) {
     const token = query.token.toString()
-    const session = await prismaClient.Session.delete({ where: { sessionToken: token } })
+    const session = await prismaClient.session.delete({ where: { sessionToken: token } })
     return session
   }
   return null

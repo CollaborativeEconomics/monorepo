@@ -1,6 +1,5 @@
+import { getDonations } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import { getDonations, newDonation } from "lib/database/donations"
-
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req

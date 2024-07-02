@@ -1,5 +1,5 @@
+import { getProviderById } from "@cfce/database";
 import checkApiKey from "lib/checkApiKey"
-import { getProviderById } from "lib/database/providers"
 
 export default async function handler(req, res) {
   const { method, header, query } = req;

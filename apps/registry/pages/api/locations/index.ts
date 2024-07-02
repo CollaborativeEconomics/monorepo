@@ -1,5 +1,5 @@
+import { getLocations } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getLocations} from "lib/database/locations"
 
 export default async function handler(req, res) {
   const { method, headers } = req

@@ -8,8 +8,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "public"
-  ],
-  "exclude": ["node_modules", "dist", "work", "tailwind.config.ts"],
+, "../../packages/universe-components/tailwind.config.ts"  ],
+  "exclude": ["node_modules", "dist", "work", "../../packages/universe-components/tailwind.config.ts"],
   "compilerOptions": {
     "baseUrl": "",
     "outDir": "dist",

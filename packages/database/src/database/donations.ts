@@ -1,5 +1,5 @@
 import { prismaClient } from "index"
-import { ListQuery } from "./types"
+import { ListQuery } from "../types"
 import { Donation, Prisma } from "@prisma/client"
 
 interface DonationQuery extends ListQuery {

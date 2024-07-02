@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import formidable, { PersistentFile } from 'formidable'
 import checkApiKey from "@/lib/checkApiKey"
 import { Story } from '@prisma/client'
-import { getStories, addStory, newStory } from "@/lib/database/stories"
+import { addStory, getStories, newStory } from '@cfce/database'
 
 // Configure API route to allow multipart form data
 export const config = {

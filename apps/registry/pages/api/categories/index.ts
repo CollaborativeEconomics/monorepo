@@ -1,5 +1,5 @@
+import { getCategories } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getCategories} from "lib/database/categories"
 
 export default async function handler(req, res) {
   const { method, headers, query } = req

@@ -1,5 +1,5 @@
+import { getStoryById, updateStory } from "@cfce/database";
 import checkApiKey from "lib/checkApiKey"
-import { getStoryById, updateStory } from "lib/database/stories"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req;

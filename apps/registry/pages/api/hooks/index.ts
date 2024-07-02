@@ -1,5 +1,5 @@
+import { getHookByTriggerAndOrg } from "@cfce/database";
 import { NextApiRequest, NextApiResponse } from "next"
-import { getHookByTriggerAndOrg } from "lib/database/hook"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { triggerName, orgId } = req.query;

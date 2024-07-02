@@ -1,0 +1,25 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  /*margin-top: 2rem;*/
+  color: #64748b;
+}
+
+.navItems {
+  margin-bottom: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.navItem {
+  display: inline-block;
+}
+
+.navItem:hover {
+  color: #eee;
+}
+
+.spacer {
+  display: inline-block;
+  padding: 0 20px;
+}

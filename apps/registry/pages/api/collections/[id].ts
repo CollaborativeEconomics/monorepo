@@ -1,5 +1,5 @@
+import { getCollectionById } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getCollectionById} from "lib/database/collections"
 
 // GET /api/collections/[id]
 // get collection by id

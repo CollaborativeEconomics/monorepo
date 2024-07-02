@@ -1,5 +1,5 @@
+import { getChapterById } from "@cfce/database";
 import checkApiKey from "lib/checkApiKey"
-import { getChapterById } from "lib/database/chapters"
 
 export default async function handler(req, res) {
   const { method, header, query } = req;
