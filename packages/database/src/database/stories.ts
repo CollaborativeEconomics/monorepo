@@ -1,5 +1,9 @@
 import { Prisma, Story } from "@prisma/client"
+import { put } from "@vercel/blob"
+import { File } from "formidable"
 import { prismaClient } from "index"
+import uploadDataToIPFS from "ipfs/uploadDataToIPFS"
+import uploadFileToIPFS from "ipfs/uploadFileToIPFS"
 import { ListQuery } from "types"
 
 interface StoryQuery extends ListQuery {
@@ -71,7 +75,7 @@ export async function addStory(data: Story): Promise<Story> {
   return result
 }
 
-export async function newStory({ organizationId, initiativeId, amount, ...story }: Omit<Story, 'tokenId' | 'created'>, image?: File): Promise<Story> {
+export async function newStory({ organizationId, initiativeId, amount, ...story }: Omit<Story, 'tokenId' | 'created' | 'categoryId'>, image?: File): Promise<Story> {
   let imageCID = '';
   let tokenCID = '';
   let storyId = '';
@@ -119,7 +123,7 @@ export async function newStory({ organizationId, initiativeId, amount, ...story 
       },
     })
     storyId = dbStory.id;
-    console.log('Created story in DB', dbStory.id, dbStory.title)
+    console.log('Created story in DB', dbStory.id, dbStory.name)
 
     // Create the NFT metadata object
     const created = new Date().toISOString();

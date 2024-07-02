@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import checkApiKey from "lib/checkApiKey"
-import {getCredits, newCredit} from "lib/database/credits"
+import { getCredits, newCredit } from "@cfce/database";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method, headers, query, body } = req;

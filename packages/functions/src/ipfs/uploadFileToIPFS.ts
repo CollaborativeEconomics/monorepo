@@ -1,13 +1,16 @@
-import { PersistentFile } from 'formidable'
 import path from 'path'
 import fs from 'fs'
 import { put } from "@vercel/blob";
 import uploadDataToIPFS from './uploadDataToIPFS'
+import { File } from 'formidable';
 
-export default async function uploadFileToIPFS(file: PersistentFile): Promise<string> {
+export default async function uploadFileToIPFS(file: File): Promise<string> {
   // Get useful file info
-  const name = path.basename(file.originalFilename)
-  const mimeType = file.type
+  const name = path.basename(file.originalFilename ?? '')
+  const mimeType = file.mimetype
+  if (!mimeType) {
+    throw new Error('No MIME type found for file')
+  }
   // const size = file.size
 
   // Convert to bytes
@@ -18,7 +21,7 @@ export default async function uploadFileToIPFS(file: PersistentFile): Promise<st
   const ipfsCID = await uploadDataToIPFS(name, bytes, mimeType)
 
   // Also upload to Vercel Blob
-  await put(ipfsCID, fileBuffer, { access: 'public', contentType: mimeType});
+  await put(ipfsCID, fileBuffer, { access: 'public', contentType: mimeType });
 
   return ipfsCID
 }

@@ -6,8 +6,7 @@ import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s
 //   Text can be read as Buffer.from(text)
 //   File can be read as fs.readFileSync(path)
 // Mime type is required text/plain image/jpeg image/png
-//export default async function metaUpload(fileId:string, bytes:Buffer, mimeType:string) {
-export default async function uploadDataToIPFS(fileId, bytes, mimeType): Promise<string> {
+export default async function uploadDataToIPFS(fileId: string, bytes: Uint8Array, mimeType: string): Promise<string> {
   // Filebase IPFS Config
   const region = process.env.IPFS_DEFAULT_REGION
   const bucket = process.env.IPFS_DEFAULT_BUCKET
@@ -15,6 +14,9 @@ export default async function uploadDataToIPFS(fileId, bytes, mimeType): Promise
   const apikey = process.env.IPFS_API_KEY
   const secret = process.env.IPFS_API_SECRET
   // const gateway = process.env.IPFS_GATEWAY_URL
+  if (!apikey || !secret) {
+    throw ('IPFS API Key or Secret not found')
+  }
 
   const uploadInput = {
     Bucket: bucket,
@@ -30,6 +32,7 @@ export default async function uploadDataToIPFS(fileId, bytes, mimeType): Promise
       secretAccessKey: secret
     }
   }
+
   // console.log({ region, bucket, point, apikey, secret, gateway})
 
   // Upload bytes to IPFS
