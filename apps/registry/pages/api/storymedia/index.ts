@@ -1,5 +1,5 @@
+import { addStoryMedia, getStoryMedia } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getStoryMedia, addStoryMedia} from "lib/database/storymedia"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req

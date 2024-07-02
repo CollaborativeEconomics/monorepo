@@ -1,12 +1,16 @@
-import prismaClient from "prisma/client"
-import { User } from "prisma/models"
+import { User } from "@prisma/client"
+import { prismaClient } from "index"
 
-export async function getUsers(query): Promise<User | Array<User>> {
+interface UserQuery {
+  email?: string
+  name?: string
+  wallet?: string
+  apikey?: string
+
+}
+
+export async function getUsers(query: UserQuery): Promise<User | Array<User> | null> {
   console.log('QUERY', query)
-  let data = null
-  let unique = true
-  let first = false
-  let where = {}
   let include = {
     artworks: {
       include: { author: true }
@@ -15,59 +19,57 @@ export async function getUsers(query): Promise<User | Array<User>> {
     wallets: true
   }
 
-  if(query?.email){
-    const email = query.email.toString()
-    const user = await prismaClient.User.findUnique({ where: { email } })
-    return user
+  if (query?.email) {
+    return getUserByEmail(query.email)
   }
 
-  if (query?.name) {
-    where = { name: query.name }
-  } else if (query?.wallet) {
-    const address = query.wallet.toString()
-    where = { 
+  if (query?.wallet) {
+    return getUserByWallet(query.wallet)
+  }
+
+  if (query?.apikey) {
+    return getUserByApiKey(query.apikey)
+  }
+
+  // TODO: we maybe shouldn't return all users?
+  return prismaClient.user.findMany({ include })
+}
+
+export async function getUserByApiKey(apiKey: string): Promise<User | null> {
+  const user = await prismaClient.user.findFirst({
+    where: {
+      api_key: apiKey
+    }
+  })
+  return user
+}
+
+export async function getUserByWallet(walletAddress: string): Promise<User | null> {
+  const user = await prismaClient.user.findFirst({
+    where: {
       wallets: {
         some: {
-          address: {
-            equals: address,
-            mode: 'insensitive'
-          }
+          address: walletAddress
         }
       }
     }
-    unique = false // wallet should be @unique, use findFirst 
-    first = true
-  } else if (query?.apikey) {
-    where = { api_key: query.apikey }
-  } else {
-    unique = false
-  }
-
-  if (unique) {
-    data = await prismaClient.User.findUnique({ where, include })
-  } else if (first) {
-    console.log('WALLET', JSON.stringify(where))
-    data = await prismaClient.User.findFirst({ where, include })
-  } else {
-    data = await prismaClient.User.findMany({ where, include })
-  }
-
-  return data
+  })
+  return user
 }
 
-export async function newUser(data): Promise<User> {
-  let user = await prismaClient.User.create({ data })
+export async function newUser(data: User): Promise<User> {
+  let user = await prismaClient.user.create({ data })
   console.log('NEW', user)
   return user
 }
 
-export async function setUser(id, data): Promise<User> {
-  let user = await prismaClient.User.update({ where: { id }, data })
+export async function setUser(id: string, data: User): Promise<User> {
+  let user = await prismaClient.user.update({ where: { id }, data })
   console.log('SET', user)
   return user
 }
 
-export async function getUser(id): Promise<User> {
+export async function getUserById(id: string): Promise<User | null> {
   const include = {
     artworks: {
       include: { author: true }
@@ -75,13 +77,13 @@ export async function getUser(id): Promise<User> {
     collections: true,
     wallets: true
   }
-  const user = await prismaClient.User.findUnique({ where: { id }, include })
+  const user = await prismaClient.user.findUnique({ where: { id }, include })
   console.log('GET', user)
   return user
 }
 
-export async function getUserByEmail(email): Promise<User> {
-  const user = await prismaClient.User.findUnique({ where: { email } })
+export async function getUserByEmail(email: string): Promise<User | null> {
+  const user = await prismaClient.user.findUnique({ where: { email } })
   return user
 }
 

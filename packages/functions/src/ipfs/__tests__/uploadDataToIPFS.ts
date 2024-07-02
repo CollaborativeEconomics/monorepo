@@ -1,9 +1,9 @@
 // nock is broken in bun, so we can't use it for now, ref: https://github.com/oven-sh/bun/issues/8781
 // import { describe, expect, test, beforeEach, afterEach } from 'bun:test';
-import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3'
+import { PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3'
 
 import metaUpload from '../uploadDataToIPFS';
-import { s3ClientMock } from '../../../testSetup';
+import { s3ClientMock } from '../../testSetup';
 
 describe('metaUpload', () => {
   test('should upload file to IPFS', async () => {

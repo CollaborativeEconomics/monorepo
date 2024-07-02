@@ -1,5 +1,5 @@
+import { getUserById, setUser } from "@cfce/database";
 import checkApiKey from "lib/checkApiKey"
-import { getUser, setUser } from "lib/database/users"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req;
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
           return res.status(403).json({ success: false, error:'Not authorized' });
         }
         console.log('GET USER ID', query.id)
-        let result = await getUser(query.id)
+        let result = await getUserById(query.id)
         if(result){
           return res.status(200).json({ success: true, data: result });
         } else {

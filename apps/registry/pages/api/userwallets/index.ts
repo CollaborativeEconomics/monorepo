@@ -1,5 +1,5 @@
+import { getWallets, newWallet } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getWallets, newWallet} from "lib/database/userwallets"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req

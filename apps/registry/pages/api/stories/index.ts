@@ -2,7 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import formidable, { PersistentFile } from 'formidable'
 import checkApiKey from "@/lib/checkApiKey"
 import { Story } from '@prisma/client'
-import { addStory, getStories, newStory } from '@cfce/database'
+import { addStory, getStories } from '@cfce/database'
+import { createStory } from '@cfce/functions'
 
 // Configure API route to allow multipart form data
 export const config = {
@@ -14,7 +15,7 @@ export const config = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method, headers, query, body } = req
   const apiKey = Array.isArray(headers['x-api-key']) ? headers['x-api-key'][0] : headers['x-api-key'];
-  const orgId  = Array.isArray(query.orgId) ? query.orgId[0] : query.orgId;
+  const orgId = Array.isArray(query.orgId) ? query.orgId[0] : query.orgId;
   const authorized = await checkApiKey(apiKey, orgId);
 
 
@@ -27,9 +28,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!authorized) {
           return res.status(403).json({ success: false, error: 'Not authorized' });
         }
-  
+
         const story = await getStories(query);
-  
+
         return res.status(200).json({ success: true, data: story });
       } catch (error) {
         console.error('ERROR:', error);
@@ -65,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const image = files?.files?.[0] as PersistentFile;
 
-        let result = await newStory(flattenedTypedStory, image)
+        let result = await createStory(flattenedTypedStory, image)
         res.status(201).json({ success: true, data: result })
       } catch (error) {
         console.log({ error })
