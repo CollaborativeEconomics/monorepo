@@ -1,11 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import ActionBar from '@/src/components/home/ActionBar';
-import InstructionPanes from '@/src/components/home/InstructionPanes';
-import ParallaxHero from '@/src/components/home/ParallaxHero';
-import MainChart from '@/src/components/mainchart';
-import StoryCard from '@/src/components/StoryCardCompactVert';
 import { getRecentStories, getCreditsByInitiative } from '@/src/utils/registry';
+import CarbonChart from '../components/carbonchart';
 
 export default async function Home(props: any) {
   const appMode = process.env.NODE_ENV || 'development';
@@ -113,7 +109,7 @@ export default async function Home(props: any) {
                 <h2 className="mb-12 text-white text-4xl font-bold">
                   {perc.toFixed(2)}% Carbon Neutral
                 </h2>
-                <MainChart goal={100} value={perc} />
+                <CarbonChart goal={100} value={perc} />
                 <p className="mt-4 text-white">
                   {tonx.toFixed(2)} out of {tons.toFixed(2)} tons of carbon offset as of {date}
                 </p>

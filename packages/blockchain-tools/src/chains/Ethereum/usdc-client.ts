@@ -2,7 +2,7 @@
 
 import Wallet from "@/wallets/metamask";
 import EthereumClient from "./client";
-import { Chain, ChainSymbol } from "../ChainInstance";
+import { Chain, ChainSymbol } from "../ChainBaseClass";
 
 class EthereumUSDCClient extends EthereumClient {
   contract: string;

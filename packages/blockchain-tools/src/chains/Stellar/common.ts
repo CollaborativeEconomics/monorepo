@@ -1,4 +1,4 @@
-import ChainInstance, { Chain, ChainSymbol } from "@/chains/ChainInstance";
+import ChainBaseClass, { Chain, ChainSymbol } from "@/chains/ChainBaseClass";
 import { NetworkProvider } from "@/types/networkProvider";
 
 export const mainnetConfig = {
@@ -43,7 +43,7 @@ const networkMap: Record<StellarNetworks, NetworkProvider> = {
   futurenet: futurenetConfig,
 };
 
-class Stellar extends ChainInstance {
+class Stellar extends ChainBaseClass {
   network: StellarNetworks;
   chain: Chain = "Stellar";
   symbol: ChainSymbol = "XLM";

@@ -1,4 +1,4 @@
-import ChainInstance, { Chain, ChainSymbol } from "../ChainInstance";
+import ChainBaseClass, { Chain, ChainSymbol } from "../ChainBaseClass";
 
 export const mainnetConfig = {
   id: 17777,
@@ -22,7 +22,7 @@ export const testnetConfig = {
   wssurl: "",
 };
 
-class EOS extends ChainInstance {
+class EOS extends ChainBaseClass {
   chain: Chain = "EOS";
   symbol: ChainSymbol = "EOS";
   logo = "eos.svg";

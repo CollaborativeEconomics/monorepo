@@ -1,14 +1,9 @@
-'use client'
+"use client"
 import { useState } from 'react'
-import { coinFromChain } from '@/lib/utils/chain'
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from '@/components/ui/table'
+import { useRouter } from 'next/navigation'
+import { localDate } from '@/src/utils/date'
+import { coinFromChain } from '@/src/utils/chain'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/src/components/ui/table"
 import {
   ColumnDef,
   createColumnHelper,
@@ -18,67 +13,58 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
-import { title } from 'process'
 
-interface Donation {
-  id: string
-  created: Date
-  initiative: {
-    title: string
-  }
-  organization: {
-    name: string
-  }
-  amount: string
-  chain: string
-}
-
-interface DonationHeader extends Omit<Donation, 'initiative' | 'organization'> {
-  initiative: string
-  organization: string
+type Donation = {
+  id: string;
+  created: Date;
+  initiative: string;
+  organization: string;
+  amount: string;
+  chain: string;
 }
 
 type Dictionary = { [key: string]: any }
 
-export default function TableDonationsSort(props: Dictionary) {
-  const donations: Donation[] = props?.donations || []
-
-  const records = donations.map((rec) => {
+export default function TableDonationsSort(props:any){
+  const router = useRouter()
+  const donations:[Dictionary] = props?.donations || []
+  const recs = donations.map(rec => { 
     return {
       id: rec.id,
       created: rec.created,
       initiative: rec.initiative.title,
       organization: rec.organization.name,
       amount: rec.amount,
-      chain: rec.chain,
+      chain: rec.chain
     }
   })
 
-  const [data, setData] = useState(records)
+  const [order, setOrder] = useState('')
+  const [data, setData] = useState(recs)
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const columnHelper = createColumnHelper<DonationHeader>()
+  const columnHelper = createColumnHelper<Donation>()
 
   const columns = [
-    columnHelper.accessor('created', {
-      header: 'Date',
-      cell: (info) => new Date(info.getValue().toString()).toLocaleString(),
+    columnHelper.accessor("created", {
+      header: "Date",
+      cell: (info) => localDate(info.getValue().toString()),
     }),
-    columnHelper.accessor('initiative', {
-      header: 'Initiative',
+    columnHelper.accessor("initiative", {
+      header: "Initiative",
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor('organization', {
-      header: 'Organization',
+    columnHelper.accessor("organization", {
+      header: "Organization",
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor('amount', {
-      header: 'Amount',
+    columnHelper.accessor("amount", {
+      header: "Amount",
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor('chain', {
-      header: 'Chain',
-      cell: (info) => coinFromChain(info.getValue()).toUpperCase(),
+    columnHelper.accessor("chain", {
+      header: "Chain",
+      cell: (info) => coinFromChain(info.getValue()).toUpperCase()
     }),
   ]
 
@@ -88,31 +74,17 @@ export default function TableDonationsSort(props: Dictionary) {
     state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    getSortedRowModel: getSortedRowModel()
   })
 
-  const donationRows = table.getRowModel().rows
+  const list = table.getRowModel().rows
 
-  const NoRows = () => {
-    return (
-      <TableRow>
-        <TableCell className="col-span-5">No donations found</TableCell>
-      </TableRow>
-    )
-  }
-
-  const AllRows = () => {
-    return donationRows.map((row) => {
-      return (
-        <TableRow key={row.id}>
-          {row.getVisibleCells().map((cell) => (
-            <TableCell key={cell.id}>
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </TableCell>
-          ))}
-        </TableRow>
-      )
-    })
+  function clicked(evt){
+    const rowid = evt.target.parentNode.dataset.id
+    const nftid = data[rowid].id
+    console.log('CLICKED', rowid, nftid)
+    console.log('DATA', data[rowid])
+    router.push('/donations/'+nftid)
   }
 
   return (
@@ -122,31 +94,49 @@ export default function TableDonationsSort(props: Dictionary) {
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
               <TableHead key={header.id}>
-                {header.isPlaceholder ? null : (
-                  <div
-                    {...{
-                      className: header.column.getCanSort()
-                        ? 'cursor-pointer select-none'
-                        : '',
-                      onClick: header.column.getToggleSortingHandler(),
-                    }}
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                    {{
-                      asc: ' ↑',
-                      desc: ' ↓',
-                    }[header.column.getIsSorted() as string] ?? null}
-                  </div>
+                {header.isPlaceholder
+                ? null
+                : (
+                    <div
+                      {...{
+                        className: header.column.getCanSort()
+                          ? 'cursor-pointer select-none'
+                          : '',
+                        onClick: header.column.getToggleSortingHandler()
+                      }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {{
+                        asc : ' ↑',
+                        desc: ' ↓',
+                      }[header.column.getIsSorted() as string] ?? null}
+                    </div>
                 )}
               </TableHead>
             ))}
           </TableRow>
         ))}
       </TableHeader>
-      <TableBody>{donationRows.length ? <AllRows /> : <NoRows />}</TableBody>
+      <TableBody onClick={clicked}>
+        { list.length>0 ? list.map((row) => {
+          return (
+            <TableRow key={row.id} data-id={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  { flexRender(cell.column.columnDef.cell, cell.getContext()) }
+                </TableCell>
+              ))}
+            </TableRow>
+          )
+        }) : (
+          <TableRow>
+            <TableCell className="col-span-5">No donations found</TableCell>
+          </TableRow>
+        )}
+      </TableBody>
     </Table>
   )
 }

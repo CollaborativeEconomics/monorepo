@@ -1,9 +1,9 @@
 import * as React from 'react'
 
-import { cn } from '@/lib/shadCnUtil'
+import { cn } from '@/src/libs/shadCnUtil'
 import { Building2, DollarSign, Target, UserIcon, Sprout } from 'lucide-react'
 import { ListObject } from './list-object'
-import decimalString from '@/lib/utils/decimalString'
+import money from '@/src/utils/money'
 
 export interface Stats {
   amountRaised: number
@@ -26,9 +26,9 @@ function buildList(props: Stats): Array<React.JSX.Element> {
       <ListObject
         Icon={Sprout}
         text={
-          '$' + decimalString(props.amountRaised) +
+          '$' + money(props.amountRaised) +
           ' of ' +
-          decimalString(props.amountTarget) +
+          money(props.amountTarget) +
           ' raised'
         }
       />
@@ -38,7 +38,7 @@ function buildList(props: Stats): Array<React.JSX.Element> {
       <ListObject
         Icon={Sprout}
         text={
-          '$' + decimalString(props.amountRaised) + ' total raised'
+          '$' + money(props.amountRaised) + ' total raised'
         }
       />
     )
@@ -83,6 +83,7 @@ function buildList(props: Stats): Array<React.JSX.Element> {
 
 const OrgStats = React.forwardRef<HTMLUListElement, Props>(
   ({ className, stats, ...props }, ref) => {
+    //console.log('STATS', stats)
     return (
       <ul
         ref={ref}
@@ -90,7 +91,9 @@ const OrgStats = React.forwardRef<HTMLUListElement, Props>(
         {...props}
       >
         {buildList(stats).map((item) => {
-          return <div key={item.key}>{item}</div>
+          //console.log('ITEM', item)
+          const key = item.key || Math.random()
+          return <div key={key}>{item}</div>
         })}
       </ul>
     )

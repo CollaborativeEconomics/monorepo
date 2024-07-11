@@ -1,9 +1,10 @@
 import Image from 'next/image'
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table"
-import { NFTData } from '@/types/models'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/src/components/ui/table"
 
-export default function TableReceipts(props: { receipts: NFTData[] }){
-  const receipts = props?.receipts || []
+type Dictionary = { [key: string]: any }
+
+export default function TableReceipts(props:any){
+  const receipts:[Dictionary] = props?.receipts || []
   return (
     <Table id="table-nfts" className="w-full">
       <TableHeader>

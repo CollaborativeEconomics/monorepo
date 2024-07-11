@@ -24,5 +24,4 @@ class ArbitrumServer extends EthereumServerMixin(Arbitrum) {
   }
 }
 
-const ArbitrumServerInstance = new ArbitrumServer();
-export default ArbitrumServerInstance;
+export default ArbitrumServer;

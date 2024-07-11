@@ -1,23 +1,21 @@
 import Link from 'next/link'
-import OrganizationAvatar from '../organization/OrganizationAvatar.js'
-import { Card, CardContent, CardHeader } from '../ui/card.js'
-import { DateDisplay } from '../ui/date-posted.js'
-import Gallery from '../ui/gallery.js'
-import { Story } from '@/types/models'
+import OrganizationAvatar from './organization/OrganizationAvatar'
+import { Card, CardContent, CardHeader } from './ui/card'
+import { DateDisplay } from './ui/date-posted'
+import Gallery from './ui/gallery'
 
-export default function StoryCard(props:{story:Story}) {
+export default function StoryCard(props:any) {
   const story = props?.story
   if(!story){ return }
   const organization = story.organization
   const initiative = story.initiative
-  const media = story.media?.map((it:any)=>it.media) // flatten list
-  media?.unshift(story.image) // main image to the top
-  //console.log(media)
+  const media = story.media.map((it:any)=>it.media) // flatten list
+  media.unshift(story.image) // main image to the top
 
   return (
     <Card className="flex flex-col overflow-hidden">
       <CardHeader>
-        <OrganizationAvatar name={organization?.name} image={organization?.image} avatarProps={{ title: organization?.name }} />
+        <OrganizationAvatar name={organization?.name} image={organization?.image ?? '/nopic.png'} avatarProps={{ title: organization?.name }} />
         <p className="text-sm font-semibold">
           in <span className="underline"><a href={'/initiatives/'+initiative?.id}>{initiative?.title}</a></span>
         </p>

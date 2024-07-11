@@ -2,9 +2,9 @@
 
 import * as React from 'react'
 
-import { cn } from '@/lib/shadCnUtil'
+import { cn } from '@/src/libs/shadCnUtil'
 import { OverlayHandler } from './OverlayHandler'
-import Parallax from '../../Parallax'
+import Parallax from '../Parallax'
 
 export interface InstructionImageProps {
   sourceProperty: string

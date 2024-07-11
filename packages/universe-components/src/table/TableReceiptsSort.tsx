@@ -1,10 +1,9 @@
 "use client"
-import { useState } from "react"
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 //import { ChevronUp, ChevronDown } from 'lucide-react'
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table"
-import { NFTData } from '@/types/models'
-
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/src/components/ui/table"
 import {
   ColumnDef,
   createColumnHelper,
@@ -19,30 +18,31 @@ type Receipt = {
   id: string;
   image: string;
   imageUri: string;
-  initiative?: string;
-  organization?: string;
-  amount: number;
-  coin?: string;
+  initiative: string;
+  organization: string;
+  amount: string;
+  coin: string;
 }
 
 type Dictionary = { [key: string]: any }
 
-export default function TableReceipts(props: { receipts: NFTData[] }){
-  const receipts = props?.receipts || []
-  const rows:Receipt[] = receipts.map(rec => { 
+export default function TableReceipts(props:any){
+  const router = useRouter()
+  const receipts:[Dictionary] = props?.receipts || []
+  const recs = receipts.map(rec => { 
     return {
       id: rec.id,
       image: rec.imageUri.startsWith('ipfs') ? 'https://ipfs.filebase.io/ipfs/'+rec.imageUri.substr(5) : rec.imageUri,
       imageUri: rec.imageUri,
-      initiative: rec.initiative?.title,
-      organization: rec.organization?.name,
+      initiative: rec.initiative.title,
+      organization: rec.organization.name,
       amount: rec.coinValue,
       coin: rec.coinSymbol
     }
   })
 
   const [order, setOrder] = useState('')
-  const [data, setData] = useState(rows)
+  const [data, setData] = useState(recs)
   const [sorting, setSorting] = useState<SortingState>([])
 
   const columnHelper = createColumnHelper<Receipt>()
@@ -79,33 +79,19 @@ export default function TableReceipts(props: { receipts: NFTData[] }){
     getSortedRowModel: getSortedRowModel()
   })
 
-  const receiptRows = table.getRowModel().rows
+  const list = table.getRowModel().rows
 
-  function ShowRows(){
-    return receiptRows.map((row) => {
-      return (
-        <TableRow key={row.id}>
-          {row.getVisibleCells().map((cell) => { 
-            return (
-              <TableCell key={cell.id}>
-                { cell?.column?.id=='image' 
-                  ? (<Image src={cell?.getValue() as string} width={64} height={64} alt="NFT" />)
-                  : flexRender(cell.column.columnDef.cell, cell.getContext())
-                }
-              </TableCell>
-            )}
-          )}
-        </TableRow>
-      )
-    })
-  }
-
-  function NoRows(){
-    return (
-      <TableRow>
-        <TableCell className="col-span-5">No receipts found</TableCell>
-      </TableRow>
-    )
+  function clicked(evt){
+    let rowid = ''
+    if(evt.target.parentNode.tagName=='TD'){
+      rowid = evt.target.parentNode.parentNode.dataset.id
+    } else {
+      rowid = evt.target.parentNode.dataset.id
+    }
+    const nftid = data[rowid].id
+    console.log('CLICKED', rowid, nftid)
+    console.log('DATA', data[rowid])
+    router.push('/nft/'+nftid)
   }
 
   return (
@@ -141,8 +127,28 @@ export default function TableReceipts(props: { receipts: NFTData[] }){
           </TableRow>
         ))}
       </TableHeader>
-      <TableBody>
-        { receiptRows.length ? <ShowRows /> : <NoRows /> }
+      <TableBody onClick={clicked}>
+        { list.length>0 ? list.map((row) => {
+          return (
+            <TableRow key={row.id} data-id={row.id}>
+              {row.getVisibleCells().map((cell) => { 
+                //console.log('CELL', cell)
+                return (
+                  <TableCell key={cell.id}>
+                    { cell?.column?.id=='image' 
+                      ? (<Image src={cell?.getValue() as string} width={64} height={64} alt="NFT" />)
+                      : flexRender(cell.column.columnDef.cell, cell.getContext())
+                    }
+                  </TableCell>
+                )}
+              )}
+            </TableRow>
+          )
+        }) : (
+          <TableRow>
+            <TableCell className="col-span-5">No receipts found</TableCell>
+          </TableRow>
+        )}
       </TableBody>
     </Table>
   )

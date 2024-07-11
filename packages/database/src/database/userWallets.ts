@@ -37,7 +37,7 @@ export async function getUserWallets(query: UserWalletQuery): Promise<UserWallet
 }
 
 // @deprecated looks like
-export async function newUserWallet(data: UserWallet): Promise<UserWallet> {
+export async function newUserWallet(data: Omit<UserWallet, 'id'>): Promise<UserWallet> {
   console.log('DATA', data)
   const result = await prismaClient.userWallet.create({ data })
   console.log('NEWUSERWALLET', result)

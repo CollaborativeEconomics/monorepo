@@ -1,11 +1,11 @@
 'use client'
 
-import { cn } from '@/lib/shadCnUtil'
+import { cn } from '@/src/libs/shadCnUtil'
 import { CalendarDays } from 'lucide-react'
 import * as React from 'react'
 
 interface Props {
-  timestamp: Date | number
+  timestamp: number
   className?: string
 }
 
@@ -35,7 +35,7 @@ const DateStyle = React.forwardRef<
 ))
 DateStyle.displayName = 'DateDisplay'
 
-function convertTimestampToDateString(timestamp: Date | number): string {
+function convertTimestampToDateString(timestamp: number): string {
   const timestampDate = new Date(timestamp)
   return timestampDate.toLocaleString('default', {
     month: 'long',

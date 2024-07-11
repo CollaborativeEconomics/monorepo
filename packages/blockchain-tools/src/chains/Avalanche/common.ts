@@ -1,4 +1,4 @@
-import ChainInstance, { Chain, ChainSymbol } from "../ChainInstance";
+import ChainBaseClass, { Chain, ChainSymbol } from "../ChainBaseClass";
 
 export const mainnetConfig = {
   id: 43114,
@@ -22,7 +22,7 @@ export const testnetConfig = {
   wssurl: "",
 };
 
-class Avalanche extends ChainInstance {
+class Avalanche extends ChainBaseClass {
   chain: Chain = "Avalanche";
   symbol: ChainSymbol = "AVAX";
   logo = "avax.svg";

@@ -13,7 +13,7 @@ const dummyImgSrc: string = 'https://partners.cfce.io/_next/image?url=https%3A%2
 
 export default function OrganizationCard({ ...props }) {
   const organization = props?.data || {}
-  if(!organization.id){ return }
+  if(!organization.id){ return <></> }
   const orgurl = '/organizations/' + organization.id
   let image = dummyImgSrc
   if (organization.image) {

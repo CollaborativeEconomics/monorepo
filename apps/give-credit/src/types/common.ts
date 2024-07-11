@@ -10,12 +10,3 @@ export interface WalletProvider {
 }
 
 
-export const ReceiptStatus = {
-  claim:    'Claim',
-  failed:   'Failed',
-  minted:   'Minted',
-  minting:  'Minting',
-  pending:  'Pending',
-  rejected: 'Rejected'
-}
-

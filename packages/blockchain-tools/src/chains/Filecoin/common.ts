@@ -1,4 +1,4 @@
-import ChainInstance, { Chain, ChainSymbol } from "../ChainInstance";
+import ChainBaseClass, { Chain, ChainSymbol } from "../ChainBaseClass";
 
 export type FilecoinNetworks = "mainnet" | "testnet" | "hyperspace";
 
@@ -41,7 +41,7 @@ export const filecoinNetworks = {
   hyperspace,
 };
 
-class Filecoin extends ChainInstance {
+class Filecoin extends ChainBaseClass {
   chain: Chain = "Filecoin";
   symbol: ChainSymbol = "FIL";
   logo = "fil.svg";

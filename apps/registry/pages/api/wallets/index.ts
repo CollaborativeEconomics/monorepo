@@ -1,5 +1,5 @@
+import { getWallets, newWallet } from "@cfce/database"
 import checkApiKey from "lib/checkApiKey"
-import {getWallets, newWallet} from "lib/database/wallets"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req
@@ -23,11 +23,8 @@ export default async function handler(req, res) {
         let result = await newWallet({
           chain,
           address,
-          organizations: {
-            connect: {
-              id: query.organizationid
-            }
-          }
+          organizationId: query.organizationid,
+          initiativeId: null
         })
         res.status(201).json({ success: true, data: result })
       } catch (error) {

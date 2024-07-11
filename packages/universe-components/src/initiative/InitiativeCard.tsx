@@ -1,13 +1,13 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader } from '../ui/card.js'
-import { Progress } from '../ui/progress.js'
-import { Separator } from '../ui/separator.js'
-import { DateDisplay } from '../ui/date-posted.js'
-import { Button } from '../ui/button.js'
-import { OrgStats } from '../ui/org-stats.js'
-import OrganizationAvatar from '../organization/OrganizationAvatar.js'
+import { Card, CardContent, CardHeader } from '../ui/card'
+import { Progress } from '../ui/progress'
+import { Separator } from '../ui/separator'
+import { DateDisplay } from '../ui/date-posted'
+import { Button } from '../ui/button'
+import { OrgStats } from '../ui/org-stats'
+import OrganizationAvatar from '../organization/OrganizationAvatar'
 
 const dummyImgSrc: string = 'https://partners.cfce.io/_next/image?url=https%3A%2F%2Fipfs.filebase.io%2Fipfs%2FQmcS3rZdEzNkYxSd79AJVgjkDpK7sBd1ej99i4sBXD1mkQ&w=256&q=75'
 
@@ -15,10 +15,10 @@ export default function InitiativeCard({ ...props }) {
   const initiative = props?.data || {}
   const initurl = '/initiatives/' + (initiative?.id || 0)
   let image = dummyImgSrc
-  if (initiative?.imageUri) {
-    image = initiative?.imageUri.startsWith('ipfs')
-      ? 'https://ipfs.filebase.io/ipfs/' + initiative.imageUri.substr(5)
-      : initiative.imageUri
+  if (initiative?.defaultAsset) {
+    image = initiative?.defaultAsset.startsWith('ipfs')
+      ? 'https://ipfs.filebase.io/ipfs/' + initiative.defaultAsset.substr(5)
+      : initiative.defaultAsset
   }
   const startDate = new Date(initiative?.start).getTime()
   const progress = (initiative.donations / initiative.goal) * 100

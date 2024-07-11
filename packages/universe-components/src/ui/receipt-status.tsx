@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { cn } from '@/lib/shadCnUtil'
+
+import { cn } from '@/src/libs/shadCnUtil'
 import {
   AlertTriangle,
   CheckCircle,
@@ -7,7 +8,6 @@ import {
   LucideIcon,
   RefreshCw,
 } from 'lucide-react'
-import { ReceiptStatus as Status } from '@/types/receipt'
 
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
@@ -29,7 +29,7 @@ interface WrapperProps {
 
 function ReceiptBodyBuilder(status: string): React.JSX.Element {
   switch (status) {
-    case Status.claim:
+    case 'Claim':
       return (
         <ReceiptStatusBody
           className="bg-blue-500"
@@ -38,7 +38,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           subtext="Thank you for your donation"
         />
       )
-    case Status.pending:
+    case 'Pending':
       return (
         <ReceiptStatusBody
           className="bg-gray-400" //
@@ -47,7 +47,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           subtext="Complete the donation to claim NFT"
         />
       )
-    case Status.minting:
+    case 'Minting':
       return (
         <ReceiptStatusBody
           className="bg-blue-500"
@@ -57,7 +57,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           iconWrapperClassName="animate-spin"
         />
       )
-    case Status.minted:
+    case 'Minted':
       return (
         <ReceiptStatusBody
           className="bg-green-400"
@@ -66,7 +66,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           subtext="NFT has been sent to your wallet"
         />
       )
-    case Status.rejected:
+    case 'Rejected':
       return (
         <ReceiptStatusBody
           className="bg-gray-400" //

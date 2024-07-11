@@ -1,5 +1,5 @@
 import { get } from "lodash";
-import ChainInstance, { Chain, ChainSymbol } from "@/chains/ChainInstance";
+import ChainBaseClass, { Chain, ChainSymbol } from "@/chains/ChainBaseClass";
 import {
   NFTokenCreateOffer,
   NFTokenMint,
@@ -39,7 +39,7 @@ type transactionMethods =
   | "transaction_entry"
   | "tx_history";
 
-class Xrpl extends ChainInstance {
+class Xrpl extends ChainBaseClass {
   chain: Chain = "XRPL";
   symbol: ChainSymbol = "XRP";
   logo = "xrp.svg";

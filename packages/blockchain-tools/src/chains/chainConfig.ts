@@ -1,0 +1,595 @@
+const ChainSlugs = [
+  "arbitrum",
+  "avalanche",
+  "base",
+  "binance",
+  "celo",
+  "eos",
+  "ethereum",
+  "filecoin",
+  "flare",
+  "optimism",
+  "polygon",
+  "starknet",
+  "stellar",
+  "xinfin",
+  "xrpl",
+] as const
+type ChainSlugs = (typeof ChainSlugs)[number]
+
+interface NetworkConfig {
+  id: number
+  name: string
+  symbol: string
+  decimals: number
+  gasprice: string
+  explorer: string
+  rpcurl: string
+  wssurl: string
+  tokens?: Partial<Record<TokenSlugs, TokenConfig>>
+}
+
+const TokenSlugs = [
+  "usdt",
+  "usdc",
+  // "dai",
+  // "usdn",
+  // "usdk",
+  // "eur",
+  // "gbp",
+  // "jpy",
+  // "chf",
+  // "cny",
+  // "krw",
+  // "rub",
+  // "try",
+  // "twd",
+  // "hkd",
+  // "sgd",
+  // "cad",
+  // "aud",
+  // "nzd",
+  // "zar",
+  // "dkk",
+  // "nok",
+  // "sek",
+  // "dkk",
+  // "pln",
+  // "thb",
+  // "myr",
+  // "idr",
+  // "php",
+  // "huf",
+  // "ron",
+  // "ils",
+  // "aud",
+  // "nzd",
+  // "zar",
+  // "dkk",
+  // "nok",
+  // "sek",
+  // "dkk",
+  // "pln",
+  // "thb",
+  // "myr",
+  // "idr",
+  // "php",
+  // "huf",
+  // "ron",
+  // "ils",
+  // "aud",
+  // "nzd",
+  // "zar",
+  // "dkk",
+  // "nok",
+  // "sek",
+  // "dkk",
+  // "pln",
+  // "thb",
+  // "myr",
+  // "idr",
+  // "php",
+  // "huf",
+  // "ron",
+  // "ils",
+] as const
+type TokenSlugs = (typeof TokenSlugs)[number]
+
+interface TokenConfig {
+  contract: string
+  name: string
+  symbol: string
+  decimals: number
+  logo: string
+}
+
+interface ChainConfig {
+  slug: ChainSlugs
+  chain: string
+  symbol: string
+  logo: string
+  networks: Record<"mainnet" | "testnet" | string, NetworkConfig>
+}
+
+type Chains = Record<ChainSlugs, ChainConfig>
+
+const chainConfiguration: Chains = {
+  arbitrum: {
+    slug: "arbitrum",
+    chain: "Arbitrum",
+    symbol: "ARB",
+    logo: "arb.svg",
+    networks: {
+      mainnet: {
+        id: 42161,
+        name: "Arbitrum Mainnet",
+        symbol: "ARB",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://arbiscan.io",
+        rpcurl: "https://arb1.arbitrum.io/rpc",
+        wssurl: "",
+      },
+      testnet: {
+        id: 421614,
+        name: "Arbitrum Testnet",
+        symbol: "ARB",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://sepolia.arbiscan.io",
+        rpcurl: "https://sepolia-rollup.arbitrum.io/rpc",
+        wssurl: "",
+      },
+    },
+  },
+  avalanche: {
+    slug: "avalanche",
+    chain: "Avalanche",
+    symbol: "AVAX",
+    logo: "avax.svg",
+    networks: {
+      mainnet: {
+        id: 43114,
+        name: "Avalanche Mainnet",
+        symbol: "AVAX",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://snowtrace.io",
+        rpcurl: "https://ethereum.publicnode.com",
+        wssurl: "",
+      },
+      testnet: {
+        id: 43113,
+        name: "Avalanche Testnet",
+        symbol: "AVAX",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://testnet.snowtrace.io",
+        rpcurl: "https://ethereum-goerli.publicnode.com",
+        wssurl: "",
+      },
+    },
+  },
+  base: {
+    slug: "base",
+    chain: "Base",
+    symbol: "BASE",
+    logo: "base.svg",
+    networks: {
+      mainnet: {
+        id: 8453,
+        name: "Base Mainnet",
+        symbol: "BASE",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://basescan.org",
+        rpcurl: "https://mainnet.base.org",
+        wssurl: "",
+      },
+      testnet: {
+        id: 84532,
+        name: "Base Testnet",
+        symbol: "BASE",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://testnet.basescan.org",
+        rpcurl: "https://testnet.base.org",
+        wssurl: "",
+      },
+    },
+  },
+  binance: {
+    slug: "binance",
+    chain: "Binance",
+    symbol: "BNB",
+    logo: "bnb.svg",
+    networks: {
+      mainnet: {
+        id: 56,
+        name: "Binance Mainnet",
+        symbol: "BNB",
+        decimals: 18,
+        gasprice: "9000000000",
+        explorer: "https://bscscan.com",
+        rpcurl: "https://bsc-dataseed.binance.org",
+        wssurl: "",
+      },
+      testnet: {
+        id: 97,
+        name: "Binance Testnet",
+        symbol: "BNB",
+        decimals: 18,
+        gasprice: "9000000000",
+        explorer: "https://testnet.bscscan.com",
+        rpcurl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+        wssurl: "",
+      },
+    },
+  },
+  celo: {
+    slug: "celo",
+    chain: "Celo",
+    symbol: "CELO",
+    logo: "celo.svg",
+    networks: {
+      mainnet: {
+        id: 42220,
+        name: "Celo Mainnet",
+        symbol: "CELO",
+        decimals: 18,
+        gasprice: "10000000000",
+        explorer: "https://explorer.celo.org",
+        rpcurl: "https://forno.celo.org",
+        wssurl: "",
+      },
+      testnet: {
+        id: 44787,
+        name: "Celo Testnet",
+        symbol: "CELO",
+        decimals: 18,
+        gasprice: "10000000000",
+        explorer: "https://alfajores-blockscout.celo-testnet.org",
+        rpcurl: "https://alfajores-forno.celo-testnet.org",
+        wssurl: "",
+      },
+    },
+  },
+  eos: {
+    slug: "eos",
+    chain: "EOS",
+    symbol: "EOS",
+    logo: "eos.svg",
+    networks: {
+      mainnet: {
+        id: 17777,
+        name: "EOS Mainnet",
+        symbol: "EOS",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://explorer.eos.io",
+        rpcurl: "https://api.eos.io",
+        wssurl: "",
+      },
+      testnet: {
+        id: 15557,
+        name: "EOS Testnet Goerli",
+        symbol: "EOS",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://explorer.testnet.eos.io",
+        rpcurl: "https://api.testnet.eos.io",
+        wssurl: "",
+      },
+    },
+  },
+  ethereum: {
+    slug: "ethereum",
+    chain: "Ethereum",
+    symbol: "ETH",
+    logo: "eth.svg",
+    networks: {
+      mainnet: {
+        id: 1,
+        name: "Ethereum Mainnet",
+        symbol: "ETH",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://etherscan.io",
+        rpcurl: "https://ethereum.publicnode.com",
+        wssurl: "",
+      },
+      testnet: {
+        id: 5,
+        name: "Ethereum Testnet",
+        symbol: "ETH",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://goerli.etherscan.io",
+        rpcurl: "https://ethereum-goerli.publicnode.com",
+        wssurl: "",
+      },
+    },
+  },
+  filecoin: {
+    slug: "filecoin",
+    chain: "Filecoin",
+    symbol: "FIL",
+    logo: "fil.svg",
+    networks: {
+      mainnet: {
+        id: 31415790,
+        name: "Filecoin Mainnet",
+        symbol: "FIL",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://filscan.io",
+        rpcurl: "https://api.node.glif.io",
+        wssurl: "",
+      },
+      testnet: {
+        id: 314159,
+        name: "Filecoin Testnet",
+        symbol: "FIL",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://calibration.filscan.io",
+        rpcurl: "https://api.calibration.node.glif.io",
+        wssurl: "",
+      },
+    },
+  },
+  flare: {
+    slug: "flare",
+    chain: "Flare",
+    symbol: "FLR",
+    logo: "flr.svg",
+    networks: {
+      mainnet: {
+        id: 14,
+        name: "Flare Mainnet",
+        symbol: "FLR",
+        decimals: 18,
+        gasprice: "25000000000",
+        explorer: "https://flare-explorer.flare.network",
+        rpcurl: "https://mainnet.flare.network",
+        wssurl: "",
+      },
+      testnet: {
+        id: 16,
+        name: "Flare Testnet",
+        symbol: "FLR",
+        decimals: 18,
+        gasprice: "25000000000",
+        explorer: "https://coston-explorer.flare.network",
+        rpcurl: "https://coston-api.flare.network/ext/bc/C/rpc",
+        wssurl: "",
+      },
+    },
+  },
+  optimism: {
+    slug: "optimism",
+    chain: "Optimism",
+    symbol: "OP",
+    logo: "op.svg",
+    networks: {
+      mainnet: {
+        id: 10,
+        name: "Optimism Mainnet",
+        symbol: "OP",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://goerli.etherscan.io",
+        rpcurl: "https://ethereum-goerli.publicnode.com",
+        wssurl: "",
+      },
+      testnet: {
+        id: 5,
+        name: "Optimism Testnet",
+        symbol: "OP",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://goerli.etherscan.io",
+        rpcurl: "https://ethereum-goerli.publicnode.com",
+        wssurl: "",
+      },
+    },
+  },
+  polygon: {
+    slug: "polygon",
+    chain: "Polygon",
+    symbol: "MATIC",
+    logo: "matic.svg",
+    networks: {
+      mainnet: {
+        id: 137,
+        name: "Polygon Mainnet",
+        symbol: "MATIC",
+        decimals: 18,
+        gasprice: "20000000000",
+        explorer: "https://polygonscan.com",
+        rpcurl: "https://ethereum.publicnode.com",
+        wssurl: "",
+      },
+      testnet: {
+        id: 80001,
+        name: "Polygon Testnet",
+        symbol: "MATIC",
+        decimals: 18,
+        gasprice: "20000000000",
+        explorer: "https://mumbai.polygonscan.com",
+        rpcurl: "https://ethereum-goerli.publicnode.com",
+        wssurl: "",
+      },
+    },
+  },
+  starknet: {
+    slug: "starknet",
+    chain: "Starknet",
+    symbol: "STRK",
+    logo: "strk.svg",
+    networks: {
+      mainnet: {
+        id: 0,
+        name: "Starknet Mainnet",
+        symbol: "STRK",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://goerli.etherscan.io",
+        rpcurl:
+          "https://starknet-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+        wssurl: "",
+        tokens: {
+          usdt: {
+            contract:
+              "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+            name: "Tether USD",
+            symbol: "USDT",
+            decimals: 6,
+            logo: "usdt.svg",
+          },
+          usdc: {
+            contract:
+              "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+            name: "USD Coin",
+            symbol: "USDC",
+            decimals: 6,
+            logo: "usdc.svg",
+          },
+        },
+      },
+      testnet: {
+        id: 0,
+        name: "Starknet Testnet",
+        symbol: "STRK",
+        decimals: 18,
+        gasprice: "250000000",
+        explorer: "https://goerli.etherscan.io",
+        rpcurl:
+          "https://starknet-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+        wssurl: "",
+        tokens: {
+          usdt: {
+            contract: "",
+            name: "Tether",
+            symbol: "USDT",
+            decimals: 6,
+            logo: "usdt.svg",
+          },
+          usdc: {
+            contract: "",
+            name: "USDC",
+            symbol: "USDC",
+            decimals: 6,
+            logo: "usdc.svg",
+          },
+        },
+      },
+    },
+  },
+  stellar: {
+    slug: "stellar",
+    chain: "Stellar",
+    symbol: "XLM",
+    logo: "xlm.svg",
+    networks: {
+      mainnet: {
+        id: 0,
+        name: "Stellar Mainnet",
+        symbol: "XLM",
+        decimals: 6,
+        gasprice: "250000000",
+        explorer: "https://stellarchain.io",
+        rpcurl: "https://horizon.stellar.org",
+        wssurl: "",
+        tokens: {
+          usdc: {
+            contract:
+              "CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75",
+            name: "USDC",
+            symbol: "USDC",
+            decimals: 6,
+            logo: "usdc.svg",
+          },
+        },
+      },
+      testnet: {
+        id: 0,
+        name: "Stellar Testnet",
+        symbol: "XLM",
+        decimals: 6,
+        gasprice: "250000000",
+        explorer: "https://stellarchain.io",
+        rpcurl: "https://horizon-testnet.stellar.org",
+        wssurl: "",
+        tokens: {
+          usdc: {
+            contract:
+              "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+            name: "USDC",
+            symbol: "USDC",
+            decimals: 6,
+            logo: "usdc.svg",
+          },
+        },
+      },
+    },
+  },
+  xinfin: {
+    slug: "xinfin",
+    chain: "XinFin",
+    symbol: "XDC",
+    logo: "xdc.svg",
+    networks: {
+      mainnet: {
+        id: 50,
+        name: "XinFin Mainnet",
+        symbol: "XDC",
+        decimals: 18,
+        gasprice: "12500000000",
+        explorer: "https://explorer.xinfin.network",
+        rpcurl: "https://rpc.xinfin.network",
+        wssurl: "",
+      },
+      testnet: {
+        id: 51,
+        name: "XinFin Testnet",
+        symbol: "XDC",
+        decimals: 18,
+        gasprice: "12500000000",
+        explorer: "https://explorer.apothem.network",
+        rpcurl: "https://rpc.apothem.network",
+        wssurl: "",
+      },
+    },
+  },
+  xrpl: {
+    slug: "xrpl",
+    chain: "XRPL",
+    symbol: "XRP",
+    logo: "xrp.svg",
+    networks: {
+      mainnet: {
+        id: 0,
+        name: "XRP Mainnet",
+        symbol: "XRP",
+        decimals: 6,
+        gasprice: "250000000",
+        explorer: "https://etherscan.io",
+        rpcurl: "https://ethereum.publicnode.com",
+        wssurl: "",
+      },
+      testnet: {
+        id: 0,
+        name: "XRP Testnet",
+        symbol: "XRP",
+        decimals: 6,
+        gasprice: "250000000",
+        explorer: "https://goerli.etherscan.io",
+        rpcurl: "https://ethereum-goerli.publicnode.com",
+        wssurl: "",
+      },
+    },
+  },
+}
+
+export default chainConfiguration

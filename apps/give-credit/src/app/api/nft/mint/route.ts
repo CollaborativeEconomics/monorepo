@@ -183,6 +183,7 @@ export async function POST(request: Request) {
     console.log('META URI', uriMeta)
 
     // Mint NFT
+    // TODO: replace with info from configuration file
     const contractId = initiative.contractnft
     const resMint = await mint(contractId, donor, uriMeta)   //// <<<<<<<< FIX
     console.log('RESMINT', resMint)

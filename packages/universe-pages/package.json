@@ -20,18 +20,21 @@
     }
   },
   "dependencies": {
-    "@cfce/universe-components": "workspace:*"
+    "@cfce/universe-components": "workspace:*",
+    "@cfce/database": "workspace:*"
   },
   "devDependencies": {
     "@cfce/typescript-config": "workspace:*",
-    "typescript": "latest",
+    "@types/react": "^18.3.3",
     "next": "latest",
     "next-auth": "latest",
-    "next-themes": "latest"
+    "next-themes": "latest",
+    "typescript": "latest"
   },
   "peerDependencies": {
     "next": "latest",
     "next-auth": "latest",
-    "next-themes": "latest"
+    "next-themes": "latest",
+    "react": "^18.3.1"
   }
 }

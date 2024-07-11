@@ -3,7 +3,7 @@ import formidable, { PersistentFile } from 'formidable'
 import checkApiKey from "@/lib/checkApiKey"
 import { Story } from '@prisma/client'
 import { addStory, getStories } from '@cfce/database'
-import { createStory } from '@cfce/functions'
+import { createStory } from '@cfce/utils'
 
 // Configure API route to allow multipart form data
 export const config = {

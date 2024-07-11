@@ -1,9 +1,8 @@
 'use client'
 
 import * as React from 'react'
-
-import { cn } from '@/lib/shadCnUtil'
-import { Button } from '../../ui/button'
+import { cn } from '@/src/libs/shadCnUtil'
+import { Button } from '../ui/button'
 
 export interface ActionBarBoxProps
   extends React.HTMLAttributes<HTMLDivElement> {}

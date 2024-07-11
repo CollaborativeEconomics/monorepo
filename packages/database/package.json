@@ -15,10 +15,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.608.0",
     "@prisma/client": "^5.11.0",
-    "@vercel/blob": "^0.23.4",
-    "formidable": "^3.5.1",
-    "prisma": "^5.9.1",
-    "uuid": "^9.0.0"
+    "prisma": "^5.9.1"
   },
   "devDependencies": {
     "@types/formidable": "^3.4.5",

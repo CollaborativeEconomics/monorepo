@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/shadCnUtil'
+import { cn } from '@/src/libs/shadCnUtil'
+import { ReceiptStatus } from '@/src/types/common'
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
@@ -38,6 +39,10 @@ export interface ButtonProps
   asChild?: boolean
 }
 
+export interface ClaimButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+  status: string
+}
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
@@ -52,4 +57,67 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = 'Button'
 
-export { Button, buttonVariants }
+const ClaimButton = React.forwardRef<HTMLDivElement, ClaimButtonProps>(
+  ({ className, status, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('flex w-full justify-center pt-4', className)}
+      {...props}
+    >
+      {createClaimButton(status)}
+    </div>
+  )
+)
+ClaimButton.displayName = 'claim-button'
+
+function createClaimButton(status: string): React.JSX.Element {
+  //'minted' value should instead refer to enum type/property
+  let claimText = 'Claim'
+  switch(status){
+    case ReceiptStatus.claim:
+      claimText = 'Claim'
+      return (
+        <button
+          type="button"
+          className="inline-flex rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-sm font-semibold w-[200px]"
+        >
+          <p className="text-slate-200 text-center w-full">{claimText}</p>
+        </button>
+      )
+    case ReceiptStatus.minting:
+      claimText = 'Minting'
+      return (
+        <button
+          type="button"
+          className="inline-flex rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-sm font-semibold w-[200px] disabled:pointer-events-none disabled:opacity-50"
+          disabled={true}
+        >
+          <p className="text-white text-center w-full">{claimText}</p>
+        </button>
+      )
+    case ReceiptStatus.minted:
+      claimText = 'Minted'
+      return (
+        <button
+          type="button"
+          className="inline-flex rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-sm font-semibold w-[200px] disabled:pointer-events-none disabled:opacity-50"
+          disabled={true}
+        >
+          <p className="text-white text-center w-full">{claimText}</p>
+        </button>
+      )
+    default:
+      claimText = 'Pending'
+      return (
+        <button
+          type="button"
+          className="inline-flex rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold w-[200px] disabled:pointer-events-none disabled:opacity-50"
+          disabled={true}
+        >
+          <p className="text-slate-200 text-center w-full">{claimText}</p>
+        </button>
+      )
+  }
+}
+
+export { Button, ClaimButton, buttonVariants }

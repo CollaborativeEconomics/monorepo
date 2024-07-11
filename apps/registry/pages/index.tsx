@@ -22,7 +22,7 @@ export default function Home() {
         {/* <Button text='Login with Metamask' onClick={()=>login()} /> */}
       </main>
       <footer className={styles.footer}>
-        CFCE 2023 &copy; All rights reserved 
+        CFCE 2024 &copy; All rights reserved 
       </footer>
     </Page>
   );

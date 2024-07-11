@@ -1,22 +1,22 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 // import { Check, ChevronsUpDown } from 'lucide-react';
 
-import { cn } from '@/lib/shadCnUtil';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/src/libs/shadCnUtil';
+import { Button } from '@/src/components/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
+  CommandList,
   CommandInput,
   CommandItem,
-} from '@/components/ui/command';
+} from '@/src/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from '@/src/components/ui/popover';
 import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 
 export default function LocationSelect(props:any) {
@@ -57,18 +57,13 @@ export default function LocationSelect(props:any) {
               <CommandItem
                 key={item}
                 onSelect={currentValue => {
-                  console.log('LOC', currentValue, 'OLD', value)
+                  console.log('LOC', currentValue, 'OLD', value||'?')
                   setValue(item);
                   onChange(currentValue);
                   setOpen(false);
                 }}
               >
-                <CheckCircledIcon
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    value === item ? 'opacity-100' : 'opacity-0',
-                  )}
-                />
+                <CheckCircledIcon className={cn('mr-2 h-4 w-4', value === item ? 'opacity-100' : 'opacity-0')} />
                 {item}
               </CommandItem>
             ))}

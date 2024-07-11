@@ -1,4 +1,4 @@
-import ChainInstance, { Chain, ChainSymbol } from "../ChainInstance";
+import ChainBaseClass, { Chain, ChainSymbol } from "../ChainBaseClass";
 
 export const mainnetConfig = {
   id: {MAINNET_BLOCKCHAIN_ID},
@@ -22,7 +22,7 @@ export const testnetConfig = {
   wssurl: ''
 };
 
-class Blockchain extends ChainInstance {
+class Blockchain extends ChainBaseClass {
   chain: Chain = 'Blockchain';
   symbol: ChainSymbol = '{BLOCKCHAIN_SYMBOL}';
   logo = '{BLOCKCHAIN_LOGO_URL}';

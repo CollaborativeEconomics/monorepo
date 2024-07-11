@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { unstable_getServerSession } from 'next-auth'
-import prismaClient from 'prisma/client'
 
 import { authOptions } from 'pages/api/auth/[...nextauth]'
+import { prismaClient } from '@cfce/database'
 
 export async function getServerSideProps(context) {
   // @ts-ignore
@@ -24,7 +24,7 @@ export async function getServerSideProps(context) {
     }
   }
 
-  const { api_key } = await prismaClient.User.findFirst()
+  const { api_key } = await prismaClient.user.findFirst()
   console.log({ api_key, session })
 
   return { props: { session, api_key } }

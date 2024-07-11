@@ -1,4 +1,5 @@
 {
+  "extends": ["//"],
   "globalEnv": [
     "DATABASE_URL",
     "IPFS_GATEWAY_URL",

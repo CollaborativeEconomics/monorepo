@@ -5,8 +5,8 @@ import { useTheme } from 'next-themes'
 export default function VideoBackground() {
   const { theme, ...stuff } = useTheme()
   //console.log({ theme, stuff })
-  const darkVideoSource = '/video/WatercolorEarthDarkV2.mp4'
-  const lightVideoSource = '/video/WatercolorEarthV2.mp4'
+  const darkVideoSource = '/video/WatercolorEarthV1Inverse.mp4'
+  const lightVideoSource = '/video/WatercolorEarthV1.mp4'
   return (
     <video
       src={theme === 'dark' ? darkVideoSource : lightVideoSource}

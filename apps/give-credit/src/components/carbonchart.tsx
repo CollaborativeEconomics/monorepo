@@ -1,5 +1,3 @@
-import timeAgo from '@/src/utils/timeago'
-
 interface ChartType {
   title?: string
   goal?: number

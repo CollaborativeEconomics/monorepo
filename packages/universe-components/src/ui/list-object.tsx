@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { cn } from "@/lib/shadCnUtil"
+import { cn } from "@/src/libs/shadCnUtil"
 import { LucideIcon } from "lucide-react"
 
 export interface ListObjectProps

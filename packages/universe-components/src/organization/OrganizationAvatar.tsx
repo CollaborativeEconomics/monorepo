@@ -1,4 +1,5 @@
-import { cn } from '@/lib/shadCnUtil'
+import React from 'react'
+import { cn } from '@/src/libs/shadCnUtil'
 import {
   Avatar,
   AvatarFallback,
@@ -6,13 +7,12 @@ import {
   AvatarProps,
   AvatarTitle,
 } from '../ui/avatar'
-import React from 'react'
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
   organizationId?: string // eventually required
-  name?: string
-  image?: string
+  name: string
+  image: string
   avatarProps?: AvatarProps
 }
 
@@ -31,7 +31,7 @@ const OrganizationAvatar = React.forwardRef<HTMLDivElement, Props>(
           <AvatarImage src={image} alt={name} />
           <AvatarFallback>OT</AvatarFallback>
         </Avatar>
-        <AvatarTitle size={avatarProps?.size} title={name ?? 'no name'} />
+        <AvatarTitle size={avatarProps?.size} title={name ?? 'no name'} className={className}/>
       </div>
     )
   }

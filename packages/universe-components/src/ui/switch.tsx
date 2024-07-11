@@ -1,5 +1,5 @@
-import { cn } from '@/lib/shadCnUtil'
 import React from 'react'
+import { cn } from '@/src/libs/shadCnUtil'
 import { InputProps } from './input'
 
 export interface SwitchProps extends InputProps {

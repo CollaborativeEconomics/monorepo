@@ -1,35 +1,49 @@
 // https://tailwindcomponents.com/component/share-modal
 
-'use client'
-import Link from "next/link"
-import { useEffect, useState } from 'react'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Share as IconShare, Facebook, Instagram, Twitter, Send as Telegram, MessageCircle as Whatsapp } from 'lucide-react'
-import copy from 'clipboard-copy'
+'use client';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import {
+  Share as IconShare,
+  Facebook,
+  Instagram,
+  Twitter,
+  Send as Telegram,
+  MessageCircle as Whatsapp,
+} from 'lucide-react';
+import copy from 'clipboard-copy';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 export default function ShareModal() {
-  const url = typeof window !== "undefined" ? window.location.href : 'https://giving-universe.org'
-  const shareFacebook  = 'https://web.facebook.com/sharer.php?u='+url
-  const shareTwitter   = 'https://twitter.com/intent/tweet?text=GivingUniverse&url='+url
-  const shareInstagram = 'https://www.instagram.com/?url='+url
-  const shareWhatsapp  = 'https://wa.me/?text='+url
-  const shareTelegram  = 'https://telegram.me/share/url?text=GivingUniverse&url='+url
+  const url =
+    typeof window !== 'undefined'
+      ? window.location.href
+      : 'https://giving-universe.org';
+  const shareFacebook = 'https://web.facebook.com/sharer.php?u=' + url;
+  const shareTwitter =
+    'https://twitter.com/intent/tweet?text=GivingUniverse&url=' + url;
+  const shareInstagram = 'https://www.instagram.com/?url=' + url;
+  const shareWhatsapp = 'https://wa.me/?text=' + url;
+  const shareTelegram =
+    'https://telegram.me/share/url?text=GivingUniverse&url=' + url;
 
-  const [open, setOpen] = useState(false)
-  const [button, setButton] = useState('COPY')
+  const [open, setOpen] = useState(false);
+  const [button, setButton] = useState('COPY');
 
-  function copyToClipboard(url:string) {
+  function copyToClipboard(url: string) {
     copy(url).then(() => {
-      console.log('COPIED')
-      setButton('COPIED')
-    })
+      console.log('COPIED');
+      setButton('COPIED');
+    });
   }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="flex Button text-slate-500"><span className="mr-2">Share</span><IconShare /></button>
+        <button className="flex Button text-slate-500">
+          <span className="mr-2">Share</span>
+          <IconShare />
+        </button>
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex items-center justify-center">
@@ -71,13 +85,27 @@ export default function ShareModal() {
               {/* COPY */}
               <p className="text-sm">Or copy link</p>
               <div className="flex flex-col justify-between items-center mt-4 py-0">
-                <input id="copyurl" className="w-full outline-none border-0 bg-transparent text-sm" type="text" placeholder="link" value={url} readOnly />
-                <button className="bg-indigo-500 text-white rounded text-sm py-2 px-5 mt-2 hover:bg-indigo-600" onClick={(evt)=>{copyToClipboard(url)}}>{button}</button>
+                <input
+                  id="copyurl"
+                  className="w-full outline-none border-0 bg-transparent text-sm"
+                  type="text"
+                  placeholder="link"
+                  value={url}
+                  readOnly
+                />
+                <button
+                  className="bg-indigo-500 text-white rounded text-sm py-2 px-5 mt-2 hover:bg-indigo-600"
+                  onClick={evt => {
+                    copyToClipboard(url);
+                  }}
+                >
+                  {button}
+                </button>
               </div>
             </div>
           </div>
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

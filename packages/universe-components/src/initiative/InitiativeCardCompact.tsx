@@ -1,10 +1,10 @@
 import Image from 'next/image'
-import { Card, CardContent } from '../ui/card.js'
-import { Progress } from '../ui/progress.js'
-import { Separator } from '../ui/separator.js'
-import { DateDisplay } from '../ui/date-posted.js'
-import { Button } from '../ui/button.js'
-import OrganizationAvatar from '../organization/OrganizationAvatar.js'
+import { Card, CardContent } from '../ui/card'
+import { Progress } from '../ui/progress'
+import { Separator } from '../ui/separator'
+import { DateDisplay } from '../ui/date-posted'
+import { Button } from '../ui/button'
+import OrganizationAvatar from '../organization/OrganizationAvatar'
 
 export default function InitiativeCardCompact({ ...props }) {
   return (

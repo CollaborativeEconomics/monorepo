@@ -3,7 +3,7 @@
 import * as React from 'react'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 
-import { cn } from '@/lib/shadCnUtil'
+import { cn } from '@/src/libs/shadCnUtil'
 import { VariantProps, cva } from 'class-variance-authority'
 
 const avatarImageVariants = cva(

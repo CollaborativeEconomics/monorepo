@@ -1,4 +1,4 @@
-import ChainInstance, { Chain, ChainSymbol } from "../ChainInstance";
+import ChainBaseClass, { Chain, ChainSymbol } from "../ChainBaseClass";
 
 export const mainnetConfig = {
   id: 137,
@@ -22,7 +22,7 @@ export const testnetConfig = {
   wssurl: "",
 };
 
-class Polygon extends ChainInstance {
+class Polygon extends ChainBaseClass {
   chain: Chain = "Polygon";
   symbol: ChainSymbol = "MATIC";
   logo = "matic.svg";

@@ -23,5 +23,4 @@ class AvalancheServer extends EthereumServerMixin(Avalanche) {
   }
 }
 
-const AvalancheServerInstance = new AvalancheServer();
-export default AvalancheServerInstance;
+export default AvalancheServer;

@@ -3,7 +3,7 @@
 import * as React from 'react'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import { Check } from 'lucide-react'
-import { cn } from '@/lib/shadCnUtil'
+import { cn } from '@/src/libs/shadCnUtil'
 import { InputProps } from './input'
 import { Label } from './label'
 
@@ -17,11 +17,11 @@ const Checkbox = React.forwardRef<
 >(({ id, className, ...props }, ref) => (
   <CheckboxPrimitive.Root
     id={id}
+    ref={ref}
     className={cn(
       'peer h-4 w-4 shrink-0 rounded-[2px] border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
       className
     )}
-    ref={ref}
     {...props}
   >
     <CheckboxPrimitive.Indicator
@@ -42,12 +42,12 @@ const CheckboxWithText = React.forwardRef<
   return (
     <div
       className={cn('flex flex-row align-middle gap-2', className)}
+      ref={ref}
       {...props}
-      ref={ref} 
     >
       <label className="flex flex-row gap-3">
         <Checkbox id={id} />
-        <Label>{text}</Label>
+        <Label htmlFor={id}>{text}</Label>
       </label>
     </div>
   )

@@ -8,8 +8,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
+    "@biomejs/biome": "1.8.3",
     "@cfce/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
     "prettier": "^3.2.5",
     "turbo": "latest"
   },

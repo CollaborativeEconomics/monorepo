@@ -1,8 +1,6 @@
 'use client'
-
 import * as React from 'react'
-
-import { cn } from '@/lib/shadCnUtil'
+import { cn } from '@/src/libs/shadCnUtil'
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}

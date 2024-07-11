@@ -1,9 +1,5 @@
 import { Prisma, Story } from "@prisma/client"
-import { put } from "@vercel/blob"
-import { File } from "formidable"
 import { prismaClient } from "index"
-import uploadDataToIPFS from "ipfs/uploadDataToIPFS"
-import uploadFileToIPFS from "ipfs/uploadFileToIPFS"
 import { ListQuery } from "types"
 
 interface StoryQuery extends ListQuery {

@@ -200,5 +200,4 @@ class XrplServer extends Xrpl {
   */
 }
 
-const XrplServerInstance = new XrplServer();
-export default XrplServerInstance;
+export default XrplServer;

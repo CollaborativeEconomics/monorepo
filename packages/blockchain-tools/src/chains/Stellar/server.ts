@@ -1,4 +1,4 @@
-import { Contract, Networks } from "../../contracts/nft721";
+import { Contract, Networks } from "../../contracts/soroban/nft721";
 import Stellar, { StellarNetworks } from "./common";
 
 class StellarServer extends Stellar {

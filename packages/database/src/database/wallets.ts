@@ -33,7 +33,7 @@ export async function getWallets(query: WalletQuery): Promise<Wallet | Array<Wal
   return data
 }
 
-export async function newWallet(data: Wallet): Promise<Wallet> {
+export async function newWallet(data: Wallet): Promise<Omit<Wallet, 'id'>> {
   let result = await prismaClient.wallet.create({ data })
   return result
 }

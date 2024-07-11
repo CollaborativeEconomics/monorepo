@@ -1,6 +1,6 @@
 {
   "name": "@cfce/blockchain-tools",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Common tools for interacting with diverse blockchains. Used in the CFCE ecosystem.",
   "main": "dist/index.js",
   "scripts": {
@@ -37,6 +37,8 @@
     "@stellar/stellar-sdk": "^11.3.0",
     "@types/lodash": "^4.17.0",
     "lodash": "^4.17.21",
+    "starknet": "^6.11.0",
+    "uuid": "^9.0.0",
     "web3": "^4.6.0",
     "xrpl": "^3.0.0",
     "xumm": "^1.7.7",

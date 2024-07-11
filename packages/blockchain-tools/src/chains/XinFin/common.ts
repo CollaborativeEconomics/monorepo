@@ -1,4 +1,4 @@
-import ChainInstance, { Chain, ChainSymbol } from "../ChainInstance";
+import ChainBaseClass, { Chain, ChainSymbol } from "../ChainBaseClass";
 
 export const mainnetConfig = {
   id: 50,
@@ -22,7 +22,7 @@ export const testnetConfig = {
   wssurl: "",
 };
 
-class XinFin extends ChainInstance {
+class XinFin extends ChainBaseClass {
   chain: Chain = "XinFin";
   symbol: ChainSymbol = "XDC";
   logo = "xdc.svg";

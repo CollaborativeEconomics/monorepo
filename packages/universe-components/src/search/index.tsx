@@ -1,3 +1,4 @@
 import CategorySelect from './CategorySelect';
+import LocationSelect from './LocationSelect';
 
-export { CategorySelect };
+export { CategorySelect, LocationSelect };
