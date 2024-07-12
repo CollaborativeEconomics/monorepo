@@ -1,65 +1,14 @@
-import { NetworkProvider } from "@/types/networkProvider";
-import { Web3 } from "web3";
-
-export const chains = {
-  AVAX: "Avalanche",
-  ARB: "Arbitrum",
-  BASE: "Base",
-  BNB: "Binance",
-  CELO: "Celo",
-  EOS: "EOS",
-  ETH: "Ethereum",
-  USDC: "EthereumUSDC",
-  USDT: "EthereumUSDT",
-  FIL: "Filecoin",
-  FLR: "Flare",
-  OP: "Optimism",
-  MATIC: "Polygon",
-  PGN: "PublicGoods",
-  STRK: "Starknet",
-  XLM: "Stellar",
-  XRP: "XRPL",
-  XDC: "XinFin",
-} as const;
-const chainConfiguration = [
-  {
-    chain: 'Arbitrum',
-    symbol: 'ARB',
-    logo: 'arb.svg',
-    networks: {
-      mainnet: {
-        id: 42161,
-        name: "Arbitrum Mainnet",
-        symbol: "ARB",
-        decimals: 18,
-        gasprice: "250000000",
-        explorer: "https://arbiscan.io",
-        rpcurl: "https://arb1.arbitrum.io/rpc",
-        wssurl: "",
-      },
-      testnet: {
-        id: 421614,
-        name: "Arbitrum Testnet",
-        symbol: "ARB",
-        decimals: 18,
-        gasprice: "250000000",
-        explorer: "https://sepolia.arbiscan.io",
-        rpcurl: "https://sepolia-rollup.arbitrum.io/rpc",
-        wssurl: "",
-      }
-    }
-  },
-]
-export type Chain = (typeof chains)[keyof typeof chains];
-export type ChainSymbol = keyof typeof chains;
+import { ChainNames, NetworkConfig, TokenTickerSymbol } from "./chainConfig"
+import { NetworkProvider } from "@/types/networkProvider"
+import { Web3 } from "web3"
 
 export default abstract class ChainBaseClass {
   // config
-  public abstract chain: Chain;
-  public abstract symbol: ChainSymbol;
-  public abstract logo: string;
-  public network: "mainnet" | "testnet" | string = "mainnet";
-  public provider: NetworkProvider = {
+  public abstract chain: ChainNames
+  public abstract symbol: ChainSymbol
+  public abstract logo: string
+  public network: "mainnet" | "testnet" | string = "mainnet"
+  public activeNetwork: NetworkConfig = {
     id: 0,
     name: "",
     symbol: "",
@@ -68,36 +17,34 @@ export default abstract class ChainBaseClass {
     explorer: "",
     rpcurl: "",
     wssurl: "",
-  };
-  public abstract mainnet: NetworkProvider;
-  public abstract testnet: NetworkProvider;
-  public wallet: any = null; // TODO: enumerate wallet classes, then type this
+  }
+  public abstract mainnet: NetworkConfig
+  public abstract testnet: NetworkConfig
+  // may not need this \/
+  // public wallet: any = null // TODO: enumerate wallet classes, then type this
 
   // isometric functions, must be defined on all subclasses
-  public abstract getTransactionInfo(txid: string): unknown;
-  public abstract fetchLedger(method: unknown, params: unknown): unknown;
+  public abstract getTransactionInfo(txid: string): unknown
+  public abstract fetchLedger(method: unknown, params: unknown): unknown
 
   // client functions, only defined on client subclasses
-  public connect?(callback: (data: unknown) => void): void { }
-  public sendPayment?(
+  public connect?(callback: (data: unknown) => void): void {}
+  public async sendPayment?(
     address: string,
     amount: number,
     destinTag: string,
-    callback: (status: unknown) => void,
-  ): void { }
+  ): Promise<void> {}
   public async sendToken?(
     address: string,
     amount: number,
-    token: string,
-    contract: string,
+    token: TokenTickerSymbol,
     destinTag: string,
-    callback: any,
-  ): Promise<void> { }
+  ): Promise<void> {}
 
   // server functions, only defined on server subclasses
-  public web3?: Web3;
-  walletSeed?: string; // For minting NFTs and such
-  contract?: string; // For minting NFTs and such
+  public web3?: Web3
+  walletSeed?: string // For minting NFTs and such
+  contract?: string // For minting NFTs and such
   public async mintNFT?(
     uri: string,
     donor: string,
@@ -105,7 +52,7 @@ export default abstract class ChainBaseClass {
     transfer: boolean,
     contract: string,
   ): Promise<unknown> {
-    return null;
+    return null
   }
   public async mintNFT1155?(
     address: string,
@@ -113,42 +60,42 @@ export default abstract class ChainBaseClass {
     uri: string,
     contract: string,
   ): Promise<unknown> {
-    return null;
+    return null
   }
   public async createSellOffer?(
     tokenId: string,
     destinationAddress: string,
     offerExpirationDate?: string,
   ): Promise<unknown> {
-    return null;
+    return null
   }
 
   // utility functions
   fromBaseUnit(amount: number): number {
-    const wei = 10 ** this.provider.decimals;
-    return amount / wei;
+    const wei = 10 ** this.activeNetwork.decimals
+    return amount / wei
   }
 
   toBaseUnit(amount: number): number {
-    const wei = 10 ** this.provider.decimals;
-    return amount * wei;
+    const wei = 10 ** this.activeNetwork.decimals
+    return amount * wei
   }
 
   toHex(str: string) {
-    return "0x" + parseInt(str).toString(16);
+    return `0x${Number.parseInt(str).toString(16)}`
   }
 
   strToHex(str: string) {
     if (!str) {
-      return "";
+      return ""
     }
-    return "0x" + Buffer.from(str.toString(), "utf8").toString("hex");
+    return `0x${Buffer.from(str.toString(), "utf8").toString("hex")}`
   }
 
   hexToStr(hex: string, encoding: BufferEncoding = "utf8") {
     if (!hex) {
-      return "";
+      return ""
     }
-    return Buffer.from(hex.substr(2), "hex").toString(encoding);
+    return Buffer.from(hex.substr(2), "hex").toString(encoding)
   }
 }
