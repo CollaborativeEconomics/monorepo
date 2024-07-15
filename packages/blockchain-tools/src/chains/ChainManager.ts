@@ -5,7 +5,7 @@ type ChainClasses<ClientClass, ServerClass> = {
   server: ServerClass
 }
 
-class BlockchainManager {
+export default class BlockchainManager {
   private static instance: BlockchainManager
 
   public arbitrum?: ChainClasses<MetaMaskWallet, ArbitrumServer>

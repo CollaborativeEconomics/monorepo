@@ -1,27 +1,21 @@
-import { ChainNames, NetworkConfig, TokenTickerSymbol } from "./chainConfig"
-import { NetworkProvider } from "@/types/networkProvider"
-import { Web3 } from "web3"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+  TokenTickerSymbol,
+} from "./chainConfig"
+import type { Web3 } from "web3"
+import chainConfiguration from "./chainConfig"
 
 export default abstract class ChainBaseClass {
-  // config
-  public abstract chain: ChainNames
-  public abstract symbol: ChainSymbol
-  public abstract logo: string
-  public network: "mainnet" | "testnet" | string = "mainnet"
-  public activeNetwork: NetworkConfig = {
-    id: 0,
-    name: "",
-    symbol: "",
-    decimals: 0,
-    gasprice: "",
-    explorer: "",
-    rpcurl: "",
-    wssurl: "",
+  public chain: ChainConfig
+  public network: NetworkConfig
+
+  constructor(chainSlug: ChainSlugs, network: Network) {
+    this.chain = chainConfiguration[chainSlug]
+    this.network = chainConfiguration[chainSlug].networks[network]
   }
-  public abstract mainnet: NetworkConfig
-  public abstract testnet: NetworkConfig
-  // may not need this \/
-  // public wallet: any = null // TODO: enumerate wallet classes, then type this
 
   // isometric functions, must be defined on all subclasses
   public abstract getTransactionInfo(txid: string): unknown
@@ -72,12 +66,12 @@ export default abstract class ChainBaseClass {
 
   // utility functions
   fromBaseUnit(amount: number): number {
-    const wei = 10 ** this.activeNetwork.decimals
+    const wei = 10 ** this.network.decimals
     return amount / wei
   }
 
   toBaseUnit(amount: number): number {
-    const wei = 10 ** this.activeNetwork.decimals
+    const wei = 10 ** this.network.decimals
     return amount * wei
   }
 

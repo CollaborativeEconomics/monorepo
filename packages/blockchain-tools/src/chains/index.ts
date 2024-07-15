@@ -1,14 +1,3 @@
-export * as arbitrum  from './Arbitrum';
-export * as avalanche from './Avalanche';
-export * as binance   from './Binance';
-export * as base      from './Base';
-export * as celo      from './Celo';
-export * as eos       from './Eos';
-export * as ethereum  from './Ethereum';
-export * as filecoin  from './Filecoin';
-export * as flare     from './Flare';
-export * as optimism  from './Optimism';
-export * as polygon   from './Polygon';
-export * as stellar   from './Stellar';
-export * as xinfin    from './XinFin';
-export * as xrpl      from './Xrpl';
+export { default as ChainBaseClass } from "./ChainBaseClass"
+export { default as ChainManager } from "./ChainManager"
+export { default as ChainConfig } from "./chainConfig"

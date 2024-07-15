@@ -1,6 +1,6 @@
 {
   "name": "@cfce/blockchain-tools",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Common tools for interacting with diverse blockchains. Used in the CFCE ecosystem.",
   "main": "dist/index.js",
   "scripts": {
@@ -33,6 +33,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
+    "@metamask/providers": "^17.1.1",
     "@stellar/freighter-api": "^2.0.0",
     "@stellar/stellar-sdk": "^11.3.0",
     "@types/lodash": "^4.17.0",

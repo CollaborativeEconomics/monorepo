@@ -36,6 +36,7 @@ export const ChainNames = [
 ] as const
 export type ChainNames = (typeof ChainNames)[number]
 
+export type Network = "mainnet" | "testnet" | "horizon" | string
 export interface NetworkConfig {
   id: number
   name: string
@@ -84,7 +85,7 @@ export interface ChainConfig {
   chain: ChainNames
   symbol: TokenTickerSymbol
   logo: string
-  networks: Record<"mainnet" | "testnet" | string, NetworkConfig>
+  networks: Record<Network, NetworkConfig>
 }
 
 export type Chains = Record<ChainSlugs, ChainConfig>

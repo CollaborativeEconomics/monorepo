@@ -1,18 +1,6 @@
 import ChainBaseClass from "@/chains/ChainBaseClass"
 
-class Ethereum extends ChainBaseClass {
-  chain: Chain = "Ethereum"
-  symbol: ChainSymbol = "ETH"
-  logo = "eth.svg"
-  mainnet = mainnetConfig
-  testnet = testnetConfig
-
-  constructor({ network } = { network: "mainnet" }) {
-    super()
-    this.network = network
-    this.provider = network === "mainnet" ? this.mainnet : this.testnet
-  }
-
+export default class Web3Server extends ChainBaseClass {
   async getTransactionInfo(txid: string): Promise<unknown> {
     try {
       console.log("Get tx info by txid", txid)
@@ -27,16 +15,16 @@ class Ethereum extends ChainBaseClass {
   }
 
   async fetchLedger(method: string, params: unknown) {
-    let data = { id: "1", jsonrpc: "2.0", method, params }
-    let body = JSON.stringify(data)
-    let opt = {
+    const data = { id: "1", jsonrpc: "2.0", method, params }
+    const body = JSON.stringify(data)
+    const opt = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body,
     }
     try {
-      let res = await fetch(this.provider.rpcurl, opt)
-      let inf = await res.json()
+      const res = await fetch(this.network.rpcurl, opt)
+      const inf = await res.json()
       return inf?.result
     } catch (ex: any) {
       console.error(ex)
@@ -44,5 +32,3 @@ class Ethereum extends ChainBaseClass {
     }
   }
 }
-
-export default Ethereum
