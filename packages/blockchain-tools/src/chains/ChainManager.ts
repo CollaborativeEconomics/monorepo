@@ -1,4 +1,6 @@
 import { FreighterWallet, MetaMaskWallet } from "@/interfaces"
+import { ChainConfig } from "./chainConfig"
+import Web3Server from "@/interfaces/web3"
 
 type ChainClasses<ClientClass, ServerClass> = {
   client: ClientClass
@@ -8,20 +10,20 @@ type ChainClasses<ClientClass, ServerClass> = {
 export default class BlockchainManager {
   private static instance: BlockchainManager
 
-  public arbitrum?: ChainClasses<MetaMaskWallet, ArbitrumServer>
-  public avalanche?: ChainClasses<MetaMaskWallet, AvalancheServer>
-  public base?: ChainClasses<MetaMaskWallet, BaseServer>
-  public binance?: ChainClasses<MetaMaskWallet, BinanceServer>
-  public celo?: ChainClasses<MetaMaskWallet, CeloServer>
-  public eos?: ChainClasses<MetaMaskWallet, EosServer>
-  public ethereum?: ChainClasses<MetaMaskWallet, EthereumServer>
-  public filecoin?: ChainClasses<MetaMaskWallet, FilecoinServer>
-  public flare?: ChainClasses<MetaMaskWallet, FlareServer>
-  public optimism?: ChainClasses<MetaMaskWallet, OptimismServer>
-  public polygon?: ChainClasses<MetaMaskWallet, PolygonServer>
-  public starknet?: ChainClasses<MetaMaskWallet, StarknetServer>
+  public arbitrum?: ChainClasses<MetaMaskWallet, Web3Server>
+  public avalanche?: ChainClasses<MetaMaskWallet, Web3Server>
+  public base?: ChainClasses<MetaMaskWallet, Web3Server>
+  public binance?: ChainClasses<MetaMaskWallet, Web3Server>
+  public celo?: ChainClasses<MetaMaskWallet, Web3Server>
+  public eos?: ChainClasses<MetaMaskWallet, Web3Server>
+  public ethereum?: ChainClasses<MetaMaskWallet, Web3Server>
+  public filecoin?: ChainClasses<MetaMaskWallet, Web3Server>
+  public flare?: ChainClasses<MetaMaskWallet, Web3Server>
+  public optimism?: ChainClasses<MetaMaskWallet, Web3Server>
+  public polygon?: ChainClasses<MetaMaskWallet, Web3Server>
+  public starknet?: ChainClasses<MetaMaskWallet, Web3Server>
   public stellar?: ChainClasses<FreighterWallet, StellarServer>
-  public xinfin?: ChainClasses<MetaMaskWallet, XinFinServer>
+  public xinfin?: ChainClasses<MetaMaskWallet, Web3Server>
   public xrpl?: ChainClasses<XrplClient, XrplServer>
 
   private constructor(config: Chains) {

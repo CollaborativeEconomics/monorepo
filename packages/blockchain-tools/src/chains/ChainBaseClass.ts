@@ -18,51 +18,58 @@ export default abstract class ChainBaseClass {
   }
 
   // isometric functions, must be defined on all subclasses
-  public abstract getTransactionInfo(txid: string): unknown
+  public abstract getTransactionInfo(txId: string): unknown
   public abstract fetchLedger(method: unknown, params: unknown): unknown
 
   // client functions, only defined on client subclasses
-  public connect?(callback: (data: unknown) => void): void {}
-  public async sendPayment?(
-    address: string,
-    amount: number,
-    destinTag: string,
-  ): Promise<void> {}
-  public async sendToken?(
-    address: string,
-    amount: number,
-    token: TokenTickerSymbol,
-    destinTag: string,
-  ): Promise<void> {}
+  public connect?(): Promise<unknown>
+  public async sendPayment?(params: {
+    address: string
+    amount: number
+    destinTag: string
+    walletSeed?: string
+  }): Promise<{ success: boolean; error?: string }>
+  public async sendToken?(params: {
+    address: string
+    amount: number
+    token: TokenTickerSymbol
+    destinTag: string
+    walletSeed?: string
+  }): Promise<{ success: boolean; error?: string }>
 
   // server functions, only defined on server subclasses
   public web3?: Web3
-  walletSeed?: string // For minting NFTs and such
-  contract?: string // For minting NFTs and such
-  public async mintNFT?(
-    uri: string,
-    donor: string,
-    taxon: number,
-    transfer: boolean,
-    contract: string,
-  ): Promise<unknown> {
-    return null
-  }
-  public async mintNFT1155?(
-    address: string,
-    tokenId: string,
-    uri: string,
-    contract: string,
-  ): Promise<unknown> {
-    return null
-  }
-  public async createSellOffer?(
-    tokenId: string,
-    destinationAddress: string,
-    offerExpirationDate?: string,
-  ): Promise<unknown> {
-    return null
-  }
+  public async mintNFT?(params: {
+    address: string
+    uri: string
+    taxon?: number
+    transfer?: boolean
+    contractId: string
+    walletSeed: string
+  }): Promise<{
+    success: boolean
+    txId?: string
+    tokenId?: string
+    error?: string
+  }>
+  public async mintNFT1155?(params: {
+    address: string
+    tokenId: string
+    uri: string
+    contractId: string
+    walletSeed: string
+  }): Promise<{
+    success: boolean
+    txId?: string
+    tokenId?: string
+    error?: string
+  }>
+  // XRPL only?
+  public async createSellOffer?(params: {
+    tokenId: string
+    destinationAddress: string
+    offerExpirationDate?: string
+  }): Promise<{ success: boolean; offerId?: string; error?: string }>
 
   // utility functions
   fromBaseUnit(amount: number): number {

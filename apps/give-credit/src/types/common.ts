@@ -5,8 +5,6 @@ export interface WalletProvider {
   decimals: number
   gasprice: string
   explorer: string
-  rpcurl: string
+  rpcUrl: string
   wssurl?: string
 }
-
-
