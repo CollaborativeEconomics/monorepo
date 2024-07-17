@@ -1,11 +1,23 @@
-import FreighterWallet from './freighter';
-import MetaMaskWallet from './metamask';
-// import XummClient from './xummclient';
-// import XummServer from './xummserver';
+import FreighterWallet from "./FreighterClient"
+import MetaMaskWallet from "./MetamaskClient"
+import XummClient from "./XummClient"
+import XrplServer from "./XrplServer"
+import StellarServer from "./StellarServer"
+import Web3Server from "./Web3Server"
+
+export type Interfaces =
+  | "freighter"
+  | "metamask"
+  | "xumm"
+  | "xrpl"
+  | "web3"
+  | "stellar"
 
 export {
   FreighterWallet,
   MetaMaskWallet,
-  // XummClient,
-  // XummServer
-};
+  XummClient,
+  XrplServer,
+  StellarServer,
+  Web3Server,
+}

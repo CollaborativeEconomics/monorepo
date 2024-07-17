@@ -1,30 +1,38 @@
 // Mints NFT and returns tokenId
 //   metauri: uri to metadata
-import { Address }  from "@stellar/stellar-sdk"
-import { networks } from '@/src/contracts/networks'
-import { submit }   from '@/src/contracts/nft721/server'
+import { Address } from "@stellar/stellar-sdk"
+import { networks } from "@/src/contracts/networks"
+import { submit } from "@/src/contracts/nft721/server"
 
-export default async function mint(contractId:string, to:string, uri:string){
-  console.log('-- Minting...')
-  console.log('TO', to)
-  console.log('URI', uri)
+export default async function mint(
+  contractId: string,
+  to: string,
+  uri: string,
+) {
+  console.log("-- Minting...")
+  console.log("TO", to)
+  console.log("URI", uri)
   try {
-    const nettype = process.env.NEXT_PUBLIC_STELLAR_NETWORK||''
+    const nettype = process.env.NEXT_PUBLIC_STELLAR_NETWORK || ""
     // @ts-ignore: I hate this
-    const network = nettype=='mainnet' ? networks?.mainnet : networks?.testnet
-    console.log('NET', network)
-    const secret  = process.env.CFCE_MINTER_WALLET_SECRET||''
-    const method  = 'mint'
-    const args    = [new Address(to).toScVal()] // use nativeToScVal for other values
-    const result  = await submit(network, secret, contractId, method, args)
+    const network =
+      nettype === "mainnet" ? networks?.mainnet : networks?.testnet
+    console.log("NET", network)
+    const secret = process.env.CFCE_MINTER_WALLET_SECRET || ""
+    const method = "mint"
+    const args = [new Address(to).toScVal()] // use nativeToScVal for other values
+    const result = await submit(network, secret, contractId, method, args)
     //console.log('RES', result)
-    console.log('OK?', result?.success)
-    console.log('TOKENID', result?.tokenId)
+    console.log("OK?", result?.success)
+    console.log("TOKENID", result?.tokenId)
     //console.log('RESULT', result?.result)
     return result
-  } catch(ex:any) {
+  } catch (ex) {
     console.error(ex)
-    return {success:false, error:ex.message||'Error minting NFT', tokenId:''}
+    if (ex instanceof Error) {
+      return { success: false, error: ex.message }
+    }
+    return { success: false, error: "Error minting NFT" }
   }
 }
 
@@ -169,7 +177,5 @@ async function mintSoroban(account:string, metauri: string) {
   return raw;
 }
 */
-
-
 
 // END
