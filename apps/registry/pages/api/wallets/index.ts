@@ -3,7 +3,7 @@ import checkApiKey from "lib/checkApiKey"
 
 export default async function handler(req, res) {
   const { method, headers, query, body } = req
-  const authorized = await checkApiKey(headers['x-api-key'])
+  const authorized = await checkApiKey(headers["x-api-key"])
   if (!authorized) {
     return res.status(403).json({ success: false })
   }
@@ -19,12 +19,12 @@ export default async function handler(req, res) {
       break
     case "POST":
       try {
-        let { address, chain } = body
-        let result = await newWallet({
+        const { address, chain } = body
+        const result = await newWallet({
           chain,
           address,
           organizationId: query.organizationid,
-          initiativeId: null
+          initiativeId: null,
         })
         res.status(201).json({ success: true, data: result })
       } catch (error) {

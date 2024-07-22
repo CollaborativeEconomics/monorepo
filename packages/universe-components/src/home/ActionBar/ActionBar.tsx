@@ -1,7 +1,7 @@
-'use client'
-
-import Link from 'next/link'
-import { ActionBarBox, ActionBarButton } from './ActionBarContent'
+'use client';
+import React from 'react';
+import Link from 'next/link';
+import { ActionBarBox, ActionBarButton } from './ActionBarContent';
 
 export default function ActionBar() {
   return (
@@ -40,5 +40,5 @@ export default function ActionBar() {
         </div>
       </ActionBarBox>
     </div>
-  )
+  );
 }

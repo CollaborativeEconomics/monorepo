@@ -1,73 +1,75 @@
-import * as React from 'react'
+import * as React from 'react';
 
-import { cn } from '@/src/libs/shadCnUtil'
-import { Building2, DollarSign, Target, UserIcon, Sprout } from 'lucide-react'
-import { ListObject } from './list-object'
-import money from '@/src/utils/money'
+import { cn } from '@/shadCnUtil';
+import { Building2, DollarSign, Target, UserIcon, Sprout } from 'lucide-react';
+import { ListObject } from './list-object';
+import money from '@/src/utils/money';
 
 export interface Stats {
-  amountRaised: number
-  amountTarget: number
-  raisedThisMonth?: number
-  donorCount: number
-  institutionalDonorCount: number
-  initiativeCount?: number
+  amountRaised: number;
+  amountTarget: number;
+  raisedThisMonth?: number;
+  donorCount: number;
+  institutionalDonorCount: number;
+  initiativeCount?: number;
 }
 
 export interface Props extends React.HTMLAttributes<HTMLUListElement> {
-  className?: string
-  stats: Stats
+  className?: string;
+  stats: Stats;
 }
 
 function buildList(props: Stats): Array<React.JSX.Element> {
-  const items = new Array<React.JSX.Element>()
-  if(props.amountTarget){
+  const items = new Array<React.JSX.Element>();
+  if (props.amountTarget) {
     items.push(
       <ListObject
         Icon={Sprout}
         text={
-          '$' + money(props.amountRaised) +
+          '$' +
+          money(props.amountRaised) +
           ' of ' +
           money(props.amountTarget) +
           ' raised'
         }
-      />
-    )
+      />,
+    );
   } else {
     items.push(
       <ListObject
         Icon={Sprout}
-        text={
-          '$' + money(props.amountRaised) + ' total raised'
-        }
-      />
-    )
+        text={'$' + money(props.amountRaised) + ' total raised'}
+      />,
+    );
   }
   if (props.raisedThisMonth) {
     items.push(
       <ListObject
         Icon={DollarSign}
-        text={'$' + props.raisedThisMonth.toLocaleString() + ' raised this month'}
-      />
-    )
+        text={
+          '$' + props.raisedThisMonth.toLocaleString() + ' raised this month'
+        }
+      />,
+    );
   }
   if (props.initiativeCount) {
-    const initiativePlural = props.initiativeCount == 1 ? '' : 's'
+    const initiativePlural = props.initiativeCount == 1 ? '' : 's';
     items.push(
       <ListObject
         Icon={Target}
         text={props.initiativeCount + ' Initiative' + initiativePlural}
-      />
-    )
+      />,
+    );
   }
-  const donorPlural = props.donorCount == 1 ? '' : 's'
+  const donorPlural = props.donorCount == 1 ? '' : 's';
   items.push(
     <ListObject
       Icon={UserIcon}
       text={props.donorCount + ' Donor' + donorPlural}
-    />
-  )
-  const institutionalDonorPlural = props.institutionalDonorCount == 1 ? '' : 's'
+    />,
+  );
+  const institutionalDonorPlural =
+    props.institutionalDonorCount == 1 ? '' : 's';
   items.push(
     <ListObject
       Icon={Building2}
@@ -76,9 +78,9 @@ function buildList(props: Stats): Array<React.JSX.Element> {
         ' Institutional Donor' +
         institutionalDonorPlural
       }
-    />
-  )
-  return items
+    />,
+  );
+  return items;
 }
 
 const OrgStats = React.forwardRef<HTMLUListElement, Props>(
@@ -90,15 +92,15 @@ const OrgStats = React.forwardRef<HTMLUListElement, Props>(
         className={cn('px-3 flex flex-col gap-2', className)}
         {...props}
       >
-        {buildList(stats).map((item) => {
+        {buildList(stats).map(item => {
           //console.log('ITEM', item)
-          const key = item.key || Math.random()
-          return <div key={key}>{item}</div>
+          const key = item.key || Math.random();
+          return <div key={key}>{item}</div>;
         })}
       </ul>
-    )
-  }
-)
-OrgStats.displayName = 'org-stats'
+    );
+  },
+);
+OrgStats.displayName = 'org-stats';
 
-export { OrgStats }
+export { OrgStats };

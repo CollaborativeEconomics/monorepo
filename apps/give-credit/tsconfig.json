@@ -10,7 +10,8 @@
     "public",
     "../../packages/universe-components/src/tailwind.config.ts",
     "./appConfig.staging.js",
-    "./appConfig.js"
+    "./appConfig.js",
+    "../../packages/universe-components/src/shadCnUtil.ts"
   ],
   "exclude": [
     "node_modules",

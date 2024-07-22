@@ -27,11 +27,11 @@ import {
 /*
 export async function getServerSideProps({req,res}) {
   const token:Dictionary = await getToken({ req })
-  const orgid = token?.orgid || ''
-  if(!orgid){
+  const orgId = token?.orgId || ''
+  if(!orgId){
     return { props: { organization:null, providers:null } }
   }
-  const organization = await getOrganizationById(orgid)
+  const organization = await getOrganizationById(orgId)
   if(!organization){
     return { props: { organization:null, providers:null } }
   }
@@ -44,15 +44,15 @@ export async function getServerSideProps({req,res}) {
 //export default function Page({organization, providers}) {
 export default function Page() {
   const { data: session, update } = useSession();
-  //const orgid = organization?.id || ''
+  //const orgId = organization?.id || ''
   //const initiatives = organization?.initiative || []
   const [initiatives, setInitiatives] = useState([]);
   const [providers, setProviders] = useState<Provider[]>([]);
-  const [orgid, setOrgid] = useState(session?.orgid || '');
+  const [orgId, setOrgid] = useState(session?.orgId || '');
 
   useEffect(() => {
     async function loadData() {
-      const oid = session?.orgid ?? '';
+      const oid = session?.orgId ?? '';
       console.log('GET ORG:', oid);
       const org = await getOrganizationById(oid);
       console.log('ORG:', org);
@@ -63,7 +63,7 @@ export default function Page() {
       setProviders(fetchedProvider || []);
     }
     loadData();
-  }, [session?.orgid]);
+  }, [session?.orgId]);
 
   function startDate() {
     return new Date().toJSON().substr(0, 10);
@@ -170,7 +170,7 @@ export default function Page() {
       start: dateToPrisma(data.inidate),
       end: dateToPrisma(data.enddate),
       defaultAsset: '',
-      organizationId: orgid,
+      organizationId: orgId,
       tag: Number.parseInt(randomNumber(8)),
     };
     try {
@@ -283,7 +283,7 @@ export default function Page() {
   console.log('creditType', creditType);
 
   async function onOrgChange(id) {
-    console.log('ORG CHAGED', orgid, 'to', id);
+    console.log('ORG CHAGED', orgId, 'to', id);
   }
 
   return (

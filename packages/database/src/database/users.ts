@@ -66,7 +66,7 @@ export async function newUser(data: User): Promise<User> {
   return user
 }
 
-export async function setUser(id: string, data: User): Promise<User> {
+export async function setUser(id: string, data: Partial<User>): Promise<User> {
   const user = await prismaClient.user.update({ where: { id }, data })
   console.log("SET", user)
   return user

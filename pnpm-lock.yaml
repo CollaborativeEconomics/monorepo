@@ -38,6 +38,9 @@ importers:
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -662,6 +665,12 @@ importers:
 
   packages/universe-components:
     dependencies:
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../database
+      '@cfce/theme':
+        specifier: workspace:*
+        version: link:../theme
       '@radix-ui/react-aspect-ratio':
         specifier: ^1.0.3
         version: 1.0.3(@types/react@18.3.3)(react-dom@18.2.0)(react@18.2.0)
@@ -704,6 +713,9 @@ importers:
       '@radix-ui/react-tabs':
         specifier: ^1.0.4
         version: 1.0.4(@types/react@18.3.3)(react-dom@18.2.0)(react@18.2.0)
+      '@rive-app/react-canvas':
+        specifier: ^4.8.3
+        version: 4.10.0(react@18.2.0)
       '@stellar/freighter-api':
         specifier: ^2.0.0
         version: 2.0.0
@@ -728,9 +740,18 @@ importers:
       next:
         specifier: latest
         version: 14.2.4(react-dom@18.2.0)(react@18.2.0)
+      next-auth:
+        specifier: ^4.24.7
+        version: 4.24.7(next@14.2.4)(react-dom@18.2.0)(react@18.2.0)
+      next-themes:
+        specifier: ^0.3.0
+        version: 0.3.0(react-dom@18.2.0)(react@18.2.0)
       react-hook-form:
         specifier: ^7.52.1
         version: 7.52.1(react@18.2.0)
+      swiper:
+        specifier: ^11.0.7
+        version: 11.1.4
       tailwind:
         specifier: ^4.0.0
         version: 4.0.0
@@ -741,9 +762,6 @@ importers:
         specifier: ^3.4.4
         version: 3.4.4
     devDependencies:
-      '@cfce/theme':
-        specifier: workspace:*
-        version: link:../theme
       '@cfce/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -7514,6 +7532,15 @@ packages:
 
   /@rive-app/canvas@2.16.0:
     resolution: {integrity: sha512-shbtAEZ3Iq6HSCA1EpdoU7CMwY5+p5pD8NTVmp31N+eq8Obxnorh+L/M4PJhqQR8hONMUwgcVLCIrNTdcXUNoA==}
+    dev: false
+
+  /@rive-app/react-canvas@4.10.0(react@18.2.0):
+    resolution: {integrity: sha512-0Dc1OS2n/22lTPvcawbRcGiJyDM92k8iEn8hy+/vyfbUA9+uze6YDPDsbDZUpdLGU46lDP6rbkcPl+3TWo1WwQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@rive-app/canvas': 2.16.0
+      react: 18.2.0
     dev: false
 
   /@rive-app/react-canvas@4.10.0(react@18.3.1):
@@ -16865,6 +16892,31 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /next-auth@4.24.7(next@14.2.4)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-iChjE8ov/1K/z98gdKbn2Jw+2vLgJtVV39X+rCP5SGnVQuco7QOr19FRNGMIrD8d3LYhHWV9j9sKLzq1aDWWQQ==}
+    peerDependencies:
+      next: ^12.2.5 || ^13 || ^14
+      nodemailer: ^6.6.5
+      react: ^17.0.2 || ^18
+      react-dom: ^17.0.2 || ^18
+    peerDependenciesMeta:
+      nodemailer:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.24.6
+      '@panva/hkdf': 1.1.1
+      cookie: 0.5.0
+      jose: 4.15.5
+      next: 14.2.4(react-dom@18.2.0)(react@18.2.0)
+      oauth: 0.9.15
+      openid-client: 5.6.5
+      preact: 10.22.0
+      preact-render-to-string: 5.2.6(preact@10.22.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      uuid: 8.3.2
+    dev: false
+
   /next-auth@4.24.7(next@14.2.4)(react-dom@18.2.0)(react@18.3.1):
     resolution: {integrity: sha512-iChjE8ov/1K/z98gdKbn2Jw+2vLgJtVV39X+rCP5SGnVQuco7QOr19FRNGMIrD8d3LYhHWV9j9sKLzq1aDWWQQ==}
     peerDependencies:
@@ -17218,6 +17270,7 @@ packages:
   /node-gyp-build@4.8.1:
     resolution: {integrity: sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==}
     hasBin: true
+    requiresBuild: true
     dev: false
 
   /node-int64@0.4.0:

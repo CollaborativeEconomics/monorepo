@@ -14,8 +14,7 @@
     "**/*.ts",
     "**/*.tsx",
     "src/tailwind.config.ts",
-    "../../apps/give-credit/src/components/config.tsx",
-    "../../apps/give-credit/src/components/carbonchart.tsx"
+    "../../apps/give-credit/src/components/home/ParallaxHero/ParallaxHero.tsx"
   ],
   "exclude": ["node_modules", "dist"]
 }

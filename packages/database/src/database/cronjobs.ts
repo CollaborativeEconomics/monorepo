@@ -40,7 +40,9 @@ export async function getCronjobs(
   return result
 }
 
-export async function newCronjob(data: Cronjob): Promise<Cronjob> {
+export async function newCronjob(
+  data: Omit<Cronjob, "id" | "created">,
+): Promise<Cronjob> {
   // @ts-ignore Not sure why it doesn't like the data.json type, since it comes from the same place as the Cronjob type
   const result = await prismaClient.cronjob.create({ data })
   return result

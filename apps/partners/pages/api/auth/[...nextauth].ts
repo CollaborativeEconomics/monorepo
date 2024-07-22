@@ -49,18 +49,18 @@ export const authOptions: NextAuthOptions = {
       // TODO: RETHINK
       if (token?.email) {
         const org = await getOrganizationByEmail(token.email)
-        token.orgid = org?.id || ""
+        token.orgId = org?.id || ""
         token.orgname = org?.name || ""
         if (!org || org?.error) {
           const user = await getUserByEmail(token.email)
           console.log("USER", user)
           if (user && user.type === 9) {
             //console.log('ADMIN!')
-            if (trigger === "update" && session?.orgid) {
+            if (trigger === "update" && session?.orgId) {
               console.log("TOKEN UPDATE", session)
-              token.orgid = session.orgid
+              token.orgId = session.orgId
             } else {
-              token.orgid = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
+              token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
             }
             token.orgname = "Admin"
             token.userRole = "admin"
@@ -76,11 +76,11 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token, user, trigger, newSession }) {
       // Send properties to the client, like an access_token from a provider.
       //session.jti = token.jti
-      if (trigger === "update" && newSession?.orgid) {
+      if (trigger === "update" && newSession?.orgId) {
         console.log("SESSION UPDATE", newSession)
-        session.orgid = newSession.orgid
+        session.orgId = newSession.orgId
       } else {
-        session.orgid = (token?.orgid as string) ?? ""
+        session.orgId = (token?.orgId as string) ?? ""
       }
       session.orgname = (token?.orgname as string) ?? ""
       session.isadmin = token?.userRole === "admin"

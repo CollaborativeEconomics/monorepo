@@ -1,25 +1,31 @@
-import { Chain } from "@cfce/blockchain-tools/dist/chains/ChainBaseClass"
+import type { ChainSlugs } from "@cfce/blockchain-tools/dist/chains/chainConfig"
 
 interface mintReceiptNFTNativeParams {
-  chain: Chain
+  chain: ChainSlugs
   contractId: string
   address: string
   amount: number
   tokenId: string
 }
-const mintReceiptNFTNative = async ({ chain, contractId, address, tokenId }: mintReceiptNFTNativeParams) => {
-
-}
+const mintReceiptNFTNative = async ({
+  chain,
+  contractId,
+  address,
+  tokenId,
+}: mintReceiptNFTNativeParams) => {}
 
 interface mintReceiptNFTCCParams {
-  chain?: Chain
+  chain?: ChainSlugs
   contractId: string
   address: string
   amount: number
   tokenId: string
 }
-const mintReceiptNFTCC = async ({ chain, contractId, address, tokenId }: mintReceiptNFTCCParams) => {
-
-}
+const mintReceiptNFTCC = async ({
+  chain,
+  contractId,
+  address,
+  tokenId,
+}: mintReceiptNFTCCParams) => {}
 
 export { mintReceiptNFTNative, mintReceiptNFTCC }

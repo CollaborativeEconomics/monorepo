@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 // import { Check, ChevronsUpDown } from 'lucide-react';
 
-import { cn } from '@/src/libs/shadCnUtil';
+import { cn } from '@/shadCnUtil';
 import { Button } from '@/src/components/ui/button';
 import {
   Command,
@@ -19,21 +19,21 @@ import {
 } from '@/src/components/ui/popover';
 import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 
-export default function LocationSelect(props:any) {
+export default function LocationSelect(props: any) {
   const onChange = props?.onChange;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
-    async function loadLocations(){
-      const res = await fetch('/api/locations')
-      const list = await res.json()
-      setLocations(list)
-      console.log('LOCS', list)
+    async function loadLocations() {
+      const res = await fetch('/api/locations');
+      const list = await res.json();
+      setLocations(list);
+      console.log('LOCS', list);
     }
-    loadLocations()
-  },[])
+    loadLocations();
+  }, []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -57,13 +57,18 @@ export default function LocationSelect(props:any) {
               <CommandItem
                 key={item}
                 onSelect={currentValue => {
-                  console.log('LOC', currentValue, 'OLD', value||'?')
+                  console.log('LOC', currentValue, 'OLD', value || '?');
                   setValue(item);
                   onChange(currentValue);
                   setOpen(false);
                 }}
               >
-                <CheckCircledIcon className={cn('mr-2 h-4 w-4', value === item ? 'opacity-100' : 'opacity-0')} />
+                <CheckCircledIcon
+                  className={cn(
+                    'mr-2 h-4 w-4',
+                    value === item ? 'opacity-100' : 'opacity-0',
+                  )}
+                />
                 {item}
               </CommandItem>
             ))}

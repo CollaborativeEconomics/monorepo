@@ -3,7 +3,7 @@ import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { cva } from 'class-variance-authority';
 import { ChevronDown } from 'lucide-react';
 
-import { cn } from '@/src/libs/shadCnUtil';
+import { cn } from '@/shadCnUtil';
 
 const NavigationMenu = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Root>,
@@ -46,12 +46,13 @@ const navigationMenuTriggerStyle = cva(
     variants: {
       type: {
         text: 'px-4 py-2',
-        avatar: 'aspect-square rounded-full overflow-hidden relative box-content',
+        avatar:
+          'aspect-square rounded-full overflow-hidden relative box-content',
       },
     },
     defaultVariants: {
       type: 'text',
-    }
+    },
   },
 );
 

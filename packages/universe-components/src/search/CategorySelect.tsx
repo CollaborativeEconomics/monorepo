@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { cn } from '@/src/libs/shadCnUtil';
+import { cn } from '@/shadCnUtil';
 import { Button } from '@/src/components/ui/button';
 import {
   Command,

@@ -4,15 +4,13 @@ import { prismaClient } from ".."
 
 interface InitiativeQuery extends ListQuery {
   tag?: string
-  orgid?: string
+  orgId?: string
   category?: string
   location?: string
   search?: string
 }
 
-export async function getInitiatives(
-  query: InitiativeQuery,
-): Promise<Initiative | null | Array<Initiative>> {
+export async function getInitiatives(query: InitiativeQuery) {
   let where = {}
   const skip = 0
   const take = 100
@@ -46,8 +44,8 @@ export async function getInitiatives(
     return record
   }
 
-  if (query?.orgid) {
-    where = { organizationId: query.orgid }
+  if (query?.orgId) {
+    where = { organizationId: query.orgId }
   }
 
   if (query?.search) {
@@ -111,10 +109,8 @@ export async function getInitiatives(
   return result
 }
 
-export async function getInitiativeById(
-  id: string,
-): Promise<Initiative | null> {
-  const include = {
+export async function getInitiativeById(id: string) {
+  const include: Prisma.InitiativeFindManyArgs["include"] = {
     category: true,
     credits: true,
     organization: {
@@ -141,9 +137,7 @@ export async function getInitiativeById(
   return result
 }
 
-export async function getInitiativeByTag(
-  tag: number,
-): Promise<Initiative | null> {
+export async function getInitiativeByTag(tag: number) {
   const include = {
     category: true,
     credits: true,
@@ -171,7 +165,7 @@ export async function getInitiativeByTag(
   return result
 }
 
-export async function newInitiative(data: Initiative): Promise<Initiative> {
+export async function newInitiative(data: Initiative) {
   const result = await prismaClient.initiative.create({ data })
   return result
 }

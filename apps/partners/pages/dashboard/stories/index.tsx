@@ -67,18 +67,18 @@ function getMediaExtension(mime) {
 }
 
 export default function Page() {
-  //const orgid = organization?.id || ''
+  //const orgId = organization?.id || ''
   //const initiatives = organization?.initiative || [{id:'0', title:'No initiatives'}]
   //const router = useRouter()
   const { data: session, update } = useSession();
-  const [orgid, setOrgid] = useState(session?.orgid || '');
+  const [orgId, setOrgid] = useState(session?.orgId || '');
   const [initiatives, setInitiatives] = useState<Initiative[]>([]);
   const [stories, setStories] = useState<StoryWithRelations[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     async function loadData() {
-      const orgId = session?.orgid ?? '';
+      const orgId = session?.orgId ?? '';
       const org = await getOrganizationById(orgId);
       const ini = org?.initiative || [];
       const iid = org?.initiative?.length > 0 ? org?.initiative[0].id : '';
@@ -97,7 +97,7 @@ export default function Page() {
       setCategories(cat);
     }
     loadData();
-  }, [session?.orgid]);
+  }, [session?.orgId]);
 
   function listInitiatives() {
     if (!initiatives) {
@@ -232,7 +232,7 @@ export default function Page() {
       description: data.desc,
       amount: Number.parseInt(data.amount),
       image: '',
-      organizationId: orgid,
+      organizationId: orgId,
       initiativeId: data.initiativeId,
       categoryId: data.categoryId,
     };
@@ -405,7 +405,7 @@ export default function Page() {
   }, [change]);
 
   async function onOrgChange(id) {
-    console.log('ORG CHANGED', orgid, 'to', id);
+    console.log('ORG CHANGED', orgId, 'to', id);
   }
 
   //function goStory(id){

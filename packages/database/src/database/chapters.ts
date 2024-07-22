@@ -3,7 +3,7 @@ import { prismaClient } from "../index"
 import type { ListQuery } from "../types"
 
 interface ChapterQuery extends ListQuery {
-  orgid?: string
+  orgId?: string
 }
 
 export async function getChapters(
@@ -15,8 +15,8 @@ export async function getChapters(
   const orderBy = {}
   //let include = {}
 
-  if (query?.orgid) {
-    where = { orgid: query.orgid }
+  if (query?.orgId) {
+    where = { orgId: query.orgId }
   }
 
   const filter = { where, skip, take, orderBy }

@@ -1,17 +1,13 @@
 import { useState, createContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import StoryCard from '@/src/components/StoryCard';
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import { Document } from '@contentful/rich-text-types';
+import { getInitiativeById, getInitiatives } from '@cfce/database';
 import { Separator } from '@/src/components/ui/separator';
 import OrganizationAvatar from '@/src/components/OrganizationAvatar';
 import DonationView from '@/src/components/DonationView';
 import { ReceiptStatus } from '@/src/types/common';
 import InitiativeCardCompact from '@/src/components/InitiativeCardCompact';
 import NotFound from '@/src/components/NotFound';
-import { getInitiativeById, getInitiativesByOrganization } from '@/src/utils/registry';
-import restoreContract from '@/src/contracts/credits/server/restore';
 import getRates from '@/src/utils/rates';
 
 export default async function Handler(props: any) {
@@ -30,17 +26,17 @@ export default async function Handler(props: any) {
   //});
 
   const organization = initiative.organization;
-  const initiatives = await getInitiativesByOrganization(organization.id);
+  const initiatives = await getInitiatives({ orgId: organization.id });
   const stories = initiative.stories;
   console.log('STORIES', stories.length);
   const rate = await getRates('XLM');
   //const carbon = await getCarbon();
-  let carbon = '0'
-  if(initiative.credits.length>0){
-    carbon = initiative.credits[0].value
+  let carbon = '0';
+  if (initiative.credits.length > 0) {
+    carbon = initiative.credits[0].value;
   }
-  console.log('RATE', rate)
-  console.log('CARBON', carbon)
+  console.log('RATE', rate);
+  console.log('CARBON', carbon);
 
   const receipt = {
     status: ReceiptStatus.pending,
@@ -67,7 +63,7 @@ export default async function Handler(props: any) {
           <div className="relative w-full md:w-[45%] h-[200px] md:h-[300px] mb-12 md:mb-2">
             <Image
               className="h-[300px] rounded-lg"
-              src={initiative.defaultAsset||'noimage.png'}
+              src={initiative.defaultAsset || 'noimage.png'}
               alt="IMG BG"
               fill
               style={{
@@ -110,7 +106,12 @@ export default async function Handler(props: any) {
         <Separator className="mb-6" />
 
         <div className="md:flex md:flex-col items-center">
-          <DonationView initiative={initiative} receipt={receipt} rate={rate} carbon={carbon} />
+          <DonationView
+            initiative={initiative}
+            receipt={receipt}
+            rate={rate}
+            carbon={carbon}
+          />
         </div>
 
         <div className="mb-10 pt-10 flex justify-center w-full">
@@ -131,7 +132,7 @@ export default async function Handler(props: any) {
                       <InitiativeCardCompact
                         key={item.id}
                         timestamp={item.created}
-                        imgSrc={item.defaultAsset||'noimage.png'}
+                        imgSrc={item.defaultAsset || 'noimage.png'}
                         title={item.title}
                         description={item.description}
                         amountRaised={item.received}

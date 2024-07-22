@@ -4,7 +4,7 @@ import type { Donation, Prisma } from "@prisma/client"
 
 interface DonationQuery extends ListQuery {
   id?: string
-  orgid?: string
+  orgId?: string
   chapterid?: string
   initid?: string
   userid?: string
@@ -51,8 +51,8 @@ export async function getDonations(
     }
   }
 
-  if (query?.orgid) {
-    filter.where.organizationId = query.orgid
+  if (query?.orgId) {
+    filter.where.organizationId = query.orgId
   }
 
   if (query?.chapterid) {

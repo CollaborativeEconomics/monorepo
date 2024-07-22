@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { cn } from '@/src/libs/shadCnUtil'
-import { CalendarDays } from 'lucide-react'
-import * as React from 'react'
+import { cn } from '@/shadCnUtil';
+import { CalendarDays } from 'lucide-react';
+import * as React from 'react';
 
 interface Props {
-  timestamp: number
-  className?: string
+  timestamp: number;
+  className?: string;
 }
 
 export default function DateDisplay(props: Props) {
@@ -17,7 +17,7 @@ export default function DateDisplay(props: Props) {
         {convertTimestampToDateString(props.timestamp)}
       </p>
     </DateStyle>
-  )
+  );
 }
 
 const DateStyle = React.forwardRef<
@@ -28,20 +28,20 @@ const DateStyle = React.forwardRef<
     ref={ref}
     className={cn(
       'h-2 inline-flex gap-2 items-center text-slate-500',
-      className
+      className,
     )}
     {...props}
   />
-))
-DateStyle.displayName = 'DateDisplay'
+));
+DateStyle.displayName = 'DateDisplay';
 
 function convertTimestampToDateString(timestamp: number): string {
-  const timestampDate = new Date(timestamp)
+  const timestampDate = new Date(timestamp);
   return timestampDate.toLocaleString('default', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
-  })
+  });
 }
 
 const TimestampToDateString = React.forwardRef<HTMLParagraphElement, Props>(
@@ -49,8 +49,8 @@ const TimestampToDateString = React.forwardRef<HTMLParagraphElement, Props>(
     <p ref={ref} className={cn('', className)}>
       {convertTimestampToDateString(timestamp)}
     </p>
-  )
-)
-TimestampToDateString.displayName = 'TimestampToDateString'
+  ),
+);
+TimestampToDateString.displayName = 'TimestampToDateString';
 
-export { DateDisplay, TimestampToDateString }
+export { DateDisplay, TimestampToDateString };

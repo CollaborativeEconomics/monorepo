@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Header from '@/src/components/header';
-import Footer from '@/src/components/footer';
-import Providers from '@/src/components/providers';
-import { ConfigProvider } from '@/src/components/config'
+import { ConfigProvider } from '@/src/components/config';
+import { ThemeProvider } from 'next-themes';
+import { Header } from '@cfce/universe-components';
 import '@/styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -13,16 +12,27 @@ export const metadata: Metadata = {
   description: 'Watch your donations make an impact',
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}){
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={ inter.className + ' bg-gradient-to-b from-white min-h-screen to-gray-50 dark:from-accent dark:to-secondary' }>
+      <body
+        className={`${inter.className} bg-gradient-to-b from-white min-h-screen to-gray-50 dark:from-accent dark:to-secondary`}
+      >
         <ConfigProvider>
-          <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <Header />
             {children}
             <Footer />
-          </Providers>
+          </ThemeProvider>
         </ConfigProvider>
       </body>
     </html>

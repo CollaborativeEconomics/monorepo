@@ -2,7 +2,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { cn } from '@/src/libs/shadCnUtil';
+import { cn } from '@/shadCnUtil';
 import { Button } from '@/src/components/ui/button';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { DarkModeSwitcher } from '@/src/components/dark-mode-switcher';
@@ -27,7 +27,7 @@ import {
   SheetTrigger,
 } from '@/src/components/ui/sheet';
 
-export function NavMenu() {
+export default function NavMenu() {
   const { data: session, status } = useSession();
   //console.log('Header Session', session, status)
   const avatar = session?.user?.image || '/media/nopic.png';
@@ -61,12 +61,7 @@ export function NavMenu() {
                   className={navigationMenuTriggerStyle({ type: 'avatar' })}
                   href={userurl}
                 >
-                  <Image
-                    src={avatar}
-                    fill
-                    alt="Avatar"
-                    className="rounded"
-                  />
+                  <Image src={avatar} fill alt="Avatar" className="rounded" />
                 </NavigationMenuLink>
               ) : (
                 <NavigationMenuLink

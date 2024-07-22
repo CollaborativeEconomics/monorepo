@@ -1,10 +1,10 @@
-import React from 'react'
-import { InputProps } from './input'
-import { cn } from '@/src/libs/shadCnUtil'
+import React from 'react';
+import { InputProps } from './input';
+import { cn } from '@/shadCnUtil';
 
 export interface InputWithContentProps extends InputProps {
-  text: string
-  divRef: any
+  text: string;
+  divRef: any;
 }
 
 const InputWithContent = React.forwardRef<
@@ -18,7 +18,7 @@ const InputWithContent = React.forwardRef<
         id={id}
         className={cn(
           'flex h-10 text-lg w-full rounded-full bg-white dark:bg-slate-500 px-2 py-2 border-0 focus:border-0 focus:outline-0 focus:ring-0',
-          className
+          className,
         )}
         {...props}
       />
@@ -26,8 +26,8 @@ const InputWithContent = React.forwardRef<
         {text}
       </div>
     </div>
-  )
-})
-InputWithContent.displayName = 'input-with-content'
+  );
+});
+InputWithContent.displayName = 'input-with-content';
 
-export { InputWithContent }
+export { InputWithContent };

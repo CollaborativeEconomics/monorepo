@@ -1,29 +1,32 @@
-'use client'
+'use client';
 
-import { useEffect, useRef, useState } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Pagination, Navigation, Autoplay } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/pagination'
-import 'swiper/css/navigation'
-import InitiativeCardCompactShort from '../initiative/InitiativeCardCompactShort'
+import React, { useCallback, useEffect, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation, Autoplay } from 'swiper/modules';
+import type { Initiative } from '@cfce/database';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import InitiativeCardCompactShort from '../initiative/InitiativeCardCompactShort';
 
-export default function ImpactCarousel(props:any) {
-  const initiatives = props.initiatives
-  const innerWidth = typeof window !== "undefined" ? window.innerWidth : 1366
-  const [screenWidth, setScreenWidth] = useState(innerWidth)
-  const setDimension = () => { setScreenWidth(innerWidth) }
+export default function ImpactCarousel(props: { initiatives: Initiative[] }) {
+  const initiatives = props.initiatives;
+  const innerWidth = typeof window !== 'undefined' ? window.innerWidth : 1366;
+  const [screenWidth, setScreenWidth] = useState(innerWidth);
+  const setDimension = useCallback(() => {
+    setScreenWidth(innerWidth);
+  }, [innerWidth]);
 
   useEffect(() => {
-    if(typeof window !== "undefined"){
-      window.addEventListener('resize', setDimension)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', setDimension);
       return () => {
-        window.removeEventListener('resize', setDimension)
-      }
+        window.removeEventListener('resize', setDimension);
+      };
     }
-  }, [screenWidth])
+  }, [setDimension]);
 
-  const slideCount = screenWidth / 400
+  const slideCount = screenWidth / 400;
 
   return (
     <div className="relative left-0 right-0">
@@ -39,14 +42,14 @@ export default function ImpactCarousel(props:any) {
         speed={800}
         loop
       >
-      { initiatives.map((initiative:any) => {
-        return (
-          <SwiperSlide key={initiative.id}>
-            <InitiativeCardCompactShort initiative={initiative} />
-          </SwiperSlide>
-        )
-      }) }
+        {initiatives.map(initiative => {
+          return (
+            <SwiperSlide key={initiative.id}>
+              <InitiativeCardCompactShort initiative={initiative} />
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
-  )
+  );
 }

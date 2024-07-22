@@ -1,10 +1,11 @@
-import Image from 'next/image'
-import { Card, CardContent } from '../ui/card'
-import { Progress } from '../ui/progress'
-import { Separator } from '../ui/separator'
-import { DateDisplay } from '../ui/date-posted'
-import { Button } from '../ui/button'
-import OrganizationAvatar from '../organization/OrganizationAvatar'
+import React from 'react';
+import Image from 'next/image';
+import { Card, CardContent } from '../ui/card';
+import { Progress } from '../ui/progress';
+import { Separator } from '../ui/separator';
+import { DateDisplay } from '../ui/date-posted';
+import { Button } from '../ui/button';
+import OrganizationAvatar from '../organization/OrganizationAvatar';
 
 export default function InitiativeCardCompact({ ...props }) {
   return (
@@ -43,5 +44,5 @@ export default function InitiativeCardCompact({ ...props }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
