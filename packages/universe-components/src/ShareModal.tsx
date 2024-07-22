@@ -19,13 +19,11 @@ export default function ShareModal() {
     typeof window !== 'undefined'
       ? window.location.href
       : 'https://giving-universe.org';
-  const shareFacebook = 'https://web.facebook.com/sharer.php?u=' + url;
-  const shareTwitter =
-    'https://twitter.com/intent/tweet?text=GivingUniverse&url=' + url;
-  const shareInstagram = 'https://www.instagram.com/?url=' + url;
-  const shareWhatsapp = 'https://wa.me/?text=' + url;
-  const shareTelegram =
-    'https://telegram.me/share/url?text=GivingUniverse&url=' + url;
+  const shareFacebook = `https://web.facebook.com/sharer.php?u=${url}`;
+  const shareTwitter = `https://twitter.com/intent/tweet?text=GivingUniverse&url=${url}`;
+  const shareInstagram = `https://www.instagram.com/?url=${url}`;
+  const shareWhatsapp = `https://wa.me/?text=${url}`;
+  const shareTelegram = `https://telegram.me/share/url?text=GivingUniverse&url=${url}`;
 
   const [open, setOpen] = useState(false);
   const [button, setButton] = useState('COPY');

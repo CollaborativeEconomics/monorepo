@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
-//import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import { getToken } from 'next-auth/jwt';
 import Link from 'next/link';
 import Dashboard from 'components/dashboard';
 import Sidebar from 'components/sidebar';
 import Title from 'components/title';
 import Event from 'components/event';
-import Label from 'components/form/label';
 import TextFile from 'components/form/textfile';
 import TextInput from 'components/form/textinput';
 import TextArea from 'components/form/textarea';
@@ -17,29 +14,17 @@ import Select from 'components/form/select';
 import Checkbox from 'components/form/checkbox';
 import ButtonBlue from 'components/buttonblue';
 import styles from 'styles/dashboard.module.css';
-//import { getOrganizationById, getStoriesByOrganization } from 'utils/registry'
-import { randomString, randomNumber } from 'utils/random';
+import { randomString } from 'utils/random';
 import dateToPrisma from 'utils/dateToPrisma';
-import { apiFetch } from 'utils/api';
-
-type Dictionary = { [key: string]: any };
-/*
-export async function getServerSideProps({req,res}) {
-  const token:Dictionary = await getToken({ req })
-  const orgid = token?.orgid || ''
-  if(!orgid){
-    return { props: { organization:null, providers:null } }
-  }
-  const organization = await getOrganizationById(orgid)
-  if(!organization){
-    return { props: { organization:null } }
-  }
-  console.log('OrgID', organization.id)
-  //console.log('org', organization)
-  const events = await getStoriesByOrganization(orgid)
-  return { props: { organization, events } }
-}
-*/
+import {
+  type Category,
+  getCategories,
+  getOrganizationById,
+  getStories,
+  getStoryById,
+  type Initiative,
+  type StoryWithRelations,
+} from '@cfce/database';
 
 function getImageExtension(mime) {
   let ext = '';
@@ -87,31 +72,32 @@ export default function Page() {
   //const router = useRouter()
   const { data: session, update } = useSession();
   const [orgid, setOrgid] = useState(session?.orgid || '');
-  const [initiatives, setInitiatives] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [initiatives, setInitiatives] = useState<Initiative[]>([]);
+  const [stories, setStories] = useState<StoryWithRelations[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     async function loadData() {
-      const oid = session?.orgid ?? '';
-      const org = (await apiFetch('organization?id=' + oid)) || {};
+      const orgId = session?.orgid ?? '';
+      const org = await getOrganizationById(orgId);
       const ini = org?.initiative || [];
       const iid = org?.initiative?.length > 0 ? org?.initiative[0].id : '';
-      const evt = (await apiFetch('stories?id=' + oid)) || [];
-      const cat = (await apiFetch('categories')) || [];
+      // const evt = (await apiFetch(`stories?id=${oid}`)) || [];
+      const evt = await getStories({ orgId });
+      const cat = await getCategories({});
       //console.log('ORG:', org)
       //console.log('INI:', ini)
       //console.log('IID:', iid)
       //console.log('EVT:', evt)
       console.log('CAT:', cat.length);
-      setOrgid(oid);
+      setOrgid(orgId);
       setInitId(iid);
       setInitiatives(ini);
-      setEvents(evt);
+      setStories(evt);
       setCategories(cat);
     }
     loadData();
-  }, [update]);
+  }, [session?.orgid]);
 
   function listInitiatives() {
     if (!initiatives) {
@@ -171,7 +157,7 @@ export default function Page() {
   }
 
   async function onSubmit(data) {
-    if (buttonText == 'DONE') {
+    if (buttonText === 'DONE') {
       clearForm();
       return;
     }
@@ -201,12 +187,12 @@ export default function Page() {
     const file4 = data.image4 ? data.image4[0] : null;
     const file5 = data.image5 ? data.image5[0] : null;
     const fileM = data.media ? data.media[0] : null;
-    let ext1 = getImageExtension(file1?.type);
-    let ext2 = getImageExtension(file2?.type);
-    let ext3 = getImageExtension(file3?.type);
-    let ext4 = getImageExtension(file4?.type);
-    let ext5 = getImageExtension(file5?.type);
-    let extM = getMediaExtension(fileM?.type);
+    const ext1 = getImageExtension(file1?.type);
+    const ext2 = getImageExtension(file2?.type);
+    const ext3 = getImageExtension(file3?.type);
+    const ext4 = getImageExtension(file4?.type);
+    const ext5 = getImageExtension(file5?.type);
+    const extM = getMediaExtension(fileM?.type);
     if (file1 && !ext1) {
       showMessage('Only JPG, PNG and WEBP images are allowed');
       return;
@@ -233,18 +219,18 @@ export default function Page() {
     }
 
     const imgName = randomString();
-    const image1 = { name: imgName + '1' + ext1, file: file1 };
-    const image2 = { name: imgName + '2' + ext2, file: file2 };
-    const image3 = { name: imgName + '3' + ext3, file: file3 };
-    const image4 = { name: imgName + '4' + ext4, file: file4 };
-    const image5 = { name: imgName + '5' + ext5, file: file5 };
-    const media = { name: imgName + 'M' + extM, file: fileM };
+    const image1 = { name: `${imgName}1${ext1}`, file: file1 };
+    const image2 = { name: `${imgName}2${ext2}`, file: file2 };
+    const image3 = { name: `${imgName}3${ext3}`, file: file3 };
+    const image4 = { name: `${imgName}4${ext4}`, file: file4 };
+    const image5 = { name: `${imgName}5${ext5}`, file: file5 };
+    const media = { name: `${imgName}M${extM}`, file: fileM };
 
     const record = {
       created: dateToPrisma(new Date()),
       name: data.name,
       description: data.desc,
-      amount: parseInt(data.amount),
+      amount: Number.parseInt(data.amount),
       image: '',
       organizationId: orgid,
       initiativeId: data.initiativeId,
@@ -266,7 +252,7 @@ export default function Page() {
       console.log('RESIMG5', resimg5);
       console.log('RESMEDIA', resmed);
       if (resimg1.error) {
-        showMessage('Error saving image: ' + resimg1.error);
+        showMessage(`Error saving image: ${resimg1.error}`);
         setButtonState(ButtonState.READY);
         return;
       }
@@ -301,9 +287,9 @@ export default function Page() {
       const result1 = await resp1.json();
       console.log('RESULT1', result1);
       if (result1.error) {
-        showMessage('Error saving event: ' + result1.error);
+        showMessage(`Error saving event: ${result1.error}`);
         setButtonState(ButtonState.READY);
-      } else if (typeof result1?.success == 'boolean' && !result1.success) {
+      } else if (typeof result1?.success === 'boolean' && !result1.success) {
         showMessage('Error saving event: unknown');
         setButtonState(ButtonState.READY);
       } else {
@@ -316,7 +302,7 @@ export default function Page() {
         const resp2 = await fetch(`/api/storymedia/${storyid}`, opts2);
         const result2 = await resp2.json();
         console.log('RESULT2', result2);
-        events.push(result1.data);
+        stories.push(result1.data);
         setChange(change + 1);
         showMessage('Event info saved');
 
@@ -324,7 +310,7 @@ export default function Page() {
           showMessage('Event info saved, minting NFT...');
           const eventid = result1.data.id;
           console.log('Minting NFT for event', eventid);
-          const resMint = await fetch('/api/mint?eventid=' + eventid);
+          const resMint = await fetch(`/api/mint?eventid=${eventid}`);
           const okNft = await resMint.json();
           console.log('RESULT', okNft);
           if (okNft?.error) {
@@ -337,7 +323,7 @@ export default function Page() {
       }
     } catch (ex) {
       console.error(ex);
-      showMessage('Error saving event: ' + ex.message);
+      showMessage(`Error saving event: ${ex.message}`);
       setButtonState(ButtonState.READY);
     }
   }
@@ -413,7 +399,7 @@ export default function Page() {
     'categoryId',
   ]);
 
-  // Used to refresh list of events after new record added
+  // Used to refresh list of stories after new record added
   useEffect(() => {
     console.log('Events changed!', change);
   }, [change]);
@@ -445,7 +431,7 @@ export default function Page() {
               width={250}
               height={250}
             />
-            <div className={styles.hbox + ' justify-center'}>
+            <div className={`${styles.hbox} justify-center`}>
               <FileView
                 id="image2"
                 register={register('image2')}
@@ -528,16 +514,16 @@ export default function Page() {
             {message}
           </p>
         </div>
-        {events ? (
-          events.map(item => (
+        {stories ? (
+          stories.map(item => (
             <div className={styles.mainBox} key={item.id}>
-              <Link href={'/dashboard/stories/' + item.id}>
+              <Link href={`/dashboard/stories/${item.id}`}>
                 <Event key={item.id} {...item} />
               </Link>
             </div>
           ))
         ) : (
-          <h1 className="text-center text-2xl my-24">No events found</h1>
+          <h1 className="text-center text-2xl my-24">No stories found</h1>
         )}
       </div>
     </Dashboard>

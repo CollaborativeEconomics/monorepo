@@ -1,6 +1,6 @@
-import { prismaClient } from "index"
-import { ListQuery } from "../types"
-import { Donation, Prisma } from "@prisma/client"
+import { prismaClient } from ".."
+import type { ListQuery } from "../types"
+import type { Donation, Prisma } from "@prisma/client"
 
 interface DonationQuery extends ListQuery {
   id?: string
@@ -13,40 +13,41 @@ interface DonationQuery extends ListQuery {
   to?: string
   favs?: string
   badges?: string
-
 }
 
-export async function getDonations(query: DonationQuery): Promise<Donation | Array<Donation>> {
+export async function getDonations(
+  query: DonationQuery,
+): Promise<Array<Donation>> {
   const filter: Prisma.DonationFindManyArgs = {
     skip: 0,
     take: 100,
     include: {
       organization: true,
-      initiative: true
+      initiative: true,
     },
-    orderBy: { created: 'desc' },
+    orderBy: { created: "desc" },
   }
-  filter.where = {};
+  filter.where = {}
 
   if (query?.favs) {
     const userid = query.favs
-    filter.distinct = ['organizationId'];
+    filter.distinct = ["organizationId"]
     filter.select = {
       organization: true,
-    };
+    }
     filter.where = {
-      userId: userid
+      userId: userid,
     }
   }
 
   if (query?.badges) {
     const userid = query.badges
-    filter.distinct = ['categoryId'];
+    filter.distinct = ["categoryId"]
     filter.select = {
       category: true,
-    };
+    }
     filter.where = {
-      userId: userid
+      userId: userid,
     }
   }
 
@@ -69,14 +70,14 @@ export async function getDonations(query: DonationQuery): Promise<Donation | Arr
   if (query?.wallet) {
     filter.where.wallet = {
       equals: query.wallet,
-      mode: 'insensitive'
+      mode: "insensitive",
     }
   }
 
   if (query?.from && query?.to) {
     filter.where.created = {
-      gte: new Date(query.from),   // .toISOString()
-      lte: new Date(query.to)
+      gte: new Date(query.from), // .toISOString()
+      lte: new Date(query.to),
     }
   }
 
@@ -90,12 +91,18 @@ export async function getDonations(query: DonationQuery): Promise<Donation | Arr
   */
 
   if (query?.page || query?.size) {
-    let page = parseInt(query.page || '0')
-    let size = parseInt(query.size || '100')
-    if (page < 0) { page = 0 }
-    if (size < 0) { size = 100 }
-    if (size > 200) { size = 200 }
-    let start = page * size
+    let page = Number.parseInt(query.page || "0")
+    let size = Number.parseInt(query.size || "100")
+    if (page < 0) {
+      page = 0
+    }
+    if (size < 0) {
+      size = 100
+    }
+    if (size > 200) {
+      size = 200
+    }
+    const start = page * size
     filter.skip = start
     filter.take = size
   }
@@ -109,10 +116,8 @@ export async function getDonationById(id: string): Promise<Donation | null> {
   return data
 }
 
-
 export async function newDonation(data: Donation): Promise<Donation> {
-  let rec = await prismaClient.donation.create({ data })
-  console.log('NEW DONATION', rec)
+  const rec = await prismaClient.donation.create({ data })
+  console.log("NEW DONATION", rec)
   return rec
 }
-

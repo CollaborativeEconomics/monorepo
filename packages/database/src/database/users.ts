@@ -1,22 +1,23 @@
-import { User } from "@prisma/client"
-import { prismaClient } from "index"
+import type { User } from "@prisma/client"
+import { prismaClient } from ".."
 
 interface UserQuery {
   email?: string
   name?: string
   wallet?: string
   apikey?: string
-
 }
 
-export async function getUsers(query: UserQuery): Promise<User | Array<User> | null> {
-  console.log('QUERY', query)
-  let include = {
+export async function getUsers(
+  query: UserQuery,
+): Promise<User | Array<User> | null> {
+  console.log("QUERY", query)
+  const include = {
     artworks: {
-      include: { author: true }
+      include: { author: true },
     },
     collections: true,
-    wallets: true
+    wallets: true,
   }
 
   if (query?.email) {
@@ -38,47 +39,49 @@ export async function getUsers(query: UserQuery): Promise<User | Array<User> | n
 export async function getUserByApiKey(apiKey: string): Promise<User | null> {
   const user = await prismaClient.user.findFirst({
     where: {
-      api_key: apiKey
-    }
+      api_key: apiKey,
+    },
   })
   return user
 }
 
-export async function getUserByWallet(walletAddress: string): Promise<User | null> {
+export async function getUserByWallet(
+  walletAddress: string,
+): Promise<User | null> {
   const user = await prismaClient.user.findFirst({
     where: {
       wallets: {
         some: {
-          address: walletAddress
-        }
-      }
-    }
+          address: walletAddress,
+        },
+      },
+    },
   })
   return user
 }
 
 export async function newUser(data: User): Promise<User> {
-  let user = await prismaClient.user.create({ data })
-  console.log('NEW', user)
+  const user = await prismaClient.user.create({ data })
+  console.log("NEW", user)
   return user
 }
 
 export async function setUser(id: string, data: User): Promise<User> {
-  let user = await prismaClient.user.update({ where: { id }, data })
-  console.log('SET', user)
+  const user = await prismaClient.user.update({ where: { id }, data })
+  console.log("SET", user)
   return user
 }
 
 export async function getUserById(id: string): Promise<User | null> {
   const include = {
     artworks: {
-      include: { author: true }
+      include: { author: true },
     },
     collections: true,
-    wallets: true
+    wallets: true,
   }
   const user = await prismaClient.user.findUnique({ where: { id }, include })
-  console.log('GET', user)
+  console.log("GET", user)
   return user
 }
 
@@ -86,4 +89,3 @@ export async function getUserByEmail(email: string): Promise<User | null> {
   const user = await prismaClient.user.findUnique({ where: { email } })
   return user
 }
-

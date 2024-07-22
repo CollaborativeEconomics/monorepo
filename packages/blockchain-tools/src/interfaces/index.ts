@@ -13,6 +13,14 @@ export type Interfaces =
   | "web3"
   | "stellar"
 
+export type Interface =
+  | FreighterWallet
+  | MetaMaskWallet
+  | XummClient
+  | XrplServer
+  | StellarServer
+  | Web3Server
+
 export {
   FreighterWallet,
   MetaMaskWallet,

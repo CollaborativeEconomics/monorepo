@@ -1,5 +1,4 @@
-import DonationView from "./DonationView";
-import DonationForm from "./DonationForm";
+import DonationView from "./DonationView"
+import DonationForm from "./DonationForm"
 
-export { DonationForm }
-export default DonationView;
+export { DonationForm, DonationView }

@@ -13,7 +13,9 @@
     "src",
     "**/*.ts",
     "**/*.tsx",
-    "src/tailwind.config.ts"
+    "src/tailwind.config.ts",
+    "../../apps/give-credit/src/components/config.tsx",
+    "../../apps/give-credit/src/components/carbonchart.tsx"
   ],
   "exclude": ["node_modules", "dist"]
 }

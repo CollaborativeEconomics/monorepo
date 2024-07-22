@@ -1,53 +1,63 @@
-import { Collection } from "@prisma/client"
-import { prismaClient } from "index"
-import { ListQuery } from "../types"
+import type { Collection } from "@prisma/client"
+import { prismaClient } from "../index"
+import type { ListQuery } from "../types"
 
 interface CollectionQuery extends ListQuery {
   userid?: string
 }
 
-export async function getCollections(query: CollectionQuery): Promise<Collection | Array<Collection>> {
-  let where   = {}
-  let skip    = 0
-  let take    = 100
-  let orderBy = {}
-  let include = {
-    author:true
+export async function getCollections(
+  query: CollectionQuery,
+): Promise<Collection | Array<Collection>> {
+  let where = {}
+  const skip = 0
+  const take = 100
+  const orderBy = {}
+  const include = {
+    author: true,
   }
 
-  if(query?.userid) {
-    where = {authorId: query.userid}
+  if (query?.userid) {
+    where = { authorId: query.userid }
   }
 
-  let filter = {where, include, skip, take, orderBy}
-  if(query?.page || query?.size){
-    let page = parseInt(query?.page || '0')
-    let size = parseInt(query?.size || '100')
-    if(page<0){ page = 0 }
-    if(size<0){ size = 100 }
-    if(size>200){ size = 200 }
-    let start = page * size
+  const filter = { where, include, skip, take, orderBy }
+  if (query?.page || query?.size) {
+    let page = Number.parseInt(query?.page || "0")
+    let size = Number.parseInt(query?.size || "100")
+    if (page < 0) {
+      page = 0
+    }
+    if (size < 0) {
+      size = 100
+    }
+    if (size > 200) {
+      size = 200
+    }
+    const start = page * size
     filter.skip = start
     filter.take = size
-    filter.orderBy = {created:query?.order||'desc'}
+    filter.orderBy = { created: query?.order || "desc" }
   }
-  let data = await prismaClient.collection.findMany(filter)
+  const data = await prismaClient.collection.findMany(filter)
 
   return data
 }
 
 export async function newCollection(data: Collection): Promise<Collection> {
-  let result = await prismaClient.collection.create({data})
+  const result = await prismaClient.collection.create({ data })
   return result
 }
 
-export async function getCollectionById(id: string): Promise<Collection | null> {
-  let result = await prismaClient.collection.findUnique({
-    where: {id},
-    include:{
+export async function getCollectionById(
+  id: string,
+): Promise<Collection | null> {
+  const result = await prismaClient.collection.findUnique({
+    where: { id },
+    include: {
       author: true,
-      artworks: true
-    }
+      artworks: true,
+    },
   })
   return result
 }

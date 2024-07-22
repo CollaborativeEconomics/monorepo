@@ -16,8 +16,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
   // explorer = ""
   // network = "testnet"
   // provider?: NetworkConfig
-  chainId = "0x0"
-  connectedWallet = ""
+  connectedWallet? = ""
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
   web3?: Web3
@@ -102,7 +101,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     // @ts-expect-error returns chain ID string
     this.metamask.on("chainChanged", (chainId: string) => {
       console.log("> onChainChanged", Number.parseInt(chainId), chainId)
-      if (chainId === this.chainId) {
+      if (chainId === this.network.id) {
         console.log("Already on chain", chainId)
         return
       }
@@ -129,7 +128,8 @@ export default class MetaMaskWallet extends ChainBaseClass {
     //this.neturl   = mainnet ? this.MAINURL : this.TESTURL
     //this.explorer = mainnet ? this.MAINEXP : this.TESTEXP
     //this.chainId  = chainId
-    console.log("Network", this.network, this.chainId)
+    // console.log("Network", this.network, this.chainId)
+    this.network.id = chainId
   }
 
   async changeNetwork(provider: NetworkConfig) {

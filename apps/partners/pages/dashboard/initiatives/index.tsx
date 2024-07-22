@@ -1,25 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSession } from 'next-auth/react'
-import { getToken } from 'next-auth/jwt'
-import Dashboard from 'components/dashboard'
-import Sidebar from 'components/sidebar'
-import Title from 'components/title'
-import Initiative from 'components/initiative'
-import Label from 'components/form/label'
-import TextInput from 'components/form/textinput'
-import TextArea from 'components/form/textarea'
-import FileView from 'components/form/fileview'
-import Select from 'components/form/select'
-import Checkbox from 'components/form/checkbox'
-import ButtonBlue from 'components/buttonblue'
-import styles from 'styles/dashboard.module.css'
+import { useSession } from 'next-auth/react';
+import { getToken } from 'next-auth/jwt';
+import Dashboard from 'components/dashboard';
+import Sidebar from 'components/sidebar';
+import Title from 'components/title';
+import Initiative from 'components/initiative';
+import Label from 'components/form/label';
+import TextInput from 'components/form/textinput';
+import TextArea from 'components/form/textarea';
+import FileView from 'components/form/fileview';
+import Select from 'components/form/select';
+import Checkbox from 'components/form/checkbox';
+import ButtonBlue from 'components/buttonblue';
+import styles from 'styles/dashboard.module.css';
 //import { getOrganizationById, getProviders } from 'utils/registry'
-import { randomString, randomNumber } from 'utils/random'
-import dateToPrisma from 'utils/dateToPrisma'
-import { apiFetch } from 'utils/api'
-
-type Dictionary = { [key:string]:any }
+import { randomString, randomNumber } from 'utils/random';
+import dateToPrisma from 'utils/dateToPrisma';
+import { apiFetch } from 'utils/api';
+import {
+  getOrganizationById,
+  getProviders,
+  type Provider,
+} from '@cfce/database';
 
 /*
 export async function getServerSideProps({req,res}) {
@@ -40,36 +43,36 @@ export async function getServerSideProps({req,res}) {
 
 //export default function Page({organization, providers}) {
 export default function Page() {
-  const { data: session, update } = useSession()
+  const { data: session, update } = useSession();
   //const orgid = organization?.id || ''
   //const initiatives = organization?.initiative || []
-  const [initiatives, setInitiatives] = useState([])
-  const [providers, setProviders] = useState([])
-  const [orgid, setOrgid] = useState(session?.orgid || '')
+  const [initiatives, setInitiatives] = useState([]);
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [orgid, setOrgid] = useState(session?.orgid || '');
 
-  useEffect(()=>{
-    async function loadData(){
-      const oid = session?.orgid ?? ''
-      console.log('GET ORG:', oid)
-      const org = await apiFetch('organization?id='+oid) || {}
-      console.log('ORG:', org)
-      const prv = await apiFetch('providers') || []
-      console.log('PRV:', prv)
-      setOrgid(oid)
-      setInitiatives(org?.initiative || [])
-      setProviders(prv || [])
+  useEffect(() => {
+    async function loadData() {
+      const oid = session?.orgid ?? '';
+      console.log('GET ORG:', oid);
+      const org = await getOrganizationById(oid);
+      console.log('ORG:', org);
+      const fetchedProvider = await getProviders({});
+      console.log('PRV:', fetchedProvider);
+      setOrgid(oid);
+      setInitiatives(org?.initiative || []);
+      setProviders(fetchedProvider || []);
     }
-    loadData()
-  },[update])
+    loadData();
+  }, [session?.orgid]);
 
   function startDate() {
-    return new Date().toJSON().substr(0, 10)
+    return new Date().toJSON().substr(0, 10);
   }
 
   function addDays(days) {
-    const now = new Date()
-    now.setDate(now.getDate() + days)
-    return now.toJSON().substr(0, 10)
+    const now = new Date();
+    now.setDate(now.getDate() + days);
+    return now.toJSON().substr(0, 10);
   }
 
   function listCredits() {
@@ -77,33 +80,33 @@ export default function Page() {
       { id: '0', name: 'No credits' },
       { id: '1', name: 'Carbon credits' },
       { id: '2', name: 'Plastic credits' },
-      { id: '3', name: 'Biodiversity credits' }
-    ]
+      { id: '3', name: 'Biodiversity credits' },
+    ];
   }
 
   function listProviders() {
     if (!providers) {
-      return [{ id: 0, name: 'No providers' }]
+      return [{ id: 0, name: 'No providers' }];
     }
-    const list = []
+    const list = [];
     for (let i = 0; i < providers.length; i++) {
-      list.push({ id: providers[i].id, name: providers[i].name })
+      list.push({ id: providers[i].id, name: providers[i].name });
     }
-    return list
+    return list;
   }
 
   async function saveImage(data) {
-    console.log('IMAGE', data)
-    const body = new FormData()
-    body.append('name', data.name)
-    body.append('file', data.file)
-    const resp = await fetch('/api/ipfs', { method: 'POST', body })
-    const result = await resp.json()
-    return result
+    console.log('IMAGE', data);
+    const body = new FormData();
+    body.append('name', data.name);
+    body.append('file', data.file);
+    const resp = await fetch('/api/ipfs', { method: 'POST', body });
+    const result = await resp.json();
+    return result;
   }
 
   async function saveCredit(data, id) {
-    console.log('Save credit', id, data)
+    console.log('Save credit', id, data);
     const credit = {
       type: data.creditType,
       description: data.creditDesc,
@@ -111,56 +114,56 @@ export default function Page() {
       value: data.creditAmount,
       start: dateToPrisma(0),
       providerId: data.provider,
-      initiativeId: id
-    }
+      initiativeId: id,
+    };
     const opts = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf8' },
-      body:JSON.stringify(credit)
-    }
-    const resp = await fetch('/api/credit', opts)
-    const result = await resp.json()
-    console.log('CREDIT', result)
-    return result
+      body: JSON.stringify(credit),
+    };
+    const resp = await fetch('/api/credit', opts);
+    const result = await resp.json();
+    console.log('CREDIT', result);
+    return result;
   }
 
   async function onSubmit(data) {
-    console.log('SUBMIT', data)
+    console.log('SUBMIT', data);
     // TODO: Validate data
     if (!data.title) {
-      showMessage('Title is required')
-      return
+      showMessage('Title is required');
+      return;
     }
     if (!data.desc) {
-      showMessage('Description is required')
-      return
+      showMessage('Description is required');
+      return;
     }
-    if (!data.image){
-      showMessage('Image is required')
-      return
+    if (!data.image) {
+      showMessage('Image is required');
+      return;
     }
-    const file = data.image[0]
-    let ext = ''
+    const file = data.image[0];
+    let ext = '';
     switch (file.type) {
       case 'image/jpg':
       case 'image/jpeg':
-        ext = '.jpg'
-        break
+        ext = '.jpg';
+        break;
       case 'image/png':
-        ext = '.png'
-        break
+        ext = '.png';
+        break;
       case 'image/webp':
-        ext = '.webp'
-        break
+        ext = '.webp';
+        break;
     }
     if (!ext) {
-      showMessage('Only JPG, PNG and WEBP images are allowed')
-      return
+      showMessage('Only JPG, PNG and WEBP images are allowed');
+      return;
     }
     const image = {
       name: randomString() + ext,
-      file: file
-    }
+      file: file,
+    };
     const record = {
       title: data.title,
       description: data.desc,
@@ -168,77 +171,79 @@ export default function Page() {
       end: dateToPrisma(data.enddate),
       defaultAsset: '',
       organizationId: orgid,
-      tag: parseInt(randomNumber(8))
-    }
+      tag: Number.parseInt(randomNumber(8)),
+    };
     try {
-      showMessage('Saving image...')
-      setButtonState(ButtonState.WAIT)
-      const resimg = await saveImage(image)
-      console.log('RESIMG', resimg)
+      showMessage('Saving image...');
+      setButtonState(ButtonState.WAIT);
+      const resimg = await saveImage(image);
+      console.log('RESIMG', resimg);
       if (resimg.error) {
-        showMessage('Error saving image: ' + resimg.error)
-        setButtonState(ButtonState.READY)
-        return
+        showMessage(`Error saving image: ${resimg.error}`);
+        setButtonState(ButtonState.READY);
+        return;
       }
-      if (typeof resimg?.uri === "string") {
-        record.defaultAsset = resimg.uri
+      if (typeof resimg?.uri === 'string') {
+        record.defaultAsset = resimg.uri;
       }
-      console.log('REC', record)
-      showMessage('Saving info to database...')
+      console.log('REC', record);
+      showMessage('Saving info to database...');
       const opts = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf8' },
-        body:JSON.stringify(record)
-      }
-      const resp = await fetch('/api/initiative', opts)
-      const result = await resp.json()
-      console.log('RESULT', result)
+        body: JSON.stringify(record),
+      };
+      const resp = await fetch('/api/initiative', opts);
+      const result = await resp.json();
+      console.log('RESULT', result);
       if (result.error) {
-        showMessage('Error saving initiative: ' + result.error)
-        setButtonState(ButtonState.READY)
-      } else if (typeof result?.success == 'boolean' && !result.success) {
-        showMessage('Error saving initiative: unknown')
-        setButtonState(ButtonState.READY)
+        showMessage(`Error saving initiative: ${result.error}`);
+        setButtonState(ButtonState.READY);
+      } else if (typeof result?.success === 'boolean' && !result.success) {
+        showMessage('Error saving initiative: unknown');
+        setButtonState(ButtonState.READY);
       } else {
         if (data.creditType !== '0') {
-          saveCredit(data, result.id)
+          saveCredit(data, result.id);
         }
         //if(data.yesNFT){
-          // TODO: Save initiative 1155 collection
+        // TODO: Save initiative 1155 collection
         //}
-        showMessage('Initiative saved')
-        setButtonState(ButtonState.DONE)
+        showMessage('Initiative saved');
+        setButtonState(ButtonState.DONE);
       }
     } catch (ex) {
-      console.error(ex)
-      showMessage('Error saving initiative: ' + ex.message)
-      setButtonState(ButtonState.READY)
+      console.error(ex);
+      showMessage(`Error saving initiative: ${ex.message}`);
+      setButtonState(ButtonState.READY);
     }
   }
 
-  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 }
-  const imgSource = '/media/upload.jpg'
+  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
+  const imgSource = '/media/upload.jpg';
 
   function setButtonState(state) {
     switch (state) {
       case ButtonState.READY:
-        setButtonText('SUBMIT')
-        setButtonDisabled(false)
-        break
+        setButtonText('SUBMIT');
+        setButtonDisabled(false);
+        break;
       case ButtonState.WAIT:
-        setButtonText('WAIT')
-        setButtonDisabled(true)
-        break
+        setButtonText('WAIT');
+        setButtonDisabled(true);
+        break;
       case ButtonState.DONE:
-        setButtonText('DONE')
-        setButtonDisabled(true)
-        break
+        setButtonText('DONE');
+        setButtonDisabled(true);
+        break;
     }
   }
 
-  const [buttonDisabled, setButtonDisabled] = useState(false)
-  const [buttonText, setButtonText] = useState('SUBMIT')
-  const [message, showMessage] = useState('Enter initiative info and upload image')
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [buttonText, setButtonText] = useState('SUBMIT');
+  const [message, showMessage] = useState(
+    'Enter initiative info and upload image',
+  );
   //const {register, watch} = useForm({defaultValues:{creditType:'0'}})
   const { register, watch } = useForm({
     defaultValues: {
@@ -250,9 +255,9 @@ export default function Page() {
       creditDesc: '',
       creditAmount: '',
       provider: '',
-      image: ''
-    }
-  })
+      image: '',
+    },
+  });
   const [
     title,
     desc,
@@ -262,7 +267,7 @@ export default function Page() {
     creditDesc,
     creditAmount,
     provider,
-    image
+    image,
   ] = watch([
     'title',
     'desc',
@@ -272,13 +277,13 @@ export default function Page() {
     'creditDesc',
     'creditAmount',
     'provider',
-    'image'
-  ])
+    'image',
+  ]);
 
-  console.log('creditType', creditType)
+  console.log('creditType', creditType);
 
   async function onOrgChange(id) {
-    console.log('ORG CHAGED', orgid, 'to', id)
+    console.log('ORG CHAGED', orgid, 'to', id);
   }
 
   return (
@@ -286,7 +291,12 @@ export default function Page() {
       <Sidebar />
       <div className={styles.content}>
         <Title text="Create a Funding Initiative" />
-        <p className={styles.intro}>Creating an initiative allows donors to contribute to a specific campaign. This helps get your donors excited about the impact they can make, and helps them visualize how they’ll make the world a better place!</p>
+        <p className={styles.intro}>
+          Creating an initiative allows donors to contribute to a specific
+          campaign. This helps get your donors excited about the impact they can
+          make, and helps them visualize how they’ll make the world a better
+          place!
+        </p>
         <div className={styles.mainBox}>
           <form className={styles.vbox}>
             <FileView
@@ -314,7 +324,7 @@ export default function Page() {
               register={register('creditType')}
               options={listCredits()}
             />
-            {typeof creditType == 'undefined' || creditType == '0' ? (
+            {typeof creditType === 'undefined' || creditType === '0' ? (
               ''
             ) : (
               <div className="mb-6 px-12 py-6 bg-slate-700 rounded-lg">
@@ -327,7 +337,10 @@ export default function Page() {
                   label="Description"
                   register={register('creditDesc')}
                 />
-                <TextInput label="Amount to offset one credit" register={register('creditAmount')} />
+                <TextInput
+                  label="Amount to offset one credit"
+                  register={register('creditAmount')}
+                />
               </div>
             )}
             {/*<Checkbox label="Mint Story NFT" register={register('yesNFT')} check={true} />*/}
@@ -347,7 +360,7 @@ export default function Page() {
                 creditDesc,
                 creditAmount,
                 provider,
-                image
+                image,
               })
             }
           />
@@ -355,14 +368,16 @@ export default function Page() {
             {message}
           </p>
         </div>
-        { initiatives ? initiatives.map((item) => (
-          <div className={styles.mainBox} key={item.id}>
-            <Initiative key={item.id} {...item} />
-          </div>
-        )) : (
+        {initiatives ? (
+          initiatives.map(item => (
+            <div className={styles.mainBox} key={item.id}>
+              <Initiative key={item.id} {...item} />
+            </div>
+          ))
+        ) : (
           <h1 className="text-center text-2xl my-24">No initiatives found</h1>
         )}
       </div>
     </Dashboard>
-  )
+  );
 }

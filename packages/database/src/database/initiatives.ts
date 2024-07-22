@@ -1,6 +1,6 @@
-import { Initiative, Prisma } from "@prisma/client"
-import { ListQuery } from "../types"
-import { prismaClient } from "index"
+import type { Initiative, Prisma } from "@prisma/client"
+import type { ListQuery } from "../types"
+import { prismaClient } from ".."
 
 interface InitiativeQuery extends ListQuery {
   tag?: string
@@ -10,17 +10,19 @@ interface InitiativeQuery extends ListQuery {
   search?: string
 }
 
-export async function getInitiatives(query: InitiativeQuery): Promise<Initiative | null | Array<Initiative>> {
+export async function getInitiatives(
+  query: InitiativeQuery,
+): Promise<Initiative | null | Array<Initiative>> {
   let where = {}
-  let skip = 0
-  let take = 100
-  let include = {
+  const skip = 0
+  const take = 100
+  const include = {
     category: true,
     credits: true,
     organization: {
       include: {
-        wallets: true
-      }
+        wallets: true,
+      },
     },
     stories: {
       include: {
@@ -28,16 +30,19 @@ export async function getInitiatives(query: InitiativeQuery): Promise<Initiative
         organization: true,
         initiative: {
           include: {
-            category: true
-          }
-        }
-      }
-    }
+            category: true,
+          },
+        },
+      },
+    },
   }
 
   if (query?.tag) {
-    const tag = parseInt(query.tag)
-    const record = await prismaClient.initiative.findUnique({ where: { tag }, include })
+    const tag = Number.parseInt(query.tag)
+    const record = await prismaClient.initiative.findUnique({
+      where: { tag },
+      include,
+    })
     return record
   }
 
@@ -52,16 +57,16 @@ export async function getInitiatives(query: InitiativeQuery): Promise<Initiative
         {
           title: {
             contains: query.search,
-            mode: 'insensitive'
-          }
+            mode: "insensitive",
+          },
         },
         {
           description: {
             contains: query.search,
-            mode: 'insensitive'
-          }
-        }
-      ]
+            mode: "insensitive",
+          },
+        },
+      ],
     }
   }
 
@@ -71,21 +76,34 @@ export async function getInitiatives(query: InitiativeQuery): Promise<Initiative
 
   if (query?.location) {
     where = {
-      ...where, country: {
+      ...where,
+      country: {
         contains: query.location,
-        mode: 'insensitive'
-      }
+        mode: "insensitive",
+      },
     }
   }
 
-  let filter: Prisma.InitiativeFindManyArgs = { where, include, skip, take, orderBy: { title: 'asc' } }
+  const filter: Prisma.InitiativeFindManyArgs = {
+    where,
+    include,
+    skip,
+    take,
+    orderBy: { title: "asc" },
+  }
   if (query?.page || query?.size) {
-    let page = parseInt(query?.page || '0')
-    let size = parseInt(query?.size || '100')
-    if (page < 0) { page = 0 }
-    if (size < 0) { size = 100 }
-    if (size > 200) { size = 200 }
-    let start = page * size
+    let page = Number.parseInt(query?.page || "0")
+    let size = Number.parseInt(query?.size || "100")
+    if (page < 0) {
+      page = 0
+    }
+    if (size < 0) {
+      size = 100
+    }
+    if (size > 200) {
+      size = 200
+    }
+    const start = page * size
     filter.skip = start
     filter.take = size
   }
@@ -93,14 +111,16 @@ export async function getInitiatives(query: InitiativeQuery): Promise<Initiative
   return result
 }
 
-export async function getInitiativeById(id: string): Promise<Initiative | null> {
+export async function getInitiativeById(
+  id: string,
+): Promise<Initiative | null> {
   const include = {
     category: true,
     credits: true,
     organization: {
       include: {
-        wallets: true
-      }
+        wallets: true,
+      },
     },
     stories: {
       include: {
@@ -108,24 +128,29 @@ export async function getInitiativeById(id: string): Promise<Initiative | null> 
         organization: true,
         initiative: {
           include: {
-            category: true
-          }
-        }
-      }
-    }
+            category: true,
+          },
+        },
+      },
+    },
   }
-  const result = await prismaClient.initiative.findUnique({ where: { id }, include })
+  const result = await prismaClient.initiative.findUnique({
+    where: { id },
+    include,
+  })
   return result
 }
 
-export async function getInitiativeByTag(tag: number): Promise<Initiative | null> {
+export async function getInitiativeByTag(
+  tag: number,
+): Promise<Initiative | null> {
   const include = {
     category: true,
     credits: true,
     organization: {
       include: {
-        wallets: true
-      }
+        wallets: true,
+      },
     },
     stories: {
       include: {
@@ -133,13 +158,16 @@ export async function getInitiativeByTag(tag: number): Promise<Initiative | null
         organization: true,
         initiative: {
           include: {
-            category: true
-          }
-        }
-      }
-    }
+            category: true,
+          },
+        },
+      },
+    },
   }
-  const result = await prismaClient.initiative.findUnique({ where: { tag }, include })
+  const result = await prismaClient.initiative.findUnique({
+    where: { tag },
+    include,
+  })
   return result
 }
 
@@ -147,4 +175,3 @@ export async function newInitiative(data: Initiative): Promise<Initiative> {
   const result = await prismaClient.initiative.create({ data })
   return result
 }
-

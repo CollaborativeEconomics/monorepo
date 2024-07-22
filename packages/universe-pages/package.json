@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@cfce/typescript-config": "workspace:*",
-    "@types/react": "^18.3.3",
+    "@types/react": "latest",
     "next": "latest",
     "next-auth": "latest",
     "next-themes": "latest",

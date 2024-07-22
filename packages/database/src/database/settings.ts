@@ -1,17 +1,21 @@
-import { Setting } from "@prisma/client"
-import { prismaClient } from "index";
+import type { Setting } from "@prisma/client"
+import { prismaClient } from ".."
 
 interface SettingsQuery {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
-export async function getSettings(query: SettingsQuery): Promise<Setting | Array<Setting> | null> {
+export async function getSettings(
+  query: SettingsQuery,
+): Promise<Setting | Array<Setting> | null> {
   let result = null
   if (query?.id) {
     result = await prismaClient.setting.findUnique({ where: { id: query.id } })
   } else if (query?.name) {
-    result = await prismaClient.setting.findUnique({ where: { name: query.name } })
+    result = await prismaClient.setting.findUnique({
+      where: { name: query.name },
+    })
   } else {
     result = await prismaClient.setting.findMany()
   }

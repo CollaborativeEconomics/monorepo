@@ -52,23 +52,25 @@ export default class FreighterWallet extends ChainBaseClass {
 
   async payment(dst: string, amt: string, memo: string) {
     try {
-      const nwk = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "").toUpperCase()
-      const net = process.env.NEXT_PUBLIC_STELLAR_PASSPHRASE || ""
-      console.log("NET:", nwk, net)
-      //let pub = process.env.NEXT_PUBLIC_NFT_ISSUER
-      const pub = this.connectedWallet
-      console.log("From", pub)
+      // const nwk = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "").toUpperCase()
+      // const net = process.env.NEXT_PUBLIC_STELLAR_PASSPHRASE || ""
+      // console.log("NET:", nwk, this.network.networkPassphrase)
+      console.log("From", this.connectedWallet)
       console.log("Paying", amt, "XLM to", dst, "Memo", memo)
-      const act = await this.horizon.loadAccount(pub)
+      const act = await this.horizon.loadAccount(this.connectedWallet)
       const fee = await this.horizon.fetchBaseFee() // 100
       const opr = StellarSDK.Operation.payment({
         destination: dst,
         amount: amt,
         asset: StellarSDK.Asset.native(),
       })
-      const opt = { fee: `${fee}`, network: nwk, networkPassphrase: net }
+      const opt = {
+        fee: `${fee}`,
+        network: this.network.rpcUrl,
+        networkPassphrase: this.network.networkPassphrase,
+      }
       const txn = new StellarSDK.TransactionBuilder(act, opt)
-        //.setNetworkPassphrase(net)
+        //.setNetworkPassphrase(this.network.networkPassphrase)
         .addOperation(opr)
         .setTimeout(30)
       if (memo) {
@@ -78,7 +80,9 @@ export default class FreighterWallet extends ChainBaseClass {
       const txid = built.hash().toString("hex")
       const xdr = built.toXDR()
       console.log("XDR:", xdr)
-      const sgn = await signTransaction(xdr, { networkPassphrase: net })
+      const sgn = await signTransaction(xdr, {
+        networkPassphrase: this.network.networkPassphrase,
+      })
       console.log("SGN:", sgn)
       //const env   = StellarSDK.xdr.Transaction.fromXDR(sgn, 'base64')
       //const env   = StellarSDK.xdr.TransactionEnvelope.fromXDR(sgn, 'base64')
@@ -92,7 +96,10 @@ export default class FreighterWallet extends ChainBaseClass {
       //console.log('TXS', txs)
 
       //const txs = new StellarSDK.TransactionBuilder.fromXDR(sgn, this.horizonurl)
-      const txs = StellarSDK.TransactionBuilder.fromXDR(sgn, net)
+      const txs = StellarSDK.TransactionBuilder.fromXDR(
+        sgn,
+        this.network?.networkPassphrase ?? "",
+      )
       console.log("TXS", txs)
       const result = await this.horizon.submitTransaction(txs)
       console.log("RES", result)

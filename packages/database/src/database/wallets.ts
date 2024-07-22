@@ -1,39 +1,50 @@
-import { Wallet } from "@prisma/client"
-import { prismaClient } from "index"
-import { ListQuery } from "types"
+import type { Prisma, Wallet } from "@prisma/client"
+import { prismaClient } from ".."
+import type { ListQuery } from "types"
 
 interface WalletQuery extends ListQuery {
   address?: string
-
+  orgId?: string
 }
 
-export async function getWallets(query: WalletQuery): Promise<Wallet | Array<Wallet>> {
-  let where = {}
-  let skip = 0
-  let take = 100
-  let orderBy = {}
+export async function getWallets(
+  query: WalletQuery,
+): Promise<Wallet | Array<Wallet>> {
+  const where: Prisma.WalletWhereInput = {}
+  const skip = 0
+  const take = 100
+  const orderBy = {}
   // let include = {
   //   organizations: true
   // }
 
-  let filter = { where, skip, take, orderBy }
+  const filter = { where, skip, take, orderBy }
+  if (query?.orgId) {
+    where.organizationId = query.orgId
+  }
   if (query?.page || query?.size) {
-    let page = parseInt(query?.page || '0')
-    let size = parseInt(query?.size || '100')
-    if (page < 0) { page = 0 }
-    if (size < 0) { size = 100 }
-    if (size > 200) { size = 200 }
-    let start = page * size
+    let page = Number.parseInt(query?.page || "0")
+    let size = Number.parseInt(query?.size || "100")
+    if (page < 0) {
+      page = 0
+    }
+    if (size < 0) {
+      size = 100
+    }
+    if (size > 200) {
+      size = 200
+    }
+    const start = page * size
     filter.skip = start
     filter.take = size
-    filter.orderBy = { name: 'asc' }
+    filter.orderBy = { name: "asc" }
   }
-  let data = await prismaClient.wallet.findMany(filter)
+  const data = await prismaClient.wallet.findMany(filter)
 
   return data
 }
 
-export async function newWallet(data: Wallet): Promise<Omit<Wallet, 'id'>> {
-  let result = await prismaClient.wallet.create({ data })
+export async function newWallet(data: Wallet): Promise<Omit<Wallet, "id">> {
+  const result = await prismaClient.wallet.create({ data })
   return result
 }

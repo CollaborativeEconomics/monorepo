@@ -7,9 +7,17 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "public"
-, "../../packages/universe-components/src/tailwind.config.ts"  ],
-  "exclude": ["node_modules", "dist", "work", "../../packages/universe-components/src/tailwind.config.ts"],
+    "public",
+    "../../packages/universe-components/src/tailwind.config.ts",
+    "./appConfig.staging.js",
+    "./appConfig.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "work",
+    "../../packages/universe-components/src/tailwind.config.ts"
+  ],
   "compilerOptions": {
     "baseUrl": "",
     "outDir": "dist",

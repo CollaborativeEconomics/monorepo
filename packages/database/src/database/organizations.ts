@@ -1,10 +1,10 @@
-import { Organization, Prisma } from "@prisma/client"
-import { prismaClient } from "index"
-import { ListQuery } from "types"
+import type { Chain, Organization, Prisma } from "@prisma/client"
+import { prismaClient } from ".."
+import type { ListQuery } from "types"
 
 interface OrganizationQuery extends ListQuery {
   category?: string
-  chain?: string
+  chain?: Chain
   wallet?: string
   email?: string
   search?: string
@@ -12,18 +12,22 @@ interface OrganizationQuery extends ListQuery {
   featured?: boolean
 }
 
-export async function getOrganizations(query: OrganizationQuery): Promise<Organization | Array<Organization> | null> {
-  let where = {}
-  let skip = 0
-  let take = 100
-  let orderBy = { name: 'asc' } as Prisma.OrganizationOrderByWithRelationInput
-  let include = {
+export async function getOrganizations(
+  query: OrganizationQuery,
+): Promise<Array<
+  Prisma.OrganizationGetPayload<{ include: { initiative: true } }>
+> | null> {
+  let where = {} as Prisma.OrganizationWhereInput
+  const skip = 0
+  const take = 100
+  const orderBy = { name: "asc" } as Prisma.OrganizationOrderByWithRelationInput
+  const include = {
     category: true,
     wallets: true,
     initiative: {
       include: {
-        credits: true
-      }
+        credits: true,
+      },
     },
     stories: {
       include: {
@@ -31,32 +35,32 @@ export async function getOrganizations(query: OrganizationQuery): Promise<Organi
         organization: true,
         initiative: {
           include: {
-            category: true
-          }
-        }
-      }
+            category: true,
+          },
+        },
+      },
     },
   }
 
   if (query?.featured) {
     const record = await getFeaturedOrganization()
-    console.log('Featured', record?.name)
-    return record
+    console.log("Featured", record?.name)
+    return record ? [record] : null
   }
 
   if (query?.email) {
     const record = await getOrganizationByEmail(query.email)
-    console.log('Org', record?.email, record?.name)
-    return record
+    console.log("Org", record?.email, record?.name)
+    return record ? [record] : null
   }
 
   if (query?.chain) {
     where = {
       wallets: {
         some: {
-          chain: query.chain
-        }
-      }
+          chain: query.chain,
+        },
+      },
     }
   }
 
@@ -67,10 +71,10 @@ export async function getOrganizations(query: OrganizationQuery): Promise<Organi
         some: {
           address: {
             equals: query.wallet,
-            mode: 'insensitive'
-          }
-        }
-      }
+            mode: "insensitive",
+          },
+        },
+      },
     }
   }
 
@@ -81,16 +85,16 @@ export async function getOrganizations(query: OrganizationQuery): Promise<Organi
         {
           name: {
             contains: query.search,
-            mode: 'insensitive'
-          }
+            mode: "insensitive",
+          },
         },
         {
           description: {
             contains: query.search,
-            mode: 'insensitive'
-          }
-        }
-      ]
+            mode: "insensitive",
+          },
+        },
+      ],
     }
   }
 
@@ -100,37 +104,48 @@ export async function getOrganizations(query: OrganizationQuery): Promise<Organi
 
   if (query?.location) {
     where = {
-      ...where, country: {
+      ...where,
+      country: {
         contains: query.location,
-        mode: 'insensitive'
-      }
+        mode: "insensitive",
+      },
     }
   }
 
   //where['inactive'] = false
 
-  let filter = { where, include, skip, take, orderBy }
+  const filter = { where, include, skip, take, orderBy }
   if (query?.page || query?.size) {
-    let page = parseInt(query?.page || '0')
-    let size = parseInt(query?.size || '100')
-    if (page < 0) { page = 0 }
-    if (size < 0) { size = 100 }
-    if (size > 200) { size = 200 }
-    let start = page * size
+    let page = Number.parseInt(query?.page || "0")
+    let size = Number.parseInt(query?.size || "100")
+    if (page < 0) {
+      page = 0
+    }
+    if (size < 0) {
+      size = 100
+    }
+    if (size > 200) {
+      size = 200
+    }
+    const start = page * size
     filter.skip = start
     filter.take = size
   }
-  let data = await prismaClient.organization.findMany(filter)
+  const data = await prismaClient.organization.findMany(filter)
 
   return data
 }
 
-export async function getOrganizationById(id: string): Promise<Organization | null> {
-  let include = {
+export async function getOrganizationById(
+  id: string,
+): Promise<Prisma.OrganizationGetPayload<{
+  include: { initiative: true }
+}> | null> {
+  const include = {
     category: true,
     wallets: true,
     initiative: {
-      include: { credits: true }
+      include: { credits: true },
     },
     stories: {
       include: {
@@ -138,65 +153,85 @@ export async function getOrganizationById(id: string): Promise<Organization | nu
         organization: true,
         initiative: {
           include: {
-            category: true
-          }
-        }
-      }
-    }
-  }
-  const organization = await prismaClient.organization.findUnique({ where: { id }, include })
-  return organization;
-}
-
-export async function getOrganizationByEmail(email: string): Promise<Organization | null> {
-  let include = {
-    category: true,
-    wallets: true,
-    initiative: {
-      include: { credits: true }
+            category: true,
+          },
+        },
+      },
     },
-    stories: {
-      include: {
-        media: true,
-        organization: true,
-        initiative: {
-          include: {
-            category: true
-          }
-        }
-      }
-    }
   }
-  const organization = await prismaClient.organization.findUnique({ where: { email }, include })
-  return organization;
-}
-
-export async function getFeaturedOrganization(): Promise<Organization | null> {
-  let include = {
-    category: true,
-    wallets: true,
-    initiative: {
-      include: { credits: true }
-    },
-    stories: {
-      include: {
-        media: true,
-        organization: true,
-        initiative: {
-          include: {
-            category: true
-          }
-        }
-      }
-    }
-  }
-  const organizations = await prismaClient.organization.findMany({ where: { featured: true }, include })
-  const organization = organizations.length ? organizations[0] as Organization : null
+  const organization = await prismaClient.organization.findUnique({
+    where: { id },
+    include,
+  })
   return organization
 }
 
-export async function newOrganization(data: Organization): Promise<Organization> {
-  let result = await prismaClient.organization.create({ data })
-  return result
+export async function getOrganizationByEmail(
+  email: string,
+): Promise<Prisma.OrganizationGetPayload<{
+  include: { initiative: true }
+}> | null> {
+  const include = {
+    category: true,
+    wallets: true,
+    initiative: {
+      include: { credits: true },
+    },
+    stories: {
+      include: {
+        media: true,
+        organization: true,
+        initiative: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    },
+  }
+  const organization = await prismaClient.organization.findUnique({
+    where: { email },
+    include,
+  })
+  return organization
 }
 
+export async function getFeaturedOrganization(): Promise<Prisma.OrganizationGetPayload<{
+  include: { initiative: true }
+}> | null> {
+  const include = {
+    category: true,
+    wallets: true,
+    initiative: {
+      include: { credits: true },
+    },
+    stories: {
+      include: {
+        media: true,
+        organization: true,
+        initiative: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    },
+  }
+  const organizations = await prismaClient.organization.findMany({
+    where: { featured: true },
+    include,
+  })
+  const organization = organizations.length
+    ? (organizations[0] as Prisma.OrganizationGetPayload<{
+        include: { initiative: true }
+      }>)
+    : null
+  return organization
+}
+
+export async function newOrganization(
+  data: Organization,
+): Promise<Organization> {
+  const result = await prismaClient.organization.create({ data })
+  return result
+}

@@ -40,7 +40,7 @@ export type ChainNames = (typeof ChainNames)[number]
 
 export type Network = "mainnet" | "testnet" | "horizon" | string
 export interface NetworkConfig {
-  id: number
+  id: number | string
   name: string
   symbol: string
   decimals: number

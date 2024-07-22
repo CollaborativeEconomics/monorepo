@@ -19,6 +19,11 @@
       "@/lib/*": ["lib/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../../packages/functions/src/mintStoryNFT.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../packages/utils/src/mintStoryNFT.ts"
+  ],
   "exclude": ["node_modules", "work"]
 }

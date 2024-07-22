@@ -13,9 +13,9 @@ const apis = {
     gateway: "https://ipfs.filebase.io/ipfs/",
     pinning: "https://api.filebase.io/v1/ipfs",
     buckets: {
-      nfts: "kuyawa-test-ipfs",
-      avatars: "kuyawa-avatars",
-      media: "kuyawa-media",
+      nfts: "cfce-give-nfts",
+      avatars: "cfce-profiles",
+      media: "cfce-media",
     },
   },
 }
@@ -46,10 +46,10 @@ const chains = {
   },
 }
 
-const config = {
+const appConfig = {
   siteInfo,
   apis,
   chains,
 }
 
-export default config
+export default appConfig
