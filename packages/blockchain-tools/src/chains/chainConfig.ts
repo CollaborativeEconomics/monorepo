@@ -1,4 +1,4 @@
-import { chain } from "lodash"
+import type { Chain } from "@cfce/database"
 
 export const ChainSlugs = [
   "arbitrum",
@@ -19,7 +19,7 @@ export const ChainSlugs = [
 ] as const
 export type ChainSlugs = (typeof ChainSlugs)[number]
 
-export const ChainNames = [
+export const ChainNames: Chain[] = [
   "Arbitrum",
   "Avalanche",
   "Base",

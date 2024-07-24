@@ -33,6 +33,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
+    "@cfce/database": "workspace:*",
     "@metamask/providers": "^17.1.1",
     "@stellar/freighter-api": "^2.0.0",
     "@stellar/stellar-sdk": "^11.3.0",

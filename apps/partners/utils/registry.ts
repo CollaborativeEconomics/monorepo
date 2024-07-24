@@ -112,7 +112,7 @@ export const createNFT = (body: Dictionary) => dbPost("nft", body)
 export const getAllNFTs = (id: string) => dbQuery(`nft`)
 export const getNFTbyId = (id: string) => dbQuery(`nft?id=${id}`)
 export const getNFTbyTokenId = (id: string) => dbQuery(`nft?tokenid=${id}`)
-export const getNFTsByAccount = (id: string) => dbQuery(`nft?userid=${id}`)
+export const getNFTsByAccount = (id: string) => dbQuery(`nft?userId=${id}`)
 export const getNFTsByOrganization = (id: string) => dbQuery(`nft?orgId=${id}`)
 
 export const newUser = (body: Dictionary) => dbPost("users", body)

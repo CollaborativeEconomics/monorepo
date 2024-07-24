@@ -7,7 +7,7 @@ interface DonationQuery extends ListQuery {
   orgId?: string
   chapterid?: string
   initid?: string
-  userid?: string
+  userId?: string
   wallet?: string
   from?: string
   to?: string
@@ -30,24 +30,24 @@ export async function getDonations(
   filter.where = {}
 
   if (query?.favs) {
-    const userid = query.favs
+    const userId = query.favs
     filter.distinct = ["organizationId"]
     filter.select = {
       organization: true,
     }
     filter.where = {
-      userId: userid,
+      userId: userId,
     }
   }
 
   if (query?.badges) {
-    const userid = query.badges
+    const userId = query.badges
     filter.distinct = ["categoryId"]
     filter.select = {
       category: true,
     }
     filter.where = {
-      userId: userid,
+      userId: userId,
     }
   }
 
@@ -63,8 +63,8 @@ export async function getDonations(
     filter.where.initiativeId = query.initid
   }
 
-  if (query?.userid) {
-    filter.where.userId = query.userid
+  if (query?.userId) {
+    filter.where.userId = query.userId
   }
 
   if (query?.wallet) {

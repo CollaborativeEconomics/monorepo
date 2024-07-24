@@ -41,7 +41,7 @@ export default function Page(props: Props) {
   //console.log('DASH SESSION', session)
   const [data, setData] = useState<Array<Donation>>([]);
   const [orgId, setOrgid] = useState(session?.orgId || '');
-  //const orgname = session.orgname
+  //const orgName = session.orgName
   //console.log('DASH ORGID', orgId)
   //console.log('DASH ORGIS', session?.orgId)
   //const oid = session?.orgId

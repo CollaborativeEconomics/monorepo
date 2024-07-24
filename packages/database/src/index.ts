@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Prisma } from "@prisma/client"
 
 export const prismaClient = new PrismaClient()
 export type {
@@ -6,6 +6,7 @@ export type {
   Action,
   Artwork,
   Category,
+  Chain,
   Chapter,
   Collection,
   Credit,
@@ -29,6 +30,7 @@ export type {
   Wallet,
 } from "@prisma/client"
 
+export { Prisma }
 export * from "./database/artworks"
 export * from "./database/categories"
 export * from "./database/chapters"

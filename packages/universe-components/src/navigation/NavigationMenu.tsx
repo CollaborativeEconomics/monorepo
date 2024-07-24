@@ -3,9 +3,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { cn } from '@/shadCnUtil';
-import { Button } from '@/src/components/ui/button';
+import { Button } from '@/ui/button';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { DarkModeSwitcher } from '@/src/components/dark-mode-switcher';
+import DarkModeSwitcher from './DarkModeSwitcher';
 
 import {
   NavigationMenu,
@@ -15,7 +15,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '@/src/components/ui/navigation-menu';
+} from '@/ui/navigation-menu';
 
 import {
   Sheet,
@@ -25,13 +25,13 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/src/components/ui/sheet';
+} from '@/ui/sheet';
 
 export default function NavMenu() {
   const { data: session, status } = useSession();
   //console.log('Header Session', session, status)
   const avatar = session?.user?.image || '/media/nopic.png';
-  const userurl = session?.userid ? '/profile/' + session?.userid : '';
+  const userurl = session?.userId ? `/profile/${session?.userId}` : '';
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function NavMenu() {
               </NavigationMenuContent>
             </NavigationMenuItem> */}
             <NavigationMenuItem>
-              {status == 'authenticated' ? (
+              {status === 'authenticated' ? (
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle({ type: 'avatar' })}
                   href={userurl}

@@ -3,7 +3,7 @@ import { prismaClient } from "../index"
 import type { ListQuery } from "../types"
 
 interface CollectionQuery extends ListQuery {
-  userid?: string
+  userId?: string
 }
 
 export async function getCollections(
@@ -17,8 +17,8 @@ export async function getCollections(
     author: true,
   }
 
-  if (query?.userid) {
-    where = { authorId: query.userid }
+  if (query?.userId) {
+    where = { authorId: query.userId }
   }
 
   const filter = { where, include, skip, take, orderBy }

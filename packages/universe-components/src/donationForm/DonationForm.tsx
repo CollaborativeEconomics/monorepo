@@ -1,4 +1,6 @@
 'use client';
+import { pendingDonationState } from '@cfce/utils';
+import { useAtom } from 'jotai';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Card } from '../ui/card';
@@ -42,7 +44,7 @@ export default function DonationForm(props: any) {
   const initiative = props.initiative;
   const contractId = initiative.contractcredit;
   const organization = initiative.organization;
-  const { donation, setDonation } = useContext(DonationContext);
+  const [donation, setDonation] = useAtom(pendingDonationState);
   const usdRate = props.rate || 0;
   const usdCarbon = props.carbon || 0;
   const credit =
@@ -63,7 +65,8 @@ export default function DonationForm(props: any) {
   const maxValue = (creditCurrent * 100) / creditGoal;
   console.log('MAXGOAL', maxGoal, maxValue);
   const tons = 173.243;
-  const tonx = parseFloat(credit?.current) / parseFloat(credit?.value);
+  const tonx =
+    Number.parseFloat(credit?.current) / Number.parseFloat(credit?.value);
   const perc = (tonx * 100) / tons;
   console.log('TONS', tons, tonx, perc, '%');
 
@@ -383,7 +386,7 @@ export default function DonationForm(props: any) {
     const userId = userInfo?.id || '';
     if (userId) {
       // Check donations
-      const userDon = await fetchApi('donations?userid=' + userId);
+      const userDon = await fetchApi('donations?userId=' + userId);
       console.log('DONS', userDon);
       if (userDon?.result?.length > 0) {
         firstTime = false;

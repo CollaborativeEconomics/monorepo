@@ -45,7 +45,7 @@ const Sidebar = ({
           />
         </Link>
       </div>
-      {session?.isadmin && (
+      {session?.isAdmin && (
         <div className="w-full box-border">
           <select
             className="my-4 w-full box-border"
@@ -97,7 +97,7 @@ const Sidebar = ({
                   You are not signed in
                 </span>
                 <a
-                  href={`/api/auth/signin`}
+                  href={'/api/auth/signin'}
                   className={styles.buttonPrimary}
                   onClick={e => {
                     e.preventDefault();
@@ -117,12 +117,12 @@ const Sidebar = ({
                   />
                 )}
                 <span className={styles.signedInText}>
-                  <strong>{session.orgname ?? ''}</strong>
+                  <strong>{session.orgName ?? ''}</strong>
                   <br />
                   <small>{session.user.email ?? session.user.name}</small>
                 </span>
                 <a
-                  href={`/api/auth/signout`}
+                  href={'/api/auth/signout'}
                   className={styles.button}
                   onClick={e => {
                     e.preventDefault();

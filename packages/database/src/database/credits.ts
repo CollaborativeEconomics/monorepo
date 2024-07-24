@@ -1,23 +1,21 @@
-import type { Credit } from "@prisma/client"
+import type { Credit, Prisma } from "@prisma/client"
 import type { ListQuery } from "../types"
 import { prismaClient } from "../index"
 
 interface CreditsQuery extends ListQuery {
-  providerid?: string
+  providerId?: string
   initiativeid?: string
 }
 
-export async function getCredits(
-  query: CreditsQuery,
-): Promise<Credit | Array<Credit>> {
+export async function getCredits(query: CreditsQuery) {
   let where = {}
   const skip = 0
   const take = 100
   const orderBy = {}
   //let include = {}
 
-  if (query?.providerid) {
-    where = { providerId: query.providerid }
+  if (query?.providerId) {
+    where = { providerId: query.providerId }
   } else if (query?.initiativeid) {
     where = { initiativeId: query.initiativeid }
   }
@@ -44,12 +42,16 @@ export async function getCredits(
   return result
 }
 
-export async function getCreditById(id: string): Promise<Credit | null> {
+export async function getCreditById(id: string) {
   const result = await prismaClient.credit.findUnique({ where: { id } })
   return result
 }
 
-export async function newCredit(data: Credit): Promise<Credit> {
+export async function newCredit(data: Prisma.CreditCreateInput) {
   const result = await prismaClient.credit.create({ data })
   return result
+}
+
+export function updateCredit(id: string, data: Prisma.CreditUpdateInput) {
+  return prismaClient.credit.update({ where: { id }, data })
 }

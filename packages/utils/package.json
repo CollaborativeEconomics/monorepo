@@ -12,13 +12,19 @@
     "@aws-sdk/client-s3": "^3.608.0",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
+    "@next-auth/prisma-adapter": "^1.0.5",
     "@vercel/blob": "^0.23.4",
-    "formidable": "^3.5.1"
+    "formidable": "^3.5.1",
+    "jotai": "^2.9.1",
+    "next-auth": "^4.24.7",
+    "ts-node": "^10.9.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/formidable": "^3.4.5",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.9",
+    "@types/uuid": "^10.0.0",
     "aws-sdk-client-mock": "^4.0.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",

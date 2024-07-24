@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres'
+import { sql } from "@vercel/postgres"
 
 export async function showTables() {
   const { rows } = await sql`
@@ -8,10 +8,9 @@ export async function showTables() {
     AND schemaname != 'information_schema'
     ORDER BY tablename
   `
-  const list = rows.map(row => row.tablename)
+  const list = rows.map((row) => row.tablename)
   return list
 }
-
 
 //import { Prisma } from '@prisma/client'
 //import db from "prisma/client"
@@ -33,13 +32,12 @@ export async function showTables() {
 //import {getStories} from "lib/database/stories"
 //import {getDonations} from "lib/database/donations"
 
-
 //console.log('DMMF', Prisma.dmmf)
 //console.log('DATA', Prisma.dmmf.datamodel)
 //console.log('MDLS', Prisma.dmmf.datamodel.models)
 
 export default async function test(req, res) {
-  console.log('> api/test')
+  console.log("> api/test")
   const info = await showTables()
   //const info = Prisma.dmmf.datamodel.models.find(model => model.name === "Account").fields
   //const info = Prisma.dmmf.datamodel.models.find(model => model.name === "Organization").fields
@@ -66,7 +64,7 @@ export default async function test(req, res) {
   //const info = await getUsers()
   //const info = await newWallet({userId:'cabac26f-b9df-45bf-9cd2-f898334d3fdf', address:'GAPGZM2MKJP4PUTMRT3BXI2GJJH5Z3Z7G7OQSCHE3QS3LB57AUVCOAID', chain:'Stellar'})
   //const info = await getUsers({wallet:'rhjqL5YcMBZWQbQmFE9XxQHTWX6qNim3T1'})
-  //const info = await getNftData({userid:'6376395c4cbe86f440764d3f'})
+  //const info = await getNftData({userId:'6376395c4cbe86f440764d3f'})
   //const info = await getNftData({address:'rhjqL5YcMBZWQbQmFE9XxQHTWX6qNim3T1'})
   //const info = await getArtworkById('64e2263a2975845e92427346')
   //const info = await deleteAllNFTs()
@@ -82,5 +80,8 @@ export default async function test(req, res) {
   //const info = await getDonations()
   //const info = await migrate.insertStories()
   //const info = null;
-  res.status(200).setHeader("Content-Type", "text/plain").send(JSON.stringify(info||null,null,2))
+  res
+    .status(200)
+    .setHeader("Content-Type", "text/plain")
+    .send(JSON.stringify(info || null, null, 2))
 }

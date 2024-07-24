@@ -1,10 +1,13 @@
 // Startup file for instrumentation
-import appConfig from "./appConfig"
-import appConfigStaging from "./appConfig.staging"
+import { appConfig } from "@cfce/utils"
 import { BlockchainManager } from "@cfce/blockchain-tools"
+import { setAuthProviders } from "@cfce/utils"
 
-if (process.env.NODE_ENV === "production") {
-  BlockchainManager.initialize(appConfig.chains)
-} else {
-  BlockchainManager.initialize(appConfigStaging.chains)
-}
+// E.g. google, github, freighter, etc.
+setAuthProviders(appConfig.auth)
+
+// Note: for server-side functions, each chain should have its wallet secret env var
+BlockchainManager.initialize({
+  ...appConfig.chains,
+  defaults: appConfig.chainDefaults,
+})

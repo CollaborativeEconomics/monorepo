@@ -3,7 +3,7 @@ import { prismaClient } from ".."
 import type { ListQuery } from "types"
 
 interface UserWalletQuery extends ListQuery {
-  userid?: string
+  userId?: string
 }
 // @deprecated looks like
 export async function getUserWallets(
@@ -17,8 +17,8 @@ export async function getUserWallets(
     users: true,
   }
 
-  if (query?.userid) {
-    where = { userId: query.userid }
+  if (query?.userId) {
+    where = { userId: query.userId }
   }
 
   const filter = { where, skip, take, orderBy }

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { type PropsWithChildren } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ interface PageProps {
   className?: string;
 }
 
-export const PageWrapper = (props: any) => {
+export const PageWrapper = (props: PropsWithChildren) => {
   const children = props?.children;
   return (
     <div className="min-h-screen flex flex-col align-middle justify-center bg-slate-300">
@@ -49,8 +49,6 @@ const Page = ({
         className="fixed top-0 bottom-0 left-0 right-0 bg-cover -z-10 bg-center opacity-60"
         style={{ backgroundImage: 'url(/bg0.jpg)' }}
       />
-      {/*<script defer src="/scripts/stellar-sdk.js"></script>*/}
-      <script defer src="/scripts/common.js"></script>
     </div>
   );
 };

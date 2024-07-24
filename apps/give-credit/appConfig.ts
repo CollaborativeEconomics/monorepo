@@ -1,3 +1,10 @@
+import type { Interfaces } from "@cfce/blockchain-tools"
+import type {
+  ChainSlugs,
+  Network,
+  TokenTickerSymbol,
+} from "@cfce/blockchain-tools/dist/chains/chainConfig"
+
 const siteInfo = {
   title: "Give Credit",
   description: "Make tax-deductible donations of carbon credits",
@@ -20,13 +27,14 @@ const apis = {
   },
 }
 
-const chains = {
-  defaults: {
-    network: "mainnet",
-    wallet: "freighter",
-    chain: "stellar",
-    coin: "xlm",
-  },
+type ContractType = "CCreceiptMintbotERC721" | "receiptMintbotERC721"
+interface ChainConfig {
+  network: string
+  contracts: Partial<Record<ContractType, string>>
+  wallets: Interfaces[]
+  coins: TokenTickerSymbol[]
+}
+const chains: Partial<Record<ChainSlugs, ChainConfig>> = {
   xinfin: {
     network: "mainnet",
     contracts: {
@@ -42,14 +50,31 @@ const chains = {
         "CDCTS77MPY6GXTGMFFIOWINMPBX4G7DELFEV34KTX5N2DZH43TGHMNU3",
     },
     wallets: ["freighter"],
-    coins: ["xlm", "usdc"],
+    coins: ["XLM", "USDC"],
   },
 }
 
+const auth = Object.keys(chains)
+
+interface ChainDefaults {
+  network: Network
+  wallet: string
+  chain: ChainSlugs
+  coin: TokenTickerSymbol
+}
+const chainDefaults: ChainDefaults = {
+  network: "mainnet",
+  wallet: "freighter",
+  chain: "stellar",
+  coin: "XLM",
+}
+
 const appConfig = {
-  siteInfo,
   apis,
+  auth,
   chains,
+  chainDefaults,
+  siteInfo,
 }
 
 export default appConfig

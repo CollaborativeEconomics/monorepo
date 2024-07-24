@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client"
+import type { Prisma, User } from "@prisma/client"
 import { prismaClient } from ".."
 
 interface UserQuery {
@@ -8,9 +8,7 @@ interface UserQuery {
   apikey?: string
 }
 
-export async function getUsers(
-  query: UserQuery,
-): Promise<User | Array<User> | null> {
+export async function getUsers(query: UserQuery) {
   console.log("QUERY", query)
   const include = {
     artworks: {
@@ -45,10 +43,11 @@ export async function getUserByApiKey(apiKey: string): Promise<User | null> {
   return user
 }
 
-export async function getUserByWallet(
-  walletAddress: string,
-): Promise<User | null> {
+export async function getUserByWallet(walletAddress: string) {
   const user = await prismaClient.user.findFirst({
+    include: {
+      wallets: true,
+    },
     where: {
       wallets: {
         some: {
@@ -60,7 +59,9 @@ export async function getUserByWallet(
   return user
 }
 
-export async function newUser(data: User): Promise<User> {
+export async function newUser(
+  data: Prisma.UserCreateArgs["data"],
+): Promise<User> {
   const user = await prismaClient.user.create({ data })
   console.log("NEW", user)
   return user
@@ -72,7 +73,7 @@ export async function setUser(id: string, data: Partial<User>): Promise<User> {
   return user
 }
 
-export async function getUserById(id: string): Promise<User | null> {
+export async function getUserById(id: string) {
   const include = {
     artworks: {
       include: { author: true },

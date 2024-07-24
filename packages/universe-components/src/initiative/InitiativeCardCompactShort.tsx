@@ -29,7 +29,7 @@ export default function InitiativeCardCompact(props: {
                 {initiative.title}
               </h3>
               <DateDisplay
-                timestamp={initiative.created}
+                timestamp={+new Date(initiative.created)}
                 className="py-4 px-6"
               />
               <div className="px-6 line-clamp-2">{initiative.description}</div>

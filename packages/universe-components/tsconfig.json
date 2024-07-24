@@ -14,7 +14,7 @@
     "**/*.ts",
     "**/*.tsx",
     "src/tailwind.config.ts",
-    "../../apps/give-credit/src/components/home/ParallaxHero/ParallaxHero.tsx"
+    "src/types/next-auth.d.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }

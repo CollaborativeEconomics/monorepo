@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { SessionProvider } from 'next-auth/react';
-import { NavMenu } from './navigation-menu';
+import NavMenu from './NavigationMenu';
 import { useTheme } from 'next-themes';
 import Logo from '../Logo';
 

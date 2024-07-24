@@ -3,7 +3,7 @@ import type { ListQuery } from "../types"
 import { prismaClient } from "../index"
 
 interface ArtworkQuery extends ListQuery {
-  userid?: string
+  userId?: string
   collectionid?: string
   type?: string
 }
@@ -21,8 +21,8 @@ export async function getArtworks(
     beneficiary: true,
   }
 
-  if (query?.userid) {
-    where = { authorId: query.userid }
+  if (query?.userId) {
+    where = { authorId: query.userId }
   } else if (query?.collectionid) {
     where = { collectionId: query.collectionid }
   } else if (query?.type) {

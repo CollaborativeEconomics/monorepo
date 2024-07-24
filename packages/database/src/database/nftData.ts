@@ -5,7 +5,7 @@ import { prismaClient } from ".."
 interface NFTDataQuery extends ListQuery {
   id?: string
   orgId?: string
-  userid?: string
+  userId?: string
   address?: string
   tokenid?: string
 }
@@ -29,10 +29,10 @@ export async function getNftData(
     filter.where = {
       organizationId: query.orgId,
     }
-  } else if (query?.userid) {
+  } else if (query?.userId) {
     filter.where = {
       userId: {
-        equals: query.userid,
+        equals: query.userId,
       },
     }
   } else if (query?.address) {

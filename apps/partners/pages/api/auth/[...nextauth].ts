@@ -1,4 +1,5 @@
 //import { NextApiRequest, NextApiResponse } from 'next/server'
+import { getOrganizationByEmail, getUserByEmail } from "@cfce/database"
 import NextAuth, { type NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 //import FacebookProvider from "next-auth/providers/facebook"
@@ -6,7 +7,6 @@ import GoogleProvider from "next-auth/providers/google"
 //import TwitterProvider from "next-auth/providers/twitter"
 //import Auth0Provider from "next-auth/providers/auth0"
 //import Adapter from './adapter.ts' // TESTING
-import { getUserByEmail, getOrganizationByEmail } from "utils/registry"
 
 const googleId = process.env.GOOGLE_CLIENT_ID || ""
 const googleSecret = process.env.GOOGLE_CLIENT_SECRET || ""
@@ -50,8 +50,8 @@ export const authOptions: NextAuthOptions = {
       if (token?.email) {
         const org = await getOrganizationByEmail(token.email)
         token.orgId = org?.id || ""
-        token.orgname = org?.name || ""
-        if (!org || org?.error) {
+        token.orgName = org?.name || ""
+        if (!org) {
           const user = await getUserByEmail(token.email)
           console.log("USER", user)
           if (user && user.type === 9) {
@@ -62,11 +62,11 @@ export const authOptions: NextAuthOptions = {
             } else {
               token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
             }
-            token.orgname = "Admin"
+            token.orgName = "Admin"
             token.userRole = "admin"
           } else if (token.userRole !== "admin") {
             //console.log('NOT ADMIN!')
-            token.orgname = "User"
+            token.orgName = "User"
           }
         }
       }
@@ -82,8 +82,8 @@ export const authOptions: NextAuthOptions = {
       } else {
         session.orgId = (token?.orgId as string) ?? ""
       }
-      session.orgname = (token?.orgname as string) ?? ""
-      session.isadmin = token?.userRole === "admin"
+      session.orgName = (token?.orgName as string) ?? ""
+      session.isAdmin = token?.userRole === "admin"
       //console.log('SES TOKEN', session, token, user)
       return session
     },
