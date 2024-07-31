@@ -1,6 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "tasks": {
+    "build": {
+      "env": ["MOBULA_API_KEY"]
+    }
+  },
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],

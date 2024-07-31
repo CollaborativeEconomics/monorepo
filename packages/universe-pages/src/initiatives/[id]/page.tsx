@@ -1,18 +1,21 @@
-import { useState, createContext } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import StoryCard from '@cfce/universe-components/StoryCard';
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import { Document } from '@contentful/rich-text-types';
-import { Separator } from '@cfce/universe-components/ui/separator';
-import OrganizationAvatar from '@cfce/universe-components/OrganizationAvatar';
-import DonationView from '@cfce/universe-components/DonationView';
+import restoreContract from '@/contracts/credits/server/restore';
 import { ReceiptStatus } from '@/types/common';
+import getRates from '@/utils/rates';
+import {
+  getInitiativeById,
+  getInitiativesByOrganization,
+} from '@/utils/registry';
+import DonationView from '@cfce/universe-components/DonationView';
 import InitiativeCardCompact from '@cfce/universe-components/InitiativeCardCompact';
 import NotFound from '@cfce/universe-components/NotFound';
-import { getInitiativeById, getInitiativesByOrganization } from '@/utils/registry';
-import restoreContract from '@/contracts/credits/server/restore';
-import getRates from '@/utils/rates';
+import OrganizationAvatar from '@cfce/universe-components/OrganizationAvatar';
+import StoryCard from '@cfce/universe-components/StoryCard';
+import { Separator } from '@cfce/universe-components/ui/separator';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import { Document } from '@contentful/rich-text-types';
+import Image from 'next/image';
+import Link from 'next/link';
+import { createContext, useState } from 'react';
 
 export default async function Handler(props: any) {
   const params = props.params;
@@ -35,12 +38,12 @@ export default async function Handler(props: any) {
   console.log('STORIES', stories.length);
   const rate = await getRates('XLM');
   //const carbon = await getCarbon();
-  let carbon = '0'
-  if(initiative.credits.length>0){
-    carbon = initiative.credits[0].value
+  let carbon = '0';
+  if (initiative.credits.length > 0) {
+    carbon = initiative.credits[0].value;
   }
-  console.log('RATE', rate)
-  console.log('CARBON', carbon)
+  console.log('RATE', rate);
+  console.log('CARBON', carbon);
 
   const receipt = {
     status: ReceiptStatus.pending,
@@ -67,7 +70,7 @@ export default async function Handler(props: any) {
           <div className="relative w-full md:w-[45%] h-[200px] md:h-[300px] mb-12 md:mb-2">
             <Image
               className="h-[300px] rounded-lg"
-              src={initiative.defaultAsset||'noimage.png'}
+              src={initiative.defaultAsset || 'noimage.png'}
               alt="IMG BG"
               fill
               style={{
@@ -110,7 +113,18 @@ export default async function Handler(props: any) {
         <Separator className="mb-6" />
 
         <div className="md:flex md:flex-col items-center">
-          <DonationView initiative={initiative} receipt={receipt} rate={rate} carbon={carbon} />
+          <div className="flex flex-col lg:flex-row flex-nowrap gap-10 items-start">
+            <div className="w-full lg:w-[60%]">
+              <DonationForm
+                initiative={initiative}
+                rate={rate}
+                carbon={carbon}
+              />
+            </div>
+            <div className="lg:w-[40%]">
+              <NFTReceipt />
+            </div>
+          </div>
         </div>
 
         <div className="mb-10 pt-10 flex justify-center w-full">
@@ -131,7 +145,7 @@ export default async function Handler(props: any) {
                       <InitiativeCardCompact
                         key={item.id}
                         timestamp={item.created}
-                        imgSrc={item.defaultAsset||'noimage.png'}
+                        imgSrc={item.defaultAsset || 'noimage.png'}
                         title={item.title}
                         description={item.description}
                         amountRaised={item.received}

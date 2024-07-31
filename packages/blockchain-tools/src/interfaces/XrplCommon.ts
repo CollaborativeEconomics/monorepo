@@ -1,3 +1,4 @@
+import { ChainBaseClass } from "@/chains"
 import { get } from "lodash"
 import {
   type NFTokenCreateOffer,
@@ -8,7 +9,7 @@ import {
   isModifiedNode,
 } from "xrpl"
 import type { NFTokenPage } from "xrpl/dist/npm/models/ledger"
-import { ChainBaseClass } from "@/chains"
+import { Transaction } from "../types/transaction"
 
 type transactionMethods =
   | "tx"
@@ -18,38 +19,31 @@ type transactionMethods =
   | "tx_history"
 
 export default class XrplCommon extends ChainBaseClass {
-  async getTransactionInfo(txid: string): Promise<unknown> {
-    console.log("Get tx info by txid", txid)
-    const txResponse = await this.fetchLedger("tx", {
-      transaction: txid,
-      binary: false,
-    })
-    if (!txResponse || "error" in txResponse) {
-      console.log(
-        "ERROR: Exception occured while retrieving transaction info",
-        txid,
+  async getTransactionInfo(txId: string) {
+    const payload = { transaction: txId, binary: false }
+    const txInfo = await this.fetchLedger("tx", payload)
+
+    if (!txInfo || "error" in txInfo.result) {
+      throw new Error(
+        `Transaction not found: ${txInfo.result?.error ?? "no transaction"}`,
       )
-      return { error: "Exception occured while retrieving transaction info" }
     }
-    if (
-      txResponse?.result?.validated === undefined &&
-      txResponse?.result?.validated
-    ) {
+    if (txInfo?.result?.validated === undefined && txInfo?.result?.validated) {
       console.log("ERROR", "Transaction is not validated on ledger")
       return { error: "Transaction is not validated on ledger" }
     }
-    //console.log('TXINFO', txResponse)
-    const result = {
-      success: true,
-      account: txResponse.result.Account,
-      amount:
-        txResponse.result.Amount > 0
-          ? txResponse.result.Amount / 1000000
-          : txResponse.result.Amount,
-      destination: txResponse.result.Destination,
-      destinationTag: txResponse.result.DestinationTag,
+
+    const result = txInfo.result
+    return {
+      id: result.hash,
+      hash: result.hash,
+      from: result.Account,
+      to: result.Destination,
+      value: result.Amount,
+      fee: result.Fee,
+      timestamp: "", // XRPL transactions do not directly provide a timestamp
+      blockNumber: result.ledger_index,
     }
-    return result
   }
 
   findOffer(

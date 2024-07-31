@@ -1,3 +1,5 @@
+import type { Web3 } from "web3"
+import { Transaction } from "../types/transaction"
 import type {
   ChainConfig,
   ChainSlugs,
@@ -5,7 +7,6 @@ import type {
   NetworkConfig,
   TokenTickerSymbol,
 } from "./chainConfig"
-import type { Web3 } from "web3"
 import chainConfiguration from "./chainConfig"
 
 export default abstract class ChainBaseClass {
@@ -18,7 +19,9 @@ export default abstract class ChainBaseClass {
   }
 
   // isometric functions, must be defined on all subclasses
-  public abstract getTransactionInfo(txId: string): unknown
+  public abstract getTransactionInfo(
+    txId: string,
+  ): Promise<Transaction | { error: string }>
   public abstract fetchLedger(method: unknown, params: unknown): unknown
 
   // client functions, only defined on client subclasses

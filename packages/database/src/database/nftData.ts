@@ -1,6 +1,6 @@
 import type { NFTData, Prisma } from "@prisma/client"
-import type { ListQuery } from "../types"
 import { prismaClient } from ".."
+import type { ListQuery } from "../types"
 
 interface NFTDataQuery extends ListQuery {
   id?: string
@@ -10,9 +10,7 @@ interface NFTDataQuery extends ListQuery {
   tokenid?: string
 }
 
-export async function getNftData(
-  query: NFTDataQuery,
-): Promise<NFTData | Array<NFTData>> {
+export async function getNftData(query: NFTDataQuery) {
   let data = null
   const filter: Prisma.NFTDataFindManyArgs = {
     skip: 0,
@@ -76,7 +74,7 @@ export async function getNftData(
   return data
 }
 
-export async function newNftData(data: NFTData): Promise<NFTData> {
+export async function newNftData(data: Prisma.NFTDataCreateInput) {
   const result = await prismaClient.nFTData.create({ data })
   return result
 }

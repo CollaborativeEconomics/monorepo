@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { cn } from '@/shadCnUtil';
-import { Building2, DollarSign, Target, UserIcon, Sprout } from 'lucide-react';
-import { ListObject } from './list-object';
 import money from '@/src/utils/money';
+import { Building2, DollarSign, Sprout, Target, UserIcon } from 'lucide-react';
+import { ListObject } from './list-object';
 
 export interface Stats {
   amountRaised: number;
@@ -27,9 +27,9 @@ function buildList(props: Stats): Array<React.JSX.Element> {
         Icon={Sprout}
         text={
           '$' +
-          money(props.amountRaised) +
+          localizedNumber(props.amountRaised) +
           ' of ' +
-          money(props.amountTarget) +
+          localizedNumber(props.amountTarget) +
           ' raised'
         }
       />,
@@ -38,7 +38,7 @@ function buildList(props: Stats): Array<React.JSX.Element> {
     items.push(
       <ListObject
         Icon={Sprout}
-        text={'$' + money(props.amountRaised) + ' total raised'}
+        text={'$' + localizedNumber(props.amountRaised) + ' total raised'}
       />,
     );
   }

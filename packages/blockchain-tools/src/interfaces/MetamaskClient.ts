@@ -2,6 +2,7 @@
 
 import { ChainBaseClass } from "@/chains"
 import type { ChainSlugs, Network, NetworkConfig } from "@/chains/chainConfig"
+import erc20abi from "@/contracts/solidity/erc20/erc20-abi.json"
 import type { MetaMaskInpageProvider } from "@metamask/providers"
 import Web3 from "web3"
 import type {
@@ -9,7 +10,7 @@ import type {
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
-import erc20abi from "@/contracts/solidity/erc20/erc20-abi.json"
+import { Transaction } from "../types/transaction"
 
 export default class MetaMaskWallet extends ChainBaseClass {
   // neturl = ""
@@ -343,14 +344,18 @@ export default class MetaMaskWallet extends ChainBaseClass {
   async getTransactionInfo(txid: string) {
     if (!this.metamask) {
       console.error("Error getting transaction info, Metamask not available")
-      return
+      throw new Error("Error getting transaction info, Metamask not available")
     }
-    const info = await this.metamask.request({
-      method: "eth_getTransactionByHash",
-      params: [txid],
-    })
-    console.log("Transaction Info:", info)
-    return info
+    try {
+      const info = (await this.metamask.request({
+        method: "eth_getTransactionByHash",
+        params: [txid],
+      })) as Transaction
+      console.log("Transaction Info:", info)
+      return info
+    } catch (error) {
+      throw new Error(`Error getting transaction info: ${error}`)
+    }
   }
 
   // TODO: is this used?

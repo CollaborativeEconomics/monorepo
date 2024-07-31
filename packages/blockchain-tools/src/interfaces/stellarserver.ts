@@ -1,15 +1,16 @@
-import { SorobanRpc, BASE_FEE } from "@stellar/stellar-sdk"
+// import Stellar, { StellarNetworks } from "./common"
+import { ChainBaseClass } from "@/chains"
+import type { ChainSlugs, Network } from "@/chains/chainConfig"
+import Contract721 from "@/contracts/soroban/nft721/server"
+import { BASE_FEE, SorobanRpc } from "@stellar/stellar-sdk"
 import type {
-  Transaction,
+  Transaction as StellarTransaction,
   // Address,
   // Contract,
   // Keypair,
   // TransactionBuilder,
 } from "@stellar/stellar-sdk"
-// import Stellar, { StellarNetworks } from "./common"
-import { ChainBaseClass } from "@/chains"
-import type { ChainSlugs, Network } from "@/chains/chainConfig"
-import Contract721 from "@/contracts/soroban/nft721/server"
+import { Transaction } from "../types/transaction"
 
 export default class StellarServer extends ChainBaseClass {
   sorobanServer: SorobanRpc.Server
@@ -51,7 +52,7 @@ export default class StellarServer extends ChainBaseClass {
     return response
   }
 
-  async submitTx(tx: Transaction) {
+  async submitTx(tx: StellarTransaction) {
     try {
       const response = await this.sorobanServer.sendTransaction(tx)
       console.log(`Sent transaction: ${JSON.stringify(response)}`)
@@ -138,28 +139,38 @@ export default class StellarServer extends ChainBaseClass {
     }
   }
 
-  async getTransactionInfo(txid: string) {
-    console.log("Get tx info by txid", txid)
-    const txInfo = await this.fetchLedger(`/transactions/${txid}`)
-    if (!txInfo || "error" in txInfo) {
-      console.log("ERROR", "Transaction not found:", txid)
+  async getTransactionInfo(txId: string) {
+    // Fetch the transaction info
+    const txInfo = await this.fetchLedger(`transactions/${txId}`)
+    if (!txInfo || txInfo.status === 404) {
       return { error: "Transaction not found" }
     }
-    if (!txInfo?.successful) {
-      console.log("ERROR", "Transaction not valid")
+    if (!txInfo.successful) {
       return { error: "Transaction not valid" }
     }
-    console.log("TXINFO", txInfo)
-    const tag = txInfo.memo?.indexOf(":") > 0 ? txInfo.memo?.split(":")[1] : ""
-    const opid = (BigInt(txInfo.paging_token) + BigInt(1)).toString()
-    const opInfo = await this.fetchLedger(`/operations/${opid}`)
-    const result = {
-      success: true,
-      account: txInfo.source_account,
-      amount: opInfo?.amount,
-      destination: opInfo?.to,
-      destinationTag: tag,
+
+    // Compute the operation ID
+    const page = BigInt(txInfo.paging_token) + BigInt(1)
+    const opid = page.toString()
+
+    // Fetch the operation info
+    const opInfo = await this.fetchLedger(`operations/${opid}`)
+    if (!opInfo || opInfo.status === 404) {
+      return { error: "Operation not found" }
     }
-    return result
+    if (!opInfo.transaction_successful) {
+      return { error: "Operation not valid" }
+    }
+
+    return {
+      id: txInfo.id,
+      hash: txInfo.hash,
+      from: txInfo.source_account,
+      to: opInfo.to || "", // Assuming the operation has a 'to' field
+      value: opInfo.amount || "0", // Assuming the operation has an 'amount' field
+      fee: txInfo.fee_charged,
+      timestamp: txInfo.created_at,
+      blockNumber: txInfo.ledger,
+    }
   }
 }

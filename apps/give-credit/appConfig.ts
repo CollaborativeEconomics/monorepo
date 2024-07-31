@@ -27,7 +27,7 @@ const apis = {
   },
 }
 
-type ContractType = "CCreceiptMintbotERC721" | "receiptMintbotERC721"
+type ContractType = "receiptMintbotERC721"
 interface ChainConfig {
   network: string
   contracts: Partial<Record<ContractType, string>>
@@ -38,7 +38,7 @@ const chains: Partial<Record<ChainSlugs, ChainConfig>> = {
   xinfin: {
     network: "mainnet",
     contracts: {
-      CCreceiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
+      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
     },
     wallets: [],
     coins: [],

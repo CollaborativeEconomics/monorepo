@@ -1,13 +1,13 @@
-import * as StellarSDK from "@stellar/stellar-sdk"
-import {
-  isConnected,
-  signTransaction,
-  requestAccess,
-  getNetwork,
-  getNetworkDetails,
-} from "@stellar/freighter-api"
 import { ChainBaseClass } from "@/chains"
 import type { ChainSlugs, Network } from "@/chains/chainConfig"
+import {
+  getNetwork,
+  getNetworkDetails,
+  isConnected,
+  requestAccess,
+  signTransaction,
+} from "@stellar/freighter-api"
+import * as StellarSDK from "@stellar/stellar-sdk"
 
 export default class FreighterWallet extends ChainBaseClass {
   horizon: StellarSDK.Horizon.Server
@@ -158,10 +158,14 @@ export default class FreighterWallet extends ChainBaseClass {
     const opid = (BigInt(txInfo.paging_token) + BigInt(1)).toString()
     const opInfo = await this.fetchLedger(`/operations/${opid}`)
     const result = {
-      success: true,
-      account: txInfo.source_account,
-      amount: opInfo?.amount,
-      destination: opInfo?.to,
+      id: txInfo.id,
+      hash: txInfo.hash,
+      from: txInfo.source_account,
+      to: txInfo.to,
+      value: opInfo?.amount,
+      fee: txInfo.fee,
+      timestamp: txInfo.created_at,
+      blockNumber: txInfo.ledger,
       destinationTag: tag,
     }
     return result

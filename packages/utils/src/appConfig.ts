@@ -1,11 +1,11 @@
+import { existsSync } from "node:fs"
+import { resolve } from "node:path"
 import type {
   ChainSlugs,
   Interfaces,
   Network,
   TokenTickerSymbol,
 } from "@cfce/blockchain-tools"
-import { existsSync } from "node:fs"
-import { resolve } from "node:path"
 import { register } from "ts-node"
 
 type Envs = "development" | "staging" | "production"
@@ -72,16 +72,16 @@ let appConfigs: Record<Envs, Config> | null = null
 // Load the configuration for each environemnt
 // ie appConfig.dev.ts, appConfig.staging.ts, appConfig.ts
 function loadConfig(): Record<Envs, Config> {
-  if (appConfig) {
-    return appConfig
+  if (appConfigs) {
+    return appConfigs
   }
   const rootDir = process.cwd()
-  const configs = {}
+  const configs = {} as Record<Envs, Config>
   for (const env of Object.keys(configPaths)) {
-    const configPath = resolve(rootDir, configPaths[env]) // app/appConfig.dev.ts
+    const configPath = resolve(rootDir, configPaths[env as Envs]) // app/appConfig.dev.ts
     if (existsSync(configPath)) {
       const { config } = require(configPath) // `ts-node` will handle the TypeScript file
-      configs[env] = config as Config
+      configs[env as Envs] = config as Config
     }
     throw new Error(`Configuration file not found at ${configPath}`)
   }
@@ -90,6 +90,8 @@ function loadConfig(): Record<Envs, Config> {
 
 appConfigs = loadConfig()
 
-const appConfig = appConfigs[process.env.APP_ENV || "staging"]
+const environment: Envs = (process.env.APP_ENV || "staging") as Envs
+
+const appConfig = appConfigs[environment]
 
 export default appConfig as Config

@@ -2,8 +2,9 @@ import ChainBaseClass from "@/chains/ChainBaseClass"
 import type { ChainSlugs, Network } from "@/chains/chainConfig"
 import Abi721 from "@/contracts/solidity/erc721/erc721-abi.json"
 import Abi1155 from "@/contracts/solidity/erc1155/erc1155-abi.json"
-import Web3 from "web3"
 import _get from "lodash/get"
+import Web3 from "web3"
+import { Transaction } from "../types/transaction"
 
 export default class Web3Server extends ChainBaseClass {
   constructor(slug: ChainSlugs, network: Network) {
@@ -208,20 +209,39 @@ export default class Web3Server extends ChainBaseClass {
     //console.log({txHash});
   }
 
-  async getTransactionInfo(txId: string): Promise<unknown> {
-    console.log("Get tx info", txId)
-    const info = await this.fetchLedger("eth_getTransactionByHash", [txId])
-    if (!info || info?.error) {
-      return { success: false, error: "Error fetching tx info" }
+  // async getTransactionInfo(txId: string) {
+  //   console.log("Get tx info", txId)
+  //   const info = await this.fetchLedger("eth_getTransactionByHash", [txId])
+  //   if (!info || info?.error) {
+  //     return { success: false, error: "Error fetching tx info" }
+  //   }
+  //   const result = {
+  //     success: true,
+  //     account: info?.from,
+  //     destination: info?.to,
+  //     destinationTag: this.hexToStr(info?.input),
+  //     amount: this.fromBaseUnit(info?.value),
+  //   }
+  //   return result
+  // }
+  async getTransactionInfo(txId: string) {
+    const txInfo = await this.fetchLedger("eth_getTransactionByHash", [txId])
+
+    if (!txInfo || txInfo.error) {
+      return { error: "Transaction not found" }
     }
-    const result = {
-      success: true,
-      account: info?.from,
-      destination: info?.to,
-      destinationTag: this.hexToStr(info?.input),
-      amount: this.fromBaseUnit(info?.value),
+
+    const result = txInfo.result
+    return {
+      id: result.hash,
+      hash: result.hash,
+      from: result.from,
+      to: result.to,
+      value: result.value,
+      fee: (BigInt(result.gas) * BigInt(result.gasPrice)).toString(),
+      timestamp: "", // Ethereum transactions do not directly provide a timestamp
+      blockNumber: Number.parseInt(result.blockNumber, 16),
     }
-    return result
   }
 
   async fetchLedger(method: string, params: unknown) {

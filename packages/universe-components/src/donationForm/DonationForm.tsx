@@ -1,23 +1,12 @@
 'use client';
-import { pendingDonationState } from '@cfce/utils';
-import { useAtom } from 'jotai';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Card } from '../ui/card';
-import { Input } from '../ui/input';
-import { InputWithContent } from '../ui/input-with-content';
-import { Button } from '../ui/button';
-import { Label } from '../ui/label';
-import { Switch } from '../ui/switch';
-import { CheckboxWithText } from '../ui/checkbox';
-import { Separator } from '../ui/separator';
+import { pendingDonationStateState } from '@cfce/utils';
 //import registerUser from "@/contracts/register"
 import { signTransaction } from '@stellar/freighter-api';
 import {
-  BASE_FEE,
   Account,
   Address,
   Asset,
+  BASE_FEE,
   Contract,
   Horizon,
   Keypair,
@@ -30,6 +19,17 @@ import {
   nativeToScVal,
   scValToNative,
 } from '@stellar/stellar-sdk';
+import { useAtom } from 'jotai';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Button } from '../ui/button';
+import { Card } from '../ui/card';
+import { CheckboxWithText } from '../ui/checkbox';
+import { Input } from '../ui/input';
+import { InputWithContent } from '../ui/input-with-content';
+import { Label } from '../ui/label';
+import { Separator } from '../ui/separator';
+import { Switch } from '../ui/switch';
 import { DonationContext } from './DonationView';
 
 export default function DonationForm(props: any) {
@@ -44,7 +44,7 @@ export default function DonationForm(props: any) {
   const initiative = props.initiative;
   const contractId = initiative.contractcredit;
   const organization = initiative.organization;
-  const [donation, setDonation] = useAtom(pendingDonationState);
+  const [donation, setDonation] = useAtom(pendingDonationStateState);
   const usdRate = props.rate || 0;
   const usdCarbon = props.carbon || 0;
   const credit =
