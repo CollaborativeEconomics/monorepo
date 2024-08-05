@@ -1,4 +1,4 @@
-import type { ChainSlugs } from "@cfce/blockchain-tools/dist/chains/chainConfig"
+import type { ChainSlugs } from "../chains"
 
 interface mintReceiptNFTNativeParams {
   chain: ChainSlugs

@@ -5,13 +5,16 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "matchVersions": "syncpack fix-mismatches",
+    "updateDependencies": "syncpack update"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
     "@cfce/typescript-config": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "prettier": "^3.2.5",
+    "syncpack": "^12.4.0",
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.9.0",

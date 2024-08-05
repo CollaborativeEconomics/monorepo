@@ -1,11 +1,11 @@
-import { BlockchainManager } from "@cfce/blockchain-tools"
-
 // @ts-ignore turbo should error out if these are not set
 // const XinFinSDK = new XinFinServer({ walletSeed: process.env.XINFIN_MINTER_SECRET, network: process.env.XINFIN_NETWORK });
 
+import { BlockchainManager } from "../../dist"
+
 const uuidToUint256 = (uuid: string) => {
   const hex = uuid.replace(/-/g, "")
-  const bigIntUUID = BigInt("0x" + hex)
+  const bigIntUUID = BigInt(`0x${hex}`)
   // Since UUID is 128-bit, we shift it left by 128 places to fit into a 256-bit space
   const uint256 = bigIntUUID << BigInt(128)
   return uint256

@@ -5,10 +5,9 @@ import type {
 } from "@cfce/blockchain-tools"
 import type { Prisma } from "@cfce/database"
 import type { Draft } from "immer" // TS doesn't like it if we don't import this
-import { atom } from "jotai"
 import { atomWithImmer } from "jotai-immer"
 
-const chainsState = atom<{
+const chainsState = atomWithImmer<{
   selectedChain?: ChainSlugs
   selectedWallet?: Interface
   selectedToken?: TokenTickerSymbol

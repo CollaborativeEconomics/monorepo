@@ -1,3 +1,4 @@
+import { mintStoryNFT } from "@cfce/blockchain-tools"
 import {
   type Story,
   getInitiativeById,
@@ -10,7 +11,6 @@ import { put } from "@vercel/blob"
 import type { File } from "formidable"
 import uploadDataToIPFS from "./ipfs/uploadDataToIPFS"
 import uploadFileToIPFS from "./ipfs/uploadFileToIPFS"
-import mintStoryNFT from "./mintStoryNFT"
 
 export default async function createStory(
   {

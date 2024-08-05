@@ -1,7 +1,7 @@
-import NextAuth, { NextAuthOptions, User } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { getUserByWallet, newUser } from "@/utils/registry"
 import { UUID } from "@/utils/random"
+import { getUserByWallet, newUser } from "@/utils/registry"
+import NextAuth, { type NextAuthOptions, User } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
 //import { PrismaAdapter } from "@auth/prisma-adapter"
 //import { PrismaClient } from "@prisma/client"
 
@@ -154,7 +154,6 @@ const authOptions: NextAuthOptions = {
       // Send properties to the client
       session.userId = (token?.userId as string) || ""
       session.address = (token?.address as string) || ""
-      session.chain = (token?.chain as string) || ""
       session.network = (token?.network as string) || ""
       session.currency = (token?.currency as string) || ""
       if (!session?.user) {

@@ -1,14 +1,7 @@
-import { useState, createContext } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { getInitiativeById, getInitiatives } from '@cfce/database';
-import { Separator } from '@/src/components/ui/separator';
-import OrganizationAvatar from '@/src/components/OrganizationAvatar';
-import DonationView from '@/src/components/DonationView';
-import { ReceiptStatus } from '@/src/types/common';
-import InitiativeCardCompact from '@/src/components/InitiativeCardCompact';
-import NotFound from '@/src/components/NotFound';
 import getRates from '@/src/utils/rates';
+import { getInitiativeById, getInitiatives } from '@cfce/database';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function Handler(props: any) {
   const params = props.params;

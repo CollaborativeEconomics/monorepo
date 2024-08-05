@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../../packages/utils/src/mintStoryNFT.ts"
+    "../../packages/blockchain-tools/src/mintStoryNFT.ts"
   ],
   "exclude": ["node_modules", "work"]
 }

@@ -10,7 +10,7 @@ import type {
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
-import { Transaction } from "../types/transaction"
+import type { Transaction } from "../types/transaction"
 
 export default class MetaMaskWallet extends ChainBaseClass {
   // neturl = ""
@@ -512,6 +512,9 @@ export default class MetaMaskWallet extends ChainBaseClass {
       }
       const result = await this.metamask.request({ method, params })
       console.log("TXID", result)
+      if (typeof result !== "string") {
+        return { success: false, error: "No transaction ID" }
+      }
       return { success: true, txid: result, address: this.connectedWallet }
     } catch (ex) {
       if (ex instanceof Error) {

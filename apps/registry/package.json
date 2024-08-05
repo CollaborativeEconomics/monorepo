@@ -14,14 +14,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.540.0",
+    "@aws-sdk/client-s3": "^3.608.0",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^5.11.0",
-    "@vercel/blob": "^0.22.1",
+    "@vercel/blob": "^0.23.4",
     "@vercel/postgres": "^0.5.1",
     "formidable": "^3.5.1",
     "install": "^0.13.0",

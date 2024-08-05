@@ -1,3 +1,4 @@
-import getCryptoPriceQuote from "./getCryptoPriceQuote"
+import getCoinRate from "./getCoinRate"
+import mintStoryNFT from "./mintStoryNFT"
 
-export { getCryptoPriceQuote }
+export { getCoinRate, mintStoryNFT }

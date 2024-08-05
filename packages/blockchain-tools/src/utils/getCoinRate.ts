@@ -3,7 +3,7 @@ import type { ChainSlugs, TokenTickerSymbol } from "../chains"
 
 const mobula = new Mobula({ apiKeyAuth: process.env.MOBULA_API_KEY })
 
-export default async function getRates(
+export default async function getCoinRate(
   symbol: TokenTickerSymbol,
   chain?: ChainSlugs,
 ): Promise<number> {

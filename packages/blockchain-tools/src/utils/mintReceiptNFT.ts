@@ -1,12 +1,7 @@
+import appConfig from "@cfce/app-config"
 // import upload from "@/src/libs/nft/upload"
 // import mint from "@/src/libs/nft/mint"
 // import fetchLedger from "@/src/libs/server/fetchLedger"
-import {
-  BlockchainManager,
-  type ChainSlugs,
-  type TokenTickerSymbol,
-  getCryptoPriceQuote,
-} from "@cfce/blockchain-tools"
 import {
   ReceiptStatus,
   getInitiativeById,
@@ -15,9 +10,10 @@ import {
   newNftData,
 } from "@cfce/database"
 import { Triggers, runHook } from "@cfce/registry-hooks"
+import { uploadDataToIPFS } from "@cfce/utils"
 import { DateTime } from "luxon"
-import appConfig from "./appConfig"
-import { uploadDataToIPFS } from "./ipfs"
+import { type ChainSlugs, type TokenTickerSymbol, getCoinRate } from "../../src"
+import { BlockchainManager } from "../chains"
 
 interface mintReceiptNFTParams {
   transaction: {
@@ -81,7 +77,7 @@ export async function mintReceiptNFT({
     }
     const organizationName = organization?.name
 
-    const rate = await getCryptoPriceQuote(token) //, chain) <- TODO: test this
+    const rate = await getCoinRate(token) //, chain) <- TODO: test this
     const amountCUR = (+amount).toFixed(4)
     const amountUSD = (+amount * rate).toFixed(4)
 
@@ -219,6 +215,10 @@ export async function mintReceiptNFT({
     }
 
     const saved = await newNftData(data)
+
+    if (!saved) {
+      throw new Error("Problem saving NFT data to db")
+    }
 
     // Success
     console.log("Minting completed")

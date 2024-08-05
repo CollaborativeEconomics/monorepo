@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
-import { PropsWithChildren } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import { type PropsWithChildren, useEffect, useState } from 'react';
 import styles from 'styles/dashboard.module.css';
 
 interface PageProps {
