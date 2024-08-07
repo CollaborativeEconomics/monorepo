@@ -1,5 +1,19 @@
 'use client';
-import { pendingDonationStateState } from '@cfce/utils';
+import {
+  BlockchainManager,
+  type ChainSlugs,
+  getChainConfiguration,
+} from '@cfce/blockchain-tools';
+import type { Prisma } from '@cfce/database';
+import {
+  NFT_STATUS,
+  appConfig,
+  chainsState as chainStateAtom,
+  donationFormState,
+  fetchApi,
+  pendingDonationState,
+  postApi,
+} from '@cfce/utils';
 //import registerUser from "@/contracts/register"
 import { signTransaction } from '@stellar/freighter-api';
 import {
@@ -20,35 +34,56 @@ import {
   scValToNative,
 } from '@stellar/stellar-sdk';
 import { useAtom } from 'jotai';
-import { useContext, useEffect, useRef, useState } from 'react';
+import map from 'lodash/map';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import CarbonChart from '../CarbonChart';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { CheckboxWithText } from '../ui/checkbox';
 import { Input } from '../ui/input';
 import { InputWithContent } from '../ui/input-with-content';
 import { Label } from '../ui/label';
+import Progress from '../ui/progressbar';
 import { Separator } from '../ui/separator';
 import { Switch } from '../ui/switch';
-import { DonationContext } from './DonationView';
+import { DonationFormSelect } from './DonationFormSelect';
 
-export default function DonationForm(props: any) {
-  //console.log('Props', props)
-  const netname = process.env.NEXT_PUBLIC_STELLAR_NETWORK || 'testnet';
-  console.log('NETENV', netname);
-  const network = networks[netname];
-  console.log('NETWORK', network);
-  const horizon = new Horizon.Server(network.horizon, { allowHttp: true });
-  const soroban = new SorobanRpc.Server(network.soroban, { allowHttp: true });
+interface DonationFormProps {
+  initiative: Prisma.InitiativeGetPayload<{
+    include: { organization: true; credits: true };
+  }>;
+}
 
-  const initiative = props.initiative;
+export default function DonationForm({ initiative }: DonationFormProps) {
   const contractId = initiative.contractcredit;
   const organization = initiative.organization;
-  const [donation, setDonation] = useAtom(pendingDonationStateState);
-  const usdRate = props.rate || 0;
-  const usdCarbon = props.carbon || 0;
+  const [donation, setDonation] = useAtom(pendingDonationState);
+  const { amount } = donation;
+  const [chainState, setChainState] = useAtom(chainStateAtom);
+  const { selectedToken, selectedChain, exchangeRate } = chainState;
+  const [donationForm, setDonationForm] = useAtom(donationFormState);
+  const { showUsd, NFTStatus } = donationForm;
+  useEffect(() => {
+    fetchApi(`rates?coin=${selectedToken}&chain=${selectedChain}`).then(
+      (rate: number) => {
+        if (rate) {
+          setChainState(draft => {
+            draft.exchangeRate = rate;
+          });
+        }
+      },
+    );
+  }, [selectedToken, selectedChain, setChainState]);
+  // TODO: should this also update when the amount changes? Periodically?
+  const chainInterface = useMemo(
+    () => BlockchainManager.getInstance()[selectedChain]?.client,
+    [selectedChain],
+  );
+
+  // #region carbon credit stuff
   const credit =
-    initiative?.credits?.length > 0 ? initiative?.credits[0] : null;
+    (initiative?.credits?.length ?? 0) > 0 ? initiative?.credits[0] : null;
   console.log('CREDIT', credit);
   const creditGoal = credit?.goal || 1;
   const creditCurrent = credit?.current || 0;
@@ -60,58 +95,87 @@ export default function DonationForm(props: any) {
     year: 'numeric',
   });
   console.log('CHART', creditGoal, creditCurrent, creditValue, creditPercent);
-
   const maxGoal = 100;
   const maxValue = (creditCurrent * 100) / creditGoal;
   console.log('MAXGOAL', maxGoal, maxValue);
-  const tons = 173.243;
-  const tonx =
-    Number.parseFloat(credit?.current) / Number.parseFloat(credit?.value);
+  const tons = 173.243; // TODO: get from db?
+  const tonx = (credit?.current ?? 0) / (credit?.value ?? 0);
   const perc = (tonx * 100) / tons;
   console.log('TONS', tons, tonx, perc, '%');
+  // #endregion
 
-  const chains = getChainsList();
-  const chainLookup = getChainsMap();
-  const chainWallets = getChainWallets(chains[0].symbol);
-  const chainName = 'Stellar';
-  const currency = 'XLM';
-
-  const [showXLM, toggleShowXLM] = useState(false);
-  const [currentChain, setCurrentChain] = useState('Stellar');
-  const [wallets, setWallets] = useState(chainWallets);
-  const [currentWallet, setCurrentWallet] = useState(wallets[0]);
-  const amountInputRef = useRef(null);
-  const [disabled, setDisabled] = useState(false);
-  const [buttonText, setButtonText] = useState('Donate');
-  const [message, setMessage] = useState('One wallet confirmation required');
-  const [rateMessage, setRateMessage] = useState(
-    `0 USD at ${usdRate.toFixed(2)} XLM/USD`,
+  const chains = getChainConfiguration(
+    appConfig.chains.map(chain => chain.slug),
   );
-  const [chartTitle, setChartTitle] = useState(
-    `${perc.toFixed(2)}% of total estimated carbon emissions retired ${tonx.toFixed(2)} out of ${tons} tons`,
+  const wallets =
+    appConfig.chains.find(c => c.slug === selectedChain)?.wallets ?? [];
+
+  const buttonProps = useMemo(() => {
+    if (NFTStatus === NFT_STATUS.minting) {
+      return { disabled: true, text: 'Minting' };
+    }
+    if (NFTStatus === NFT_STATUS.minted) {
+      return { disabled: true, text: 'Minted' };
+    }
+    if (NFTStatus === NFT_STATUS.failed) {
+      return { disabled: true, text: 'Failed' };
+    }
+    // status === pending
+    return { disabled: false, text: 'Claim' };
+  }, [NFTStatus]);
+  const [buttonMessage, setButtonMessage] = useState(
+    'One wallet confirmation required',
   );
-  const [chartValue, setChartValue] = useState(creditCurrent); // TODO: calc aggregate from db
-  const [percent, setPercent] = useState('0');
-  const [offset, setOffset] = useState('0.00');
-  const [amount, setAmount] = useState(0);
+  const rateMessage = useMemo(() => {
+    if (typeof amount === 'undefined') {
+      return `0 USD at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
+    }
+    // show token amount under field
+    if (showUsd) {
+      return `${(+amount / exchangeRate).toFixed(2)} ${selectedToken} at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
+    }
+    // show USD amount under field
+    return `${(+amount * exchangeRate).toFixed(2)} USD at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
+  }, [exchangeRate, amount, showUsd, selectedToken]);
+  const chartTitle = useMemo(
+    () =>
+      `${perc.toFixed(2)}% of total estimated carbon emissions retired ${tonx.toFixed(2)} out of ${tons} tons`,
+    [perc, tonx],
+  );
+  // const [percent, setPercent] = useState('0');
+  const usdAmount = useMemo(() => {
+    if (typeof amount === 'undefined') {
+      return 0;
+    }
+    if (showUsd) {
+      return +amount;
+    }
+    return +amount * exchangeRate;
+  }, [amount, exchangeRate, showUsd]);
+  const coinAmount = useMemo(() => {
+    if (typeof amount === 'undefined') {
+      return 0;
+    }
+    if (showUsd) {
+      return +amount / exchangeRate;
+    }
+    return +amount;
+  }, [amount, exchangeRate, showUsd]);
+  const percent = useMemo(() => {
+    const creditsToRetire = usdAmount / creditValue;
+    const remainingCredits = tonx - creditsToRetire;
+    const percentDiff = (100 * remainingCredits) / creditsToRetire;
+    return percentDiff;
+  }, [creditValue, usdAmount]);
+  // const [offset, setOffset] = useState('0.00');
+  const offset = (usdAmount / creditValue).toFixed(2);
 
-  const wallet = new Wallet();
-
-  function $(id: string) {
-    return document.getElementById(id) as HTMLInputElement;
-  }
+  // function $(id: string) {
+  //   return document.getElementById(id) as HTMLInputElement;
+  // }
 
   function validEmail(text: string) {
     return text.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
-  }
-
-  function getWalletByChain(wallets: [any], chain: string) {
-    for (let i = 0; i < wallets.length; i++) {
-      if (wallets[i].chain == chain) {
-        return wallets[i];
-      }
-    }
-    return null;
   }
 
   async function sendReceipt(data: any) {
@@ -313,18 +377,18 @@ export default function DonationForm(props: any) {
 
     // Validate required data
     if (!parseInt(amount)) {
-      setMessage('Enter a valid amount');
+      setButtonMessage('Enter a valid amount');
       return;
     }
     if (receipt && !validEmail(email)) {
-      setMessage('Enter a valid email');
+      setButtonMessage('Enter a valid email');
       return;
     }
 
     // Donate and mint
     setButtonText('WAIT');
     setDisabled(true);
-    setMessage('Approve payment in your Freighter wallet');
+    setButtonMessage('Approve payment in your Freighter wallet');
 
     const orgwallet = getWalletByChain(organization?.wallets, chainName);
     console.log('Org wallet', orgwallet);
@@ -333,25 +397,24 @@ export default function DonationForm(props: any) {
         'Error sending payment, no wallet found for chain',
         chainName,
       );
-      setMessage('Error: no wallet in this organization for ' + chainName);
+      setButtonMessage(
+        'Error: no wallet in this organization for ' + chainName,
+      );
       return;
     }
     const receiver = orgwallet.address;
     console.log('Sending payment to', receiver, 'in contract', contractId);
 
-    const destinationTag = initiative.tag;
+    // const destinationTag = initiative.tag;
     // if amount in USD convert by coin rate
-    const amountNum = parseFloat(amount || '0');
-    const coinValue = showXLM ? amountNum : amountNum / usdRate;
-    const usdValue = showXLM ? amountNum * usdRate : amountNum;
-    const rateMsg = showXLM
-      ? `USD ${usdValue.toFixed(2)} at ${usdRate.toFixed(2)} ${currency}/USD`
-      : `${coinValue.toFixed(2)} ${currency} at ${usdRate.toFixed(2)} ${currency}/USD`;
-    console.log('AMT', showXLM, coinValue, usdValue);
-    setRateMessage(rateMsg);
-    const weiValue = Math.trunc(coinValue * 10000000).toString();
+    const amountNum = Number.parseFloat(amount || '0');
+    const coinAmount = showUsd ? amountNum / exchangeRate : amountNum;
+    const usdAmount = showUsd ? amountNum : amountNum * exchangeRate;
+
+    console.log('AMT', { showUsd, coinAmount, usdAmount });
+    const weiValue = Math.trunc(coinAmount * 10000000).toString();
     console.log('WEI', weiValue);
-    const amountStr = coinValue.toFixed(7);
+    const amountStr = coinAmount.toFixed(7);
 
     await wallet.init();
     const info = await wallet.connect();
@@ -365,7 +428,7 @@ export default function DonationForm(props: any) {
     //    console.log('Expected network:', useNetwork)
     //    setButtonText('DONATE')
     //    setDisabled(false)
-    //    setMessage('Select '+stellarNet+' network in Freighter Wallet')
+    //    setButtonMessage('Select '+stellarNet+' network in Freighter Wallet')
     //    return
     //  }
     //}
@@ -373,7 +436,7 @@ export default function DonationForm(props: any) {
     const donor = info?.account;
     console.log('DONOR', donor);
     if (!donor) {
-      setMessage('Error: Signature rejected by user');
+      setButtonMessage('Error: Signature rejected by user');
       console.log('Error: Signature rejected by user');
       return;
     }
@@ -407,7 +470,7 @@ export default function DonationForm(props: any) {
       console.log('NEWUSER', userInfo);
       if (!userInfo) {
         console.log('ERROR', 'Error creating user');
-        setMessage('Error: User could not be created');
+        setButtonMessage('Error: User could not be created');
         return;
       }
       //const ok1 = await registerUser(contractId, donor) // FIX: Bug in Soroban, register user in contract on first use
@@ -421,10 +484,10 @@ export default function DonationForm(props: any) {
     const result = await donate(contractId, donor, amountNum, firstTime);
     console.log('UI RESULT', result);
     if (!result?.success) {
-      setMessage('Error sending payment');
+      setButtonMessage('Error sending payment');
       return;
     }
-    setMessage('Payment sent successfully');
+    setButtonMessage('Payment sent successfully');
 
     // Save donation to DB
     const catId = initiative.categoryId || organization.categoryId;
@@ -437,8 +500,8 @@ export default function DonationForm(props: any) {
       chain: chainName,
       network: netname,
       wallet: donor,
-      amount: coinValue,
-      usdvalue: usdValue,
+      amount: coinAmount,
+      usdvalue: usdAmount,
       asset: currency,
       status: 1,
     };
@@ -448,14 +511,14 @@ export default function DonationForm(props: any) {
     if (!res.success) {
       setButtonText('ERROR');
       setDisabled(true);
-      setMessage('Error saving donation in database');
+      setButtonMessage('Error saving donation in database');
       return;
     }
     //const donationId = res.data?.id
 
     // Save donation in usd to credit totals
-    console.log('CCC', credit.current, usdValue);
-    const current = parseFloat(credit.current) + usdValue;
+    console.log('CCC', credit.current, usdAmount);
+    const current = parseFloat(credit.current) + usdAmount;
     const res2 = await postApi('credits', { id: credit.id, data: { current } });
     console.log('RES2', res2);
 
@@ -463,7 +526,7 @@ export default function DonationForm(props: any) {
     if (receipt) {
       //sendReceipt(name, email, organization, amount, currency, rate, issuer)
       console.log('YES receipt...');
-      setMessage('Sending receipt, wait a moment...');
+      setButtonMessage('Sending receipt, wait a moment...');
       const data = {
         name: name,
         email: email,
@@ -471,8 +534,8 @@ export default function DonationForm(props: any) {
         address: organization.mailingAddress,
         ein: organization.EIN,
         currency: currency,
-        amount: coinValue.toFixed(2),
-        usd: usdValue.toFixed(2),
+        amount: coinAmount.toFixed(2),
+        usd: usdAmount.toFixed(2),
       };
       const rec = await sendReceipt(data);
       console.log('Receipt sent', rec);
@@ -489,9 +552,9 @@ export default function DonationForm(props: any) {
       tag: initiative.tag,
       image: initiative.defaultAsset,
       date: new Date(),
-      amount: coinValue,
+      amount: coinAmount,
       ticker: currency,
-      amountFiat: usdValue,
+      amountFiat: usdAmount,
       fiatCurrencyCode: 'USD',
       donor: {
         address: donor,
@@ -500,13 +563,13 @@ export default function DonationForm(props: any) {
       receiver,
       contractId,
       chainName,
-      rate: usdRate,
+      rate: exchangeRate,
       txid: result.txid,
     };
     setDonation(NFTData);
     setButtonText('DONE');
     setDisabled(true);
-    setMessage('Thank you for your donation!');
+    setButtonMessage('Thank you for your donation!');
   }
 
   useEffect(() => {
@@ -519,25 +582,20 @@ export default function DonationForm(props: any) {
     //const amountInp = evt.target.value || '0'
     const amountInp = $('amount')?.value || '0';
     const amountNum = parseFloat(amountInp);
-    const coinValue = showXLM ? amountNum : amountNum / usdRate;
-    const usdValue = showXLM ? amountNum * usdRate : amountNum;
-    const rateMsg = showXLM
-      ? `${usdValue.toFixed(2)} USD at ${usdRate.toFixed(2)} USD/${currency}`
-      : `${coinValue.toFixed(2)} ${currency} at ${usdRate.toFixed(2)} USD/${currency}`;
-    console.log('USD', usdValue, 'XLM', coinValue, showXLM ? 'ON' : 'OFF');
-    setRateMessage(rateMsg);
-    const retire = (usdValue / creditValue).toFixed(2);
+    const coinAmount = showXLM ? amountNum : amountNum / exchangeRate;
+    const usdAmount = showXLM ? amountNum * exchangeRate : amountNum;
+    const retire = (usdAmount / creditValue).toFixed(2);
     const pct = (
-      usdValue > creditValue ? 100 : (usdValue / creditValue) * 100
+      usdAmount > creditValue ? 100 : (usdAmount / creditValue) * 100
     ).toFixed(2);
     console.log('Changed', amountInp);
-    console.log('Retire', usdValue, retire, pct);
+    console.log('Retire', usdAmount, retire, pct);
     setOffset(retire);
     setPercent(pct);
     const data = {
       ...donation,
-      amount: coinValue,
-      amountFiat: usdValue,
+      amount: coinAmount,
+      amountFiat: usdAmount,
       ticker: 'XLM',
     };
     setDonation(data);
@@ -567,14 +625,10 @@ export default function DonationForm(props: any) {
             className="mb-6"
             options={chains}
             currentOption={currentChain ?? ''}
-            handleChange={(chain: string) => {
-              const chainSymbol =
-                Object.keys(chainLookup).length > 0
-                  ? chainLookup[chain].symbol
-                  : '';
-              const listWallets = getChainWallets(chainSymbol);
-              setCurrentChain(chain);
-              setWallets(listWallets);
+            handleChange={(chain: ChainSlugs) => {
+              setChainState(draft => {
+                draft.selectedChain = chain;
+              });
             }}
             placeHolderText="...select a cryptocurrency"
           />
@@ -595,12 +649,12 @@ export default function DonationForm(props: any) {
         <Separator />
         <div className="px-6">
           <div className="my-10 text-center">
-            <Chart title={chartTitle} goal={maxGoal} value={maxValue} />
+            <CarbonChart title={chartTitle} goal={maxGoal} value={maxValue} />
             <p className="mt-4 mb-4">
               Your donation will offset {offset} ton
               {parseInt(offset) == 1 ? '' : 's'} of carbon
             </p>
-            <Progressbar value={percent} />
+            <Progress value={percent} />
             <p className="mt-2 mb-4">1 ton of carbon = USD {creditValue}</p>
           </div>
           <div className="w-full my-6">
@@ -610,12 +664,14 @@ export default function DonationForm(props: any) {
                 <Label htmlFor="show-usd-toggle">USD</Label>
                 <Switch
                   id="show-usd-toggle"
-                  valueBasis={showXLM}
+                  valueBasis={!showUsd}
                   handleToggle={() => {
-                    toggleShowXLM(!showXLM);
+                    setChainState(draft => {
+                      draft.showUsd = !draft.showUsd;
+                    });
                   }}
                 />
-                <Label>{chainLookup[currentChain]?.symbol}</Label>
+                <Label>{chain.selectedToken}</Label>
               </div>
             </div>
             <div className="my-auto">
@@ -623,10 +679,7 @@ export default function DonationForm(props: any) {
                 className="pl-4"
                 type="text"
                 id="amount"
-                text={
-                  showXLM ? '| ' + chainLookup[currentChain]?.symbol : '| USD'
-                }
-                divRef={amountInputRef}
+                text={showUsd ? '| USD' : `| ${chain.selectedToken}`}
                 onChange={recalc}
               />
             </div>
@@ -654,13 +707,13 @@ export default function DonationForm(props: any) {
         <Separator />
         <div className="flex flex-col items-center justify-center">
           <Button
-            disabled={disabled}
+            disabled={buttonProps.disabled}
             className="mt-6 mx-6 w-[250px] h-[50px] bg-lime-600 text-white text-lg hover:bg-green-600 hover:shadow-inner"
             onClick={onAction}
           >
-            {buttonText}
+            {buttonProps.text}
           </Button>
-          <p className="mt-2 text-sm">{message}</p>
+          <p className="mt-2 text-sm">{buttonMessage}</p>
         </div>
       </Card>
     </div>

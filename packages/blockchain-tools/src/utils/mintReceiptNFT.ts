@@ -1,16 +1,12 @@
 import appConfig from "@cfce/app-config"
-// import upload from "@/src/libs/nft/upload"
-// import mint from "@/src/libs/nft/mint"
-// import fetchLedger from "@/src/libs/server/fetchLedger"
 import {
-  ReceiptStatus,
   getInitiativeById,
   getOrganizationById,
   getUserByWallet,
   newNftData,
 } from "@cfce/database"
+import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
-import { uploadDataToIPFS } from "@cfce/utils"
 import { DateTime } from "luxon"
 import { type ChainSlugs, type TokenTickerSymbol, getCoinRate } from "../../src"
 import { BlockchainManager } from "../chains"
@@ -34,6 +30,7 @@ export async function mintReceiptNFT({
   amount,
 }: mintReceiptNFTParams) {
   try {
+    // #region: Initialize fns and data
     const chainTool = BlockchainManager.getInstance()[chain]?.server
     if (!chainTool) {
       console.error("No chain tool found for chain", chain)
@@ -77,10 +74,18 @@ export async function mintReceiptNFT({
     }
     const organizationName = organization?.name
 
-    const rate = await getCoinRate(token) //, chain) <- TODO: test this
+    const rate = await getCoinRate({ symbol: token, chain }).catch(() => 0)
     const amountCUR = (+amount).toFixed(4)
     const amountUSD = (+amount * rate).toFixed(4)
 
+    const uriImage =
+      initiative?.imageUri ||
+      "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
+    //const uriImage = 'ipfs:QmdmPTsnJr2AwokcR1QC11s1T3NRUh9PK8jste1ngnuDzT' // thank you NFT
+    //let uriImage = 'https://ipfs.io/ipfs/bafybeihfgwla34hifpekxjpyga4bibjj3m37ul5j77br7q7vr4ajs4rgiq' // thank you NFT
+    //#endregion
+
+    //#region: Metadata from hook
     // runHook takes 3 params. 1. The Trigger name 2. The organizations to check and 3. Additional data that can be used by the the hook
     const extraMetadata = await runHook(
       Triggers.addMetadataToNFTReceipt,
@@ -92,33 +97,32 @@ export async function mintReceiptNFT({
       },
     )
     console.log("EXTRA:", extraMetadata)
+    //#endregion
 
-    let offsetVal = 0
-    let offsetTxt = "0 Tons"
+    //#region: Credit metadata
+    const creditMeta: { creditValue?: string } = {}
+    const credit = initiative?.credits?.[0]
     console.log("CREDIT", initiative?.credits)
-    if (initiative?.credits?.length > 0) {
-      const creditVal = initiative?.credits?.[0]?.value ?? 0
-      const creditTon = creditVal / (rate || 1)
-      offsetVal = creditTon > 0 ? +amountUSD / creditTon : 0
+    if (credit) {
+      const creditTon = credit.value / (rate || 1)
+      let offsetVal = creditTon > 0 ? +amountUSD / creditTon : 0
+      // TODO: Why is this rounding the value? Seems like it should use the raw value
       if (offsetVal < 0.00005) {
         offsetVal = 0.0001
       } // Round up
-      offsetTxt = `${offsetVal.toFixed(4)} Tons`
-      console.log("CREDITVAL", creditVal)
+      const offsetTxt = `${offsetVal.toFixed(4)} Tons`
+      creditMeta.creditValue = offsetTxt
+      console.log("CREDITVAL", credit.value)
       console.log("CREDITTON", creditTon)
       console.log("OFFSETVAL", offsetVal)
       console.log("OFFSETTXT", offsetTxt)
     }
+    //#endregion
 
-    const uriImage =
-      initiative?.imageUri ||
-      "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
-    //const uriImage = 'ipfs:QmdmPTsnJr2AwokcR1QC11s1T3NRUh9PK8jste1ngnuDzT' // thank you NFT
-    //let uriImage = 'https://ipfs.io/ipfs/bafybeihfgwla34hifpekxjpyga4bibjj3m37ul5j77br7q7vr4ajs4rgiq' // thank you NFT
-
+    //#region: Save metadata
     // Save metadata
     const metadata = {
-      creditValue: offsetTxt,
+      ...creditMeta,
       ...(extraMetadata?.output ?? {}),
       mintedBy: "CFCE via GiveCredit",
       created: created,
@@ -145,8 +149,9 @@ export async function mintReceiptNFT({
     const uriMeta = `ipfs:${cidMeta}`
     //let uriMeta = process.env.IPFS_GATEWAY_URL + cidMeta
     console.log("META URI", uriMeta)
+    //#endregion
 
-    // Mint NFT
+    // #region: Mint NFT on chains
     // Contracts we'll invoke to mint receipt NFTs
     const receiptConctractsByChain: Array<{
       chain: ChainSlugs
@@ -178,7 +183,6 @@ export async function mintReceiptNFT({
         walletSeed:
           process.env[`${chainContract.chain.toUpperCase()}_WALLET_SEED`] ?? "",
       })
-      // .mintNFT({});
       console.log("RESMINT", mintResponse)
       if (!mintResponse) {
         throw new Error("Error minting NFT")
@@ -194,8 +198,9 @@ export async function mintReceiptNFT({
       }
     }
     const offerId = "" // no need for offers in soroban
+    //#endregion
 
-    // Save NFT data to Prisma
+    // #region: Save data to DB
     const data = {
       created: new Date(),
       donorAddress: donorWalletAddress,
@@ -219,6 +224,7 @@ export async function mintReceiptNFT({
     if (!saved) {
       throw new Error("Problem saving NFT data to db")
     }
+    //#endregion
 
     // Success
     console.log("Minting completed")

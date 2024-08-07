@@ -1,7 +1,3 @@
-// import Stellar, { StellarNetworks } from "./common"
-import { ChainBaseClass } from "@/chains"
-import type { ChainSlugs, Network } from "@/chains/chainConfig"
-import Contract721 from "@/contracts/soroban/nft721/server"
 import { BASE_FEE, SorobanRpc } from "@stellar/stellar-sdk"
 import type {
   Transaction as StellarTransaction,
@@ -10,6 +6,10 @@ import type {
   // Keypair,
   // TransactionBuilder,
 } from "@stellar/stellar-sdk"
+// import Stellar, { StellarNetworks } from "./common"
+import { ChainBaseClass } from "../chains"
+import type { ChainSlugs, Network } from "../chains/chainConfig"
+import Contract721 from "../contracts/soroban/nft721/server"
 import { Transaction } from "../types/transaction"
 
 export default class StellarServer extends ChainBaseClass {

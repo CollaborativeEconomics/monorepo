@@ -1,9 +1,9 @@
-import ChainBaseClass from "@/chains/ChainBaseClass"
-import type { ChainSlugs, Network } from "@/chains/chainConfig"
-import Abi721 from "@/contracts/solidity/erc721/erc721-abi.json"
-import Abi1155 from "@/contracts/solidity/erc1155/erc1155-abi.json"
 import _get from "lodash/get"
 import Web3 from "web3"
+import ChainBaseClass from "../chains/ChainBaseClass"
+import type { ChainSlugs, Network } from "../chains/chainConfig"
+import Abi721 from "../contracts/solidity/erc721/erc721-abi.json"
+import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 import { Transaction } from "../types/transaction"
 
 export default class Web3Server extends ChainBaseClass {

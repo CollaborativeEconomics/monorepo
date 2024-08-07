@@ -2,8 +2,8 @@
 
 import { Xumm } from "xumm"
 import type { XummJsonTransaction } from "xumm-sdk/dist/src/types"
+import type { ChainSlugs, Network } from "../chains/chainConfig"
 import XrplCommon from "./XrplCommon"
-import type { ChainSlugs, Network } from "@/chains/chainConfig"
 
 export default class XummClient extends XrplCommon {
   wallet?: Xumm

@@ -1,5 +1,3 @@
-import { ChainBaseClass } from "@/chains"
-import type { ChainSlugs, Network } from "@/chains/chainConfig"
 import {
   getNetwork,
   getNetworkDetails,
@@ -8,6 +6,8 @@ import {
   signTransaction,
 } from "@stellar/freighter-api"
 import * as StellarSDK from "@stellar/stellar-sdk"
+import { ChainBaseClass } from "../chains"
+import type { ChainSlugs, Network } from "../chains/chainConfig"
 
 export default class FreighterWallet extends ChainBaseClass {
   horizon: StellarSDK.Horizon.Server

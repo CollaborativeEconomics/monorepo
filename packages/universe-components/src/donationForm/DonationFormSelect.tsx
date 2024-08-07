@@ -1,26 +1,26 @@
-import * as React from 'react'
-import { InputProps } from '../ui/input'
+import * as React from 'react';
+import type { InputProps } from '../ui/input';
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectItem,
-} from '../ui/select'
+} from '../ui/select';
 
 interface SelectOption {
   value: string;
   image: string;
-  symbol?: string,
-  enabled?: boolean
+  symbol?: string;
+  enabled?: boolean;
 }
 
 export interface SelectInputProps extends InputProps {
-  className?: string
-  currentOption: string
-  handleChange: any
-  options: SelectOption[]
-  placeHolderText: string
+  className?: string;
+  currentOption: string;
+  handleChange: any;
+  options: SelectOption[];
+  placeHolderText: string;
 }
 
 const DonationFormSelect = React.forwardRef<HTMLInputElement, SelectInputProps>(
@@ -33,7 +33,7 @@ const DonationFormSelect = React.forwardRef<HTMLInputElement, SelectInputProps>(
       handleChange,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <Select onValueChange={handleChange} defaultValue={currentOption}>
@@ -45,10 +45,12 @@ const DonationFormSelect = React.forwardRef<HTMLInputElement, SelectInputProps>(
             placeholder={placeHolderText}
           />
         </SelectTrigger>
-        
+
         <SelectContent className="bg-white">
-          {options.map((option) => {
-            if(!option?.enabled){ return }
+          {options.map(option => {
+            if (!option?.enabled) {
+              return;
+            }
             return (
               <SelectItem
                 className="bg-white text-black dark:text-white"
@@ -57,19 +59,18 @@ const DonationFormSelect = React.forwardRef<HTMLInputElement, SelectInputProps>(
               >
                 <div className="flex flex-row gap-3">
                   {/* TODO: FIX: IMAGE NOT FOUND IS CAUSING MULTIPLE PAGE RELOADS WITH COIN ID AS INIT ID */}
-                  <img src={option.image} width="30px" />
+                  <img src={option.image} width="30px" alt={option.value} />
                   <div className="my-auto">{option.value}</div>
                 </div>
               </SelectItem>
-            )
+            );
           })}
         </SelectContent>
       </Select>
-    )
-  }
-)
-//DonationFormSelect.displayName = 'select'
+    );
+  },
+);
 
-DonationFormSelect.displayName = 'DonationFormSelect'
+DonationFormSelect.displayName = 'DonationFormSelect';
 
-export { DonationFormSelect }
+export { DonationFormSelect };

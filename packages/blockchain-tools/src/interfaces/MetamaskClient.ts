@@ -1,8 +1,5 @@
 /// <reference path="./metamask.d.ts" />
 
-import { ChainBaseClass } from "@/chains"
-import type { ChainSlugs, Network, NetworkConfig } from "@/chains/chainConfig"
-import erc20abi from "@/contracts/solidity/erc20/erc20-abi.json"
 import type { MetaMaskInpageProvider } from "@metamask/providers"
 import Web3 from "web3"
 import type {
@@ -10,6 +7,9 @@ import type {
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
+import { ChainBaseClass } from "../chains"
+import type { ChainSlugs, Network, NetworkConfig } from "../chains/chainConfig"
+import erc20abi from "../contracts/solidity/erc20/erc20-abi.json"
 import type { Transaction } from "../types/transaction"
 
 export default class MetaMaskWallet extends ChainBaseClass {

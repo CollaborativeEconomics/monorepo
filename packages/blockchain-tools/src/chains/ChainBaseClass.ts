@@ -1,5 +1,5 @@
 import type { Web3 } from "web3"
-import { Transaction } from "../types/transaction"
+import type { Transaction } from "../types/transaction"
 import type {
   ChainConfig,
   ChainSlugs,

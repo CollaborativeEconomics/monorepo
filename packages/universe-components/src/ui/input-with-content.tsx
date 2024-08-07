@@ -1,6 +1,6 @@
-import React from 'react';
-import { InputProps } from './input';
 import { cn } from '@/shadCnUtil';
+import React from 'react';
+import type { InputProps } from './input';
 
 export interface InputWithContentProps extends InputProps {
   text: string;

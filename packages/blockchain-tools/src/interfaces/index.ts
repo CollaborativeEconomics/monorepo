@@ -1,9 +1,9 @@
 import FreighterWallet from "./FreighterClient"
 import MetaMaskWallet from "./MetamaskClient"
-import XummClient from "./XummClient"
-import XrplServer from "./XrplServer"
 import StellarServer from "./StellarServer"
 import Web3Server from "./Web3Server"
+import XrplServer from "./XrplServer"
+import XummClient from "./XummClient"
 
 export type Interfaces =
   | "freighter"
@@ -12,6 +12,7 @@ export type Interfaces =
   | "xrpl"
   | "web3"
   | "stellar"
+  | "argent"
 
 export type Interface =
   | FreighterWallet

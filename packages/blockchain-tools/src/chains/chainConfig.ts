@@ -569,4 +569,8 @@ chainConfiguration.xrpl.networks.testnet = {
   wssurl: "",
 }
 
+export const getChainConfiguration = (slugs: ChainSlugs[]): ChainConfig[] => {
+  return slugs.map((slug) => chainConfiguration[slug])
+}
+
 export default chainConfiguration

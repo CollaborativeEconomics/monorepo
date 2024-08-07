@@ -4,8 +4,8 @@ Use in server:
 
 ```JS
 import { Address }  from "@stellar/stellar-sdk"
-import { networks } from '@/contracts/networks'
-import { submit }   from '@/contracts/nft721/server'
+import { networks } from '../../../contracts/networks'
+import { submit }   from '../../../contracts/nft721/server'
 
 const network  = networks.futurenet
 const receiver = 'GCFED2OC5W2S46UYVUY6K3CDFXTCIY2FHU3RN2FM4P2WT224OYTTJXUL'
@@ -18,7 +18,7 @@ Use in client:
 
 ```JS
 // Client must use freighter wallet
-import {Contract, networks} from '@/contracts/nft721/client'
+import {Contract, networks} from '../../../contracts/nft721/client'
 
 export async function mint(to:string){
   const opt = {...networks.futurenet}

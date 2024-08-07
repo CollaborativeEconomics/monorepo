@@ -1,12 +1,34 @@
+"use server"
 import { Mobula } from "mobula-sdk"
 import type { ChainSlugs, TokenTickerSymbol } from "../chains"
 
 const mobula = new Mobula({ apiKeyAuth: process.env.MOBULA_API_KEY })
 
-export default async function getCoinRate(
-  symbol: TokenTickerSymbol,
-  chain?: ChainSlugs,
-): Promise<number> {
+// Can't use this hook because it's not server-side
+// export function useCoinRate(
+//   { symbol, chain }: { symbol: TokenTickerSymbol; chain?: ChainSlugs },
+//   dependencyArray: React.DependencyList = [],
+// ): number {
+//   const [exchangeRate, setExchangeRate] = useState(0)
+//   useEffect(() => {
+//     getCoinRate({ symbol, chain })
+//       .then((rate) => {
+//         if (rate) {
+//           setExchangeRate(rate)
+//         }
+//       })
+//       .catch((err) => {
+//         console.error("Error getting coin rate", err)
+//       })
+//   }, [symbol, chain, ...dependencyArray])
+//   return exchangeRate
+// }
+
+export default async function getCoinRate({
+  chain,
+  symbol,
+}: { symbol: TokenTickerSymbol; chain?: ChainSlugs }): Promise<number> {
+  "use server"
   try {
     const response = await mobula.fetchAssetMarketData({
       symbol,
@@ -18,7 +40,6 @@ export default async function getCoinRate(
     }
     return exchangeRate
   } catch (error) {
-    console.error(error)
     if (error instanceof Error) {
       throw new Error(`Error fetching crypto price quote: ${error.message}`)
     }

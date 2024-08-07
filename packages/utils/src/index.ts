@@ -5,4 +5,5 @@ export {
   setAuthProviders,
 } from "./auth/nextAuth"
 export * from "./state"
-export { default as appConfig } from "./appConfig"
+export * from "./api"
+export { default as appConfig, type ChainConfig } from "./appConfig"

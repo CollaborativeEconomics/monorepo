@@ -1,4 +1,3 @@
-import { ChainBaseClass } from "@/chains"
 import { get } from "lodash"
 import {
   type NFTokenCreateOffer,
@@ -9,6 +8,7 @@ import {
   isModifiedNode,
 } from "xrpl"
 import type { NFTokenPage } from "xrpl/dist/npm/models/ledger"
+import { ChainBaseClass } from "../chains"
 import { Transaction } from "../types/transaction"
 
 type transactionMethods =

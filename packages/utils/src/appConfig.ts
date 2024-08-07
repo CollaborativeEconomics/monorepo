@@ -16,7 +16,7 @@ const configPaths: Record<Envs, string> = {
   production: "appConfig.ts",
 }
 
-interface Config {
+export interface ChainConfig {
   siteInfo: {
     title: string
     description: string
@@ -38,19 +38,15 @@ interface Config {
     }
   }
   auth: string[]
-  chains: Partial<
-    Record<
-      ChainSlugs,
-      {
-        network: Network
-        contracts: Partial<
-          Record<"CCreceiptMintbotERC721" | "receiptMintbotERC721", string>
-        >
-        wallets: Interfaces[]
-        coins: TokenTickerSymbol[]
-      }
+  chains: Array<{
+    slug: ChainSlugs
+    network: Network
+    contracts: Partial<
+      Record<"CCreceiptMintbotERC721" | "receiptMintbotERC721", string>
     >
-  >
+    wallets: Interfaces[]
+    coins: TokenTickerSymbol[]
+  }>
   chainDefaults: {
     network: Network
     wallet: Interfaces
@@ -67,25 +63,25 @@ register({
   },
 })
 
-let appConfigs: Record<Envs, Config> | null = null
+let appConfigs: Record<Envs, ChainConfig> | null = null
 
 // Load the configuration for each environemnt
 // ie appConfig.dev.ts, appConfig.staging.ts, appConfig.ts
-function loadConfig(): Record<Envs, Config> {
+function loadConfig(): Record<Envs, ChainConfig> {
   if (appConfigs) {
     return appConfigs
   }
   const rootDir = process.cwd()
-  const configs = {} as Record<Envs, Config>
+  const configs = {} as Record<Envs, ChainConfig>
   for (const env of Object.keys(configPaths)) {
     const configPath = resolve(rootDir, configPaths[env as Envs]) // app/appConfig.dev.ts
     if (existsSync(configPath)) {
       const { config } = require(configPath) // `ts-node` will handle the TypeScript file
-      configs[env as Envs] = config as Config
+      configs[env as Envs] = config as ChainConfig
     }
     throw new Error(`Configuration file not found at ${configPath}`)
   }
-  return configs as Record<Envs, Config>
+  return configs as Record<Envs, ChainConfig>
 }
 
 appConfigs = loadConfig()
@@ -94,4 +90,4 @@ const environment: Envs = (process.env.APP_ENV || "staging") as Envs
 
 const appConfig = appConfigs[environment]
 
-export default appConfig as Config
+export default appConfig as ChainConfig

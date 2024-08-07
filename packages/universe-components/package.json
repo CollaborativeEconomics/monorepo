@@ -10,6 +10,7 @@
   "devDependencies": {
     "@cfce/theme": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
+    "@types/lodash": "^4.17.0",
     "@types/luxon": "^3.4.2",
     "@types/react": "latest",
     "typescript": "latest"
@@ -20,10 +21,11 @@
     "next-themes": "^0.3.0"
   },
   "dependencies": {
-    "@cfce/utils": "workspace:*",
+    "@cfce/app-config": "workspace:*",
+    "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/theme": "workspace:*",
-    "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/utils": "workspace:*",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -45,6 +47,7 @@
     "clipboard-copy": "^4.0.1",
     "clsx": "^2.1.1",
     "jotai": "^2.9.1",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.399.0",
     "luxon": "^3.4.4",
     "react-hook-form": "^7.52.1",

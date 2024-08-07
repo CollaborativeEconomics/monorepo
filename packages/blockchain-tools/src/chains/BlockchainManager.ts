@@ -1,14 +1,13 @@
+import { keys as _keys } from "lodash"
 import {
   FreighterWallet,
   MetaMaskWallet,
   StellarServer,
   Web3Server,
-  XummClient,
   XrplServer,
-} from "@/interfaces"
-import { keys as _keys } from "lodash"
-import type { ChainSlugs, Network, NetworkConfig } from "./chainConfig"
-import ChainBaseClass from "./ChainBaseClass"
+  XummClient,
+} from "../interfaces"
+import type { ChainSlugs, Network } from "./chainConfig"
 
 interface ManagerChainConfig {
   network: Network

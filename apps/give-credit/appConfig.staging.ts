@@ -13,9 +13,7 @@ const apis = {
   },
 }
 
-const chains = {
-  ...appConfig.chains,
-}
+const chains = [...appConfig.chains]
 
 const chainDefaults = {
   ...appConfig.chainDefaults,

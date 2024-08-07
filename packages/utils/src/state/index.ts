@@ -1,39 +1,40 @@
 import type {
   ChainSlugs,
-  Interface,
+  Interfaces,
   TokenTickerSymbol,
 } from "@cfce/blockchain-tools"
 import type { Prisma } from "@cfce/database"
 import type { Draft } from "immer" // TS doesn't like it if we don't import this
 import { atomWithImmer } from "jotai-immer"
+import appConfig from "../appConfig"
 
 const chainsState = atomWithImmer<{
-  selectedChain?: ChainSlugs
-  selectedWallet?: Interface
-  selectedToken?: TokenTickerSymbol
+  selectedChain: ChainSlugs
+  selectedWallet: Interfaces
+  selectedToken: TokenTickerSymbol
   exchangeRate: number
 }>({
-  selectedChain: undefined,
-  selectedWallet: undefined,
-  selectedToken: undefined,
+  selectedChain: appConfig.chainDefaults.chain,
+  selectedWallet: appConfig.chainDefaults.wallet,
+  selectedToken: appConfig.chainDefaults.coin,
   exchangeRate: 0,
 })
 
-export const NFT_STATUS_MESSAGES = {
-  pending: "Claim your NFT",
-  minting: "Minting NFT, wait a moment...",
-  minted: "NFT minted successfully!",
-  failed: "Minting NFT failed!",
+export const NFT_STATUS = {
+  pending: "PENDING",
+  minting: "MINTING",
+  minted: "MINTED",
+  failed: "FAILED",
 } as const
 
 interface DonationFormState {
   showUsd: boolean
-  NFTStatusMessage: (typeof NFT_STATUS_MESSAGES)[keyof typeof NFT_STATUS_MESSAGES]
+  NFTStatus: (typeof NFT_STATUS)[keyof typeof NFT_STATUS]
 }
 
 const donationFormState = atomWithImmer<DonationFormState>({
   showUsd: false,
-  NFTStatusMessage: NFT_STATUS_MESSAGES.pending,
+  NFTStatus: NFT_STATUS.pending,
 })
 
 const pendingDonationState = atomWithImmer<Prisma.DonationCreateInput>({})

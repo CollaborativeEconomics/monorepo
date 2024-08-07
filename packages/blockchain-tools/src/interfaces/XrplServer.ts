@@ -1,17 +1,17 @@
-import { ChainBaseClass } from "@/chains"
 import {
-  Wallet,
   Client,
-  convertStringToHex,
-  NFTokenMintFlags,
-  isoTimeToRippleTime,
-  NFTokenCreateOfferFlags,
   type NFTokenCreateOffer,
+  NFTokenCreateOfferFlags,
+  NFTokenMintFlags,
   type Transaction,
   type TransactionMetadata,
+  Wallet,
+  convertStringToHex,
+  isoTimeToRippleTime,
 } from "xrpl"
+import { ChainBaseClass } from "../chains"
+import type { ChainSlugs, Network } from "../chains/chainConfig"
 import XrplCommon from "./XrplCommon"
-import type { ChainSlugs, Network } from "@/chains/chainConfig"
 
 export default class XrplServer extends XrplCommon {
   sourceTag?: number

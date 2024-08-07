@@ -3,7 +3,7 @@ import type {
   ChainSlugs,
   Network,
   TokenTickerSymbol,
-} from "@cfce/blockchain-tools/dist/chains/chainConfig"
+} from "@cfce/blockchain-tools"
 
 const siteInfo = {
   title: "Give Credit",
@@ -29,30 +29,33 @@ const apis = {
 
 type ContractType = "receiptMintbotERC721"
 interface ChainConfig {
+  slug: ChainSlugs
   network: string
   contracts: Partial<Record<ContractType, string>>
   wallets: Interfaces[]
-  coins: TokenTickerSymbol[]
+  tokens: TokenTickerSymbol[]
 }
-const chains: Partial<Record<ChainSlugs, ChainConfig>> = {
-  xinfin: {
+const chains: ChainConfig[] = [
+  {
+    slug: "xinfin",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
     },
     wallets: [],
-    coins: [],
+    tokens: [],
   },
-  stellar: {
+  {
+    slug: "stellar",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721:
         "CDCTS77MPY6GXTGMFFIOWINMPBX4G7DELFEV34KTX5N2DZH43TGHMNU3",
     },
     wallets: ["freighter"],
-    coins: ["XLM", "USDC"],
+    tokens: ["XLM", "USDC"],
   },
-}
+]
 
 const auth = Object.keys(chains)
 

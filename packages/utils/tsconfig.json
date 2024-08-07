@@ -1,9 +1,9 @@
 {
   "extends": "@cfce/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "./dist",
     "baseUrl": "./src",
     "rootDir": "./src",
+    "outDir": "./dist",
     "sourceMap": true,
     "declaration": true,
     "strict": true
