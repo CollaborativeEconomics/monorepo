@@ -21,7 +21,7 @@
     "jotai": "^2.9.1",
     "jotai-immer": "^0.4.1",
     "luxon": "^3.4.4",
-    "mailgun.js": "^7.0.0",
+    "mailgun.js": "^7.0.4",
     "next-auth": "*",
     "ts-node": "^10.9.2",
     "uuid": "^9.0.0"

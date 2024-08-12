@@ -1,126 +1,111 @@
-"use client"
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-//import { ChevronUp, ChevronDown } from 'lucide-react'
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/src/components/ui/table"
+'use client';
+import type { NFTDataWithRelations } from '@cfce/database';
 import {
-  ColumnDef,
+  type SortingState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
-} from '@tanstack/react-table'
+} from '@tanstack/react-table';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
 
-type Receipt = {
-  id: string;
-  image: string;
-  imageUri: string;
-  initiative: string;
-  organization: string;
-  amount: string;
-  coin: string;
+interface TableReceiptsProps {
+  receipts: NFTDataWithRelations[];
 }
 
-type Dictionary = { [key: string]: any }
+export default function TableReceipts({ receipts }: TableReceiptsProps) {
+  const router = useRouter();
 
-export default function TableReceipts(props:any){
-  const router = useRouter()
-  const receipts:[Dictionary] = props?.receipts || []
-  const recs = receipts.map(rec => { 
-    return {
-      id: rec.id,
-      image: rec.imageUri.startsWith('ipfs') ? 'https://ipfs.filebase.io/ipfs/'+rec.imageUri.substr(5) : rec.imageUri,
-      imageUri: rec.imageUri,
-      initiative: rec.initiative.title,
-      organization: rec.organization.name,
-      amount: rec.coinValue,
-      coin: rec.coinSymbol
-    }
-  })
+  const [order, setOrder] = useState('');
+  const [sorting, setSorting] = useState<SortingState>([]);
 
-  const [order, setOrder] = useState('')
-  const [data, setData] = useState(recs)
-  const [sorting, setSorting] = useState<SortingState>([])
-
-  const columnHelper = createColumnHelper<Receipt>()
+  const columnHelper = createColumnHelper<NFTDataWithRelations>();
 
   const columns = [
-    columnHelper.accessor("image", {
-      header: "Image",
-      cell: (info) => info.getValue(),
+    columnHelper.accessor('imageUri', {
+      header: 'Image',
+      cell: info =>
+        info.getValue() ??
+        `https://ipfs.filebase.io/ipfs/${info.getValue().substr(5)}`,
     }),
-    columnHelper.accessor("initiative", {
-      header: "Initiative",
-      cell: (info) => info.getValue(),
+    columnHelper.accessor('initiative', {
+      header: 'Initiative',
+      cell: info => info.getValue()?.title ?? '',
     }),
-    columnHelper.accessor("organization", {
-      header: "Organization",
-      cell: (info) => info.getValue(),
+    columnHelper.accessor('organization', {
+      header: 'Organization',
+      cell: info => info.getValue()?.name ?? '',
     }),
-    columnHelper.accessor("amount", {
-      header: "Amount",
-      cell: (info) => info.getValue(),
+    columnHelper.accessor('coinValue', {
+      header: 'Amount',
+      cell: info => info.getValue(),
     }),
-    columnHelper.accessor("coin", {
-      header: "Coin",
-      cell: (info) => info.getValue(),
+    columnHelper.accessor('coinSymbol', {
+      header: 'Coin',
+      cell: info => info.getValue(),
     }),
-  ]
+  ];
 
   const table = useReactTable({
-    data,
+    data: receipts,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel()
-  })
+    getSortedRowModel: getSortedRowModel(),
+  });
 
-  const list = table.getRowModel().rows
+  const list = table.getRowModel().rows;
 
-  function clicked(evt){
-    let rowid = ''
-    if(evt.target.parentNode.tagName=='TD'){
-      rowid = evt.target.parentNode.parentNode.dataset.id
-    } else {
-      rowid = evt.target.parentNode.dataset.id
+  function clicked(evt: React.MouseEvent) {
+    const parent = (evt.target as HTMLElement).closest(
+      '[data-id]',
+    ) as HTMLElement | null;
+    if (parent?.dataset.id) {
+      const rowId = Number.parseInt(parent.dataset.id, 10);
+      const { id: nftId } = receipts[rowId];
+      console.log('CLICKED', rowId, nftId);
+      console.log('DATA', receipts[rowId]);
+      router.push(`/nft/${nftId}`);
     }
-    const nftid = data[rowid].id
-    console.log('CLICKED', rowid, nftid)
-    console.log('DATA', data[rowid])
-    router.push('/nft/'+nftid)
   }
 
   return (
     <Table id="table-nfts" className="w-full">
       <TableHeader>
-        {table.getHeaderGroups().map((headerGroup) => (
+        {table.getHeaderGroups().map(headerGroup => (
           <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
+            {headerGroup.headers.map(header => (
               <TableHead key={header.id}>
-                {header.isPlaceholder
-                ? null
-                : (
-                    <div
-                      {...{
-                        className: header.column.getCanSort()
-                          ? 'cursor-pointer select-none'
-                          : '',
-                        onClick: header.column.getToggleSortingHandler()
-                      }}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {{
-                        asc : ' ↑',
-                        desc: ' ↓',
-                      }[header.column.getIsSorted() as string] ?? null}
-                    </div>
+                {header.isPlaceholder ? null : (
+                  <div
+                    {...{
+                      className: header.column.getCanSort()
+                        ? 'cursor-pointer select-none'
+                        : '',
+                      onClick: header.column.getToggleSortingHandler(),
+                    }}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                    {{
+                      asc: ' ↑',
+                      desc: ' ↓',
+                    }[header.column.getIsSorted() as string] ?? null}
+                  </div>
                 )}
               </TableHead>
             ))}
@@ -128,28 +113,39 @@ export default function TableReceipts(props:any){
         ))}
       </TableHeader>
       <TableBody onClick={clicked}>
-        { list.length>0 ? list.map((row) => {
-          return (
-            <TableRow key={row.id} data-id={row.id}>
-              {row.getVisibleCells().map((cell) => { 
-                //console.log('CELL', cell)
-                return (
-                  <TableCell key={cell.id}>
-                    { cell?.column?.id=='image' 
-                      ? (<Image src={cell?.getValue() as string} width={64} height={64} alt="NFT" />)
-                      : flexRender(cell.column.columnDef.cell, cell.getContext())
-                    }
-                  </TableCell>
-                )}
-              )}
-            </TableRow>
-          )
-        }) : (
+        {list.length > 0 ? (
+          list.map(row => {
+            return (
+              <TableRow key={row.id} data-id={row.id}>
+                {row.getVisibleCells().map(cell => {
+                  //console.log('CELL', cell)
+                  return (
+                    <TableCell key={cell.id}>
+                      {cell?.column?.id === 'imageUri' ? (
+                        <Image
+                          src={cell?.getValue() as string}
+                          width={64}
+                          height={64}
+                          alt="NFT"
+                        />
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })
+        ) : (
           <TableRow>
             <TableCell className="col-span-5">No receipts found</TableCell>
           </TableRow>
         )}
       </TableBody>
     </Table>
-  )
+  );
 }

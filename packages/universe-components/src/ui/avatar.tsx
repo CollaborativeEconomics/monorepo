@@ -1,10 +1,10 @@
 'use client';
 
-import * as React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
+import * as React from 'react';
 
 import { cn } from '@/shadCnUtil';
-import { VariantProps, cva } from 'class-variance-authority';
+import { type VariantProps, cva } from 'class-variance-authority';
 
 const avatarImageVariants = cva(
   'relative flex shrink-0 overflow-hidden rounded-full',

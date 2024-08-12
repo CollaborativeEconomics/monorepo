@@ -1,5 +1,5 @@
-import React, { HTMLProps } from 'react';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import React, { type HTMLProps } from 'react';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface TextareaProps {
   label: string;

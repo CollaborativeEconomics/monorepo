@@ -1,8 +1,4 @@
-import {
-  getDonations,
-  getDonationsByUser,
-  newDonation,
-} from '@/utils/registry';
+import { getDonations, newDonation } from '@cfce/database';
 
 export async function GET(request: Request) {
   try {
@@ -10,14 +6,13 @@ export async function GET(request: Request) {
     const user = url.searchParams.get('userId') || '';
     let res = null;
     if (user) {
-      res = await getDonationsByUser(user);
-      console.log('Response', res);
-      return Response.json({ success: true, result: res });
-    } else {
-      res = await getDonations();
+      res = await getDonations({ userId: user });
       console.log('Response', res);
       return Response.json({ success: true, result: res });
     }
+    res = await getDonations({});
+    console.log('Response', res);
+    return Response.json({ success: true, result: res });
   } catch (ex: any) {
     console.error(ex);
     return Response.json(

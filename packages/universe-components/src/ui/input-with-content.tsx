@@ -4,7 +4,7 @@ import type { InputProps } from './input';
 
 export interface InputWithContentProps extends InputProps {
   text: string;
-  divRef: any;
+  divRef: React.RefObject<HTMLDivElement>;
 }
 
 const InputWithContent = React.forwardRef<

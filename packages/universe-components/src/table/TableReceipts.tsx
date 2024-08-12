@@ -1,10 +1,19 @@
-import Image from 'next/image'
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/src/components/ui/table"
+import type { NFTDataWithRelations } from '@cfce/database';
+import Image from 'next/image';
+import React from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
 
-type Dictionary = { [key: string]: any }
-
-export default function TableReceipts(props:any){
-  const receipts:[Dictionary] = props?.receipts || []
+interface TableReceiptsProps {
+  receipts?: NFTDataWithRelations[];
+}
+export default function TableReceipts({ receipts }: TableReceiptsProps) {
   return (
     <Table id="table-nfts" className="w-full">
       <TableHeader>
@@ -17,23 +26,29 @@ export default function TableReceipts(props:any){
         </TableRow>
       </TableHeader>
       <TableBody>
-        {receipts.length ? receipts.map((item:any)=>{
-          const image = item.imageUri.startsWith('ipfs') ? 'https://ipfs.filebase.io/ipfs/'+item.imageUri.substr(5) : item.imageUri
-          return (
-            <TableRow key={item.id}>
-              <TableCell><Image src={image} width={64} height={64} alt="NFT" /></TableCell>
-              <TableCell>{item.initiative.title}</TableCell>
-              <TableCell>{item.organization.name}</TableCell>
-              <TableCell>{item.coinValue}</TableCell>
-              <TableCell>{item.coinSymbol}</TableCell>
-            </TableRow>
-          )
-        }) : (
+        {receipts?.length ? (
+          receipts.map(item => {
+            const image = item.imageUri.startsWith('ipfs')
+              ? `https://ipfs.filebase.io/ipfs/${item.imageUri.substr(5)}`
+              : item.imageUri;
+            return (
+              <TableRow key={item.id}>
+                <TableCell>
+                  <Image src={image} width={64} height={64} alt="NFT" />
+                </TableCell>
+                <TableCell>{item?.initiative?.title}</TableCell>
+                <TableCell>{item?.organization?.name}</TableCell>
+                <TableCell>{`${item.coinValue}`}</TableCell>
+                <TableCell>{item.coinSymbol}</TableCell>
+              </TableRow>
+            );
+          })
+        ) : (
           <TableRow>
             <TableCell className="col-span-5">No receipts found</TableCell>
           </TableRow>
-        )}  
+        )}
       </TableBody>
     </Table>
-  )
+  );
 }

@@ -1,28 +1,29 @@
-'use client'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Card, CardContent, CardHeader } from '../ui/card'
-import { Progress } from '../ui/progress'
-import { Separator } from '../ui/separator'
-import { DateDisplay } from '../ui/date-posted'
-import { Button } from '../ui/button'
-import { OrgStats } from '../ui/org-stats'
-import OrganizationAvatar from './OrganizationAvatar'
+'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { OrgStats } from '../ui/org-stats';
+import { Separator } from '../ui/separator';
 
-const dummyImgSrc: string = 'https://partners.cfce.io/_next/image?url=https%3A%2F%2Fipfs.filebase.io%2Fipfs%2FQmcS3rZdEzNkYxSd79AJVgjkDpK7sBd1ej99i4sBXD1mkQ&w=256&q=75'
+const dummyImgSrc: string =
+  'https://partners.cfce.io/_next/image?url=https%3A%2F%2Fipfs.filebase.io%2Fipfs%2FQmcS3rZdEzNkYxSd79AJVgjkDpK7sBd1ej99i4sBXD1mkQ&w=256&q=75';
 
 export default function OrganizationCard({ ...props }) {
-  const organization = props?.data || {}
-  if(!organization.id){ return <></> }
-  const orgurl = '/organizations/' + organization.id
-  let image = dummyImgSrc
+  const organization = props?.data || {};
+  if (!organization.id) {
+    return <></>;
+  }
+  const orgurl = `/organizations/${organization.id}`;
+  let image = dummyImgSrc;
   if (organization.image) {
     image = organization.image.startsWith('ipfs')
-      ? 'https://ipfs.filebase.io/ipfs/' + organization.image.substr(5)
-      : organization.image
+      ? `https://ipfs.filebase.io/ipfs/${organization.image.substr(5)}`
+      : organization.image;
   }
   //const startDate = new Date(organization?.start).getTime()
-  const progress = (organization.donations / organization.goal) * 100
+  const progress = (organization.donations / organization.goal) * 100;
 
   return (
     <Card className="flex flex-col overflow-hidden h-auto">
@@ -44,7 +45,9 @@ export default function OrganizationCard({ ...props }) {
             {organization.name}
           </h3>
         </Link>
-        <p className="block h-[8-rem] min-h-[8rem] max-h-[8rem] px-6 py-2 text-ellipsis overflow-scroll">{organization.description}</p>
+        <p className="block h-[8-rem] min-h-[8rem] max-h-[8rem] px-6 py-2 text-ellipsis overflow-scroll">
+          {organization.description}
+        </p>
         <Separator />
         <div className="px-6 pt-3">
           <OrgStats
@@ -68,5 +71,5 @@ export default function OrganizationCard({ ...props }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

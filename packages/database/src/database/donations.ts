@@ -1,6 +1,6 @@
+import type { Donation, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
 import type { ListQuery } from "../types"
-import type { Donation, Prisma } from "@prisma/client"
 
 interface DonationQuery extends ListQuery {
   id?: string
@@ -15,9 +15,11 @@ interface DonationQuery extends ListQuery {
   badges?: string
 }
 
-export async function getDonations(
-  query: DonationQuery,
-): Promise<Array<Donation>> {
+export type DonationWithRelations = Prisma.DonationGetPayload<{
+  include: { organization: true; initiative: true }
+}>
+
+export async function getDonations(query: DonationQuery) {
   const filter: Prisma.DonationFindManyArgs = {
     skip: 0,
     take: 100,
@@ -111,12 +113,12 @@ export async function getDonations(
   return data
 }
 
-export async function getDonationById(id: string): Promise<Donation | null> {
+export async function getDonationById(id: string) {
   const data = await prismaClient.donation.findUnique({ where: { id } })
   return data
 }
 
-export async function newDonation(data: Donation): Promise<Donation> {
+export async function newDonation(data: Donation) {
   const rec = await prismaClient.donation.create({ data })
   console.log("NEW DONATION", rec)
   return rec

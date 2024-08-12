@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 interface MainProps {
   className?: string;
@@ -7,10 +7,12 @@ interface MainProps {
 
 const Main = ({ className, children }: MainProps) => {
   return (
-    <main className={`flex min-h-screen flex-col items-stretch container mt-24 ${className||''}`}>
+    <main
+      className={`flex min-h-screen flex-col items-stretch container mt-24 ${className || ''}`}
+    >
       {children}
     </main>
-  )
-}
+  );
+};
 
-export default Main
+export default Main;

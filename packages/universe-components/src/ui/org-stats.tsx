@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { cn } from '@/shadCnUtil';
-import money from '@/src/utils/money';
+import { localizedNumber } from '@cfce/utils';
 import { Building2, DollarSign, Sprout, Target, UserIcon } from 'lucide-react';
 import { ListObject } from './list-object';
 
@@ -25,20 +25,14 @@ function buildList(props: Stats): Array<React.JSX.Element> {
     items.push(
       <ListObject
         Icon={Sprout}
-        text={
-          '$' +
-          localizedNumber(props.amountRaised) +
-          ' of ' +
-          localizedNumber(props.amountTarget) +
-          ' raised'
-        }
+        text={`$${localizedNumber(props.amountRaised)} of ${localizedNumber(props.amountTarget)} raised`}
       />,
     );
   } else {
     items.push(
       <ListObject
         Icon={Sprout}
-        text={'$' + localizedNumber(props.amountRaised) + ' total raised'}
+        text={`$${localizedNumber(props.amountRaised)} total raised`}
       />,
     );
   }
@@ -46,38 +40,32 @@ function buildList(props: Stats): Array<React.JSX.Element> {
     items.push(
       <ListObject
         Icon={DollarSign}
-        text={
-          '$' + props.raisedThisMonth.toLocaleString() + ' raised this month'
-        }
+        text={`$${props.raisedThisMonth.toLocaleString()} raised this month`}
       />,
     );
   }
   if (props.initiativeCount) {
-    const initiativePlural = props.initiativeCount == 1 ? '' : 's';
+    const initiativePlural = props.initiativeCount === 1 ? '' : 's';
     items.push(
       <ListObject
         Icon={Target}
-        text={props.initiativeCount + ' Initiative' + initiativePlural}
+        text={`${props.initiativeCount} Initiative${initiativePlural}`}
       />,
     );
   }
-  const donorPlural = props.donorCount == 1 ? '' : 's';
+  const donorPlural = props.donorCount === 1 ? '' : 's';
   items.push(
     <ListObject
       Icon={UserIcon}
-      text={props.donorCount + ' Donor' + donorPlural}
+      text={`${props.donorCount} Donor${donorPlural}`}
     />,
   );
   const institutionalDonorPlural =
-    props.institutionalDonorCount == 1 ? '' : 's';
+    props.institutionalDonorCount === 1 ? '' : 's';
   items.push(
     <ListObject
       Icon={Building2}
-      text={
-        props.institutionalDonorCount +
-        ' Institutional Donor' +
-        institutionalDonorPlural
-      }
+      text={`${props.institutionalDonorCount} Institutional Donor${institutionalDonorPlural}`}
     />,
   );
   return items;

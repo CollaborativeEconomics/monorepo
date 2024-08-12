@@ -1,29 +1,28 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn } from '@/shadCnUtil';
-import { Button } from '@/src/components/ui/button';
+import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
+import { Button } from '../ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandList,
   CommandInput,
   CommandItem,
-} from '@/src/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/src/components/ui/popover';
-import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
+} from '../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
-export default function LocationSelect(props: any) {
+interface LocationSelectProps {
+  onChange?: (location: string) => void;
+}
+
+export default function LocationSelect(props: LocationSelectProps) {
   const onChange = props?.onChange;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
-  const [locations, setLocations] = useState([]);
+  const [locations, setLocations] = useState<string[]>([]);
 
   useEffect(() => {
     async function loadLocations() {
@@ -56,10 +55,12 @@ export default function LocationSelect(props: any) {
             {locations.map(item => (
               <CommandItem
                 key={item}
-                onSelect={currentValue => {
+                onSelect={(currentValue: string) => {
                   console.log('LOC', currentValue, 'OLD', value || '?');
                   setValue(item);
-                  onChange(currentValue);
+                  if (onChange) {
+                    onChange(currentValue);
+                  }
                   setOpen(false);
                 }}
               >

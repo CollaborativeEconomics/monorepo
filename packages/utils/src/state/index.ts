@@ -20,8 +20,9 @@ const chainsState = atomWithImmer<{
   exchangeRate: 0,
 })
 
-export const NFT_STATUS = {
-  pending: "PENDING",
+export const PAYMENT_STATUS = {
+  ready: "READY",
+  sending: "SENDING",
   minting: "MINTING",
   minted: "MINTED",
   failed: "FAILED",
@@ -29,12 +30,18 @@ export const NFT_STATUS = {
 
 interface DonationFormState {
   showUsd: boolean
-  NFTStatus: (typeof NFT_STATUS)[keyof typeof NFT_STATUS]
+  emailReceipt: boolean
+  name: string
+  email: string
+  paymentStatus: (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]
 }
 
 const donationFormState = atomWithImmer<DonationFormState>({
+  name: "",
+  email: "",
+  emailReceipt: false,
   showUsd: false,
-  NFTStatus: NFT_STATUS.pending,
+  paymentStatus: PAYMENT_STATUS.ready,
 })
 
 const pendingDonationState = atomWithImmer<Prisma.DonationCreateInput>({})

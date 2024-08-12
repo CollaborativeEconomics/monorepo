@@ -1,10 +1,10 @@
-import React from 'react';
 import { cn } from '@/shadCnUtil';
-import { InputProps } from './input';
+import React from 'react';
+import type { InputProps } from './input';
 
 export interface SwitchProps extends InputProps {
   valueBasis: boolean;
-  handleToggle: any;
+  handleToggle: () => void;
 }
 
 const Switch = React.forwardRef<HTMLDivElement, SwitchProps>(
@@ -26,7 +26,7 @@ const Switch = React.forwardRef<HTMLDivElement, SwitchProps>(
             <div
               className="inline-block p-5 rounded-full top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
               data-ripple-dark="true"
-            ></div>
+            />
           </label>
         </div>
       </div>

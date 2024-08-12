@@ -10,6 +10,10 @@ interface NFTDataQuery extends ListQuery {
   tokenid?: string
 }
 
+export type NFTDataWithRelations = Prisma.NFTDataGetPayload<{
+  include: { organization: true; initiative: true; user: true }
+}>
+
 export async function getNftData(query: NFTDataQuery) {
   let data = null
   const filter: Prisma.NFTDataFindManyArgs = {

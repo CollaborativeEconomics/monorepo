@@ -5,7 +5,7 @@ import {
   AlertTriangle,
   CheckCircle,
   Hourglass,
-  LucideIcon,
+  type LucideIcon,
   RefreshCw,
 } from 'lucide-react';
 

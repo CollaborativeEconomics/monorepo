@@ -1,17 +1,17 @@
 // https://tailwindcomponents.com/component/share-modal
 
 'use client';
-import Link from 'next/link';
-import React, { useState } from 'react';
+import copy from 'clipboard-copy';
 import {
-  Share as IconShare,
   Facebook,
+  Share as IconShare,
   Instagram,
-  Twitter,
   Send as Telegram,
+  Twitter,
   MessageCircle as Whatsapp,
 } from 'lucide-react';
-import copy from 'clipboard-copy';
+import Link from 'next/link';
+import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 export default function ShareModal() {
@@ -38,7 +38,7 @@ export default function ShareModal() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="flex Button text-slate-500">
+        <button type="button" className="flex Button text-slate-500">
           <span className="mr-2">Share</span>
           <IconShare />
         </button>
@@ -92,6 +92,7 @@ export default function ShareModal() {
                   readOnly
                 />
                 <button
+                  type="button"
                   className="bg-indigo-500 text-white rounded text-sm py-2 px-5 mt-2 hover:bg-indigo-600"
                   onClick={evt => {
                     copyToClipboard(url);

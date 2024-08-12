@@ -88,7 +88,7 @@ const style = {
 function CarbonChart({ goal = 100, value, max100 = true }: ChartType) {
   console.log('CHART', goal, value);
   const max = max100 ? 100 : goal;
-  const pct: any = {
+  const pct: Record<number, Record<string, string>> = {
     10: { ...style.ton, ...style.p10 },
     20: { ...style.ton, ...style.p20 },
     30: { ...style.ton, ...style.p30 },
@@ -106,7 +106,7 @@ function CarbonChart({ goal = 100, value, max100 = true }: ChartType) {
   //const fix = mod.toFixed(1);
   const fix = Math.trunc(mod * 10) / 10;
   const dec = Number(fix) * max;
-  const prt: any = pct[dec];
+  const prt = pct[dec];
   const rst = max - int - ext;
   const offs = Array(int).fill(0);
   const tons = Array(rst).fill(0);
@@ -125,17 +125,17 @@ function CarbonChart({ goal = 100, value, max100 = true }: ChartType) {
               style={style.off}
               key={keyRand()}
               className="bg-gradient-to-br from-lime-500 to-lime-700 border-lime-700 rounded-lg shadow-lg border"
-            ></div>
+            />
           );
         })}
-        {dec > 0 ? <div style={prt}></div> : <></>}
+        {dec > 0 ? <div style={prt} /> : <></>}
         {tons.map(i => {
           return (
             <div
               style={style.ton}
               key={keyRand()}
               className="bg-gradient-to-br from-slate-100 to-slate-200"
-            ></div>
+            />
           );
         })}
       </div>

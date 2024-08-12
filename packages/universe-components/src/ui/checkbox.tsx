@@ -1,10 +1,10 @@
 'use client';
 
-import * as React from 'react';
+import { cn } from '@/shadCnUtil';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Check } from 'lucide-react';
-import { cn } from '@/shadCnUtil';
-import { InputProps } from './input';
+import * as React from 'react';
+import type { InputProps } from './input';
 import { Label } from './label';
 
 export interface CheckboxWithTextProps extends InputProps {

@@ -6,7 +6,8 @@ import {
 } from '@cfce/blockchain-tools';
 import type { Prisma } from '@cfce/database';
 import {
-  NFT_STATUS,
+  PAYMENT_STATUS,
+  ReceiptEmailBody,
   appConfig,
   chainsState as chainStateAtom,
   donationFormState,
@@ -63,7 +64,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const [chainState, setChainState] = useAtom(chainStateAtom);
   const { selectedToken, selectedChain, exchangeRate } = chainState;
   const [donationForm, setDonationForm] = useAtom(donationFormState);
-  const { showUsd, NFTStatus } = donationForm;
+  const { showUsd, paymentStatus, emailReceipt, name, email } = donationForm;
   useEffect(() => {
     fetchApi(`rates?coin=${selectedToken}&chain=${selectedChain}`).then(
       (rate: number) => {
@@ -111,18 +112,21 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     appConfig.chains.find(c => c.slug === selectedChain)?.wallets ?? [];
 
   const buttonProps = useMemo(() => {
-    if (NFTStatus === NFT_STATUS.minting) {
+    if (paymentStatus === PAYMENT_STATUS.sending) {
+      return { disabled: true, text: 'Sending' };
+    }
+    if (paymentStatus === PAYMENT_STATUS.minting) {
       return { disabled: true, text: 'Minting' };
     }
-    if (NFTStatus === NFT_STATUS.minted) {
+    if (paymentStatus === PAYMENT_STATUS.minted) {
       return { disabled: true, text: 'Minted' };
     }
-    if (NFTStatus === NFT_STATUS.failed) {
+    if (paymentStatus === PAYMENT_STATUS.failed) {
       return { disabled: true, text: 'Failed' };
     }
-    // status === pending
-    return { disabled: false, text: 'Claim' };
-  }, [NFTStatus]);
+    // status === ready
+    return { disabled: false, text: 'Donate' };
+  }, [paymentStatus]);
   const [buttonMessage, setButtonMessage] = useState(
     'One wallet confirmation required',
   );
@@ -166,7 +170,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     const remainingCredits = tonx - creditsToRetire;
     const percentDiff = (100 * remainingCredits) / creditsToRetire;
     return percentDiff;
-  }, [creditValue, usdAmount]);
+  }, [creditValue, usdAmount, tonx]);
   // const [offset, setOffset] = useState('0.00');
   const offset = (usdAmount / creditValue).toFixed(2);
 
@@ -361,33 +365,34 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     }
   }
 
-  async function onAction() {
-    const amount = $('amount')?.value || '0';
-    const name = $('name-input')?.value || '';
-    const email = $('email-input')?.value || '';
-    const receipt = $('receipt-check')?.dataset.state == 'checked';
-    console.log('FORM --------');
-    console.log('Currency:', currency);
-    console.log('Wallet:', wallet);
-    console.log('Amount:', amount);
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Receipt:', receipt);
-    console.log('ContractID:', contractId);
+  async function onSubmit() {
+    // const amount = $('amount')?.value || '0';
+    // const name = $('name-input')?.value || '';
+    // const email = $('email-input')?.value || '';
+    // const receipt = $('receipt-check')?.dataset.state == 'checked';
+    // console.log('FORM --------');
+    // console.log('Currency:', currency);
+    // console.log('Wallet:', wallet);
+    // console.log('Amount:', amount);
+    // console.log('Name:', name);
+    // console.log('Email:', email);
+    // console.log('Receipt:', receipt);
+    // console.log('ContractID:', contractId);
 
     // Validate required data
-    if (!parseInt(amount)) {
+    if (typeof amount === 'undefined') {
       setButtonMessage('Enter a valid amount');
       return;
     }
-    if (receipt && !validEmail(email)) {
+    if (emailReceipt && !validEmail(email)) {
       setButtonMessage('Enter a valid email');
       return;
     }
 
     // Donate and mint
-    setButtonText('WAIT');
-    setDisabled(true);
+    setDonationForm(draft => {
+      draft.paymentStatus = PAYMENT_STATUS.minting;
+    });
     setButtonMessage('Approve payment in your Freighter wallet');
 
     const orgwallet = getWalletByChain(organization?.wallets, chainName);
@@ -527,15 +532,16 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       //sendReceipt(name, email, organization, amount, currency, rate, issuer)
       console.log('YES receipt...');
       setButtonMessage('Sending receipt, wait a moment...');
-      const data = {
-        name: name,
+      const data: ReceiptEmailBody & { email: string } = {
+        date: new Date().toISOString(),
+        donorName: name,
         email: email,
-        org: organization.name,
-        address: organization.mailingAddress,
-        ein: organization.EIN,
-        currency: currency,
-        amount: coinAmount.toFixed(2),
-        usd: usdAmount.toFixed(2),
+        organizationName: organization.name,
+        address: organization.mailingAddress ?? '',
+        ein: organization.EIN ?? '',
+        coinSymbol: selectedToken,
+        coinValue: `${coinAmount}`,
+        usdValue: usdAmount.toFixed(2),
       };
       const rec = await sendReceipt(data);
       console.log('Receipt sent', rec);
@@ -709,7 +715,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
           <Button
             disabled={buttonProps.disabled}
             className="mt-6 mx-6 w-[250px] h-[50px] bg-lime-600 text-white text-lg hover:bg-green-600 hover:shadow-inner"
-            onClick={onAction}
+            onClick={onSubmit}
           >
             {buttonProps.text}
           </Button>
