@@ -1,9 +1,9 @@
 import type { Setting } from "@prisma/client"
 import { prismaClient } from ".."
 
-interface SettingsQuery {
-  id: string
-  name: string
+export interface SettingsQuery {
+  id?: string
+  name?: string
 }
 
 export async function getSettings(

@@ -1,6 +1,6 @@
 import type { Prisma, Wallet } from "@prisma/client"
-import { prismaClient } from ".."
 import type { ListQuery } from "types"
+import { prismaClient } from ".."
 
 interface WalletQuery extends ListQuery {
   address?: string
@@ -44,7 +44,9 @@ export async function getWallets(
   return data
 }
 
-export async function newWallet(data: Omit<Wallet, "id">): Promise<Wallet> {
+export async function newWallet(
+  data: Prisma.WalletCreateInput,
+): Promise<Wallet> {
   const result = await prismaClient.wallet.create({ data })
   return result
 }

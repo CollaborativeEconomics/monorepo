@@ -1,10 +1,10 @@
-import NextAuth, { type AuthOptions, type User } from "next-auth"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import {
   getOrganizationByEmail,
   getUserByEmail,
   prismaClient,
 } from "@cfce/database"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import NextAuth, { type AuthOptions, type User } from "next-auth"
 import authProviders from "./authProviders"
 
 const authConfig: AuthOptions = {
@@ -118,7 +118,9 @@ export function setAuthProviders(providerSlugs: string[]) {
   const providers = providerSlugs
     .map((provider) => authProviders[provider])
     .filter((p) => typeof p !== "undefined")
-  nextAuth = NextAuth({ ...authConfig, providers })
+  authConfig.providers = providers
+  nextAuth = NextAuth(authConfig)
 }
 
+export { authConfig }
 export default nextAuth

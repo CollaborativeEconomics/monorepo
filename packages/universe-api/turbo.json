@@ -1,0 +1,4 @@
+{
+  "extends": ["//"],
+  "globalEnv": ["GITHUB_ID", "GITHUB_SECRET", "MOBULA_API_KEY", "TURBO_ENV"]
+}
