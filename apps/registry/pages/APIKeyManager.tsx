@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
-import { unstable_getServerSession } from 'next-auth'
+import { auth } from 'next-auth';
+import React, { useState } from 'react';
 
-import { authOptions } from 'pages/api/auth/[...nextauth]'
-import { prismaClient } from '@cfce/database'
+import { prismaClient } from '@cfce/database';
+import { authOptions } from 'pages/api/auth/[...nextauth]';
 
 export async function getServerSideProps(context) {
   // @ts-ignore
-  const session = await unstable_getServerSession(
+  const session = await auth(
     // @ts-ignore
     context.req,
     // @ts-ignore
     context.res,
     // @ts-ignore
     authOptions,
-  )
+  );
 
   if (!session) {
     return {
@@ -21,34 +21,34 @@ export async function getServerSideProps(context) {
         destination: '/',
         permanent: false,
       },
-    }
+    };
   }
 
-  const { api_key } = await prismaClient.user.findFirst()
-  console.log({ api_key, session })
+  const { api_key } = await prismaClient.user.findFirst();
+  console.log({ api_key, session });
 
-  return { props: { session, api_key } }
+  return { props: { session, api_key } };
 }
 
-const APIKeyManager = props => {
-  const [apiSecret, setApiSecret] = useState('')
-  console.log({ props })
+const APIKeyManager = () => {
+  const [apiSecret, setApiSecret] = useState('');
 
   return (
     <div>
       <h2>Generate an API Key</h2>
       {apiSecret}
       <button
+        type="button"
         onClick={() => {
           fetch('/api/users/api_key', {
             method: 'put',
-          })
+          });
         }}
       >
         Get Keys
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default APIKeyManager
+export default APIKeyManager;

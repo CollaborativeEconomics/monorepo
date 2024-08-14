@@ -1,5 +1,5 @@
 'use client';
-import { ChainManager, ChainSlugs } from '@cfce/blockchain-tools';
+import { BlockchainManager, type ChainSlugs } from '@cfce/blockchain-tools';
 import { DonationStatus } from '@cfce/database';
 import {
   appConfig,
@@ -26,7 +26,7 @@ export default function NFTReceipt() {
   async function mintNFT(
     txid: string,
     initid: string,
-    donor: string,
+    donorWallet: string,
     destin: string,
     amount: number,
     rate: number,
@@ -35,40 +35,17 @@ export default function NFTReceipt() {
       'Minting NFT, wait...',
       txid,
       initid,
-      donor,
+      donorWallet,
       destin,
       amount,
       rate,
     );
-    const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ txid, initid, donor, destin, amount, rate }),
-    };
-    const receiptConctractsByChain: Array<{
-      chain: ChainSlugs;
-      contract: string;
-    }> = [];
-    for (const chainSlug in appConfig.chains) {
-      const chain = appConfig.chains[chainSlug as ChainSlugs];
-      // A receipt contract exists for this chain
-      if (chain?.contracts.receiptMintbotERC721) {
-        receiptConctractsByChain.push({
-          chain: chainSlug as ChainSlugs,
-          contract: chain.contracts.receiptMintbotERC721,
-        });
-      }
-      // A CC receipt contract exists for this chain, usually XDC
-      if (chain?.contracts.CCreceiptMintbotERC721) {
-        receiptConctractsByChain.push({
-          chain: chainSlug as ChainSlugs,
-          contract: chain.contracts.CCreceiptMintbotERC721,
-        });
-      }
-    }
-    for (const chainContract of receiptConctractsByChain) {
-      ChainManager.getInstance()[chainContract.chain].mintNFT({});
-    }
+    // const options = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ txid, initid, donor, destin, amount, rate }),
+    // };
+
     const response = await fetch('/api/nft/mint', options);
     //console.log('Minting response', response)
     const result = await response.json();

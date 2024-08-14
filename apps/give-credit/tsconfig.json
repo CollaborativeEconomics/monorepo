@@ -11,7 +11,8 @@
     "../../packages/universe-components/src/tailwind.config.ts",
     "./appConfig.staging.js",
     "./appConfig.js",
-    "../../packages/universe-components/src/shadCnUtil.ts"
+    "../../packages/universe-components/src/shadCnUtil.ts",
+    "../../packages/utils/src/api.ts"
   ],
   "exclude": [
     "node_modules",
