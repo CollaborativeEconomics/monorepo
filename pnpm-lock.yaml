@@ -50,6 +50,9 @@ importers:
       '@cfce/theme':
         specifier: workspace:*
         version: link:../../packages/theme
+      '@cfce/universe-api':
+        specifier: workspace:*
+        version: link:../../packages/universe-api
       '@cfce/universe-components':
         specifier: workspace:*
         version: link:../../packages/universe-components
