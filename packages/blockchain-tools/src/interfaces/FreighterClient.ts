@@ -50,18 +50,22 @@ export default class FreighterWallet extends ChainBaseClass {
     }
   }
 
-  async payment(dst: string, amt: string, memo: string) {
+  async sendPayment({
+    address,
+    amount,
+    memo,
+  }: { address: string; amount: number; memo: string }) {
     try {
       // const nwk = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "").toUpperCase()
       // const net = process.env.NEXT_PUBLIC_STELLAR_PASSPHRASE || ""
       // console.log("NET:", nwk, this.network.networkPassphrase)
       console.log("From", this.connectedWallet)
-      console.log("Paying", amt, "XLM to", dst, "Memo", memo)
+      console.log("Paying", amount, "XLM to", address, "Memo", memo)
       const act = await this.horizon.loadAccount(this.connectedWallet)
       const fee = await this.horizon.fetchBaseFee() // 100
       const opr = StellarSDK.Operation.payment({
-        destination: dst,
-        amount: amt,
+        destination: address,
+        amount: `${amount}`,
         asset: StellarSDK.Asset.native(),
       })
       const opt = {
@@ -117,7 +121,10 @@ export default class FreighterWallet extends ChainBaseClass {
       }
     } catch (err) {
       console.error("E>>", err)
-      return { success: false, error: err }
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : "Unknown error",
+      }
     }
   }
 

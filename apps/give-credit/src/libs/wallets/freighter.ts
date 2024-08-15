@@ -1,11 +1,11 @@
-import * as StellarSDK from "@stellar/stellar-sdk"
 import {
-  isConnected,
   getNetwork,
   getNetworkDetails,
+  isConnected,
   requestAccess,
   signTransaction,
 } from "@stellar/freighter-api"
+import * as StellarSDK from "@stellar/stellar-sdk"
 
 export default class Wallet {
   neturl = ""
@@ -48,7 +48,7 @@ export default class Wallet {
     }
   }
 
-  async payment(dst: string, amt: string, memo: string) {
+  async sendPayment(dst: string, amt: string, memo: string) {
     try {
       let nwk = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "").toUpperCase()
       let net = process.env.NEXT_PUBLIC_STELLAR_PASSPHRASE || ""

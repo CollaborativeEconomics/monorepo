@@ -8,7 +8,12 @@ import type {
   ProviderRpcError,
 } from "web3"
 import { ChainBaseClass } from "../chains"
-import type { ChainSlugs, Network, NetworkConfig } from "../chains/chainConfig"
+import type {
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+  TokenTickerSymbol,
+} from "../chains/chainConfig"
 import erc20abi from "../contracts/solidity/erc20/erc20-abi.json"
 import type { Transaction } from "../types/transaction"
 
@@ -392,11 +397,11 @@ export default class MetaMaskWallet extends ChainBaseClass {
     console.log({ txHash })
   }
 
-  async payment(
-    destin: string,
-    amount: string,
-    memo: string,
-  ): Promise<{
+  async sendPayment({
+    address,
+    amount,
+    memo,
+  }: { address: string; amount: number; memo: string }): Promise<{
     success: boolean
     error?: string
     txid?: string
@@ -408,7 +413,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     function strHex(str: string) {
       return `0x${Buffer.from(str.toString(), "utf8").toString("hex")}`
     }
-    console.log(`Sending ${amount} to ${destin}...`)
+    console.log(`Sending ${amount} to ${address}...`)
     const gasPrice = await this.getGasPrice() //numHex(20000000000)
     if (!gasPrice) {
       console.error("Payment error: Error getting gas price")
@@ -416,11 +421,11 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
     console.log("GAS", Number.parseInt(gasPrice), gasPrice)
     const gas = numHex(210000)
-    const wei = numHex(Number.parseFloat(amount) * 10 ** 18)
+    const wei = numHex(amount * 10 ** 18)
     const method = "eth_sendTransaction"
     const tx = {
       from: this.connectedWallet,
-      to: destin,
+      to: address,
       value: wei,
       gasPrice,
       gas,
@@ -459,20 +464,26 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
   }
 
-  async paytoken(
-    destin: string,
-    amount: number,
-    token: string,
-    contract: string,
-    memo: string,
-  ) {
+  async sendToken({
+    address,
+    amount,
+    token,
+    contract,
+    memo,
+  }: {
+    address: string
+    amount: number
+    token: TokenTickerSymbol
+    contract: string
+    memo: string
+  }) {
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
     function strHex(str: string) {
       return `0x${Buffer.from(str.toString(), "utf8").toString("hex")}`
     }
-    console.log(`Sending ${amount} ${token} token to ${destin}...`)
+    console.log(`Sending ${amount} ${token} token to ${address}...`)
     const gasPrice = await this.getGasPrice() //numHex(20000000000)
     if (!gasPrice) {
       console.error("Payment error: Error getting gas price")
@@ -487,7 +498,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
       return { success: false, error: "Error getting web3 instance" }
     }
     const ctr = new this.web3.eth.Contract(erc20abi, contract)
-    const data = ctr.methods.transfer(destin, wei).encodeABI()
+    const data = ctr.methods.transfer(address, wei).encodeABI()
     console.log("Data", data)
     //const count = await this.web3.eth.getTransactionCount(this.connectedWallet)
     //const nonce = this.web3.utils.toHex(count)

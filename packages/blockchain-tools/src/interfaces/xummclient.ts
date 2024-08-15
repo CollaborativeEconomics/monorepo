@@ -57,17 +57,17 @@ export default class XummClient extends XrplCommon {
   async sendPayment({
     address,
     amount,
-    destinationTag,
-  }: { address: string; amount: number; destinationTag?: string }) {
-    console.log("XRP Sending payment...", address, amount, destinationTag)
+    memo,
+  }: { address: string; amount: number; memo?: string }) {
+    console.log("XRP Sending payment...", address, amount, memo)
     try {
       const request: XummJsonTransaction = {
         TransactionType: "Payment",
         Destination: address,
         Amount: String(this.toBaseUnit(amount)), // one million drops, 1 XRP
       }
-      if (destinationTag) {
-        request.DestinationTag = destinationTag
+      if (memo) {
+        request.DestinationTag = memo
       }
       //this.sendPayload(request, callback)
       if (!this.wallet) {
@@ -125,6 +125,55 @@ export default class XummClient extends XrplCommon {
       }
     }
   }
+
+  // WARNING: below is untested
+  // async sendToken({
+  //   address,
+  //   amount,
+  //   token,
+  //   issuer,
+  //   memo,
+  // }: {
+  //   address: string
+  //   amount: number
+  //   token: string
+  //   issuer: string
+  //   memo?: string
+  // }) {
+  //   console.log("Sending token...", address, amount, token, issuer, memo)
+  //   try {
+  //     const request: XummJsonTransaction = {
+  //       TransactionType: "Payment",
+  //       Destination: address,
+  //       Amount: {
+  //         currency: token,
+  //         issuer: issuer,
+  //         value: amount.toString(),
+  //       },
+  //     }
+
+  //     if (memo) {
+  //       request.Memos = [
+  //         {
+  //           Memo: {
+  //             MemoData: Buffer.from(memo, "utf8").toString("hex"),
+  //           },
+  //         },
+  //       ]
+  //     }
+
+  //     return await this.sendPayload(request)
+  //   } catch (ex) {
+  //     console.log("ERROR", ex)
+  //     if (ex instanceof Error) {
+  //       return { success: false, error: ex.message }
+  //     }
+  //     return {
+  //       success: false,
+  //       error: "Error sending token",
+  //     }
+  //   }
+  // }
 
   async acceptSellOffer(offerId: string, address: string) {
     console.log("XRP Accept sell offer...", offerId, address)

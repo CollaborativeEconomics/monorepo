@@ -104,7 +104,7 @@
       "import": "./dist/organizations/[id]/route.js",
       "types": "./dist/organizations/[id]/route.d.ts"
     },
-    "./profileId": {
+    "./profile/[id]": {
       "import": "./dist/profile/[id]/route.js",
       "types": "./dist/profile/[id]/route.d.ts"
     },
@@ -140,11 +140,11 @@
       "import": "./dist/stories/[id]/route.js",
       "types": "./dist/stories/[id]/route.d.ts"
     },
-    "./storyMedia": {
+    "./storymedia": {
       "import": "./dist/storymedia/route.js",
       "types": "./dist/storymedia/route.d.ts"
     },
-    "./storyMedia/[id]": {
+    "./storymedia/[id]": {
       "import": "./dist/storymedia/[id]/route.js",
       "types": "./dist/storymedia/[id]/route.d.ts"
     },
@@ -160,11 +160,11 @@
       "import": "./dist/users/[id]/route.js",
       "types": "./dist/users/[id]/route.d.ts"
     },
-    "./apiKey": {
+    "./users/api_key": {
       "import": "./dist/users/api_key.js",
       "types": "./dist/users/api_key.d.ts"
     },
-    "./userWallet": {
+    "./userwallets": {
       "import": "./dist/userwallets/route.js",
       "types": "./dist/userwallets/route.d.ts"
     },

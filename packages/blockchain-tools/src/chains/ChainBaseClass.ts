@@ -29,14 +29,14 @@ export default abstract class ChainBaseClass {
   public async sendPayment?(params: {
     address: string
     amount: number
-    destinTag: string
+    memo: string
     walletSeed?: string
   }): Promise<{ success: boolean; error?: string }>
   public async sendToken?(params: {
     address: string
     amount: number
     token: TokenTickerSymbol
-    destinTag: string
+    memo: string
     walletSeed?: string
   }): Promise<{ success: boolean; error?: string }>
 

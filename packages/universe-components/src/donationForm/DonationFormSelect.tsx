@@ -18,7 +18,7 @@ interface SelectOption {
 export interface SelectInputProps extends InputProps {
   className?: string;
   currentOption: string;
-  handleChange: any;
+  handleChange: (item: string) => void;
   options: SelectOption[];
   placeHolderText: string;
 }

@@ -7,7 +7,7 @@ import {
 import type { Prisma } from '@cfce/database';
 import {
   PAYMENT_STATUS,
-  ReceiptEmailBody,
+  type ReceiptEmailBody,
   appConfig,
   chainsState as chainStateAtom,
   donationFormState,
@@ -18,24 +18,14 @@ import {
 //import registerUser from "@/contracts/register"
 import { signTransaction } from '@stellar/freighter-api';
 import {
-  Account,
   Address,
-  Asset,
   BASE_FEE,
   Contract,
-  Horizon,
-  Keypair,
-  Networks,
-  Operation,
-  SorobanDataBuilder,
   SorobanRpc,
-  Transaction,
   TransactionBuilder,
   nativeToScVal,
-  scValToNative,
 } from '@stellar/stellar-sdk';
 import { useAtom } from 'jotai';
-import map from 'lodash/map';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import CarbonChart from '../CarbonChart';
@@ -207,15 +197,18 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       console.log('-- Donating', contractId, from, amount);
       const adr = new Address(from).toScVal();
       //const wei = BigInt(amount*10000000) // 7 decs
-      const wei = nativeToScVal(amount * 10000000, { type: 'i128' });
+      if (!chainInterface) {
+        throw new Error('No chain interface');
+      }
+      const wei = chainInterface.toBaseUnit(amount);
       //const args = {from:adr, amount:wei}
       const args = [adr, wei];
       console.log('ARGS', args);
-      const ctr = new Contract(contractId);
-      console.log('CTR', ctr);
-      const op = ctr.call('donate', ...args);
-      //const op = ctr.call('donate', args)
-      console.log('OP', op);
+      const contract = new Contract(contractId);
+      console.log('CTR', contract);
+      const operation = contract.call('donate', ...args);
+      //const operation = contract.call('donate', args)
+      console.log('OP', operation);
       //const account = await horizon.loadAccount(from)
       const account = await soroban.getAccount(from);
       console.log('ACT', account);
@@ -226,7 +219,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
         fee,
         networkPassphrase: network.passphrase,
       })
-        .addOperation(op)
+        .addOperation(operation)
         .setTimeout(30)
         .build();
       console.log('TRX', trx);
@@ -265,7 +258,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
             networkPassphrase: network.passphrase,
           })
             .setSorobanData(sdata)
-            .addOperation(op)
+            .addOperation(operation)
             .setTimeout(30)
             .build();
           console.log('TRZ', trz);
