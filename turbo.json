@@ -3,7 +3,8 @@
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
     "build": {
-      "env": ["MOBULA_API_KEY"]
+      "env": ["MOBULA_API_KEY"],
+      "dotEnv": [".env", ".env.local"]
     }
   },
   "pipeline": {
