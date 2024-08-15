@@ -35,7 +35,6 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@cfce/app-config": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/ipfs": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",

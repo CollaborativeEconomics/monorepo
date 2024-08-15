@@ -546,9 +546,6 @@ importers:
 
   packages/blockchain-tools:
     dependencies:
-      '@cfce/app-config':
-        specifier: workspace:*
-        version: link:../app-config
       '@cfce/database':
         specifier: workspace:*
         version: link:../database
@@ -979,12 +976,21 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.608.0
         version: 3.608.0
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../blockchain-tools
       '@cfce/database':
         specifier: workspace:*
         version: link:../database
+      '@cfce/ipfs':
+        specifier: workspace:*
+        version: link:../ipfs
+      '@cfce/registry-hooks':
+        specifier: workspace:*
+        version: link:../hooks
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
         version: 1.0.7(@prisma/client@5.14.0)(next-auth@4.24.7)

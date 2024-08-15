@@ -1,7 +1,7 @@
 // @ts-ignore turbo should error out if these are not set
 // const XinFinSDK = new XinFinServer({ walletSeed: process.env.XINFIN_MINTER_SECRET, network: process.env.XINFIN_NETWORK });
 
-import { BlockchainManager } from "../../dist"
+import { BlockchainManager } from "@cfce/blockchain-tools"
 
 const uuidToUint256 = (uuid: string) => {
   const hex = uuid.replace(/-/g, "")
