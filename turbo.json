@@ -1,17 +1,19 @@
 {
-  "$schema": "https://turborepo.org/schema.json",
-  "baseBranch": "origin/main",
-  "pipeline": {
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "inputs": [".env", ".env.local"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "dotEnv": [".env"]
+      "env": ["MOBULA_API_KEY"]
     },
     "lint": {
       "dependsOn": ["^lint"]
     },
     "dev": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     }
   }
 }

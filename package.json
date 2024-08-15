@@ -15,7 +15,7 @@
     "@repo/eslint-config": "workspace:*",
     "prettier": "^3.2.5",
     "syncpack": "^12.4.0",
-    "turbo": "latest"
+    "turbo": "2.0.13"
   },
   "packageManager": "pnpm@8.9.0",
   "engines": {
