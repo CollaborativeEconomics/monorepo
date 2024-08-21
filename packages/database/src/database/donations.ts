@@ -113,12 +113,18 @@ export async function getDonations(query: DonationQuery) {
   return data
 }
 
-export async function getDonationById(id: string) {
-  const data = await prismaClient.donation.findUnique({ where: { id } })
+export async function getDonationById(
+  id: string,
+  include: Prisma.DonationInclude = {},
+) {
+  const data = await prismaClient.donation.findUnique({
+    where: { id },
+    include,
+  })
   return data
 }
 
-export async function newDonation(data: Donation) {
+export async function newDonation(data: Prisma.DonationCreateInput) {
   const rec = await prismaClient.donation.create({ data })
   console.log("NEW DONATION", rec)
   return rec

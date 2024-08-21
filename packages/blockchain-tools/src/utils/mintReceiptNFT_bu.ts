@@ -1,31 +1,31 @@
 import type { ChainSlugs } from "../chains"
 
-interface mintReceiptNFTNativeParams {
+interface mintAndSaveReceiptNFTNativeParams {
   chain: ChainSlugs
   contractId: string
   address: string
   amount: number
   tokenId: string
 }
-const mintReceiptNFTNative = async ({
+const mintAndSaveReceiptNFTNative = async ({
   chain,
   contractId,
   address,
   tokenId,
-}: mintReceiptNFTNativeParams) => {}
+}: mintAndSaveReceiptNFTNativeParams) => {}
 
-interface mintReceiptNFTCCParams {
+interface mintAndSaveReceiptNFTCCParams {
   chain?: ChainSlugs
   contractId: string
   address: string
   amount: number
   tokenId: string
 }
-const mintReceiptNFTCC = async ({
+const mintAndSaveReceiptNFTCC = async ({
   chain,
   contractId,
   address,
   tokenId,
-}: mintReceiptNFTCCParams) => {}
+}: mintAndSaveReceiptNFTCCParams) => {}
 
-export { mintReceiptNFTNative, mintReceiptNFTCC }
+export { mintAndSaveReceiptNFTNative, mintAndSaveReceiptNFTCC }

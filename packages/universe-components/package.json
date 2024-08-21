@@ -5,8 +5,48 @@
     "dev": "tsc --watch",
     "build": "tsc"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    "./ui": {
+      "import": "./dist/ui/index.js",
+      "types": "./dist/ui/index.d.ts"
+    },
+    "./tables": {
+      "import": "./dist/table/index.js",
+      "types": "./dist/table/index.d.ts"
+    },
+    "./story": {
+      "import": "./dist/story/index.js",
+      "types": "./dist/story/index.d.ts"
+    },
+    "./search": {
+      "import": "./dist/search/index.js",
+      "types": "./dist/search/index.d.ts"
+    },
+    "./organization": {
+      "import": "./dist/organization/index.js",
+      "types": "./dist/organization/index.d.ts"
+    },
+    "./navigation": {
+      "import": "./dist/navigation/index.js",
+      "types": "./dist/navigation/index.d.ts"
+    },
+    "./initiative": {
+      "import": "./dist/initiative/index.js",
+      "types": "./dist/initiative/index.d.ts"
+    },
+    "./home": {
+      "import": "./dist/home/index.js",
+      "types": "./dist/home/index.d.ts"
+    },
+    "./form": {
+      "import": "./dist/form/index.js",
+      "types": "./dist/form/index.d.ts"
+    },
+    "./donationForm": {
+      "import": "./dist/donationForm/index.js",
+      "types": "./dist/donationForm/index.d.ts"
+    }
+  },
   "devDependencies": {
     "@cfce/theme": "workspace:*",
     "@cfce/typescript-config": "workspace:*",

@@ -16,7 +16,7 @@ const uuidToUint256 = (uuid: string) => {
  * @param storyId Story ID from registry db
  * @param tokenCID CID from IPFS
  */
-export default async function mintStoryNFT(storyId: string, tokenCID: string) {
+export async function mintStoryNFT(storyId: string, tokenCID: string) {
   const uint256 = uuidToUint256(storyId)
   const address = process.env.XINFIN_MINTER_WALLET
   const contractId = process.env.XINFIN_NFT1155_CONTRACT

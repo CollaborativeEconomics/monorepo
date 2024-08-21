@@ -3,7 +3,9 @@ import { BlockchainManager, type ChainSlugs } from '@cfce/blockchain-tools';
 import { DonationStatus } from '@cfce/database';
 import {
   appConfig,
+  chainsState,
   donationFormState,
+  mintAndSaveReceiptNFT,
   pendingDonationState,
 } from '@cfce/utils';
 import { useAtom } from 'jotai';
@@ -19,44 +21,10 @@ import { NFTReceiptText } from './NFTReceiptText';
 export default function NFTReceipt() {
   const [donation, setDonation] = useAtom(pendingDonationState);
   const [donationForm, setDonationForm] = useAtom(donationFormState);
+  const [{selectedChain, selectedToken}] = useAtom(chainsState);
   // const [disabled, setDisabled] = useState(true);
   //console.log('Receipt:', receipt)
   //console.log('Donation', donation)
-
-  async function mintNFT(
-    txid: string,
-    initid: string,
-    donorWallet: string,
-    destin: string,
-    amount: number,
-    rate: number,
-  ) {
-    console.log(
-      'Minting NFT, wait...',
-      txid,
-      initid,
-      donorWallet,
-      destin,
-      amount,
-      rate,
-    );
-    // const options = {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ txid, initid, donor, destin, amount, rate }),
-    // };
-
-    const response = await fetch('/api/nft/mint', options);
-    //console.log('Minting response', response)
-    const result = await response.json();
-    console.log('>Result', result);
-    if (!result.success) {
-      console.error('Error', result.error);
-      //setMessage('Error minting NFT')
-      return { success: false, error: 'Error minting NFT' };
-    }
-    return result;
-  }
 
   async function claimNFT() {
     if (donation.status !== DonationStatus.claimed) {
@@ -67,11 +35,15 @@ export default function NFTReceipt() {
     setDonation(draft => {
       draft.status = DonationStatus.minting;
     });
-    setDonationForm(draft => {
-      draft.NFTStatusMessage = 'Minting NFT, wait a moment...';
-    });
-    const minted = await mintNFT(
-      donation.txid,
+    // setDonationForm(draft => {
+    //   draft.NFTStatusMessage = 'Minting NFT, wait a moment...';
+    // });
+    const minted = await mintAndSaveReceiptNFT(
+      {transaction: {
+        txId: donationForm.txId,
+        chain: selectedChain,
+        token: selectedToken,
+      }}
       donation.initiativeId,
       donation.donor.address,
       donation.receiver,
@@ -80,17 +52,17 @@ export default function NFTReceipt() {
     );
     const result = structuredClone(donation);
     if (minted?.success) {
-      result.status = 'Minted';
+      result.status = DonationStatus.minted;
       setDonation(result);
-      setDonationForm(draft => {
-        draft.NFTStatusMessage = 'NFT minted successfully!';
-      });
+      // setDonationForm(draft => {
+      //   draft.NFTStatusMessage = 'NFT minted successfully!';
+      // });
     } else {
-      result.status = 'Failed';
+      result.status = DonationStatus.rejected;
       setDonation(result);
-      setDonationForm(draft => {
-        draft.NFTStatusMessage = 'Minting NFT failed!';
-      });
+      // setDonationForm(draft => {
+      //   draft.NFTStatusMessage = 'Minting NFT failed!';
+      // });
     }
   }
 

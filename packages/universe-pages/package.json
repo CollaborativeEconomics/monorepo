@@ -5,20 +5,6 @@
     "dev": "tsc --watch",
     "build": "tsc"
   },
-  "exports": {
-    "api/auth/route": {
-      "types": "./src/api/auth/[...nextauth]/route.ts",
-      "default": "./src/api/auth/[...nextauth]/route.ts"
-    },
-    "api/categories": {
-      "types": "./src/api/categories/route.tsx",
-      "default": "./src/api/categories/route.tsx"
-    },
-    "api/credits": {
-      "types": "./src/api/credits/route.ts",
-      "default": "./src/api/credits/route.ts"
-    }
-  },
   "dependencies": {
     "@cfce/universe-components": "workspace:*",
     "@cfce/database": "workspace:*"

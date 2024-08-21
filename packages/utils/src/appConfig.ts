@@ -46,6 +46,7 @@ export interface ChainConfig {
     >
     wallets: Interfaces[]
     coins: TokenTickerSymbol[]
+    destinationTag?: string
   }>
   chainDefaults: {
     network: Network

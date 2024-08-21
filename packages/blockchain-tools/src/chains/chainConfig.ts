@@ -85,9 +85,10 @@ interface TokenConfig {
 
 export interface ChainConfig {
   slug: ChainSlugs
-  chain: ChainNames
+  name: ChainNames
   symbol: TokenTickerSymbol
   logo: string
+  icon: JSX.Element
   networks: Record<Network, NetworkConfig>
 }
 
@@ -96,107 +97,122 @@ export type Chains = Record<ChainSlugs, ChainConfig>
 const chainConfiguration: Chains = {
   arbitrum: {
     slug: "arbitrum",
-    chain: "Arbitrum",
+    name: "Arbitrum",
     symbol: "ARB",
     logo: "arb.svg",
+    icon: require("../assets/arb.svg").default,
     networks: {},
   },
   avalanche: {
     slug: "avalanche",
-    chain: "Avalanche",
+    name: "Avalanche",
     symbol: "AVAX",
     logo: "avax.svg",
+    icon: require("../assets/avax.svg").default,
     networks: {},
   },
   base: {
     slug: "base",
-    chain: "Base",
+    name: "Base",
     symbol: "BASE",
     logo: "base.svg",
+    icon: require("../assets/base.svg").default,
     networks: {},
   },
   binance: {
     slug: "binance",
-    chain: "Binance",
+    name: "Binance",
     symbol: "BNB",
     logo: "bnb.svg",
+    icon: require("../assets/bnb.svg").default,
     networks: {},
   },
   celo: {
     slug: "celo",
-    chain: "Celo",
+    name: "Celo",
     symbol: "CELO",
     logo: "celo.svg",
+    icon: require("../assets/celo.svg").default,
     networks: {},
   },
   eos: {
     slug: "eos",
-    chain: "EOS",
+    name: "EOS",
     symbol: "EOS",
     logo: "eos.svg",
+    icon: require("../assets/eos.svg").default,
     networks: {},
   },
   ethereum: {
     slug: "ethereum",
-    chain: "Ethereum",
+    name: "Ethereum",
     symbol: "ETH",
     logo: "eth.svg",
+    icon: require("../assets/eth.svg").default,
     networks: {},
   },
   filecoin: {
     slug: "filecoin",
-    chain: "Filecoin",
+    name: "Filecoin",
     symbol: "FIL",
     logo: "fil.svg",
+    icon: require("../assets/fil.svg").default,
     networks: {},
   },
   flare: {
     slug: "flare",
-    chain: "Flare",
+    name: "Flare",
     symbol: "FLR",
     logo: "flr.svg",
+    icon: require("../assets/flr.svg").default,
     networks: {},
   },
   optimism: {
     slug: "optimism",
-    chain: "Optimism",
+    name: "Optimism",
     symbol: "OP",
     logo: "op.svg",
+    icon: require("../assets/op.svg").default,
     networks: {},
   },
   polygon: {
     slug: "polygon",
-    chain: "Polygon",
+    name: "Polygon",
     symbol: "MATIC",
     logo: "matic.svg",
+    icon: require("../assets/matic.svg").default,
     networks: {},
   },
   starknet: {
     slug: "starknet",
-    chain: "Starknet",
+    name: "Starknet",
     symbol: "STRK",
     logo: "strk.svg",
+    icon: require("../assets/strk.svg").default,
     networks: {},
   },
   stellar: {
     slug: "stellar",
-    chain: "Stellar",
+    name: "Stellar",
     symbol: "XLM",
     logo: "xlm.svg",
+    icon: require("../assets/xlm.svg").default,
     networks: {},
   },
   xinfin: {
     slug: "xinfin",
-    chain: "XinFin",
+    name: "XinFin",
     symbol: "XDC",
     logo: "xdc.svg",
+    icon: require("../assets/xdc.svg").default,
     networks: {},
   },
   xrpl: {
     slug: "xrpl",
-    chain: "XRPL",
+    name: "XRPL",
     symbol: "XRP",
     logo: "xrp.svg",
+    icon: require("../assets/xrp.svg").default,
     networks: {},
   },
 } as const

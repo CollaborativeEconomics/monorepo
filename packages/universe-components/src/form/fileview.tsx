@@ -10,9 +10,9 @@ interface FileProps {
   height?: number;
 }
 
-function onPreviewFile(event) {
+function onPreviewFile(event: React.ChangeEvent<HTMLInputElement>) {
   console.log('PREVIEW!', event);
-  const file = event?.target?.files[0];
+  const file = event?.target?.files?.[0];
   if (!file) {
     return;
   }
@@ -60,7 +60,7 @@ const FileView = ({
         src={source}
         width={width}
         height={height}
-        alt="profile picture"
+        alt="User avatar"
       />
     </div>
   );

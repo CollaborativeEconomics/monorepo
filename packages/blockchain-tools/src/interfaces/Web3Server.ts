@@ -174,12 +174,12 @@ export default class Web3Server extends ChainBaseClass {
   async sendPayment({
     address,
     amount,
-    destinTag,
+    memo,
     walletSeed,
   }: {
     address: string
     amount: number
-    destinTag: string
+    memo: string
     walletSeed: string
   }) {
     console.log("Sending payment...")
@@ -191,12 +191,12 @@ export default class Web3Server extends ChainBaseClass {
     const acct = this.web3.eth.accounts.privateKeyToAccount(walletSeed)
     const source = acct.address
     const nonce = await this.web3.eth.getTransactionCount(source, "latest")
-    const memo = this.strToHex(destinTag)
+    const memoHex = this.strToHex(memo)
     const tx = {
       from: source, // minter wallet
       to: address, // receiver
       value: value, // value in wei to send
-      data: memo, // memo initiative id
+      data: memoHex, // memo initiative id
     }
     console.log("TX", tx)
     const signed = await this.web3.eth.accounts.signTransaction(tx, walletSeed)

@@ -31,14 +31,24 @@ export default abstract class ChainBaseClass {
     amount: number
     memo: string
     walletSeed?: string
-  }): Promise<{ success: boolean; error?: string }>
+  }): Promise<{
+    success: boolean
+    error?: string
+    txid?: string
+    walletAddress?: string
+  }>
   public async sendToken?(params: {
     address: string
     amount: number
     token: TokenTickerSymbol
     memo: string
     walletSeed?: string
-  }): Promise<{ success: boolean; error?: string }>
+  }): Promise<{
+    success: boolean
+    error?: string
+    txid?: string
+    walletAddress?: string
+  }>
 
   // server functions, only defined on server subclasses
   public web3?: Web3

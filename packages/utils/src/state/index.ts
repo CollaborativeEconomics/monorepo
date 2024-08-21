@@ -29,18 +29,22 @@ export const PAYMENT_STATUS = {
 } as const
 
 interface DonationFormState {
+  amount: number
   showUsd: boolean
   emailReceipt: boolean
   name: string
   email: string
+  txId: string
   paymentStatus: (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]
 }
 
 const donationFormState = atomWithImmer<DonationFormState>({
+  amount: 0,
   name: "",
   email: "",
   emailReceipt: false,
   showUsd: false,
+  txId: "",
   paymentStatus: PAYMENT_STATUS.ready,
 })
 

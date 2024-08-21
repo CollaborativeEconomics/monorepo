@@ -401,12 +401,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     address,
     amount,
     memo,
-  }: { address: string; amount: number; memo: string }): Promise<{
-    success: boolean
-    error?: string
-    txid?: string
-    address?: string
-  }> {
+  }: { address: string; amount: number; memo: string }) {
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
@@ -453,7 +448,11 @@ export default class MetaMaskWallet extends ChainBaseClass {
           error: "Metamask not available",
         }
       }
-      return { success: true, txid: result, address: this.connectedWallet }
+      return {
+        success: true,
+        txid: result,
+        walletAddress: this.connectedWallet,
+      }
     } catch (ex) {
       console.error(ex)
       if (ex instanceof Error) {
@@ -479,9 +478,6 @@ export default class MetaMaskWallet extends ChainBaseClass {
   }) {
     function numHex(num: number) {
       return `0x${num.toString(16)}`
-    }
-    function strHex(str: string) {
-      return `0x${Buffer.from(str.toString(), "utf8").toString("hex")}`
     }
     console.log(`Sending ${amount} ${token} token to ${address}...`)
     const gasPrice = await this.getGasPrice() //numHex(20000000000)
@@ -526,7 +522,11 @@ export default class MetaMaskWallet extends ChainBaseClass {
       if (typeof result !== "string") {
         return { success: false, error: "No transaction ID" }
       }
-      return { success: true, txid: result, address: this.connectedWallet }
+      return {
+        success: true,
+        txid: result,
+        walletAddress: this.connectedWallet,
+      }
     } catch (ex) {
       if (ex instanceof Error) {
         console.error("Error sending payment", ex)

@@ -4,6 +4,7 @@ import StellarServer from "./StellarServer"
 import Web3Server from "./Web3Server"
 import XrplServer from "./XrplServer"
 import XummClient from "./XummClient"
+import { getWalletConfiguration, walletConfig } from "./walletConfig"
 
 export type Interfaces =
   | "freighter"
@@ -29,4 +30,6 @@ export {
   XrplServer,
   StellarServer,
   Web3Server,
+  getWalletConfiguration,
+  walletConfig,
 }

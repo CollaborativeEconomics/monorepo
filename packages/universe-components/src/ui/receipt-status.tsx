@@ -9,7 +9,8 @@ import {
   RefreshCw,
 } from 'lucide-react';
 
-export interface Props extends React.HTMLAttributes<HTMLDivElement> {
+export interface ReceiptStatusProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   status: string;
 }
@@ -87,7 +88,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
   }
 }
 
-const ReceiptStatus = React.forwardRef<HTMLDivElement, Props>(
+const ReceiptStatus = React.forwardRef<HTMLDivElement, ReceiptStatusProps>(
   ({ className, status, ...props }, ref) => {
     return (
       <div

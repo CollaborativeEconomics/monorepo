@@ -6,6 +6,7 @@ import {
   getCoinRate,
 } from "@cfce/blockchain-tools"
 import {
+  DonationStatus,
   getInitiativeById,
   getOrganizationById,
   getUserByWallet,
@@ -15,7 +16,7 @@ import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
 import { DateTime } from "luxon"
 
-interface mintReceiptNFTParams {
+interface mintAndSaveReceiptNFTParams {
   transaction: {
     txId: string
     chain: ChainSlugs
@@ -27,12 +28,12 @@ interface mintReceiptNFTParams {
   rate: number
 }
 
-export async function mintReceiptNFT({
+export async function mintAndSaveReceiptNFT({
   transaction: { txId, chain, token },
   initiativeId,
   donorWalletAddress,
   amount,
-}: mintReceiptNFTParams) {
+}: mintAndSaveReceiptNFTParams) {
   try {
     // #region: Initialize fns and data
     const chainTool = BlockchainManager.getInstance()[chain]?.server
@@ -220,7 +221,7 @@ export async function mintReceiptNFT({
       usdValue: amountUSD,
       tokenId: tokenId, // TODO: how to handle multiple tokenIds?
       offerId: offerId,
-      status: 1,
+      status: DonationStatus.claimed,
     }
 
     const saved = await newNftData(data)

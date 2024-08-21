@@ -111,7 +111,12 @@ export default class FreighterWallet extends ChainBaseClass {
       //console.log("status:", result.status);
       //console.log("errorResultXdr:", result.errorResultXdr)
       if (result?.successful) {
-        return { success: true, result, txid, address: this.connectedWallet }
+        return {
+          success: true,
+          result,
+          txid,
+          walletAddress: this.connectedWallet,
+        }
       }
       return {
         success: false,

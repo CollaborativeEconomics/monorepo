@@ -34,7 +34,7 @@ export default class XummClient extends XrplCommon {
         const data = {
           wallet: "xumm",
           address: address,
-          chain: this.chain.chain,
+          chain: this.chain.name,
           chaindid: "",
           currency: this.chain.symbol,
           network: network,
@@ -58,7 +58,12 @@ export default class XummClient extends XrplCommon {
     address,
     amount,
     memo,
-  }: { address: string; amount: number; memo?: string }) {
+  }: { address: string; amount: number; memo?: string }): Promise<{
+    success: boolean
+    error?: string
+    txid?: string
+    walletAddress?: string
+  }> {
     console.log("XRP Sending payment...", address, amount, memo)
     try {
       const request: XummJsonTransaction = {
@@ -103,7 +108,13 @@ export default class XummClient extends XrplCommon {
       if (!data) {
         return { success: false, error: "No data" }
       }
-      return { success: true, txid: data.response.txid }
+      return {
+        success: true,
+        ...(data.response.txid ? { txid: data.response.txid } : {}),
+        ...(data.response.account
+          ? { walletAddress: data.response.account }
+          : {}),
+      }
       // TODO: re-implement below with new methods
       // data.signed doesn't exist anymore (https://docs.xumm.dev/js-ts-sdk/sdk-syntax/xumm.payload/get)
       // if (Object.keys(data).indexOf("signed") > -1) {
@@ -223,7 +234,10 @@ export default class XummClient extends XrplCommon {
       if (!data) {
         return { success: false, error: "No data" }
       }
-      return { success: true, txid: data.response.txid }
+      return {
+        success: true,
+        ...(data.response.txid ? { txid: data.response.txid } : {}),
+      }
       // TODO: re-implement below with new methods
       // if (Object.keys(payload.data).indexOf("signed") > -1) {
       //   const approved = payload.data.signed
