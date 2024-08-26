@@ -1,179 +1,169 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { signOut } from 'next-auth/react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Image as Picture, Newspaper, LayoutList } from 'lucide-react';
-import { ListObject } from '@cfce/universe-components/ui/list-object';
+import { type ChainSlugs, chainConfig } from '@cfce/blockchain-tools';
+import {
+  type NFTData,
+  type Prisma,
+  type Story,
+  getDonations,
+  getNftData,
+  getStories,
+  getUserById,
+  setUser,
+} from '@cfce/database';
+import { StoryCardCompactVert } from '@cfce/universe-components/story';
+import {
+  DonationsTableSortable,
+  ReceiptTableSortable,
+} from '@cfce/universe-components/tables';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@cfce/universe-components/ui/tabs';
-//import { Input } from '@cfce/universe-components/ui/input'
-import TableReceiptsSort from '@cfce/universe-components/TableReceiptsSort';
-import TableDonationsSort from '@cfce/universe-components/TableDonationsSort';
-import StoryCardCompactVert from '@cfce/universe-components/StoryCardCompactVert';
-import FileView from '@cfce/universe-components/form/fileview';
-import NotFound from '@cfce/universe-components/NotFound';
-//import { getUserById, getNFTsByAccount, getDonationsByUser, getFavoriteOrganizations, getUserBadges, getRecentStories } from '@/utils/registry'
-import { coinFromChain } from '@/utils/chain';
-import { getExtension } from '@/utils/extension';
-import { randomString } from '@/utils/random';
+} from '@cfce/universe-components/ui';
+import { uploadFile } from '@cfce/utils';
+import { LayoutList, Newspaper, Image as Picture } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import Image from 'next/image';
+import { redirect } from 'next/navigation';
+import NotFound from '../../not-found';
 
-type Dictionary = { [key: string]: any };
-
-export default function Profile(props: any) {
-  console.log('PROPS', props);
-  const userId = props?.params?.id;
-  const search = props?.searchParams?.tab || 'receipts';
-
-  //const receipts:[Dictionary]  = []
-  //const donations:[Dictionary] = []
-  //const favorgs:[Dictionary]   = []
-  //const badges:[Dictionary]    = []
-  //const stories:[Dictionary]   = []
-  const nopic = '/media/nopic.png';
-
-  const [user, setUser] = useState(null);
-  const [receipts, setReceipts] = useState([]);
-  const [donations, setDonations] = useState([]);
-  const [favorgs, setFavorgs] = useState([]);
-  const [badges, setBadges] = useState([]);
-  const [stories, setStories] = useState([]);
-  const [button, setButton] = useState('Save');
-
-  useEffect(() => {
-    async function getData() {
-      const info = await fetch('/api/profile/' + userId);
-      const data = await info.json();
-      if (!data || data?.error) {
-        //return (<NotFound />)
-        console.log('Error fetching user data');
-        return;
-      }
-      console.log('PROFILE', data);
-
-      setUser(data.user);
-      setReceipts(data.receipts);
-      setDonations(data.donations);
-      setFavorgs(data.favorgs);
-      setBadges(data.badges);
-      setStories(data.stories);
-    }
-    getData();
-  }, []);
-
-  //const {register, watch} = useForm()
-  //const [name,email,image] = watch(['name','email','image'],['', '', '', '']);
-
-  function getWallet(adr) {
-    return adr ? adr.substr(0, 10) + '...' : '?';
-  }
-  function $(id) {
-    return document.getElementById(id) as HTMLInputElement;
-  }
-
-  async function saveImage(file) {
-    console.log('IMAGE', file);
-    //if(file){ return {error:'no image provided'} }
-    const name = randomString(10);
-    const body = new FormData();
-    body.append('name', name);
-    body.append('folder', 'avatars');
-    body.append('file', file);
-    const resp = await fetch('/api/upload', { method: 'POST', body });
-    const result = await resp.json();
-    return result;
-  }
-
-  async function onSave() {
-    console.log('Saving...');
-    const name = $('name').value;
-    const email = $('email').value;
-    const file = $('file').files[0];
-    console.log('Form', name, email, file);
-    const rec = { name, email };
-    // save image
-    let image = user.image ?? '';
-    if (file) {
-      const ok = await saveImage(file);
-      console.log('UPLOADED', ok);
-      if (ok?.error) {
-        console.log('Error uploading image');
-      } else {
-        image = ok.url;
-      }
-    }
-    if (image !== user?.image) {
-      rec['image'] = image;
-    }
-    // send form to server then save
-    const opt = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(rec),
+// Server Action to fetch data
+async function fetchUserData(userId: string) {
+  // const response = await fetch(`/api/profile/${userId}`);
+  // const data = await response.json();
+  try {
+    const user =
+      (await getUserById(userId)) ||
+      ({} as Prisma.UserGetPayload<{ include: { wallets: true } }>);
+    const receipts =
+      (await getNftData({ userId: userId })) || ([] as NFTData[]);
+    const donations =
+      (await getDonations({ userId: userId })) ||
+      ([] as Prisma.DonationGetPayload<{
+        include: { organization: true; initiative: true };
+      }>[]);
+    const favoriteOrganizations =
+      (await getDonations({ favs: userId })) ||
+      ([] as Prisma.DonationGetPayload<{ include: { organization: true } }>[]);
+    const badges =
+      (await getDonations({ badges: userId })) ||
+      ([] as Prisma.DonationGetPayload<{ include: { category: true } }>[]);
+    const stories = (await getStories({ recent: 5 })) || ([] as Story[]);
+    return {
+      user,
+      receipts,
+      donations,
+      favoriteOrganizations,
+      badges,
+      stories,
     };
-    const info = await fetch('/api/profile/' + userId, opt);
-    const data = await info.json();
-    if (!data || data?.error) {
-      console.log('Error updating user data');
-      return;
+  } catch (error) {
+    throw new Error(
+      `Error fetching user data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
+  }
+}
+
+// Server Action to handle form submission
+async function handleSaveProfile(formData: FormData, userId: string) {
+  const file = formData.get('file') as File | null;
+  const name = formData.get('name') as string;
+  const email = formData.get('email') as string;
+
+  let image = (formData.get('currentImage') as string) ?? '';
+
+  if (file) {
+    const fileUploadResponse = await uploadFile({
+      file,
+      name,
+      folder: 'avatars',
+    });
+    if (fileUploadResponse.success) {
+      image = fileUploadResponse.result?.url ?? '';
     }
-    console.log('UPDATED', data);
-    setButton('Saved');
-    setTimeout(() => {
-      setButton('Save');
-    }, 3000);
   }
 
-  function logout() {
-    signOut({ callbackUrl: '/' });
+  const updatePayload = { name, email, image };
+  const updateData = await setUser(userId, updatePayload);
+
+  if (!updateData) {
+    throw new Error('Error updating user data');
   }
+
+  redirect('/profile');
+}
+
+export default async function Profile({
+  params: { id: userId },
+  searchParams: { tab = 'receipts' },
+}: {
+  params: { id?: string };
+  searchParams: { tab?: string };
+}) {
+  if (!userId) {
+    return <NotFound />;
+  }
+  const { user, receipts, donations, favoriteOrganizations, badges, stories } =
+    await fetchUserData(userId);
+
+  const nopic = '/media/nopic.png';
 
   return (
     <main className="container min-h-screen flex flex-col items-stretch py-24 mt-24">
       <div className="flex flex-col lg:flex-row justify-between">
         {/* Avatar */}
         <div className="border rounded-md p-8 w-full lg:w-2/4 bg-card">
-          <div className="flex flex-row flex-start items-center rounded-full">
-            {/*<Image className="mr-8 rounded-full" src={user?.image||nopic} width={100} height={100} alt="Avatar" />*/}
-            <FileView
-              id="file"
-              source={user?.image || nopic}
-              className="mr-4"
-            />
-            <div className="flex flex-col flex-start items-start w-full rounded-full">
-              {/*<h1 className="font-bold text-lg">{user?.name}</h1>*/}
-              {/*<h2 className="">{user?.email}</h2>*/}
-              <input
-                type="text"
-                className="pl-4 w-full bg-transparent"
-                id="name"
-                defaultValue={user?.name || ''}
-                placeholder="name"
+          <form
+            action={formData => handleSaveProfile(formData, userId)}
+            method="post"
+            encType="multipart/form-data"
+          >
+            <div className="flex flex-row flex-start items-center rounded-full">
+              <Image
+                className="mr-8 rounded-full"
+                src={user?.image || nopic}
+                width={100}
+                height={100}
+                alt="Avatar"
               />
-              <input
-                type="text"
-                className="pl-4 w-full bg-transparent"
-                id="email"
-                defaultValue={user?.email || ''}
-                placeholder="email"
-              />
-              <h2 className="mt-4">Wallet: {getWallet(user?.wallet)}</h2>
+              <input type="file" name="file" className="mr-4" />
+              <div className="flex flex-col flex-start items-start w-full rounded-full">
+                <input
+                  type="text"
+                  className="pl-4 w-full bg-transparent"
+                  name="name"
+                  defaultValue={user?.name || ''}
+                  placeholder="name"
+                />
+                <input
+                  type="text"
+                  className="pl-4 w-full bg-transparent"
+                  name="email"
+                  defaultValue={user?.email || ''}
+                  placeholder="email"
+                />
+                <input
+                  type="hidden"
+                  name="currentImage"
+                  value={user?.image || ''}
+                />
+                <h2 className="mt-4">
+                  Wallet:{' '}
+                  {user?.wallet ? `${user.wallet.substr(0, 10)}...` : '?'}
+                </h2>
+              </div>
             </div>
-          </div>
-          <div className="mt-4 text-right">
-            {user && (
-              <button
-                className="px-8 py-2 bg-blue-700 text-white rounded-full"
-                onClick={onSave}
-              >
-                {button}
-              </button>
-            )}
-          </div>
+            <div className="mt-4 text-right">
+              {user && (
+                <button
+                  className="px-8 py-2 bg-blue-700 text-white rounded-full"
+                  type="submit"
+                >
+                  Save
+                </button>
+              )}
+            </div>
+          </form>
         </div>
 
         {/* Chains */}
@@ -182,7 +172,7 @@ export default function Profile(props: any) {
             <>
               <h1>Active Chains</h1>
               <div className="mt-4 pb-4 w-full border-b">
-                {user?.wallets.map((item: any) => {
+                {user?.wallets.map(item => {
                   return (
                     <span
                       key={item.id}
@@ -190,9 +180,8 @@ export default function Profile(props: any) {
                     >
                       <Image
                         src={
-                          '/coins/' +
-                          (coinFromChain(item.chain) || 'none') +
-                          '.png'
+                          chainConfig[item.chain.toLowerCase() as ChainSlugs]
+                            ?.icon
                         }
                         width={48}
                         height={48}
@@ -211,17 +200,17 @@ export default function Profile(props: any) {
                 </span>
               </div>
               <button
+                type="button"
                 className="block w-2/3 mt-4 mx-auto py-1 px-8 bg-red-400 text-white rounded-full"
-                onClick={logout}
+                onClick={() => signOut({ callbackUrl: '/' })}
               >
-                {/*<Link href="/api/auth/signout">Log Out</Link>*/}
                 Log Out
               </button>
             </>
           ) : (
             <>
               <p>No wallets</p>
-              <button>Connect Wallet</button>
+              <button type="button">Connect Wallet</button>
             </>
           )}
         </div>
@@ -234,21 +223,26 @@ export default function Profile(props: any) {
           {/* Fav Orgs */}
           <h1 className="text-2xl font-medium mb-4">Favorite Organizations</h1>
           <div className="grid grid-cols-2 gap-2 mb-8">
-            {favorgs?.length > 0 ? (
-              favorgs.map((item: any) => {
-                const org = item.organization;
+            {favoriteOrganizations?.length > 0 ? (
+              favoriteOrganizations.map(donation => {
+                const org = donation.organization;
+                if (!org) {
+                  return null;
+                }
                 return (
                   <div
                     key={org.id}
                     className="flex flex-row justify-start items-center content-center mt-4"
                   >
-                    <Image
-                      className="rounded-full mr-1"
-                      src={org.image}
-                      width={64}
-                      height={64}
-                      alt="Organization"
-                    />
+                    {org?.image && (
+                      <Image
+                        className="rounded-full mr-1"
+                        src={org.image}
+                        width={64}
+                        height={64}
+                        alt="Organization"
+                      />
+                    )}
                     <h1 className="text-sm text-center">{org.name}</h1>
                   </div>
                 );
@@ -262,8 +256,11 @@ export default function Profile(props: any) {
           <h1 className="text-2xl font-medium mb-4">Badges</h1>
           <div className="grid grid-cols-4 gap-2 mb-8">
             {badges?.length > 0 ? (
-              badges.map((item: any) => {
-                const badge = item.category;
+              badges.map(donation => {
+                const badge = donation.category;
+                if (!badge ?? !badge?.image) {
+                  return null;
+                }
                 return (
                   <Image
                     key={badge.id}
@@ -284,7 +281,7 @@ export default function Profile(props: any) {
           <h1 className="text-2xl font-medium mb-4">Recent Stories</h1>
           <div className="">
             {stories?.length > 0 ? (
-              stories.map((story: any) => {
+              stories.map(story => {
                 return (
                   <div className="my-4" key={story.id}>
                     <StoryCardCompactVert story={story} />
@@ -319,13 +316,13 @@ export default function Profile(props: any) {
               </div>
             </div>
             <div className="w-full border rounded-md p-10 bg-card">
-              {/* NFTS Receipts */}
+              {/* NFT Receipts */}
               <TabsContent className="TabsContent" value="tab1">
-                <TableReceiptsSort receipts={receipts} />
+                <ReceiptTableSortable receipts={receipts} />
               </TabsContent>
               {/* Donations */}
               <TabsContent className="TabsContent" value="tab2">
-                <TableDonationsSort donations={donations} />
+                <DonationsTableSortable donations={donations} />
               </TabsContent>
             </div>
           </Tabs>

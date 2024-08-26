@@ -36,12 +36,12 @@ export const ChainNames: Chain[] = [
   "XinFin",
   "XRPL",
 ] as const
-export type ChainNames = (typeof ChainNames)[number]
 
 export type Network = "mainnet" | "testnet" | "horizon" | string
 export interface NetworkConfig {
   id: number | string
   name: string
+  slug: Network
   symbol: string
   decimals: number
   gasprice: string
@@ -85,10 +85,10 @@ interface TokenConfig {
 
 export interface ChainConfig {
   slug: ChainSlugs
-  name: ChainNames
+  name: Chain
   symbol: TokenTickerSymbol
   logo: string
-  icon: JSX.Element
+  icon: string
   networks: Record<Network, NetworkConfig>
 }
 
@@ -220,6 +220,7 @@ const chainConfiguration: Chains = {
 chainConfiguration.arbitrum.networks.mainnet = {
   id: 42161,
   name: "Arbitrum Mainnet",
+  slug: "mainnet",
   symbol: "ARB",
   decimals: 18,
   gasprice: "250000000",
@@ -230,6 +231,7 @@ chainConfiguration.arbitrum.networks.mainnet = {
 chainConfiguration.arbitrum.networks.testnet = {
   id: 421614,
   name: "Arbitrum Testnet",
+  slug: "testnet",
   symbol: "ARB",
   decimals: 18,
   gasprice: "250000000",
@@ -240,6 +242,7 @@ chainConfiguration.arbitrum.networks.testnet = {
 chainConfiguration.avalanche.networks.mainnet = {
   id: 43114,
   name: "Avalanche Mainnet",
+  slug: "mainnet",
   symbol: "AVAX",
   decimals: 18,
   gasprice: "250000000",
@@ -250,6 +253,7 @@ chainConfiguration.avalanche.networks.mainnet = {
 chainConfiguration.avalanche.networks.testnet = {
   id: 43113,
   name: "Avalanche Testnet",
+  slug: "testnet",
   symbol: "AVAX",
   decimals: 18,
   gasprice: "250000000",
@@ -260,6 +264,7 @@ chainConfiguration.avalanche.networks.testnet = {
 chainConfiguration.base.networks.mainnet = {
   id: 8453,
   name: "Base Mainnet",
+  slug: "mainnet",
   symbol: "BASE",
   decimals: 18,
   gasprice: "250000000",
@@ -270,6 +275,7 @@ chainConfiguration.base.networks.mainnet = {
 chainConfiguration.base.networks.testnet = {
   id: 84532,
   name: "Base Testnet",
+  slug: "testnet",
   symbol: "BASE",
   decimals: 18,
   gasprice: "250000000",
@@ -280,6 +286,7 @@ chainConfiguration.base.networks.testnet = {
 chainConfiguration.binance.networks.mainnet = {
   id: 56,
   name: "Binance Mainnet",
+  slug: "mainnet",
   symbol: "BNB",
   decimals: 18,
   gasprice: "9000000000",
@@ -290,6 +297,7 @@ chainConfiguration.binance.networks.mainnet = {
 chainConfiguration.binance.networks.testnet = {
   id: 97,
   name: "Binance Testnet",
+  slug: "testnet",
   symbol: "BNB",
   decimals: 18,
   gasprice: "9000000000",
@@ -300,6 +308,7 @@ chainConfiguration.binance.networks.testnet = {
 chainConfiguration.celo.networks.mainnet = {
   id: 42220,
   name: "Celo Mainnet",
+  slug: "mainnet",
   symbol: "CELO",
   decimals: 18,
   gasprice: "10000000000",
@@ -310,6 +319,7 @@ chainConfiguration.celo.networks.mainnet = {
 chainConfiguration.celo.networks.testnet = {
   id: 44787,
   name: "Celo Testnet",
+  slug: "testnet",
   symbol: "CELO",
   decimals: 18,
   gasprice: "10000000000",
@@ -320,6 +330,7 @@ chainConfiguration.celo.networks.testnet = {
 chainConfiguration.eos.networks.mainnet = {
   id: 17777,
   name: "EOS Mainnet",
+  slug: "mainnet",
   symbol: "EOS",
   decimals: 18,
   gasprice: "250000000",
@@ -330,6 +341,7 @@ chainConfiguration.eos.networks.mainnet = {
 chainConfiguration.eos.networks.testnet = {
   id: 15557,
   name: "EOS Testnet Goerli",
+  slug: "testnet",
   symbol: "EOS",
   decimals: 18,
   gasprice: "250000000",
@@ -340,6 +352,7 @@ chainConfiguration.eos.networks.testnet = {
 chainConfiguration.ethereum.networks.mainnet = {
   id: 1,
   name: "Ethereum Mainnet",
+  slug: "mainnet",
   symbol: "ETH",
   decimals: 18,
   gasprice: "250000000",
@@ -350,6 +363,7 @@ chainConfiguration.ethereum.networks.mainnet = {
 chainConfiguration.ethereum.networks.testnet = {
   id: 5,
   name: "Ethereum Testnet",
+  slug: "testnet",
   symbol: "ETH",
   decimals: 18,
   gasprice: "250000000",
@@ -360,6 +374,7 @@ chainConfiguration.ethereum.networks.testnet = {
 chainConfiguration.filecoin.networks.mainnet = {
   id: 31415790,
   name: "Filecoin Mainnet",
+  slug: "mainnet",
   symbol: "FIL",
   decimals: 18,
   gasprice: "250000000",
@@ -370,6 +385,7 @@ chainConfiguration.filecoin.networks.mainnet = {
 chainConfiguration.filecoin.networks.testnet = {
   id: 314159,
   name: "Filecoin Testnet",
+  slug: "testnet",
   symbol: "FIL",
   decimals: 18,
   gasprice: "250000000",
@@ -380,6 +396,7 @@ chainConfiguration.filecoin.networks.testnet = {
 chainConfiguration.flare.networks.mainnet = {
   id: 14,
   name: "Flare Mainnet",
+  slug: "mainnet",
   symbol: "FLR",
   decimals: 18,
   gasprice: "25000000000",
@@ -390,6 +407,7 @@ chainConfiguration.flare.networks.mainnet = {
 chainConfiguration.flare.networks.testnet = {
   id: 16,
   name: "Flare Testnet",
+  slug: "testnet",
   symbol: "FLR",
   decimals: 18,
   gasprice: "25000000000",
@@ -400,6 +418,7 @@ chainConfiguration.flare.networks.testnet = {
 chainConfiguration.optimism.networks.mainnet = {
   id: 10,
   name: "Optimism Mainnet",
+  slug: "mainnet",
   symbol: "OP",
   decimals: 18,
   gasprice: "250000000",
@@ -410,6 +429,7 @@ chainConfiguration.optimism.networks.mainnet = {
 chainConfiguration.optimism.networks.testnet = {
   id: 5,
   name: "Optimism Testnet",
+  slug: "testnet",
   symbol: "OP",
   decimals: 18,
   gasprice: "250000000",
@@ -420,6 +440,7 @@ chainConfiguration.optimism.networks.testnet = {
 chainConfiguration.polygon.networks.mainnet = {
   id: 137,
   name: "Polygon Mainnet",
+  slug: "mainnet",
   symbol: "MATIC",
   decimals: 18,
   gasprice: "20000000000",
@@ -430,6 +451,7 @@ chainConfiguration.polygon.networks.mainnet = {
 chainConfiguration.polygon.networks.testnet = {
   id: 80001,
   name: "Polygon Testnet",
+  slug: "testnet",
   symbol: "MATIC",
   decimals: 18,
   gasprice: "20000000000",
@@ -440,6 +462,7 @@ chainConfiguration.polygon.networks.testnet = {
 chainConfiguration.starknet.networks.mainnet = {
   id: 0,
   name: "Starknet Mainnet",
+  slug: "mainnet",
   symbol: "STRK",
   decimals: 18,
   gasprice: "250000000",
@@ -469,6 +492,7 @@ chainConfiguration.starknet.networks.mainnet = {
 chainConfiguration.starknet.networks.testnet = {
   id: 0,
   name: "Starknet Testnet",
+  slug: "testnet",
   symbol: "STRK",
   decimals: 18,
   gasprice: "250000000",
@@ -496,6 +520,7 @@ chainConfiguration.starknet.networks.testnet = {
 chainConfiguration.stellar.networks.mainnet = {
   id: 0,
   name: "Stellar Mainnet",
+  slug: "mainnet",
   symbol: "XLM",
   decimals: 6,
   gasprice: "250000000",
@@ -516,6 +541,7 @@ chainConfiguration.stellar.networks.mainnet = {
 chainConfiguration.stellar.networks.testnet = {
   id: 0,
   name: "Stellar Testnet",
+  slug: "testnet",
   symbol: "XLM",
   decimals: 6,
   gasprice: "250000000",
@@ -536,6 +562,7 @@ chainConfiguration.stellar.networks.testnet = {
 chainConfiguration.stellar.networks.futurenet = {
   id: 0,
   name: "Stellar Futurenet",
+  slug: "futurenet",
   symbol: "XLM",
   decimals: 6,
   gasprice: "250000000",
@@ -547,6 +574,7 @@ chainConfiguration.stellar.networks.futurenet = {
 chainConfiguration.xinfin.networks.mainnet = {
   id: 50,
   name: "XinFin Mainnet",
+  slug: "mainnet",
   symbol: "XDC",
   decimals: 18,
   gasprice: "12500000000",
@@ -557,6 +585,7 @@ chainConfiguration.xinfin.networks.mainnet = {
 chainConfiguration.xinfin.networks.testnet = {
   id: 51,
   name: "XinFin Testnet",
+  slug: "testnet",
   symbol: "XDC",
   decimals: 18,
   gasprice: "12500000000",
@@ -567,6 +596,7 @@ chainConfiguration.xinfin.networks.testnet = {
 chainConfiguration.xrpl.networks.mainnet = {
   id: 0,
   name: "XRP Mainnet",
+  slug: "mainnet",
   symbol: "XRP",
   decimals: 6,
   gasprice: "250000000",
@@ -577,6 +607,7 @@ chainConfiguration.xrpl.networks.mainnet = {
 chainConfiguration.xrpl.networks.testnet = {
   id: 0,
   name: "XRP Testnet",
+  slug: "testnet",
   symbol: "XRP",
   decimals: 6,
   gasprice: "250000000",

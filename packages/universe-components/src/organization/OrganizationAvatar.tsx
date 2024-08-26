@@ -11,7 +11,7 @@ import {
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   organizationId?: string; // eventually required
-  image?: string;
+  image?: string | null;
   name: string;
   avatarProps?: AvatarProps;
 }
@@ -28,8 +28,11 @@ const OrganizationAvatar = React.forwardRef<HTMLDivElement, Props>(
         {...props}
       >
         <Avatar size={avatarProps?.size}>
-          <AvatarImage src={image} alt={name} />
-          <AvatarFallback>OT</AvatarFallback>
+          {image ? (
+            <AvatarImage src={image} alt={name} />
+          ) : (
+            <AvatarFallback>OT</AvatarFallback>
+          )}
         </Avatar>
         <AvatarTitle
           size={avatarProps?.size}

@@ -32,37 +32,33 @@ export default class MetaMaskWallet extends ChainBaseClass {
     this.web3 = new Web3(this.network.rpcUrl)
   }
 
-  async init(window: Window) {
+  async connect() {
     console.log("Wallet starting...", this.network)
-    //console.log('Wallet starting...')
-    if (window.ethereum) {
-      //console.log('window.ethereum')
-      try {
-        this.metamask = window.ethereum || null
-        this.setListeners()
-        this.wallets = await this.metamask?.enable()
-        //console.log('Accounts', this.wallets)
-        this.connectedWallet = this.wallets ? this.wallets[0] : ""
-        //this.connectedWallet = this.metamask.selectedAddress
-        //this.setNetwork(window.ethereum.chainId)
-        //this.loadWallet(window))
-        if (
-          window.ethereum.chainId &&
-          this.network.id !== Number.parseInt(window.ethereum.chainId, 16)
-        ) {
-          await this.changeNetwork(this.network)
-        }
-        return { network: this.network, address: this.connectedWallet }
-      } catch (ex) {
-        if (ex instanceof Error) {
-          console.error("Error", ex.message)
-        }
-        console.error("Error", "Metamask not available")
-        return { network: null, address: null }
+    //console.log('window.ethereum')
+    try {
+      this.metamask = window.ethereum
+      this.setListeners()
+      this.wallets = await this.metamask?.enable()
+      //console.log('Accounts', this.wallets)
+      this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
+      //this.connectedWallet = this.metamask.selectedAddress
+      //this.setNetwork(window.ethereum.chainId)
+      //this.loadWallet(window))
+      if (
+        window.ethereum?.chainId &&
+        this.network.id !== Number.parseInt(window.ethereum.chainId, 16)
+      ) {
+        await this.changeNetwork(this.network)
       }
-    } else {
-      console.log("Metamask not available")
-      return { network: null, address: null }
+      return {
+        success: true,
+        network: this.network.slug,
+        walletAddress: this.connectedWallet,
+      }
+    } catch (ex) {
+      const error = ex instanceof Error ? ex.message : ""
+      console.error("Error", error)
+      return { success: false, error }
     }
   }
 

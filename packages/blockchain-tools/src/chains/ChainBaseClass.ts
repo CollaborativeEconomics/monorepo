@@ -25,7 +25,10 @@ export default abstract class ChainBaseClass {
   public abstract fetchLedger(method: unknown, params: unknown): unknown
 
   // client functions, only defined on client subclasses
-  public connect?(): Promise<unknown>
+  public connect?(): Promise<
+    | { success: boolean; error: string }
+    | { success: boolean; network: Network; walletAddress: string }
+  >
   public async sendPayment?(params: {
     address: string
     amount: number

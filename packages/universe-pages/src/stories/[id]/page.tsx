@@ -1,25 +1,31 @@
-import Link from "next/link"
-import Image from "next/image"
-import OrganizationAvatar from '@cfce/universe-components/OrganizationAvatar'
-import { Card, CardContent, CardHeader } from '@cfce/universe-components/ui/card'
-import { DateDisplay } from '@cfce/universe-components/ui/date-posted'
-import Gallery from '@cfce/universe-components/ui/gallery'
-import ShareModal from '@cfce/universe-components/ShareModal'
-import NotFound  from '@cfce/universe-components/NotFound'
-import { getStoryById } from '@/utils/registry'
+import { getStoryById } from '@cfce/database';
+import { NotFound } from '@cfce/universe-components/navigation';
+import { OrganizationAvatar } from '@cfce/universe-components/organization';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  DateDisplay,
+  Gallery,
+  ShareModal,
+} from '@cfce/universe-components/ui';
+import Image from 'next/image';
+import Link from 'next/link';
 
-export default async function Story(props: {params:{id:string}}) {
-  const storyid = props.params.id
-  const story = await getStoryById(storyid)
-  if(!story){ return <NotFound /> }
+export default async function Story(props: { params: { id: string } }) {
+  const storyid = props.params.id;
+  const story = await getStoryById(storyid);
+  if (!story) {
+    return <NotFound />;
+  }
 
-  const media = story.media.map((it:any)=>it.media) // flatten list
-  media.unshift(story.image) // main image to the top
+  const media = story.media.map(it => it.media); // flatten list
+  media.unshift(story.image); // main image to the top
 
   return (
     <main className="flex min-h-screen flex-col items-stretch container mt-12 pt-24">
       <CardHeader className="flex-row justify-between">
-        <DateDisplay timestamp={story.created} className="py-4" />
+        <DateDisplay timestamp={+story.created} className="py-4" />
         <ShareModal />
       </CardHeader>
       <Card className="flex flex-col overflow-hidden">
@@ -32,26 +38,40 @@ export default async function Story(props: {params:{id:string}}) {
           <div className="flex flex-row justify-between border-t mt-4 pt-4">
             <div>
               <p className="mb-4 text-sm font-semibold">
-                <span>Posted in{' '}</span>
+                <span>Posted in </span>
                 <span className="underline">
-                  <a href={'/initiatives/'+story.initiative.id}>{story.initiative.title}</a>
+                  <a href={`/initiatives/${story.initiative.id}`}>
+                    {story.initiative.title}
+                  </a>
                 </span>
               </p>
-              <Link href={'/organizations/'+story.organization.id}><OrganizationAvatar name={story.organization.name} image={story.organization.image} /></Link>
+              <Link href={`/organizations/${story.organization.id}`}>
+                <OrganizationAvatar
+                  name={story.organization.name}
+                  image={story.organization.image}
+                />
+              </Link>
             </div>
             <div className="flex flex-col items-center">
-              {story.initiative.category ?
+              {story.initiative.category ? (
                 <>
-                  <h1 className="text-sm">{story.initiative.category?.title}</h1>
-                  <Image src={story.initiative.category?.image} width={96} height={96} alt="Category" />
+                  <h1 className="text-sm">
+                    {story.initiative.category?.title}
+                  </h1>
+                  {story.initiative.category?.image && (
+                    <Image
+                      src={story.initiative.category.image}
+                      width={96}
+                      height={96}
+                      alt="Category"
+                    />
+                  )}
                 </>
-              :
-                <></>
-              }
+              ) : null}
             </div>
           </div>
         </CardContent>
       </Card>
     </main>
-  )
+  );
 }

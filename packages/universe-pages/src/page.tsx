@@ -1,5 +1,11 @@
+import { getInitiatives } from '@cfce/database';
+import {
+  ActionBar,
+  ImpactCarousel,
+  InstructionPanes,
+  VideoBackground,
+} from '@cfce/universe-components/home';
 import React from 'react';
-import {getInitiatives} from '@cfce/database';
 
 export default async function Handler(props: {
   searchParams?: { query?: string; category?: string; location?: string };

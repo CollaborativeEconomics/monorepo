@@ -1,10 +1,10 @@
 'use client';
-import React, { useEffect, useState, useCallback } from 'react';
-import Link from 'next/link';
 import { SessionProvider } from 'next-auth/react';
-import NavMenu from './NavigationMenu';
 import { useTheme } from 'next-themes';
-import Logo from '../Logo';
+import Link from 'next/link';
+import React, { useEffect, useState, useCallback } from 'react';
+import Logo from '../home/Logo';
+import NavMenu from './NavigationMenu';
 
 function useScrollPosition() {
   const [scrollY, setScrollY] = useState(0);

@@ -34,7 +34,7 @@ export async function getUsers(query: UserQuery) {
   return prismaClient.user.findMany({ include })
 }
 
-export async function getUserByApiKey(apiKey: string): Promise<User | null> {
+export async function getUserByApiKey(apiKey: string) {
   const user = await prismaClient.user.findFirst({
     where: {
       api_key: apiKey,
@@ -59,15 +59,13 @@ export async function getUserByWallet(walletAddress: string) {
   return user
 }
 
-export async function newUser(
-  data: Prisma.UserCreateArgs["data"],
-): Promise<User> {
+export async function newUser(data: Prisma.UserCreateArgs["data"]) {
   const user = await prismaClient.user.create({ data })
   console.log("NEW", user)
   return user
 }
 
-export async function setUser(id: string, data: Partial<User>): Promise<User> {
+export async function setUser(id: string, data: Partial<User>) {
   const user = await prismaClient.user.update({ where: { id }, data })
   console.log("SET", user)
   return user
@@ -86,7 +84,7 @@ export async function getUserById(id: string) {
   return user
 }
 
-export async function getUserByEmail(email: string): Promise<User | null> {
+export async function getUserByEmail(email: string) {
   const user = await prismaClient.user.findUnique({ where: { email } })
   return user
 }

@@ -10,6 +10,8 @@ import type { Prisma } from '@cfce/database';
 import {
   PAYMENT_STATUS,
   type ReceiptEmailBody,
+  amountCoinAtom,
+  amountUSDAtom,
   appConfig,
   chainsState as chainStateAtom,
   donationFormState,
@@ -18,7 +20,7 @@ import {
   postApi,
 } from '@cfce/utils';
 //import registerUser from "@/contracts/register"
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import CarbonChart from '../CarbonChart';
 import { Button } from '../ui/button';
@@ -59,27 +61,18 @@ async function sendReceipt(data: ReceiptEmailBody) {
 }
 
 export default function DonationForm({ initiative }: DonationFormProps) {
-  const contractId = initiative.contractcredit;
+  //#region hook and var definitions
+  const contractId = initiative.contractcredit; // needed for CC contract
   const organization = initiative.organization;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // TODO: add UI state
   const [chainState, setChainState] = useAtom(chainStateAtom);
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
     chainState;
   const [donationForm, setDonationForm] = useAtom(donationFormState);
   const { showUsd, paymentStatus, emailReceipt, name, email, amount } =
     donationForm;
-  useEffect(() => {
-    fetchApi(`rates?coin=${selectedToken}&chain=${selectedChain}`).then(
-      (rate: number) => {
-        if (rate) {
-          setChainState(draft => {
-            draft.exchangeRate = rate;
-          });
-        }
-      },
-    );
-  }, [selectedToken, selectedChain, setChainState]);
-  // TODO: should this also update when the amount changes? Periodically?
+  const usdAmount = useAtomValue(amountUSDAtom);
+  const coinAmount = useAtomValue(amountCoinAtom);
   const chainInterface = useMemo(
     () => BlockchainManager.getInstance()[selectedChain]?.client,
     [selectedChain],
@@ -101,26 +94,45 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     handleError(new Error('No wallet found for chain'));
     return '';
   }, [organization, initiative, chainInterface]);
+  //#endregion hook and var definitions
+
+  useEffect(() => {
+    // Maybe Someday: update periodically or when the amount changes
+    fetchApi(`rates?coin=${selectedToken}&chain=${selectedChain}`).then(
+      (rate: number) => {
+        if (rate) {
+          setChainState(draft => {
+            draft.exchangeRate = rate;
+          });
+        }
+      },
+    );
+  }, [selectedToken, selectedChain, setChainState]);
 
   // #region carbon credit stuff
-  const credit =
+  const initiativeCredit =
     (initiative?.credits?.length ?? 0) > 0 ? initiative?.credits[0] : null;
-  console.log('CREDIT', credit);
-  const creditGoal = credit?.goal || 1;
-  const creditCurrent = credit?.current || 0;
-  const creditValue = credit?.value || 0;
-  const creditPercent = ((creditValue * 100) / creditGoal).toFixed(0);
-  const creditDate = new Date().toLocaleDateString(undefined, {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  console.log('CHART', creditGoal, creditCurrent, creditValue, creditPercent);
+  console.log('CREDIT', initiativeCredit);
+  const creditGoal = initiativeCredit?.goal || 1;
+  const currentCreditAmount = initiativeCredit?.current || 0;
+  const creditUnitValue = initiativeCredit?.value || 0;
+  const creditCompletionPercentage = (
+    (creditUnitValue * 100) /
+    creditGoal
+  ).toFixed(0);
+  console.log(
+    'CHART',
+    creditGoal,
+    currentCreditAmount,
+    creditUnitValue,
+    creditCompletionPercentage,
+  );
   const maxGoal = 100;
-  const maxValue = (creditCurrent * 100) / creditGoal;
+  const maxValue = (currentCreditAmount * 100) / creditGoal;
   console.log('MAXGOAL', maxGoal, maxValue);
   const tons = 173.243; // TODO: get from db?
-  const tonx = (credit?.current ?? 0) / (credit?.value ?? 0);
+  const tonx =
+    (initiativeCredit?.current ?? 0) / (initiativeCredit?.value ?? 0);
   const perc = (tonx * 100) / tons;
   console.log('TONS', tons, tonx, perc, '%');
   // #endregion
@@ -178,33 +190,15 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       `${perc.toFixed(2)}% of total estimated carbon emissions retired ${tonx.toFixed(2)} out of ${tons} tons`,
     [perc, tonx],
   );
-  // const [percent, setPercent] = useState('0');
-  const usdAmount = useMemo(() => {
-    if (typeof amount === 'undefined') {
-      return 0;
-    }
-    if (showUsd) {
-      return +amount;
-    }
-    return +amount * exchangeRate;
-  }, [amount, exchangeRate, showUsd]);
-  const coinAmount = useMemo(() => {
-    if (typeof amount === 'undefined') {
-      return 0;
-    }
-    if (showUsd) {
-      return +amount / exchangeRate;
-    }
-    return +amount;
-  }, [amount, exchangeRate, showUsd]);
+
   const percent = useMemo(() => {
-    const creditsToRetire = usdAmount / creditValue;
+    const creditsToRetire = usdAmount / creditUnitValue;
     const remainingCredits = tonx - creditsToRetire;
     const percentDiff = (100 * remainingCredits) / creditsToRetire;
     return percentDiff;
-  }, [creditValue, usdAmount, tonx]);
+  }, [creditUnitValue, usdAmount, tonx]);
   // const [offset, setOffset] = useState('0.00');
-  const offset = (usdAmount / creditValue).toFixed(2);
+  const offset = (usdAmount / creditUnitValue).toFixed(2);
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
@@ -225,9 +219,6 @@ export default function DonationForm({ initiative }: DonationFormProps) {
 
   const onSubmit = useCallback(async () => {
     try {
-      // Extract form values using React refs or controlled components
-      const { amount, name, email, emailReceipt } = donationForm;
-
       validateForm({ email });
 
       // Update UI state for loading
@@ -276,6 +267,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       setButtonMessage('Thank you for your donation!');
       setDonationForm(draft => {
         draft.paymentStatus = PAYMENT_STATUS.ready;
+        draft.date = new Date();
       });
     } catch (error) {
       handleError(error);
@@ -283,7 +275,10 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       setLoading(false);
     }
   }, [
-    donationForm,
+    amount,
+    email,
+    name,
+    emailReceipt,
     destinationWalletAddress,
     organization,
     selectedChain,
@@ -357,7 +352,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
               {Number.parseInt(offset) === 1 ? '' : 's'} of carbon
             </p>
             <Progress value={percent} />
-            <p className="mt-2 mb-4">1 ton of carbon = USD {creditValue}</p>
+            <p className="mt-2 mb-4">1 ton of carbon = USD {creditUnitValue}</p>
           </div>
           <div className="w-full my-6">
             <div className="flex flex-row justify-between items-center mb-2">
@@ -370,6 +365,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
                   handleToggle={() => {
                     setDonationForm(draft => {
                       draft.showUsd = !draft.showUsd;
+                      draft.date = new Date();
                     });
                   }}
                 />
@@ -385,6 +381,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
                 onChange={({ target: { value: amount } }) => {
                   setDonationForm(draft => {
                     draft.amount = Number.parseFloat(amount);
+                    draft.date = new Date();
                   });
                 }}
               />
@@ -401,6 +398,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
             onChange={({ target: { value: name } }) => {
               setDonationForm(draft => {
                 draft.name = name;
+                draft.date = new Date();
               });
             }}
           />

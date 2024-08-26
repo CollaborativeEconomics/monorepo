@@ -23,10 +23,6 @@ export async function getDonations(query: DonationQuery) {
   const filter: Prisma.DonationFindManyArgs = {
     skip: 0,
     take: 100,
-    include: {
-      organization: true,
-      initiative: true,
-    },
     orderBy: { created: "desc" },
   }
   filter.where = {}
@@ -108,7 +104,14 @@ export async function getDonations(query: DonationQuery) {
     filter.skip = start
     filter.take = size
   }
-  const data = await prismaClient.donation.findMany(filter)
+  const data = await prismaClient.donation.findMany({
+    ...filter,
+    include: {
+      category: true,
+      organization: true,
+      initiative: true,
+    },
+  })
 
   return data
 }

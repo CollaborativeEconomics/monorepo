@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
 export default function ShareModal() {
   const url =

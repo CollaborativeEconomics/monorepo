@@ -68,4 +68,4 @@ const FileView = ({
 
 FileView.displayName = 'FileView';
 
-export default FileView;
+export { FileView };

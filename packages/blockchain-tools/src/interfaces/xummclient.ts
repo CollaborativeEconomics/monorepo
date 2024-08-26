@@ -15,42 +15,43 @@ export default class XummClient extends XrplCommon {
   async connect() {
     console.log("XRP Connecting...")
     if (!this.wallet) {
-      throw new Error("Missing Xumm API key")
+      return { success: false, error: "Missing Xumm API key" }
     }
     try {
       const state = await this.wallet.authorize()
       console.log("Xumm Authorized", state)
       if (!state) {
         console.log("Error: no state")
-        return
+        return { success: false, error: "Error: no state" }
       }
       if ("me" in state) {
         const flow = state
         const user = state.me
         const address = user.account
-        //const network = user.networkType.toLowerCase()
-        const network = "testnet"
+        const network = (
+          (await this.wallet.user.networkType) ?? ""
+        ).toLowerCase()
         const token = flow.jwt
-        const data = {
-          wallet: "xumm",
-          address: address,
-          chain: this.chain.name,
-          chaindid: "",
-          currency: this.chain.symbol,
-          network: network,
-          token: token,
-          topic: "",
-        }
-        return data
+        // const data = {
+        //   wallet: "xumm",
+        //   address: address,
+        //   chain: this.chain.name,
+        //   chaindid: "",
+        //   currency: this.chain.symbol,
+        //   network: network,
+        //   token: token,
+        //   topic: "",
+        // }
+        return { success: true, walletAddress: address, network: network }
       }
       console.log("Error", state)
-      return { error: "Could not connect" }
+      return { success: false, error: "Could not connect" }
     } catch (ex) {
       console.log("Error", ex)
-      if (ex instanceof Error) {
-        return { error: ex.message }
+      return {
+        success: false,
+        error: ex instanceof Error ? ex.message : "Error connecting",
       }
-      return { error: "Error connecting" }
     }
   }
 

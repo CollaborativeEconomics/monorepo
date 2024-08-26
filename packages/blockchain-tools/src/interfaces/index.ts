@@ -9,11 +9,13 @@ import { getWalletConfiguration, walletConfig } from "./walletConfig"
 export type Interfaces =
   | "freighter"
   | "metamask"
-  | "xumm"
+  | "xaman"
   | "xrpl"
   | "web3"
   | "stellar"
   | "argent"
+
+export type ClientInterfaces = Exclude<Interfaces, "web3" | "xrpl" | "stellar">
 
 export type Interface =
   | FreighterWallet

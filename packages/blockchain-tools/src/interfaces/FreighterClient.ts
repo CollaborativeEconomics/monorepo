@@ -41,12 +41,12 @@ export default class FreighterWallet extends ChainBaseClass {
       console.log("FNET", this.network)
       return {
         success: true,
-        account: this.connectedWallet,
-        network: this.network,
+        walletAddress: this.connectedWallet,
+        network: this.network.slug,
       }
     } catch (ex) {
       console.error(ex)
-      return { success: false, account: "", network: "" }
+      return { success: false, error: ex instanceof Error ? ex.message : "" }
     }
   }
 

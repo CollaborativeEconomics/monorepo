@@ -1,70 +1,38 @@
 'use client';
-import { BlockchainManager, type ChainSlugs } from '@cfce/blockchain-tools';
-import { DonationStatus } from '@cfce/database';
+import type { Prisma } from '@cfce/database';
 import {
-  appConfig,
+  amountCoinAtom,
+  amountUSDAtom,
   chainsState,
   donationFormState,
-  mintAndSaveReceiptNFT,
-  pendingDonationState,
+  localizedNumber,
 } from '@cfce/utils';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import React from 'react';
-import { useContext, useState } from 'react';
-import { ClaimButton } from '../../ui/button';
 import { TimestampToDateString } from '../../ui/date-posted';
 import { ReceiptStatus } from '../../ui/receipt-status';
 import { NFTReceiptText } from './NFTReceiptText';
-//import Chains from '@/libs/chains/client/apis'
 
-export default function NFTReceipt() {
-  const [donation, setDonation] = useAtom(pendingDonationState);
-  const [donationForm, setDonationForm] = useAtom(donationFormState);
-  const [{selectedChain, selectedToken}] = useAtom(chainsState);
+interface ReceiptNFTProps {
+  initiative: Prisma.InitiativeGetPayload<{
+    include: {
+      organization: { include: { wallets: true } };
+      credits: true;
+      wallets: true;
+    };
+  }>;
+}
+
+export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
+  const organization = initiative.organization;
+  const donationForm = useAtomValue(donationFormState);
+  const { selectedToken } = useAtomValue(chainsState);
+  const usdAmount = useAtomValue(amountUSDAtom);
+  const coinAmount = useAtomValue(amountCoinAtom);
   // const [disabled, setDisabled] = useState(true);
   //console.log('Receipt:', receipt)
   //console.log('Donation', donation)
-
-  async function claimNFT() {
-    if (donation.status !== DonationStatus.claimed) {
-      return;
-    }
-    console.log('Claiming...', donation);
-    //setDisabled(true)
-    setDonation(draft => {
-      draft.status = DonationStatus.minting;
-    });
-    // setDonationForm(draft => {
-    //   draft.NFTStatusMessage = 'Minting NFT, wait a moment...';
-    // });
-    const minted = await mintAndSaveReceiptNFT(
-      {transaction: {
-        txId: donationForm.txId,
-        chain: selectedChain,
-        token: selectedToken,
-      }}
-      donation.initiativeId,
-      donation.donor.address,
-      donation.receiver,
-      donation.amount,
-      donation.rate,
-    );
-    const result = structuredClone(donation);
-    if (minted?.success) {
-      result.status = DonationStatus.minted;
-      setDonation(result);
-      // setDonationForm(draft => {
-      //   draft.NFTStatusMessage = 'NFT minted successfully!';
-      // });
-    } else {
-      result.status = DonationStatus.rejected;
-      setDonation(result);
-      // setDonationForm(draft => {
-      //   draft.NFTStatusMessage = 'Minting NFT failed!';
-      // });
-    }
-  }
 
   return (
     <div
@@ -81,7 +49,8 @@ export default function NFTReceipt() {
         </div>
         <div className="relative my-4 w-full h-48">
           <Image
-            src={donation.image}
+            // TODO: provide fallback
+            src={initiative.imageUri ?? ''}
             alt="IMG BG"
             fill
             style={{
@@ -89,38 +58,35 @@ export default function NFTReceipt() {
             }}
           />
         </div>
-        <ReceiptStatus status={donation.status} />
+        <ReceiptStatus status={donationForm.paymentStatus} />
 
         <div className="p-2">
           <TimestampToDateString
             className="pt-2 text-sm text-right font-bold text-gray-500 dark:text-white"
-            timestamp={donation.date}
+            timestamp={donationForm.date.getTime()}
           />
-          <NFTReceiptText>{donation.organization.name}</NFTReceiptText>
+          <NFTReceiptText>{organization.name}</NFTReceiptText>
           <NFTReceiptText className="font-normal">
-            EIN: {donation.organization.ein}
+            EIN: {organization?.EIN}
           </NFTReceiptText>
           <NFTReceiptText className="font-normal whitespace-pre">
-            {donation.organization.address}
+            {organization?.mailingAddress}
           </NFTReceiptText>
           <div className="flex flex-row justify-between items-center pt-6">
             <NFTReceiptText>Donation amount</NFTReceiptText>
-            <div className="flex border-dotted border-t-2 border-gray-300 w-full"></div>
+            <div className="flex border-dotted border-t-2 border-gray-300 w-full" />
             <NFTReceiptText>
-              {localizedNumber(donation.amount, 2)} {donation.ticker}*
+              {localizedNumber(coinAmount, 2)} {selectedToken}*
             </NFTReceiptText>
           </div>
           <NFTReceiptText className="font-normal whitespace-normal">
-            *{donation.ticker} is a publicly traded crypto-currency with a
-            direct monetary value
+            *{selectedToken} is a publicly traded crypto-currency with a direct
+            monetary value
           </NFTReceiptText>
           <div className="flex flex-row justify-between items-center pt-6">
             <NFTReceiptText>Monetary Value*</NFTReceiptText>
-            <div className="flex border-dotted border-t-2 border-gray-300 w-full"></div>
-            <NFTReceiptText>
-              {localizedNumber(donation.amountFiat, 2)}{' '}
-              {donation.fiatCurrencyCode}
-            </NFTReceiptText>
+            <div className="flex border-dotted border-t-2 border-gray-300 w-full" />
+            <NFTReceiptText>{localizedNumber(usdAmount, 2)} USD</NFTReceiptText>
           </div>
           <NFTReceiptText className="font-normal pt-0">
             *At the time of transaction
@@ -129,18 +95,19 @@ export default function NFTReceipt() {
           <div className="border-dotted border-t-2 border-b-2 border-gray-300 mt-6 py-2">
             <div className="flex flex-row justify-between">
               <NFTReceiptText>Donated By</NFTReceiptText>
-              <NFTReceiptText>{donation.donor.name}</NFTReceiptText>
+              <NFTReceiptText>{donationForm.name}</NFTReceiptText>
             </div>
           </div>
           <NFTReceiptText className="font-normal pt-2 pt-4 whitespace-normal">
             No goods or services were provided in exchange for this
-            contribution. {donation.organization.name} is a tax-exempt 501(c)(3)
+            contribution. {organization.name} is a tax-exempt 501(c)(3)
             organization.
           </NFTReceiptText>
-          <ClaimButton status={donation.status} onClick={claimNFT} />
-          <NFTReceiptText className="font-normal text-center pt-2 pt-4 whitespace-normal">
+          {/* TODO: maybe add claim back in for chain-native NFTs */}
+          {/* <ClaimButton status={donation.status} onClick={claimNFT} /> */}
+          {/* <NFTReceiptText className="font-normal text-center pt-2 pt-4 whitespace-normal">
             {message}
-          </NFTReceiptText>
+          </NFTReceiptText> */}
         </div>
       </div>
     </div>

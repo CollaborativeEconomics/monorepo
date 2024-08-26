@@ -6,10 +6,9 @@ import {
   prismaClient,
   updateStory,
 } from "@cfce/database"
+import { uploadDataToIPFS, uploadFileToIPFS } from "@cfce/ipfs"
 import { put } from "@vercel/blob"
 import type { File } from "formidable"
-import uploadDataToIPFS from "./ipfs/uploadDataToIPFS"
-import uploadFileToIPFS from "./ipfs/uploadFileToIPFS"
 import { mintStoryNFT } from "./mintStoryNFT"
 
 export default async function createStory(

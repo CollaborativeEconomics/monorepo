@@ -1,26 +1,23 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import { Document } from '@contentful/rich-text-types';
-import { Button } from '@cfce/universe-components/ui/button';
+import { getOrganizationById, getStories } from '@cfce/database';
+import { InitiativeCard } from '@cfce/universe-components/initiative';
+import { OrganizationAvatar } from '@cfce/universe-components/organization';
+import { StoryCard } from '@cfce/universe-components/story';
 import {
+  Button,
+  OrgSocials,
+  OrgStats,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@cfce/universe-components/ui/tabs';
-import { OrgStats } from '@cfce/universe-components/ui/org-stats';
-import { OrgSocials } from '@cfce/universe-components/ui/org-socials';
-import StoryCard from '@cfce/universe-components/StoryCard';
-import InitiativeCard from '@cfce/universe-components/InitiativeCard';
-import OrganizationAvatar from '@cfce/universe-components/OrganizationAvatar';
-import NotFound from '@cfce/universe-components/NotFound';
-import {
-  getOrganizationById,
-  getStoriesByOrganization,
-} from '@/utils/registry';
+} from '@cfce/universe-components/ui';
+import Image from 'next/image';
+import Link from 'next/link';
+import NotFound from '../../not-found';
 
-export default async function Home(props: any) {
+export default async function Home(props: {
+  params: { organizationId: string };
+}) {
   const orgId = props?.params?.organizationId || null;
   if (!orgId) {
     return <NotFound />;
@@ -29,20 +26,22 @@ export default async function Home(props: any) {
   if (!organization) {
     return <NotFound />;
   }
-  const stories = (await getStoriesByOrganization(orgId)) || [];
+  const stories = (await getStories({ orgId })) || [];
   const initiatives = organization.initiative;
 
   return (
     <main className="w-full bg-gradient-to-t from-slate-200">
       <div className="relative flex flex-col px-[5%] container mt-12 pt-24 w-full h-full">
         <div className="relative h-96">
-          <Image
-            className="hidden lg:block absolute -z-1"
-            src={organization.image}
-            alt="organization image"
-            fill
-            style={{ objectFit: 'cover' }}
-          />
+          {organization.image && (
+            <Image
+              className="hidden lg:block absolute -z-1"
+              src={organization.image}
+              alt="organization image"
+              fill
+              style={{ objectFit: 'cover' }}
+            />
+          )}
 
           <div className="hidden lg:block lg:h-full bg-gradient-to-t from-slate-800 to-transparent opacity-50 w-full z-5" />
 
@@ -100,7 +99,7 @@ export default async function Home(props: any) {
               <TabsContent value="stats">
                 <OrgStats
                   stats={{
-                    amountRaised: organization.donations || 0,
+                    amountRaised: organization.received || 0,
                     amountTarget: organization.goal || 0,
                     raisedThisMonth: organization.lastmonth || 0,
                     donorCount: organization.donors || 0,
@@ -117,14 +116,14 @@ export default async function Home(props: any) {
           <div className="flex flex-wrap md:flex-nowrap justify-center gap-9 lg:max-w-screen-lg">
             <div className="flex flex-col gap-5 w-full md:w-2/6 min-w-[350px]">
               <p className="text-3xl font-semibold">Initiatives</p>
-              {initiatives.map((initiative: any) => {
+              {initiatives.map(initiative => {
                 //initiative.organization = organization
                 return <InitiativeCard key={initiative.id} data={initiative} />;
               })}
             </div>
             <div className="flex flex-col gap-5 md:w-4/6">
               <p className="text-3xl font-semibold">Stories</p>
-              {stories.map((story: any) => {
+              {stories.map(story => {
                 return <StoryCard key={story.id} story={story} />;
               })}
             </div>

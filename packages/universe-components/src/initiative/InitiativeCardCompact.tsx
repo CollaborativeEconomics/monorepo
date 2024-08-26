@@ -1,16 +1,16 @@
-import React from 'react';
+import type { Initiative } from '@cfce/database';
 import Image from 'next/image';
+import React from 'react';
+import OrganizationAvatar from '../organization/OrganizationAvatar';
+import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
+import { DateDisplay } from '../ui/date-posted';
 import { Progress } from '../ui/progress';
 import { Separator } from '../ui/separator';
-import { DateDisplay } from '../ui/date-posted';
-import { Button } from '../ui/button';
-import OrganizationAvatar from '../organization/OrganizationAvatar';
-import type { Initiative } from '@cfce/database';
 
 interface InitiativeCardCompactProps extends Initiative {
   name: string; // organization name
-  avatarImg: string; // organization avatar image
+  avatarImg?: string; // organization avatar image
 }
 
 export default function InitiativeCardCompact(
@@ -20,13 +20,15 @@ export default function InitiativeCardCompact(
     <Card className="flex flex-col overflow-hidden">
       <CardContent className="flex flex-col pb-8 pt-3 gap-3 px-0">
         <div className="inline-flex">
-          <Image
-            className="mt-3 ml-6"
-            src={initiative.defaultAsset || 'noimage.png'}
-            alt="IMG BG"
-            width={200}
-            height={200}
-          />
+          {initiative.avatarImg && (
+            <Image
+              className="mt-3 ml-6"
+              src={initiative.avatarImg}
+              alt="IMG BG"
+              width={200}
+              height={200}
+            />
+          )}
           <div>
             <h3 className="px-6 pt-2 text-xl font-semibold uppercase">
               {initiative.title}

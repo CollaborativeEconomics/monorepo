@@ -19,11 +19,6 @@ export async function getNftData(query: NFTDataQuery) {
   const filter: Prisma.NFTDataFindManyArgs = {
     skip: 0,
     take: 100,
-    include: {
-      organization: true,
-      initiative: true,
-      user: true,
-    },
     where: {},
   }
 
@@ -73,7 +68,14 @@ export async function getNftData(query: NFTDataQuery) {
       created: query?.order || "desc",
     } as Prisma.NFTDataOrderByWithRelationInput
   }
-  data = await prismaClient.nFTData.findMany(filter)
+  data = await prismaClient.nFTData.findMany({
+    ...filter,
+    include: {
+      organization: true,
+      initiative: true,
+      user: true,
+    },
+  })
 
   return data
 }
@@ -90,8 +92,14 @@ export async function getNFTbyTokenId(
   return data
 }
 
-export async function getNFTById(id: string): Promise<NFTData | null> {
-  const data = await prismaClient.nFTData.findUnique({ where: { id } })
+export async function getNFTById(id: string) {
+  const data = await prismaClient.nFTData.findUnique({
+    where: { id },
+    include: {
+      organization: true,
+      initiative: { include: { category: true } },
+    },
+  })
   return data
 }
 

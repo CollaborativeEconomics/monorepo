@@ -5,6 +5,7 @@ import type {
 } from "@cfce/blockchain-tools"
 import type { Prisma } from "@cfce/database"
 import type { Draft } from "immer" // TS doesn't like it if we don't import this
+import { atom } from "jotai"
 import { atomWithImmer } from "jotai-immer"
 import appConfig from "../appConfig"
 
@@ -34,6 +35,7 @@ interface DonationFormState {
   emailReceipt: boolean
   name: string
   email: string
+  date: Date
   txId: string
   paymentStatus: (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]
 }
@@ -44,10 +46,45 @@ const donationFormState = atomWithImmer<DonationFormState>({
   email: "",
   emailReceipt: false,
   showUsd: false,
+  date: new Date(),
   txId: "",
   paymentStatus: PAYMENT_STATUS.ready,
 })
 
-const pendingDonationState = atomWithImmer<Prisma.DonationCreateInput>({})
+const amountUSDAtom = atom<number>((get) => {
+  const { showUsd, amount } = get(donationFormState)
+  if (!showUsd) {
+    const exchangeRate = get(chainsState).exchangeRate
+    return amount * exchangeRate
+  }
+  return amount
+})
 
-export { chainsState, pendingDonationState, donationFormState }
+const amountCoinAtom = atom<number>((get) => {
+  const { showUsd, amount } = get(donationFormState)
+  if (showUsd) {
+    const exchangeRate = get(chainsState).exchangeRate
+    return amount / exchangeRate
+  }
+  return amount
+})
+
+interface AppSettings {
+  theme: "light" | "dark"
+  walletAddress: string
+  userId: string
+}
+
+const appSettingsAtom = atomWithImmer<AppSettings>({
+  theme: "light",
+  walletAddress: "",
+  userId: "",
+})
+
+export {
+  chainsState,
+  donationFormState,
+  amountUSDAtom,
+  amountCoinAtom,
+  appSettingsAtom,
+}

@@ -130,7 +130,7 @@ function CarbonChart({ title, goal = 100, value, max100 = true }: ChartType) {
             />
           );
         })}
-        {dec > 0 ? <div style={prt} /> : <></>}
+        {dec > 0 ? <div style={prt} /> : null}
         {tons.map(i => {
           return (
             <div

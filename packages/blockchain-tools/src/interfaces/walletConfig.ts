@@ -1,12 +1,12 @@
-import type { Interfaces } from "./index"
+import type { ClientInterfaces } from "./index"
 
 interface WalletConfig {
-  icon: JSX.Element
-  slug: Interfaces
+  icon: string
+  slug: ClientInterfaces
   name: string
 }
 
-export const walletConfig: Partial<Record<Interfaces, WalletConfig>> = {
+export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
   freighter: {
     icon: require("../assets/freighter.svg").default,
     slug: "freighter",
@@ -17,9 +17,9 @@ export const walletConfig: Partial<Record<Interfaces, WalletConfig>> = {
     slug: "metamask",
     name: "Metamask",
   },
-  xumm: {
+  xaman: {
     icon: require("../assets/xaman.svg").default,
-    slug: "xumm",
+    slug: "xaman",
     name: "Xaman",
   },
   argent: {
@@ -29,7 +29,9 @@ export const walletConfig: Partial<Record<Interfaces, WalletConfig>> = {
   },
 }
 
-export function getWalletConfiguration(slugs: Interfaces[]): WalletConfig[] {
+export function getWalletConfiguration(
+  slugs: ClientInterfaces[],
+): WalletConfig[] {
   return slugs.map((slug) => {
     const config = walletConfig[slug]
     if (config) {

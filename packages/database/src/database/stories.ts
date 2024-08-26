@@ -1,11 +1,11 @@
 import type { Prisma, Story } from "@prisma/client"
-import { prismaClient } from ".."
 import type { ListQuery } from "types"
+import { prismaClient } from ".."
 
 interface StoryQuery extends ListQuery {
   orgId?: string
   initId?: string
-  recent?: string
+  recent?: number
 }
 
 export type StoryWithRelations = Prisma.StoryGetPayload<{
@@ -34,7 +34,7 @@ export async function getStories(
   const orderBy = { created: "desc" } as Prisma.StoryOrderByWithRelationInput
 
   if (query?.recent) {
-    const qty = Number.parseInt(query.recent) || 10
+    const qty = query.recent || 10
     const result = await prismaClient.story.findMany({
       include,
       take: qty,
