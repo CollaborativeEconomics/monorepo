@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -rf dist && tsc && tsc-alias",
+    "build": "rm -rf dist && tsc && tsc-alias && cp -r ./src/assets ./dist/assets",
     "prepublishOnly": "npm run build",
     "addChain": "node src/utils/createChainFromTemplate.js"
   },

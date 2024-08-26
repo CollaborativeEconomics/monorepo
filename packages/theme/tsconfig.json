@@ -6,6 +6,6 @@
     "declaration": true,
     "strict": true
   },
-  "include": ["src", "**/*.ts", "**/*.tsx"],
+  "include": ["src", "**/*.ts", "**/*.tsx", "**/*.css"],
   "exclude": ["node_modules", "dist"]
 }

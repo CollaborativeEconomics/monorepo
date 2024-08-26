@@ -1,1 +1,1 @@
-export * from '@cfce/universe-pages/donations/[id]';
+export { default } from '@cfce/universe-pages/donations/[id]';

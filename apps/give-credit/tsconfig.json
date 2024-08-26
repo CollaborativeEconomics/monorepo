@@ -6,24 +6,14 @@
     "next-auth.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
     "public",
-    "../../packages/universe-components/src/tailwind.config.ts",
-    "./appConfig.staging.js",
-    "./appConfig.js",
-    "../../packages/universe-components/src/shadCnUtil.ts",
-    "../../packages/utils/src/api.ts"
+    "./appConfig*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "work",
-    "../../packages/universe-components/src/tailwind.config.ts"
-  ],
+  "exclude": ["node_modules", "dist", "work"],
   "compilerOptions": {
-    "baseUrl": "",
+    "baseUrl": ".",
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDirs": ["src", "."],
     "paths": {
       "@/*": ["./*"]
     }
