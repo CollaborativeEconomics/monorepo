@@ -5,7 +5,7 @@ import {
 } from "@cfce/database"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import NextAuth, { type AuthOptions, type User } from "next-auth"
-import authProviders, { AuthTypes } from "./authProviders"
+import authProviders, { type AuthTypes } from "./authProviders"
 
 const authConfig: AuthOptions = {
   adapter: PrismaAdapter(prismaClient),

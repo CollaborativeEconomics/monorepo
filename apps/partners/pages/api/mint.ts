@@ -1,7 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from "next"
-import ipfsUpload from "utils/upload-ipfs"
-import { getStoryById, updateStory } from "utils/registry"
 import { BlockchainManager } from "@cfce/blockchain-tools"
+import type { NextApiRequest, NextApiResponse } from "next"
+import { getStoryById, updateStory } from "utils/registry"
+import ipfsUpload from "utils/upload-ipfs"
 
 export default async function Mint(req: NextApiRequest, res: NextApiResponse) {
   console.log("API MINTING NFT1155...")
@@ -53,14 +53,13 @@ export default async function Mint(req: NextApiRequest, res: NextApiResponse) {
     const contract = process.env.XINFIN_NFT1155_CONTRACT
     const address = process.env.XINFIN_MINTER_WALLET // Minter gets all story nfts
     const tokenId = `0x${event.id.replaceAll("-", "")}`
-    const okMint =
-      await BlockchainManager.getInstance().xinfin.server.mintNFT1155({
-        contractId: contract,
-        address,
-        tokenId,
-        uri: uriMeta,
-        walletSeed: process.env.XINFIN_MINTER_SECRET,
-      })
+    const okMint = await BlockchainManager.xinfin?.server.mintNFT1155({
+      contractId: contract,
+      address,
+      tokenId,
+      uri: uriMeta,
+      walletSeed: process.env.XINFIN_MINTER_SECRET,
+    })
     console.log("Mint result", okMint)
     if (!okMint || "error" in okMint) {
       return res.status(500).json({ error: "Error minting NFT" })

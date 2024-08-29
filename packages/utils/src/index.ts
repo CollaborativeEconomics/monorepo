@@ -1,5 +1,4 @@
 export * from "./api"
-export { default as appConfig, type AppConfig } from "./appConfig"
 export { default as authConfig, getAuthConfig } from "./authConfig"
 export {
   default as nextAuth,

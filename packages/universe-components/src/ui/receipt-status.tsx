@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { cn } from '@/shadCnUtil';
 import {
   AlertTriangle,
   CheckCircle,
@@ -8,6 +7,7 @@ import {
   type LucideIcon,
   RefreshCw,
 } from 'lucide-react';
+import { cn } from '../shadCnUtil';
 
 export interface ReceiptStatusProps
   extends React.HTMLAttributes<HTMLDivElement> {

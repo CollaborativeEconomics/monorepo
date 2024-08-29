@@ -4,10 +4,14 @@
   "description": "Common tools for interacting with diverse blockchains. Used in the CFCE ecosystem.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf dist && tsc && tsc-alias && cp -r ./src/assets ./dist/assets",
     "prepublishOnly": "npm run build",
-    "addChain": "node src/utils/createChainFromTemplate.js"
+    "addChain": "node src/utils/createChainFromTemplate.js",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   },
   "repository": {
     "type": "git",
@@ -29,12 +33,16 @@
   },
   "homepage": "https://github.com/CollaborativeEconomics/blockchain-tools#readme",
   "devDependencies": {
+    "@types/jest": "^29.5.12",
     "@types/luxon": "^3.4.2",
     "@types/react": "^18.3.3",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.4.3"
   },
   "dependencies": {
+    "@cfce/app-config": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/ipfs": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",

@@ -1,3 +1,4 @@
+import appConfig from "@cfce/app-config"
 import { type ClientInterfaces, chainConfig } from "@cfce/blockchain-tools"
 import {
   type Chain,
@@ -11,7 +12,6 @@ import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import type { Provider } from "next-auth/providers/index"
 import { v7 as uuidv7 } from "uuid"
-import appConfig from "../appConfig"
 
 interface Credentials {
   id: string

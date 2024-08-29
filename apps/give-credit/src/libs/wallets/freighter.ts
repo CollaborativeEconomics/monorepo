@@ -14,8 +14,8 @@ export default class Wallet {
   netinfo = {}
   chainId = "0x0"
   accounts?: [string] = undefined
-  myaccount: string = ""
-  horizon?: any = null
+  myaccount = ""
+  horizon?: StellarSDK.Horizon.Server
   horizonurl = process.env.NEXT_PUBLIC_STELLAR_HORIZON || ""
   provider = null
 
@@ -27,9 +27,8 @@ export default class Wallet {
     //console.log('INIT...')
     if (await isConnected()) {
       return { success: true }
-    } else {
-      return { success: false }
     }
+    return { success: false }
   }
 
   async connect() {
@@ -50,22 +49,25 @@ export default class Wallet {
 
   async sendPayment(dst: string, amt: string, memo: string) {
     try {
-      let nwk = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "").toUpperCase()
-      let net = process.env.NEXT_PUBLIC_STELLAR_PASSPHRASE || ""
+      const nwk = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "").toUpperCase()
+      const net = process.env.NEXT_PUBLIC_STELLAR_PASSPHRASE || ""
       console.log("NET:", nwk, net)
       //let pub = process.env.NEXT_PUBLIC_NFT_ISSUER
-      let pub = this.myaccount
+      const pub = this.myaccount
       console.log("From", pub)
       console.log("Paying", amt, "XLM to", dst, "Memo", memo)
-      let act = await this.horizon.loadAccount(pub)
-      let fee = await this.horizon.fetchBaseFee() // 100
-      let opr = StellarSDK.Operation.payment({
+      if (!this.horizon) {
+        throw new Error("Horizon server not initialized")
+      }
+      const act = await this.horizon.loadAccount(pub)
+      const fee = await this.horizon.fetchBaseFee() // 100
+      const opr = StellarSDK.Operation.payment({
         destination: dst,
         amount: amt,
         asset: StellarSDK.Asset.native(),
       })
-      const opt = { fee, network: nwk, networkPassphrase: net }
-      let txn = new StellarSDK.TransactionBuilder(act, opt)
+      const opt = { fee: `${fee}`, network: nwk, networkPassphrase: net }
+      const txn = new StellarSDK.TransactionBuilder(act, opt)
         //.setNetworkPassphrase(net)
         .addOperation(opr)
         .setTimeout(30)
@@ -99,13 +101,12 @@ export default class Wallet {
       //console.log("errorResultXdr:", result.errorResultXdr)
       if (result?.successful) {
         return { success: true, result, txid, address: this.myaccount }
-      } else {
-        return {
-          success: false,
-          error: "Payment rejected by user",
-          result,
-          txid,
-        }
+      }
+      return {
+        success: false,
+        error: "Payment rejected by user",
+        result,
+        txid,
       }
     } catch (err) {
       console.error("E>>", err)
@@ -115,24 +116,24 @@ export default class Wallet {
 
   async fetchLedger(query: string) {
     try {
-      let url = this.horizon + query
+      const url = this.horizon + query
       console.log("FETCH", url)
-      let options = {
+      const options = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
-      let result = await fetch(url, options)
-      let data = await result.json()
+      const result = await fetch(url, options)
+      const data = await result.json()
       return data
-    } catch (ex: any) {
+    } catch (ex) {
       console.error(ex)
-      return { error: ex?.message }
+      return { error: ex instanceof Error ? ex.message : "Unknown error" }
     }
   }
 
   async getTransactionInfo(txid: string) {
     console.log("Get tx info by txid", txid)
-    let txInfo = await this.fetchLedger("/transactions/" + txid)
+    const txInfo = await this.fetchLedger(`/transactions/${txid}`)
     if (!txInfo || "error" in txInfo) {
       console.log("ERROR", "Transaction not found:", txid)
       return { error: "Transaction not found" }
@@ -144,7 +145,7 @@ export default class Wallet {
     console.log("TXINFO", txInfo)
     const tag = txInfo.memo?.indexOf(":") > 0 ? txInfo.memo?.split(":")[1] : ""
     const opid = (BigInt(txInfo.paging_token) + BigInt(1)).toString()
-    const opInfo = await this.fetchLedger("/operations/" + opid)
+    const opInfo = await this.fetchLedger(`/operations/${opid}`)
     const result = {
       success: true,
       account: txInfo.source_account,

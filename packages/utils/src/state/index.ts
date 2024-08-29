@@ -1,3 +1,4 @@
+import appConfig from "@cfce/app-config"
 import type {
   ChainSlugs,
   Interfaces,
@@ -7,7 +8,6 @@ import type { Prisma } from "@cfce/database"
 import type { Draft } from "immer" // TS doesn't like it if we don't import this
 import { atom } from "jotai"
 import { atomWithImmer } from "jotai-immer"
-import appConfig from "../appConfig"
 
 const chainsState = atomWithImmer<{
   selectedChain: ChainSlugs

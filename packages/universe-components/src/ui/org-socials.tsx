@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { cn } from '@/shadCnUtil';
-import { Globe, Twitter, Facebook } from 'lucide-react';
+import { Facebook, Globe, Twitter } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from '../shadCnUtil';
 
 export interface OrgSocialsProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;

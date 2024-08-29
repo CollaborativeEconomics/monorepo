@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc"
+    "build": "rm -rf dist && tsc"
   },
   "exports": {
     "./donations/[id]": {
@@ -66,6 +66,7 @@
   "dependencies": {
     "@cfce/database": "workspace:*",
     "@cfce/universe-components": "workspace:*",
+    "@cfce/app-config": "workspace:*",
     "@vercel/blob": "^0.23.4",
     "jotai": "^2.9.1",
     "lucide-react": "^0.399.0",

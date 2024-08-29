@@ -1,3 +1,4 @@
+'use client';
 import React, { type RefObject, useEffect, useRef } from 'react';
 
 interface ParallaxProps

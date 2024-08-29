@@ -17,13 +17,15 @@ export type Interfaces =
 
 export type ClientInterfaces = Exclude<Interfaces, "web3" | "xrpl" | "stellar">
 
+export type Constructable<T> = new (...args: unknown[]) => T
+
 export type Interface =
-  | FreighterWallet
-  | MetaMaskWallet
-  | XummClient
-  | XrplServer
-  | StellarServer
-  | Web3Server
+  | Constructable<FreighterWallet>
+  | Constructable<MetaMaskWallet>
+  | Constructable<XummClient>
+  | Constructable<XrplServer>
+  | Constructable<StellarServer>
+  | Constructable<Web3Server>
 
 export {
   FreighterWallet,

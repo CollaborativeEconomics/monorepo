@@ -1,45 +1,40 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'github.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'give.staging.cfce.io',
-        port: '',
-        pathname: '/media/**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'ipfs.filebase.io',
-        port: '',
-        pathname: '/ipfs/**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'ipfs.io',
-        port: '',
-        pathname: '/ipfs/**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'partners.cfce.io',
-        port: '',
-        pathname: '/**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'v8tqm1jlovjfn4gd.public.blob.vercel-storage.com',
-        port: '',
-        pathname: '/**'
-      }
-    ],
-  }
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // config.resolve.fallback = {
+      //   ...config.resolve.fallback,
+      //   fs: false,
+      //   net: false,
+      //   tls: false,
+      //   crypto: false,
+      //   os: false,
+      //   path: false,
+      //   stream: false,
+      //   zlib: false,
+      //   http: false,
+      //   https: false,
+      //   assert: false,
+      //   util: false,
+      //   'node:fs': false,
+      //   'node:path': false,
+      //   'node:crypto': false,
+      //   'node:net': false,
+      //   'node:stream': false,
+      //   'node:http': false,
+      //   'node:https': false,
+      //   'node:assert': false,
+      //   'node:util': false,
+      // };
+      config.externals = config.externals || [];
+      config.externals.push(({ context, request }, callback) => {
+        if (/^node:/.test(request)) {
+          return callback(null, `commonjs ${request}`);
+        }
+        callback();
+      });
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

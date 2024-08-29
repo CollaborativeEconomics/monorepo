@@ -3,7 +3,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3"
-import { appConfig } from "@cfce/utils"
+import appConfig from "@cfce/app-config"
 
 // Uploads buffer data to AWS IPFS pinning service
 // Can be a file or text as metadata
@@ -30,8 +30,8 @@ export default async function upload(
     const client = new S3Client({
       endpoint: appConfig.apis.ipfs.endpoint,
       region: appConfig.apis.ipfs.region,
-      accessKeyId: process.env.IPFS_API_KEY,
-      secretAccessKey: process.env.IPFS_API_SECRET,
+      // accessKeyId: process.env.IPFS_API_KEY,
+      // secretAccessKey: process.env.IPFS_API_SECRET,
     })
     const action = new PutObjectCommand(params)
     const result = await client.send(action)
@@ -50,7 +50,7 @@ export default async function upload(
       return { error: "Error retrieving file info" }
     }
     return data?.Metadata?.cid
-  } catch (ex: any) {
+  } catch (ex) {
     console.error(ex)
     if (ex instanceof Error) {
       return { error: `Error uploading file: ${ex.message}` }

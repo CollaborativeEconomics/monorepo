@@ -1,9 +1,9 @@
 'use client';
+import appConfig from '@cfce/app-config';
 import { type ChainSlugs, getChainConfiguration } from '@cfce/blockchain-tools';
 import { AuthButton, Divider } from '@cfce/universe-components/ui';
 import {
   type AuthTypes,
-  appConfig,
   appSettingsAtom,
   loginOrCreateUserFromWallet,
 } from '@cfce/utils';

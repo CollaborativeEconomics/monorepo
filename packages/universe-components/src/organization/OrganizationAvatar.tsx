@@ -1,5 +1,5 @@
-import { cn } from '@/shadCnUtil';
 import React from 'react';
+import { cn } from '../shadCnUtil';
 import {
   Avatar,
   AvatarFallback,

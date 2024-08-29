@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+'use client';
 import { Rive, useRive, useStateMachineInput } from '@rive-app/react-canvas';
-import { useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import React, { useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function RiveAnimation({ number }: { number: 1 | 2 | 3 }) {
   const { theme } = useTheme();

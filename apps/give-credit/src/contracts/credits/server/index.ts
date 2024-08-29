@@ -1,25 +1,23 @@
+import type { NetworkConfig } from "@cfce/blockchain-tools"
 import {
   Address,
   BASE_FEE,
   Contract,
   FeeBumpTransaction,
-  Keypair,
   Horizon,
-  nativeToScVal,
-  scValToNative,
+  Keypair,
   Networks,
   Operation,
   SorobanDataBuilder,
   SorobanRpc,
-  Transaction,
+  type Transaction,
   TransactionBuilder,
+  nativeToScVal,
+  scValToNative,
   xdr,
 } from "@stellar/stellar-sdk"
+import type { StellarNetwork } from "../../networks"
 const { Api, assembleTransaction } = SorobanRpc
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 //---- SUBMIT TX
 
@@ -31,6 +29,9 @@ const SOROBAN_URL = process.env.STELLAR_SOROBAN
 
 //const SOROBAN_URL = "https://rpc-futurenet.stellar.org:443";
 //const SOROBAN_URL = "https://soroban-testnet.stellar.org/";
+if (!SOROBAN_URL) {
+  throw new Error("Soroban URL not set")
+}
 const server = new SorobanRpc.Server(SOROBAN_URL)
 //const server = new SorobanRpc.Server(QUIKNODE_URL);
 //console.log('>Server Loaded', server)
@@ -69,9 +70,9 @@ async function submitTx2(tx){
 
 async function submitTx(tx: Transaction) {
   try {
-    let response = await server.sendTransaction(tx)
+    const response = await server.sendTransaction(tx)
     console.log(`Sent transaction: ${JSON.stringify(response)}`)
-    let txid = response.hash
+    const txid = response.hash
 
     if (response.status === "PENDING") {
       let result = await server.getTransaction(response.hash)
@@ -84,7 +85,7 @@ async function submitTx(tx: Transaction) {
         await new Promise((resolve) => setTimeout(resolve, 1000))
       }
       //console.log(`getTransaction response: ${JSON.stringify(result)}`);
-      console.log(`Status:`, result.status)
+      console.log("Status:", result.status)
       if (result.status === "SUCCESS") {
         console.log("RESULT:", result)
         // Make sure the transaction's resultMetaXDR is not empty
@@ -92,10 +93,10 @@ async function submitTx(tx: Transaction) {
           throw "Empty resultMetaXDR in getTransaction response"
         }
         // Find the return value from the contract and return it
-        let transactionMeta = result.resultMetaXdr
+        const transactionMeta = result.resultMetaXdr
         //const metares  = result.resultMetaXdr.v3().sorobanMeta().returnValue();
         //console.log('METARES:', metares);
-        let returnValue = result.returnValue //parseResultXdr(result.returnValue);
+        const returnValue = result.returnValue //parseResultXdr(result.returnValue);
         //const metaXDR = SorobanClient.xdr.TransactionMeta.fromXDR(result.resultMetaXdr, "base64")
         //console.log('METAXDR:', JSON.stringify(metaXDR,null,2));
         //console.log('Return meta:', JSON.stringify(transactionMeta,null,2));
@@ -107,19 +108,17 @@ async function submitTx(tx: Transaction) {
           meta: transactionMeta,
           txid,
         }
-      } else {
-        console.log("XDR:", JSON.stringify(result.resultXdr, null, 2))
-        throw `Transaction failed: ${result.resultXdr}`
       }
-    } else {
-      throw response.errorResult
+      console.log("XDR:", JSON.stringify(result.resultXdr, null, 2))
+      throw `Transaction failed: ${result.resultXdr}`
     }
-  } catch (err: any) {
+    throw response.errorResult
+  } catch (err) {
     // Catch and report any errors we've thrown
     console.log("Sending transaction failed")
     console.log(err)
     console.log(JSON.stringify(err))
-    return { success: false, error: err.message }
+    return { success: false, error: err instanceof Error ? err.message : err }
   }
 }
 
@@ -143,7 +142,7 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
     //console.log(prepTx)
     //prepTx.sign(signer);
 
-    let prepTx = await server.prepareTransaction(tx)
+    const prepTx = await server.prepareTransaction(tx)
     console.log(prepTx)
     prepTx.sign(signer)
 
@@ -157,8 +156,8 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
   //
   console.log("Restore Contract...")
   const account = await server.getAccount(signer.publicKey())
-  let fee = parseInt(BASE_FEE)
-  fee += parseInt(sim.restorePreamble.minResourceFee)
+  let fee = Number.parseInt(BASE_FEE)
+  fee += Number.parseInt(sim.restorePreamble.minResourceFee)
 
   const restoreTx = new TransactionBuilder(account, { fee: fee.toString() })
     .setNetworkPassphrase(tx.networkPassphrase)
@@ -184,7 +183,9 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
   // up-to-date)
   //
   const retryTxBuilder = TransactionBuilder.cloneFrom(tx, {
-    fee: (parseInt(tx.fee) + parseInt(sim.minResourceFee)).toString(),
+    fee: (
+      Number.parseInt(tx.fee) + Number.parseInt(sim.minResourceFee)
+    ).toString(),
     sorobanData: sim.transactionData.build(),
   })
 
@@ -202,16 +203,22 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
 
 //---- RESTORE CONTRACT
 
-async function restoreContract(signer: Keypair, c: Contract, network: any) {
-  const instance = c.getFootprint()
+async function restoreContract(
+  signer: Keypair,
+  contract: Contract,
+  network: StellarNetwork,
+) {
+  const instance = contract.getFootprint()
   const account = await server.getAccount(signer.publicKey())
+  // @ts-ignore: why this type fails? Stellar docs broken?
   const wasmEntry = await server.getLedgerEntries(getWasmLedgerKey(instance))
-  // @ts-ignore: types suck donkey balls
+  // const wasmEntry = await server.getContractWasmByContractId(contract.contractId())
   const data = new SorobanDataBuilder()
+    // @ts-ignore: why wasmEntry isn't a ledger key? Bad docs again?
     .setReadWrite([instance, wasmEntry])
     .build()
   const restoreTx = new TransactionBuilder(account, { fee: BASE_FEE })
-    .setNetworkPassphrase(network.networkPassphrase)
+    .setNetworkPassphrase(network.passphrase ?? "")
     .setSorobanData(data) // Set the restoration footprint (remember, it should be in the read-write part!)
     .addOperation(Operation.restoreFootprint({}))
     .build()
@@ -220,22 +227,20 @@ async function restoreContract(signer: Keypair, c: Contract, network: any) {
   return submitTx(preppedTx)
 }
 
-function getWasmLedgerKey(entry: any) {
-  const hash = entry.val().instance().wasmHash()
-  const key = { hash }
-  const code = new xdr.LedgerKeyContractCode(key)
-  const res = xdr.LedgerKey.contractCode(code)
-  return res
+function getWasmLedgerKey(entry: xdr.ContractDataEntry) {
+  const hash = entry.val().instance().executable().wasmHash()
+  const code = new xdr.LedgerKeyContractCode({ hash })
+  return xdr.LedgerKey.contractCode(code)
 }
 
 //---- RUN
 
 export async function submit(
-  network: any,
+  network: StellarNetwork,
   secret: string,
   contractId: string,
   method: string,
-  args: any,
+  args: xdr.ScVal[],
 ) {
   const source = Keypair.fromSecret(secret)
   const server = new SorobanRpc.Server(network.soroban)
@@ -243,8 +248,8 @@ export async function submit(
   const account = await server.getAccount(source.publicKey())
   console.log({ network, contractId, method, args })
 
-  let op = contract.call(method, ...args)
-  let tx = new TransactionBuilder(account, {
+  const op = contract.call(method, ...args)
+  const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,
     networkPassphrase: network.passphrase,
   })
@@ -259,33 +264,35 @@ export async function submit(
       //const meta:any = resp.meta
       //console.log('META', JSON.stringify(meta,null,2))
       //console.log('Return value:', resp?.value)
+      if (!resp?.value) {
+        throw new Error("No value returned")
+      }
       const resval = scValToNative(resp?.value)
       console.log("Return value:", resval)
       return { success: true, value: resval, error: null }
-    } else {
-      return {
-        success: false,
-        value: "",
-        error: "Error submitting transaction",
-      }
     }
-  } catch (err: any) {
+    return {
+      success: false,
+      value: "",
+      error: "Error submitting transaction",
+    }
+  } catch (err) {
     // Catch and report any errors we've thrown
     console.log("Error sending transaction", err)
     return {
       success: false,
       value: "",
-      error: err.message || "Error sending transaction",
+      error: err instanceof Error ? err.message : "Error sending transaction",
     }
   }
 }
 
 export async function checkContract(
-  network: any,
+  network: StellarNetwork,
   secret: string,
   contractId: string,
   method: string,
-  args: any,
+  args: xdr.ScVal[],
 ) {
   try {
     console.log("CHECK", network, secret, contractId, method)
@@ -296,12 +303,15 @@ export async function checkContract(
     console.log("CHECK2:", rpcUrl)
     const contract = new Contract(contractId)
     console.log("CHECK3")
+    if (!HORIZON_URL) {
+      throw new Error("Horizon URL not set")
+    }
     const horizon = new Horizon.Server(HORIZON_URL)
     const account = await horizon.loadAccount(pubkey)
 
     console.log("CHECK4:", account?.id)
-    let op = contract.call(method, ...args)
-    let tx = new TransactionBuilder(account, {
+    const op = contract.call(method, ...args)
+    const tx = new TransactionBuilder(account, {
       fee: BASE_FEE,
       networkPassphrase: network.passphrase,
     })
@@ -323,10 +333,9 @@ export async function checkContract(
       const result = await restoreContract(source, contract, network)
       console.log("RESTORED", result)
       return { ready: true }
-    } else {
-      console.log("Contract is ready")
-      return { ready: true }
     }
+    console.log("Contract is ready")
+    return { ready: true }
   } catch (ex) {
     console.error("Restore Error:", ex)
     return { ready: false }

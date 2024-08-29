@@ -1,5 +1,5 @@
 'use client';
-import type { DonationWithRelations } from '@cfce/database';
+import type { NFTDataWithRelations } from '@cfce/database';
 import {
   type SortingState,
   createColumnHelper,
@@ -8,9 +8,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -20,24 +20,26 @@ import {
   TableRow,
 } from '../ui/table';
 
-interface TableDonationsSortProps {
-  donations?: DonationWithRelations[];
+interface ReceiptTableSortableProps {
+  receipts: NFTDataWithRelations[];
 }
 
-export default function TableDonationsSort(props: TableDonationsSortProps) {
+export default function ReceiptTableSortable({
+  receipts,
+}: ReceiptTableSortableProps) {
   const router = useRouter();
-  const donations = props?.donations || [];
 
   const [order, setOrder] = useState('');
-  // const [data, setData] = useState(recs);
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columnHelper = createColumnHelper<DonationWithRelations>();
+  const columnHelper = createColumnHelper<NFTDataWithRelations>();
 
   const columns = [
-    columnHelper.accessor('created', {
-      header: 'Date',
-      cell: info => info.getValue().toString(), // TODO: format nicer
+    columnHelper.accessor('imageUri', {
+      header: 'Image',
+      cell: info =>
+        info.getValue() ??
+        `https://ipfs.filebase.io/ipfs/${info.getValue().substr(5)}`,
     }),
     columnHelper.accessor('initiative', {
       header: 'Initiative',
@@ -47,18 +49,18 @@ export default function TableDonationsSort(props: TableDonationsSortProps) {
       header: 'Organization',
       cell: info => info.getValue()?.name ?? '',
     }),
-    columnHelper.accessor('amount', {
+    columnHelper.accessor('coinValue', {
       header: 'Amount',
       cell: info => info.getValue(),
     }),
-    columnHelper.accessor('chain', {
-      header: 'Chain',
-      cell: info => info.getValue(), // TODO: format nicer
+    columnHelper.accessor('coinSymbol', {
+      header: 'Coin',
+      cell: info => info.getValue(),
     }),
   ];
 
   const table = useReactTable({
-    data: donations,
+    data: receipts,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -74,15 +76,15 @@ export default function TableDonationsSort(props: TableDonationsSortProps) {
     ) as HTMLElement | null;
     if (parent?.dataset.id) {
       const rowId = Number.parseInt(parent.dataset.id, 10);
-      const { id: nftId } = donations[rowId];
+      const { id: nftId } = receipts[rowId];
       console.log('CLICKED', rowId, nftId);
-      console.log('DATA', donations[rowId]);
-      router.push(`/donations/${nftId}`);
+      console.log('DATA', receipts[rowId]);
+      router.push(`/nft/${nftId}`);
     }
   }
 
   return (
-    <Table id="table-donations" className="w-full">
+    <Table id="table-nfts" className="w-full">
       <TableHeader>
         {table.getHeaderGroups().map(headerGroup => (
           <TableRow key={headerGroup.id}>
@@ -117,17 +119,32 @@ export default function TableDonationsSort(props: TableDonationsSortProps) {
           list.map(row => {
             return (
               <TableRow key={row.id} data-id={row.id}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                {row.getVisibleCells().map(cell => {
+                  //console.log('CELL', cell)
+                  return (
+                    <TableCell key={cell.id}>
+                      {cell?.column?.id === 'imageUri' ? (
+                        <Image
+                          src={cell?.getValue() as string}
+                          width={64}
+                          height={64}
+                          alt="NFT"
+                        />
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )
+                      )}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             );
           })
         ) : (
           <TableRow>
-            <TableCell className="col-span-5">No donations found</TableCell>
+            <TableCell className="col-span-5">No receipts found</TableCell>
           </TableRow>
         )}
       </TableBody>

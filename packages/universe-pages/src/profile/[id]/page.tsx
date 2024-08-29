@@ -13,7 +13,7 @@ import { StoryCardCompactVert } from '@cfce/universe-components/story';
 import {
   DonationsTableSortable,
   ReceiptTableSortable,
-} from '@cfce/universe-components/tables';
+} from '@cfce/universe-components/table';
 import {
   Tabs,
   TabsContent,

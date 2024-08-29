@@ -1,8 +1,8 @@
 'use client';
 
-import { cn } from '@/shadCnUtil';
 import { CalendarDays } from 'lucide-react';
 import * as React from 'react';
+import { cn } from '../shadCnUtil';
 
 interface Props {
   timestamp: number;

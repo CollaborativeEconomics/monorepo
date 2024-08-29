@@ -15,7 +15,7 @@ export default async function loginOrCreateUserFromWallet({
   chain,
 }: { chain: ChainSlugs }) {
   console.log("LOGIN")
-  const walletInterface = BlockchainManager.getInstance()[chain]?.client // TODO: handle multiple wallets per chain
+  const walletInterface = BlockchainManager[chain]?.client // TODO: handle multiple wallets per chain
   if (!walletInterface) {
     throw new Error(`No wallet interface found for chain: ${chain}`)
   }

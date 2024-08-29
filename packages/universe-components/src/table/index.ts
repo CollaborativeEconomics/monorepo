@@ -1,3 +1,3 @@
-export { default as DonationsTableSortable } from "./TableDonationsSort"
-export { default as ReceiptTable } from "./TableReceiptsSort"
-export { default as ReceiptTableSortable } from "./TableReceiptsSort"
+export { default as DonationsTableSortable } from "./DonationsTableSortable"
+export { default as ReceiptTable } from "./ReceiptTable"
+export { default as ReceiptTableSortable } from "./ReceiptTableSortable"

@@ -1,13 +1,13 @@
-import * as React from 'react';
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 import { useTheme } from 'next-themes';
-import { Button } from '@/ui/button';
+import * as React from 'react';
+import { Button } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/ui/dropdown-menu';
+} from '../ui/dropdown-menu';
 
 export default function DarkModeSwitcher() {
   const { setTheme } = useTheme();

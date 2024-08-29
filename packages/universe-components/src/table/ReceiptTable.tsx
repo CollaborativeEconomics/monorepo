@@ -10,10 +10,10 @@ import {
   TableRow,
 } from '../ui/table';
 
-interface TableReceiptsProps {
+interface ReceiptTableProps {
   receipts?: NFTDataWithRelations[];
 }
-export default function TableReceipts({ receipts }: TableReceiptsProps) {
+export default function ReceiptTable({ receipts }: ReceiptTableProps) {
   return (
     <Table id="table-nfts" className="w-full">
       <TableHeader>

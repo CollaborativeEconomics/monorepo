@@ -1,4 +1,5 @@
 'use client';
+import appConfig from '@cfce/app-config';
 import {
   BlockchainManager,
   type ChainSlugs,
@@ -12,7 +13,6 @@ import {
   type ReceiptEmailBody,
   amountCoinAtom,
   amountUSDAtom,
-  appConfig,
   chainsState as chainStateAtom,
   donationFormState,
   fetchApi,
@@ -74,7 +74,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
   const chainInterface = useMemo(
-    () => BlockchainManager.getInstance()[selectedChain]?.client,
+    () => BlockchainManager[selectedChain]?.client,
     [selectedChain],
   );
   const destinationWalletAddress = useMemo(() => {

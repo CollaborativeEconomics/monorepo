@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { cn } from '@/shadCnUtil';
+import { cn } from '../../shadCnUtil';
 import { Button } from '../../ui/button';
 
 export interface ActionBarBoxProps

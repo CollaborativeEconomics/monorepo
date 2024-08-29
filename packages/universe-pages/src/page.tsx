@@ -1,3 +1,4 @@
+'use client';
 import { getInitiatives } from '@cfce/database';
 import {
   ActionBar,

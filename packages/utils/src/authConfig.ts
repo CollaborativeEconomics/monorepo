@@ -44,13 +44,13 @@ const authConfig: AuthConfig = {
   },
   github: {
     // authProvider: authProviders.github,
-    icon: require("../assets/github.svg").default,
+    icon: require("./assets/github.svg").default,
     name: "Github",
     slug: "github",
   },
   google: {
     // authProvider: authProviders.google,
-    icon: require("../assets/google.svg").default,
+    icon: require("./assets/google.svg").default,
     name: "Google",
     slug: "google",
   },

@@ -36,7 +36,7 @@ export async function mintAndSaveReceiptNFT({
 }: mintAndSaveReceiptNFTParams) {
   try {
     // #region: Initialize fns and data
-    const chainTool = BlockchainManager.getInstance()[chain]?.server
+    const chainTool = BlockchainManager[chain]?.server
     if (!chainTool) {
       console.error("No chain tool found for chain", chain)
       return { success: false, error: "No chain tool found for chain" }
@@ -164,7 +164,7 @@ export async function mintAndSaveReceiptNFT({
     }> = []
     // Find all receipt contracts in the app config, add to array
     for (const chainSlug in appConfig.chains) {
-      const chain = appConfig.chains[chainSlug as ChainSlugs]
+      const chain = appConfig.chains.find(({ slug }) => slug === chainSlug)
       if (chain?.contracts.receiptMintbotERC721) {
         receiptConctractsByChain.push({
           chain: chainSlug as ChainSlugs,
@@ -179,7 +179,7 @@ export async function mintAndSaveReceiptNFT({
 
     let tokenId = ""
     for (const chainContract of receiptConctractsByChain) {
-      const mintResponse = BlockchainManager.getInstance()[
+      const mintResponse = BlockchainManager[
         chainContract.chain
       ]?.server.mintNFT({
         contractId: chainContract.contract,

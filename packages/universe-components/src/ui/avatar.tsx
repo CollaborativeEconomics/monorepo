@@ -3,8 +3,8 @@
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import * as React from 'react';
 
-import { cn } from '@/shadCnUtil';
 import { type VariantProps, cva } from 'class-variance-authority';
+import { cn } from '../shadCnUtil';
 
 const avatarImageVariants = cva(
   'relative flex shrink-0 overflow-hidden rounded-full',

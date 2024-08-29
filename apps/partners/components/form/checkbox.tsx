@@ -1,5 +1,5 @@
-import React, { ChangeEvent, HTMLProps, useState } from 'react';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import React, { type ChangeEvent, type HTMLProps, useState } from 'react';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface CheckboxProps {
   label: string;

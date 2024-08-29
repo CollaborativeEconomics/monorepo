@@ -1,12 +1,16 @@
-import { existsSync } from "node:fs"
-import { resolve } from "node:path"
+// import { dirname } from "path"
+// import { existsSync } from "node:fs"
+// import { resolve } from "node:path"
 import type {
   ChainSlugs,
-  Interfaces,
+  ClientInterfaces,
   Network,
   TokenTickerSymbol,
 } from "@cfce/blockchain-tools"
-import { register } from "ts-node"
+// import { register } from "ts-node"
+import appConfigExample from "./appConfigExample"
+
+export type AuthTypes = ClientInterfaces | "github" | "google"
 
 type Envs = "development" | "staging" | "production"
 
@@ -14,6 +18,17 @@ const configPaths: Record<Envs, string> = {
   development: "appConfig.dev.ts",
   staging: "appConfig.staging.ts",
   production: "appConfig.ts",
+}
+
+type ContractType = "receiptMintbotERC721"
+interface ChainConfig {
+  name: string
+  slug: ChainSlugs
+  network: string
+  contracts: Partial<Record<ContractType, string>>
+  wallets: ClientInterfaces[]
+  tokens: TokenTickerSymbol[]
+  destinationTag?: string
 }
 
 export interface Config {
@@ -37,35 +52,23 @@ export interface Config {
       }
     }
   }
-  auth: string[]
-  chains: Partial<
-    Record<
-      ChainSlugs,
-      {
-        network: Network
-        contracts: Partial<
-          Record<"CCreceiptMintbotERC721" | "receiptMintbotERC721", string>
-        >
-        wallets: Interfaces[]
-        coins: TokenTickerSymbol[]
-      }
-    >
-  >
+  auth: AuthTypes[]
+  chains: ChainConfig[]
   chainDefaults: {
     network: Network
-    wallet: Interfaces
+    wallet: ClientInterfaces
     chain: ChainSlugs
     coin: TokenTickerSymbol
   }
 }
 
 // Register ts-node to handle TypeScript files
-register({
-  transpileOnly: true,
-  compilerOptions: {
-    module: "commonjs",
-  },
-})
+// register({
+//   transpileOnly: true,
+//   compilerOptions: {
+//     module: "commonjs",
+//   },
+// })
 
 let appConfigs: Record<Envs, Config> | null = null
 
@@ -76,14 +79,21 @@ function loadConfig(): Record<Envs, Config> {
     return appConfigs
   }
   const rootDir = process.cwd()
+  console.log({
+    cwd: process.cwd(),
+    dirname: __dirname,
+    filename: __filename,
+  })
   const configs = {} as Record<Envs, Config>
   for (const env of Object.keys(configPaths)) {
-    const configPath = resolve(rootDir, configPaths[env as Envs]) // app/appConfig.dev.ts
-    if (existsSync(configPath)) {
-      const { config } = require(configPath) // `ts-node` will handle the TypeScript file
-      configs[env as Envs] = config as Config
-    }
-    throw new Error(`Configuration file not found at ${configPath}`)
+    // const configPath = resolve(rootDir, configPaths[env as Envs]) // app/appConfig.dev.ts
+    // console.log("CONFIG", configPath, rootDir)
+    // if (existsSync(configPath)) {
+    //   const { config } = require(configPath) // `ts-node` will handle the TypeScript file
+    //   configs[env as Envs] = config as Config
+    // }
+    // throw new Error(`Configuration file not found at ${configPath}`)
+    configs[env as Envs] = appConfigExample
   }
   return configs as Record<Envs, Config>
 }

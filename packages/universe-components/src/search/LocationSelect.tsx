@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 // import { Check, ChevronsUpDown } from 'lucide-react';
 
-import { cn } from '@/shadCnUtil';
 import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
+import { cn } from '../shadCnUtil';
 import { Button } from '../ui/button';
 import {
   Command,
