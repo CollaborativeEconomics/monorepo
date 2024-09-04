@@ -1,4 +1,4 @@
-'use client';
+import appConfig from '@cfce/app-config';
 import { getInitiatives } from '@cfce/database';
 import {
   ActionBar,
@@ -6,16 +6,21 @@ import {
   InstructionPanes,
   VideoBackground,
 } from '@cfce/universe-components/home';
+import type { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+  title: appConfig.siteInfo.title,
+  viewport: { initialScale: 1.0, width: 'device-width' },
+};
 
 export default async function Handler(props: {
   searchParams?: { query?: string; category?: string; location?: string };
 }) {
-  const query = props?.searchParams?.query || '';
-  const category = props?.searchParams?.category || '';
-  const location = props?.searchParams?.location || '';
+  // const query = props?.searchParams?.query || '';
+  // const category = props?.searchParams?.category || '';
+  // const location = props?.searchParams?.location || '';
   const initiatives = (await getInitiatives({})) || [];
-  console.log('SEARCH', query, category, location);
   return (
     <>
       <div className="w-full top-0">

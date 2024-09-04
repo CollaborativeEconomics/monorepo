@@ -1,5 +1,5 @@
-import Head from 'next/head'
-import { ReactChild } from 'react'
+import type { Metadata } from 'next';
+import type { ReactChild } from 'react';
 
 interface PageProps {
   title?: string;
@@ -7,16 +7,17 @@ interface PageProps {
   children: ReactChild;
 }
 
-function Page({title, className, children}) {
-  return <>
-    <Head>
-      <title>{title}</title>
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    </Head>
-    <div className={`block ${className}`} >
-      {children}
-    </div>
-  </>
+export const metadata: Metadata = {
+  title: 'Give Credit',
+  viewport: { initialScale: 1.0, width: 'device-width' },
+};
+
+function Page({ title, className, children }) {
+  return (
+    <>
+      <div className={`block ${className}`}>{children}</div>
+    </>
+  );
 }
 
-export default Page
+export default Page;

@@ -1,9 +1,8 @@
-import appConfig from "@cfce/app-config"
 import { keys as _keys } from "lodash"
 import {
   type ClientInterfaces,
   FreighterWallet,
-  Interface,
+  type Interface,
   MetaMaskWallet,
   StellarServer,
   Web3Server,
@@ -33,47 +32,47 @@ interface ManagerConfig {
   }
 }
 
-type ChainClasses<ClientClass, ServerClass> = {
+type ChainClasses<ClientClass = Interface, ServerClass = Interface> = {
   client: ClientClass
   server: ServerClass
 }
 
-export default class BlockchainManager {
-  private static instance: BlockchainManager = new BlockchainManager({
-    chains: appConfig.chains,
-    defaults: appConfig.chainDefaults,
-  })
+type ChainConstructor = new (slug: ChainSlugs, network: string) => Interface
+
+export class BlockchainManager {
+  private static instance: BlockchainManager
 
   public config?: ManagerConfig
 
-  private arbitrum?: ChainClasses<MetaMaskWallet, Web3Server>
-  private avalanche?: ChainClasses<MetaMaskWallet, Web3Server>
-  private base?: ChainClasses<MetaMaskWallet, Web3Server>
-  private binance?: ChainClasses<MetaMaskWallet, Web3Server>
-  private celo?: ChainClasses<MetaMaskWallet, Web3Server>
-  private eos?: ChainClasses<MetaMaskWallet, Web3Server>
-  private ethereum?: ChainClasses<MetaMaskWallet, Web3Server>
-  private filecoin?: ChainClasses<MetaMaskWallet, Web3Server>
-  private flare?: ChainClasses<MetaMaskWallet, Web3Server>
-  private optimism?: ChainClasses<MetaMaskWallet, Web3Server>
-  private polygon?: ChainClasses<MetaMaskWallet, Web3Server>
-  private starknet?: ChainClasses<MetaMaskWallet, Web3Server>
-  private stellar?: ChainClasses<FreighterWallet, StellarServer>
-  private xinfin?: ChainClasses<MetaMaskWallet, Web3Server>
-  private xrpl?: ChainClasses<XummClient, XrplServer>
+  public arbitrum?: ChainClasses<MetaMaskWallet, Web3Server>
+  public avalanche?: ChainClasses<MetaMaskWallet, Web3Server>
+  public base?: ChainClasses<MetaMaskWallet, Web3Server>
+  public binance?: ChainClasses<MetaMaskWallet, Web3Server>
+  public celo?: ChainClasses<MetaMaskWallet, Web3Server>
+  public eos?: ChainClasses<MetaMaskWallet, Web3Server>
+  public ethereum?: ChainClasses<MetaMaskWallet, Web3Server>
+  public filecoin?: ChainClasses<MetaMaskWallet, Web3Server>
+  public flare?: ChainClasses<MetaMaskWallet, Web3Server>
+  public optimism?: ChainClasses<MetaMaskWallet, Web3Server>
+  public polygon?: ChainClasses<MetaMaskWallet, Web3Server>
+  public starknet?: ChainClasses<MetaMaskWallet, Web3Server>
+  public stellar?: ChainClasses<FreighterWallet, StellarServer>
+  public xinfin?: ChainClasses<MetaMaskWallet, Web3Server>
+  public xrpl?: ChainClasses<XummClient, XrplServer>
 
-  private constructor(config: ManagerConfig) {
-    this.config = config || {}
-    this.initialize()
-  }
-
-  connectChain<Client extends Interface, Server extends Interface>(
+  connectChain(
     chain: ChainSlugs,
-    ClientInterface: Interface,
-    ServerInterface: Interface,
-  ): ChainClasses<Client, Server> | undefined {
+    ClientInterface: ChainConstructor,
+    ServerInterface: ChainConstructor,
+  ): ChainClasses | undefined {
     if (!this.config) {
       throw new Error("Config not provided")
+    }
+    if (!ClientInterface || !ServerInterface) {
+      // throw new Error("Client or Server interface not provided")
+      console.warn("Client or Server interface not provided")
+      // @ts-ignore
+      return { client: undefined, server: undefined }
     }
     try {
       const chainConfig = this.config.chains.find((c) => c.slug === chain)
@@ -92,87 +91,54 @@ export default class BlockchainManager {
       }
       return clients
     } catch (error) {
+      console.log(
+        typeof ClientInterface,
+        typeof ServerInterface,
+        ClientInterface,
+        ServerInterface,
+      )
       throw new Error(
         `Error connecting chain: ${chain}, ${error instanceof Error ? error.message : "Unknown error"}`,
       )
     }
   }
 
-  initialize() {
+  public initialize(config?: ManagerConfig) {
+    if (config) {
+      this.config = config
+    }
     if (!this.config) {
       throw new Error("Config not provided")
     }
-    this.arbitrum = this.connectChain<MetaMaskWallet, Web3Server>(
-      "arbitrum",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.avalanche = this.connectChain<MetaMaskWallet, Web3Server>(
-      "avalanche",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.base = this.connectChain<MetaMaskWallet, Web3Server>(
-      "base",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.binance = this.connectChain<MetaMaskWallet, Web3Server>(
-      "binance",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.celo = this.connectChain<MetaMaskWallet, Web3Server>(
-      "celo",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.eos = this.connectChain<MetaMaskWallet, Web3Server>(
-      "eos",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.ethereum = this.connectChain<MetaMaskWallet, Web3Server>(
-      "ethereum",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.filecoin = this.connectChain<MetaMaskWallet, Web3Server>(
-      "filecoin",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.flare = this.connectChain<MetaMaskWallet, Web3Server>(
-      "flare",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.optimism = this.connectChain<MetaMaskWallet, Web3Server>(
-      "optimism",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.polygon = this.connectChain<MetaMaskWallet, Web3Server>(
-      "polygon",
-      MetaMaskWallet,
-      Web3Server,
-    )
+    // @ts-ignore
+    this.arbitrum = this.connectChain("arbitrum", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.avalanche = this.connectChain("avalanche", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.base = this.connectChain("base", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.binance = this.connectChain("binance", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.celo = this.connectChain("celo", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.eos = this.connectChain("eos", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.ethereum = this.connectChain("ethereum", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.filecoin = this.connectChain("filecoin", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.flare = this.connectChain("flare", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.optimism = this.connectChain("optimism", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.polygon = this.connectChain("polygon", MetaMaskWallet, Web3Server)
     // this.starknet = this.connectChain<, Web3Server?>("starknet", ArgentWallet, Web3Server?)
-    this.stellar = this.connectChain<FreighterWallet, StellarServer>(
-      "stellar",
-      FreighterWallet,
-      StellarServer,
-    )
-    this.xinfin = this.connectChain<MetaMaskWallet, Web3Server>(
-      "xinfin",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.xrpl = this.connectChain<XummClient, XrplServer>(
-      "xrpl",
-      XummClient,
-      XrplServer,
-    )
+    // @ts-ignore
+    this.stellar = this.connectChain("stellar", FreighterWallet, StellarServer)
+    // @ts-ignore
+    this.xinfin = this.connectChain("xinfin", MetaMaskWallet, Web3Server)
+    // @ts-ignore
+    this.xrpl = this.connectChain("xrpl", XummClient, XrplServer)
   }
 
   public static get arbitrum() {
@@ -221,3 +187,5 @@ export default class BlockchainManager {
     return BlockchainManager.instance.xrpl
   }
 }
+
+export default new BlockchainManager()

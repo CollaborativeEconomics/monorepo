@@ -1,3 +1,4 @@
+import appConfig from '@cfce/app-config';
 import { Footer, Header } from '@cfce/universe-components/navigation';
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
@@ -6,7 +7,8 @@ import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Give Credit',
+  title: appConfig.siteInfo.title,
+  viewport: { initialScale: 1.0, width: 'device-width' },
   description: 'Watch your donations make an impact',
 };
 

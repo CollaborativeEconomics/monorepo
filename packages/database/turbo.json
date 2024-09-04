@@ -1,6 +1,7 @@
 {
   "extends": ["//"],
   "globalEnv": [
+    "POSTGRES_PRISMA_URL",
     "DATABASE_URL",
     "IPFS_GATEWAY_URL",
     "IPFS_API_ENDPOINT",

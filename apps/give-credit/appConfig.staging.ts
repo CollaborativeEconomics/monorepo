@@ -1,4 +1,6 @@
-import appConfig from "./appConfig"
+import type { AppConfig } from "@cfce/app-config/dist/appConfigTypes"
+import type { AuthTypes } from "@cfce/utils"
+import appConfig from "./appConfig.production"
 
 const siteInfo = {
   ...appConfig.siteInfo,
@@ -20,9 +22,9 @@ const chainDefaults = {
   network: "testnet",
 }
 
-const auth = appConfig.auth
+const auth = appConfig.auth as AuthTypes[]
 
-const appConfigStaging: typeof appConfig = {
+const appConfigStaging: AppConfig = {
   apis,
   auth,
   chains,

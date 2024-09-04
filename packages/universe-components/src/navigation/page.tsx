@@ -1,10 +1,9 @@
-import React, { type PropsWithChildren } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
+import appConfig from '@cfce/app-config';
 import Image from 'next/image';
+import Link from 'next/link';
+import React, { type PropsWithChildren } from 'react';
 
 interface PageProps {
-  toolbarTitle?: string;
   noPadding?: boolean;
   footer?: React.ElementType;
   className?: string;
@@ -19,21 +18,13 @@ export const PageWrapper = (props: PropsWithChildren) => {
   );
 };
 
-const Page = ({
-  toolbarTitle,
-  children,
-  className,
-}: PropsWithChildren<PageProps>) => {
+const Page = ({ children, className }: PropsWithChildren<PageProps>) => {
   return (
     <div>
-      <Head>
-        <title>{toolbarTitle || 'Giving Universe'}</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
       <Link href="/">
         <Image
           src="/logo.png"
-          alt={toolbarTitle || 'Giving Universe'}
+          alt={appConfig.siteInfo.title}
           className="h-20 w-auto mx-auto my-6"
           width={370}
           height={80}

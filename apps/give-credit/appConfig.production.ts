@@ -1,9 +1,14 @@
-import type { Interfaces } from "@cfce/blockchain-tools"
+import type {
+  AppConfig,
+  ChainConfig,
+} from "@cfce/app-config/dist/appConfigTypes"
 import type {
   ChainSlugs,
+  ClientInterfaces,
   Network,
   TokenTickerSymbol,
 } from "@cfce/blockchain-tools"
+import type { AuthTypes } from "@cfce/utils"
 
 const siteInfo = {
   title: "Give Credit",
@@ -27,17 +32,10 @@ const apis = {
   },
 }
 
-type ContractType = "receiptMintbotERC721"
-interface ChainConfig {
-  slug: ChainSlugs
-  network: string
-  contracts: Partial<Record<ContractType, string>>
-  wallets: Interfaces[]
-  tokens: TokenTickerSymbol[]
-}
 const chains: ChainConfig[] = [
   {
     slug: "xinfin",
+    name: "XinFin",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
@@ -47,6 +45,7 @@ const chains: ChainConfig[] = [
   },
   {
     slug: "stellar",
+    name: "Stellar",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721:
@@ -57,11 +56,11 @@ const chains: ChainConfig[] = [
   },
 ]
 
-const auth = Object.keys(chains)
+const auth = Object.keys(chains) as AuthTypes[]
 
 interface ChainDefaults {
   network: Network
-  wallet: string
+  wallet: ClientInterfaces
   chain: ChainSlugs
   coin: TokenTickerSymbol
 }
@@ -72,7 +71,7 @@ const chainDefaults: ChainDefaults = {
   coin: "XLM",
 }
 
-const appConfig = {
+const appConfig: AppConfig = {
   apis,
   auth,
   chains,

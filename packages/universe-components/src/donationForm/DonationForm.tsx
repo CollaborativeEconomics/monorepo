@@ -298,7 +298,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     }
   }
 
-  function handleError(error: unknown) {
+  const handleError = useCallback((error: unknown) => {
     if (error instanceof Error) {
       setButtonMessage(error.message);
       console.error(error);
@@ -306,7 +306,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     }
     console.error(error);
     setButtonMessage('Unknown error');
-  }
+  }, []);
 
   return (
     <div className="flex min-h-full w-full">

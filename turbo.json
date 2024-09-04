@@ -8,12 +8,16 @@
       "outputs": [".next/**", "!.next/cache/**"],
       "env": ["MOBULA_API_KEY"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "//#format-and-lint": {},
+    "//#format-and-lint:fix": {
+      "cache": false
     }
   }
 }

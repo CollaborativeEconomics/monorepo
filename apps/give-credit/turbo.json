@@ -1,0 +1,8 @@
+{
+  "globalEnv": ["POSTGRES_PRISMA_URL"],
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]
+    }
+  }
+}
