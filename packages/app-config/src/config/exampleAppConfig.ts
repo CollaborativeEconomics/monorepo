@@ -1,13 +1,13 @@
 import type { AppConfig } from "../appConfigTypes"
 
-const appConfig = {} as AppConfig
+const exampleAppConfig = {} as AppConfig
 
-appConfig.siteInfo = {
+exampleAppConfig.siteInfo = {
   title: "App Name",
   description: "Tagline or something",
 }
 
-appConfig.apis = {
+exampleAppConfig.apis = {
   registry: {
     apiUrl: "",
   },
@@ -24,7 +24,7 @@ appConfig.apis = {
   },
 }
 
-appConfig.chains = [
+exampleAppConfig.chains = [
   {
     slug: "xinfin",
     name: "XinFin",
@@ -37,13 +37,16 @@ appConfig.chains = [
   },
 ]
 
-appConfig.auth = ["freighter"]
+exampleAppConfig.auth = ["freighter"]
 
-appConfig.chainDefaults = {
+exampleAppConfig.chainDefaults = {
   network: "mainnet",
   wallet: "freighter",
   chain: "stellar",
   coin: "XLM",
 }
 
-export default appConfig
+// @ts-ignore
+exampleAppConfig.randomNumber = Math.random()
+
+export default exampleAppConfig

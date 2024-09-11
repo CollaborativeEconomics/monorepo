@@ -15,7 +15,7 @@ export default abstract class ChainBaseClass {
 
   constructor(chainSlug: ChainSlugs, network: Network) {
     this.chain = chainConfiguration[chainSlug]
-    this.network = chainConfiguration[chainSlug].networks[network]
+    this.network = this.chain.networks[network]
   }
 
   // isometric functions, must be defined on all subclasses
@@ -23,12 +23,6 @@ export default abstract class ChainBaseClass {
     txId: string,
   ): Promise<Transaction | { error: string }>
   public abstract fetchLedger(method: unknown, params: unknown): unknown
-
-  // client functions, only defined on client subclasses
-  public connect?(): Promise<
-    | { success: boolean; error: string }
-    | { success: boolean; network: Network; walletAddress: string }
-  >
   public async sendPayment?(params: {
     address: string
     amount: number
@@ -52,6 +46,12 @@ export default abstract class ChainBaseClass {
     txid?: string
     walletAddress?: string
   }>
+
+  // client functions, only defined on client subclasses
+  public connect?(): Promise<
+    | { success: boolean; error: string }
+    | { success: boolean; network: Network; walletAddress: string }
+  >
 
   // server functions, only defined on server subclasses
   public web3?: Web3

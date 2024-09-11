@@ -1,5 +1,5 @@
 {
-  "globalEnv": ["POSTGRES_PRISMA_URL"],
+  "globalEnv": ["POSTGRES_PRISMA_URL", "NEXT_PUBLIC_APP_ENV"],
   "tasks": {
     "build": {
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]

@@ -1,11 +1,11 @@
-import type { AppConfig } from "@cfce/app-config/dist/appConfigTypes"
 import type { AuthTypes } from "@cfce/utils"
+import type { AppConfig } from "../../appConfigTypes"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {
   ...appConfig.siteInfo,
-  title: "Give Credit (Development)",
-  description: "Make tax-deductible donations of carbon credits (Development)",
+  title: "Give Credit (Staging)",
+  description: "Make tax-deductible donations of carbon credits (Staging)",
 }
 
 const apis = {

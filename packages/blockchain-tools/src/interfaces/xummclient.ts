@@ -1,5 +1,3 @@
-"use client"
-
 import { Xumm } from "xumm"
 import type { XummJsonTransaction } from "xumm-sdk/dist/src/types"
 import type { ChainSlugs, Network } from "../chains/chainConfig"

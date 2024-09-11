@@ -7,25 +7,15 @@
     "**/*.ts",
     "**/*.tsx",
     "public",
-    "./appConfig*.ts",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "work"
-  ],
+  "exclude": ["node_modules", "dist", "work"],
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
-    "rootDirs": [
-      "src",
-      "."
-    ],
+    "rootDirs": ["src", "."],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   }
 }

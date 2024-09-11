@@ -1,14 +1,11 @@
 import type {
-  AppConfig,
-  ChainConfig,
-} from "@cfce/app-config/dist/appConfigTypes"
-import type {
   ChainSlugs,
   ClientInterfaces,
   Network,
   TokenTickerSymbol,
 } from "@cfce/blockchain-tools"
 import type { AuthTypes } from "@cfce/utils"
+import type { AppConfig, ChainConfig } from "../../appConfigTypes"
 
 const siteInfo = {
   title: "Give Credit",

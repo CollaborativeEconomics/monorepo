@@ -33,7 +33,13 @@ const nextConfig = {
     ],
   },
   experimental: {
+    instrumentationHook: true,
     outputFileTracingRoot: path.join(process.cwd(), '../../'),
+    optimizePackageImports: [
+      '@cfce/universe-components',
+      '@cfce/utils',
+      '@cfce/universe-pages',
+    ],
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

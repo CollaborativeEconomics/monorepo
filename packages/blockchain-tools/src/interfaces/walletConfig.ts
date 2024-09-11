@@ -1,29 +1,29 @@
 import type { ClientInterfaces } from "./index"
 
 interface WalletConfig {
-  icon: string
+  // icon: string
   slug: ClientInterfaces
   name: string
 }
 
 export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
   freighter: {
-    icon: require("../assets/freighter.svg").default,
+    // icon: require("../assets/freighter.svg").default,
     slug: "freighter",
     name: "Freighter",
   },
   metamask: {
-    icon: require("../assets/metamask.svg").default,
+    // icon: require("../assets/metamask.svg").default,
     slug: "metamask",
     name: "Metamask",
   },
   xaman: {
-    icon: require("../assets/xaman.svg").default,
+    // icon: require("../assets/xaman.svg").default,
     slug: "xaman",
     name: "Xaman",
   },
   argent: {
-    icon: require("../assets/argent.svg").default,
+    // icon: require("../assets/argent.svg").default,
     slug: "argent",
     name: "Argent",
   },

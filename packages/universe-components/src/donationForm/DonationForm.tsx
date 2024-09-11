@@ -77,6 +77,20 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     () => BlockchainManager[selectedChain]?.client,
     [selectedChain],
   );
+  const [buttonMessage, setButtonMessage] = useState(
+    'One wallet confirmation required',
+  );
+
+  const handleError = useCallback((error: unknown) => {
+    if (error instanceof Error) {
+      setButtonMessage(error.message);
+      console.error(error);
+      return;
+    }
+    console.error(error);
+    setButtonMessage('Unknown error');
+  }, []);
+
   const destinationWalletAddress = useMemo(() => {
     const chainName = chainInterface?.chain.name;
     const initiativeWallet = initiative?.wallets?.find(
@@ -93,7 +107,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     }
     handleError(new Error('No wallet found for chain'));
     return '';
-  }, [organization, initiative, chainInterface]);
+  }, [organization, initiative, chainInterface, handleError]);
   //#endregion hook and var definitions
 
   useEffect(() => {
@@ -138,6 +152,11 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   // #endregion
 
   // Get active chains, then get their configuration
+  console.log({
+    appConfig: JSON.stringify(appConfig),
+    // chains: JSON.stringify(appConfig.chains),
+    // env: process.env.NEXT_RUNTIME,
+  });
   const chains = getChainConfiguration(
     appConfig.chains.map(chain => chain.slug),
   ).map(chain => ({
@@ -171,9 +190,6 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     // status === ready
     return { disabled: false, text: 'Donate' };
   }, [paymentStatus]);
-  const [buttonMessage, setButtonMessage] = useState(
-    'One wallet confirmation required',
-  );
   const rateMessage = useMemo(() => {
     if (typeof amount === 'undefined') {
       return `0 USD at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
@@ -289,6 +305,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     setDonationForm,
     exchangeRate,
     usdAmount,
+    handleError,
   ]);
 
   // Helper functions
@@ -297,16 +314,6 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       throw new Error('Invalid email');
     }
   }
-
-  const handleError = useCallback((error: unknown) => {
-    if (error instanceof Error) {
-      setButtonMessage(error.message);
-      console.error(error);
-      return;
-    }
-    console.error(error);
-    setButtonMessage('Unknown error');
-  }, []);
 
   return (
     <div className="flex min-h-full w-full">

@@ -6,13 +6,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "rm -rf dist && tsc",
-    "postinstall": "node copyAppConfig.js"
-  },
-  "dependencies": {
-    "@cfce/blockchain-tools": "workspace:*"
+    "build": "rm -rf dist && tsc"
   },
   "devDependencies": {
+    "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/utils": "workspace:*",
     "@types/node": "^20.14.9",
     "ts-node": "^10.9.2",
     "typescript": "latest"

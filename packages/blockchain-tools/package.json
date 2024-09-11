@@ -4,7 +4,7 @@
   "description": "Common tools for interacting with diverse blockchains. Used in the CFCE ecosystem.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc && tsc-alias && cp -r ./src/assets ./dist/assets",
+    "build": "rm -rf dist && tsc",
     "prepublishOnly": "npm run build",
     "addChain": "node src/utils/createChainFromTemplate.js",
     "test": "jest"
@@ -42,6 +42,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
+    "@cfce/app-config": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/ipfs": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",

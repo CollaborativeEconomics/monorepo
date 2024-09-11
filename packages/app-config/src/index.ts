@@ -1,4 +1,5 @@
 import appConfig from "./appConfig"
+import type { AppConfig } from "./appConfigTypes"
 
-export * from "./appConfig"
+export type { AppConfig }
 export default appConfig

@@ -1,3 +1,4 @@
+import appConfig from "@cfce/app-config"
 import {
   getOrganizationByEmail,
   getUserByEmail,
@@ -5,9 +6,12 @@ import {
 } from "@cfce/database"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import NextAuth, { type AuthOptions, type User } from "next-auth"
-import authProviders, { type AuthTypes } from "./authProviders"
+import { getAuthProviders } from "../authConfig"
+// import authProviders, { type AuthTypes } from "./authProviders"
 
-const authConfig: AuthOptions = {
+const providers = getAuthProviders(appConfig.auth)
+
+const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prismaClient),
   session: {
     strategy: "database",
@@ -17,7 +21,7 @@ const authConfig: AuthOptions = {
   pages: {
     signIn: "/signin",
   },
-  providers: [],
+  providers,
   callbacks: {
     async jwt(args) {
       const { token, user, account, profile, isNewUser, trigger, session } =
@@ -112,15 +116,7 @@ const authConfig: AuthOptions = {
   },
 }
 
-let nextAuth: ReturnType<typeof NextAuth> = NextAuth(authConfig)
+const nextAuth: ReturnType<typeof NextAuth> = NextAuth(authOptions)
 
-export function setAuthProviders(providerSlugs: AuthTypes[]) {
-  const providers = providerSlugs
-    .map((provider) => authProviders[provider])
-    .filter((p) => typeof p !== "undefined")
-  authConfig.providers = providers
-  nextAuth = NextAuth(authConfig)
-}
-
-export { authConfig }
+export { authOptions }
 export default nextAuth

@@ -20,7 +20,7 @@ export default class FreighterWallet extends ChainBaseClass {
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
     this.horizon = this.horizon = new StellarSDK.Horizon.Server(
-      this.chain.networks.horizon.rpcUrl || "",
+      this.network.rpcUrl || "",
     )
     console.log("FREIGHT INIT")
   }
