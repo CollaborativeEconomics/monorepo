@@ -50,7 +50,7 @@ export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
         <div className="relative my-4 w-full h-48">
           <Image
             // TODO: provide fallback
-            src={initiative.imageUri ?? ''}
+            src={initiative.defaultAsset ?? ''}
             alt="IMG BG"
             fill
             style={{

@@ -27,11 +27,7 @@ export async function mintStoryNFT(storyId: string, tokenCID: string) {
     throw new Error("Missing wallet or contract info")
   }
 
-  const { xinfin } = BlockchainManager
-  if (typeof xinfin === "undefined") {
-    throw new Error("XinFin server not initialized")
-  }
-  const response = await xinfin.server.mintNFT1155({
+  const response = await BlockchainManager.xinfin.server.mintNFT1155({
     address,
     uri: `${uint256}`,
     tokenId: tokenCID,

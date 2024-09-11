@@ -26,7 +26,7 @@
     "mailgun.js": "^7.0.4",
     "next-auth": "*",
     "ts-node": "^10.9.2",
-    "uuid": "^9.0.0"
+    "uuid": "^10.0.0"
   },
   "peerDependencies": {
     "@cfce/app-config": "workspace:*"

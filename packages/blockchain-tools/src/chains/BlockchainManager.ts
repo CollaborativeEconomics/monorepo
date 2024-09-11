@@ -6,6 +6,7 @@ import type {
   TokenTickerSymbol,
 } from "@cfce/types"
 import { keys as _keys } from "lodash"
+import { get as _get } from "lodash"
 import type { Interface } from "../interfaces"
 import FreighterWallet from "../interfaces/FreighterWallet"
 import MetaMaskWallet from "../interfaces/MetamaskClient"
@@ -16,80 +17,76 @@ import XummClient from "../interfaces/XummClient"
 import _SacrificialInterface from "../interfaces/_SacrificialInterface"
 import type ChainBaseClass from "./ChainBaseClass"
 
-const x = new MetaMaskWallet("stellar", "testnet")
-console.log("BlockchainManager", {
-  _SacrificialInterface,
-  FreighterWallet,
-  MetaMaskWallet,
-  StellarServer,
-  Web3Server,
-  XrplServer,
-  XummClient,
-})
-
-type ContractType = "receiptMintbotERC721"
-interface ChainConfig {
-  name: string
-  slug: ChainSlugs
-  network: string
-  contracts: Partial<Record<ContractType, string>>
-  wallets: ClientInterfaces[]
-  tokens: TokenTickerSymbol[]
-  destinationTag?: string
-}
-
-interface ManagerConfig {
-  chains: ChainConfig[]
-  defaults: {
-    network: Network
-    wallet: string
-    chain: string
-    coin: string
-  }
-}
-
 type ChainClasses<ClientClass = Interface, ServerClass = Interface> = {
   client: ChainBaseClass
   server: ChainBaseClass
 }
 
-type ChainConstructor = new (slug: ChainSlugs, network: string) => Interface
+const getNetwork = (slug: ChainSlugs): Network =>
+  appConfig.chains.find((c) => c.slug === slug)?.network ??
+  appConfig.chainDefaults.network
 
-const chainInterfaceMap: Record<
-  ChainSlugs,
-  { client: ChainConstructor; server: ChainConstructor }
-> = {
-  arbitrum: { client: MetaMaskWallet, server: Web3Server },
-  avalanche: { client: MetaMaskWallet, server: Web3Server },
-  base: { client: MetaMaskWallet, server: Web3Server },
-  binance: { client: MetaMaskWallet, server: Web3Server },
-  celo: { client: MetaMaskWallet, server: Web3Server },
-  eos: { client: MetaMaskWallet, server: Web3Server },
-  ethereum: { client: MetaMaskWallet, server: Web3Server },
-  filecoin: { client: MetaMaskWallet, server: Web3Server },
-  flare: { client: MetaMaskWallet, server: Web3Server },
-  optimism: { client: MetaMaskWallet, server: Web3Server },
-  polygon: { client: MetaMaskWallet, server: Web3Server },
-  starknet: { client: MetaMaskWallet, server: Web3Server },
-  stellar: { client: FreighterWallet, server: StellarServer },
-  xinfin: { client: MetaMaskWallet, server: Web3Server },
-  xrpl: { client: XummClient, server: XrplServer },
-}
-
-export const BlockchainManager: Partial<Record<ChainSlugs, ChainClasses>> = {}
-
-console.log(appConfig.chains)
-
-for (const chain of appConfig.chains) {
-  const { client, server } = chainInterfaceMap[chain.slug]
-  console.log(chain.slug, client, server, FreighterWallet, StellarServer)
-  if (!client || !server) {
-    throw new Error(`No interface found for chain ${chain.slug}`)
-  }
-  BlockchainManager[chain.slug] = {
-    client: new client(chain.slug, chain.network),
-    server: new server(chain.slug, chain.network),
-  }
-}
+const BlockchainManager = {
+  arbitrum: {
+    client: new MetaMaskWallet("arbitrum", getNetwork("arbitrum")),
+    server: new Web3Server("arbitrum", getNetwork("arbitrum")),
+  },
+  avalanche: {
+    client: new MetaMaskWallet("avalanche", getNetwork("avalanche")),
+    server: new Web3Server("avalanche", getNetwork("avalanche")),
+  },
+  base: {
+    client: new MetaMaskWallet("base", getNetwork("base")),
+    server: new Web3Server("base", getNetwork("base")),
+  },
+  binance: {
+    client: new MetaMaskWallet("binance", getNetwork("binance")),
+    server: new Web3Server("binance", getNetwork("binance")),
+  },
+  celo: {
+    client: new MetaMaskWallet("celo", getNetwork("celo")),
+    server: new Web3Server("celo", getNetwork("celo")),
+  },
+  eos: {
+    client: new MetaMaskWallet("eos", getNetwork("eos")),
+    server: new Web3Server("eos", getNetwork("eos")),
+  },
+  ethereum: {
+    client: new MetaMaskWallet("ethereum", getNetwork("ethereum")),
+    server: new Web3Server("ethereum", getNetwork("ethereum")),
+  },
+  filecoin: {
+    client: new MetaMaskWallet("filecoin", getNetwork("filecoin")),
+    server: new Web3Server("filecoin", getNetwork("filecoin")),
+  },
+  flare: {
+    client: new MetaMaskWallet("flare", getNetwork("flare")),
+    server: new Web3Server("flare", getNetwork("flare")),
+  },
+  optimism: {
+    client: new MetaMaskWallet("optimism", getNetwork("optimism")),
+    server: new Web3Server("optimism", getNetwork("optimism")),
+  },
+  polygon: {
+    client: new MetaMaskWallet("polygon", getNetwork("polygon")),
+    server: new Web3Server("polygon", getNetwork("polygon")),
+  },
+  starknet: {
+    client: new MetaMaskWallet("starknet", getNetwork("starknet")),
+    server: new Web3Server("starknet", getNetwork("starknet")),
+  },
+  stellar: {
+    client: new FreighterWallet("stellar", getNetwork("stellar")),
+    server: new StellarServer("stellar", getNetwork("stellar")),
+  },
+  xinfin: {
+    client: new MetaMaskWallet("xinfin", getNetwork("xinfin")),
+    server: new Web3Server("xinfin", getNetwork("xinfin")),
+  },
+  xrpl: {
+    client: new XummClient("xrpl", getNetwork("xrpl")),
+    server: new XrplServer("xrpl", getNetwork("xrpl")),
+  },
+} satisfies Record<ChainSlugs, ChainClasses>
 
 export default BlockchainManager

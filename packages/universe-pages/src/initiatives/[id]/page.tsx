@@ -38,6 +38,7 @@ export default async function Handler(props: { params: { id: string } }) {
   }
   console.log('RATE', rate);
   console.log('CARBON', carbon);
+  console.log('INITIATIVE', initiative);
 
   return (
     <main className="w-full bg-gradient-to-t from-slate-200 dark:from-slate-950 mt-12">
