@@ -1,4 +1,3 @@
-import { type ChainSlugs, chainConfig } from '@cfce/blockchain-tools';
 import {
   type NFTData,
   type Prisma,
@@ -180,8 +179,9 @@ export default async function Profile({
                     >
                       <Image
                         src={
-                          chainConfig[item.chain.toLowerCase() as ChainSlugs]
-                            ?.icon
+                          // chainConfig[item.chain.toLowerCase() as ChainSlugs]
+                          //   ?.icon
+                          ''
                         }
                         width={48}
                         height={48}

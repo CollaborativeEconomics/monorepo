@@ -9,6 +9,7 @@ import NextAuth, { type AuthOptions, type User } from "next-auth"
 import { getAuthProviders } from "../authConfig"
 // import authProviders, { type AuthTypes } from "./authProviders"
 
+console.log("AUTH CONFIG", appConfig)
 const providers = getAuthProviders(appConfig.auth)
 
 const authOptions: AuthOptions = {

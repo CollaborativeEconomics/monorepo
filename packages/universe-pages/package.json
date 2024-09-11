@@ -69,6 +69,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@types/react": "latest",

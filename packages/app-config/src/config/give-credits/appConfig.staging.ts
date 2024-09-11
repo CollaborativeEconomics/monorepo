@@ -1,5 +1,4 @@
-import type { AuthTypes } from "@cfce/utils"
-import type { AppConfig } from "../../appConfigTypes"
+import type { AppConfig, AuthTypes } from "@cfce/types"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {

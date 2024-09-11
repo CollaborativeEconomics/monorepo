@@ -1,6 +1,6 @@
 "use server"
+import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 import { Mobula } from "mobula-sdk"
-import type { ChainSlugs, TokenTickerSymbol } from "../chains"
 
 const mobula = new Mobula({ apiKeyAuth: process.env.MOBULA_API_KEY })
 

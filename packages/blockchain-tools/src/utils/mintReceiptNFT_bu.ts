@@ -1,4 +1,4 @@
-import type { ChainSlugs } from "../chains"
+import type { ChainSlugs } from "@cfce/types"
 
 interface mintAndSaveReceiptNFTNativeParams {
   chain: ChainSlugs

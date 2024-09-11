@@ -1,3 +1,4 @@
+import type { ChainSlugs, Network } from "@cfce/types"
 import {
   Client,
   type NFTokenCreateOffer,
@@ -9,8 +10,6 @@ import {
   convertStringToHex,
   isoTimeToRippleTime,
 } from "xrpl"
-import { ChainBaseClass } from "../chains"
-import type { ChainSlugs, Network } from "../chains/chainConfig"
 import XrplCommon from "./XrplCommon"
 
 export default class XrplServer extends XrplCommon {

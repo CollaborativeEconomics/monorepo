@@ -1,11 +1,11 @@
 import type {
+  AppChainConfig,
   ChainSlugs,
   ClientInterfaces,
   Network,
   TokenTickerSymbol,
-} from "@cfce/blockchain-tools"
-import type { AuthTypes } from "@cfce/utils"
-import type { AppConfig, ChainConfig } from "../../appConfigTypes"
+} from "@cfce/types"
+import type { AppConfig, AuthTypes } from "@cfce/types"
 
 const siteInfo = {
   title: "Give Credit",
@@ -29,7 +29,7 @@ const apis = {
   },
 }
 
-const chains: ChainConfig[] = [
+const chains: AppChainConfig[] = [
   {
     slug: "xinfin",
     name: "XinFin",
@@ -53,7 +53,7 @@ const chains: ChainConfig[] = [
   },
 ]
 
-const auth = Object.keys(chains) as AuthTypes[]
+const auth = ["freighter"] as AuthTypes[]
 
 interface ChainDefaults {
   network: Network

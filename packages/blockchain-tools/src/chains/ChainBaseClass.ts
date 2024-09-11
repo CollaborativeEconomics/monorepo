@@ -1,12 +1,12 @@
-import type { Web3 } from "web3"
-import type { Transaction } from "../types/transaction"
 import type {
   ChainConfig,
   ChainSlugs,
   Network,
   NetworkConfig,
   TokenTickerSymbol,
-} from "./chainConfig"
+} from "@cfce/types"
+import type { Web3 } from "web3"
+import type { Transaction } from "../types/transaction"
 import chainConfiguration from "./chainConfig"
 
 export default abstract class ChainBaseClass {

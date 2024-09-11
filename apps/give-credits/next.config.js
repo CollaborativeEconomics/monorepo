@@ -33,7 +33,7 @@ const nextConfig = {
     ],
   },
   experimental: {
-    instrumentationHook: true,
+    // instrumentationHook: true,
     outputFileTracingRoot: path.join(process.cwd(), '../../'),
     optimizePackageImports: [
       '@cfce/universe-components',

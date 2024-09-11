@@ -1,3 +1,4 @@
+import type { NetworkConfig } from "@cfce/types"
 import {
   // Address,
   BASE_FEE,
@@ -13,7 +14,6 @@ import {
   xdr,
 } from "@stellar/stellar-sdk"
 import type { Transaction } from "@stellar/stellar-sdk"
-import type { NetworkConfig } from "../../../../chains/chainConfig"
 const { Api, assembleTransaction } = SorobanRpc
 import _get from "lodash/get"
 

@@ -1,18 +1,6 @@
-import { walletConfig } from "@cfce/blockchain-tools"
-import CredentialsProvider from "next-auth/providers/credentials"
+import type { AuthConfig, AuthTypes } from "@cfce/types"
 import type { Provider } from "next-auth/providers/index"
-import type { AuthTypes } from "./auth/authProviders"
 import authProviders from "./auth/authProviders"
-
-export type AuthConfig = Record<
-  AuthTypes,
-  {
-    authProvider: Provider
-    // icon: string
-    name: string
-    slug: AuthTypes
-  }
->
 
 const authConfig: AuthConfig = {
   freighter: {
@@ -60,6 +48,8 @@ const authConfig: AuthConfig = {
 }
 
 export function getAuthProviders(methods: AuthTypes[]): Provider[] {
+  console.log("getting auth providers", methods)
+
   return methods.map((method) => authConfig[method].authProvider)
 }
 

@@ -1,5 +1,5 @@
 {
-  "name": "@cfce/app-config",
+  "name": "@cfce/types",
   "version": "0.0.1",
   "private": true,
   "main": "dist/index.js",
@@ -8,11 +8,13 @@
     "test": "jest",
     "build": "rm -rf dist && tsc"
   },
+  "dependencies": {},
   "devDependencies": {
-    "@cfce/types": "workspace:*",
-    "@cfce/utils": "workspace:*",
+    "@cfce/database": "workspace:*",
     "@types/node": "^20.14.9",
-    "ts-node": "^10.9.2",
     "typescript": "latest"
+  },
+  "peerDependencies": {
+    "next-auth": "latest"
   }
 }

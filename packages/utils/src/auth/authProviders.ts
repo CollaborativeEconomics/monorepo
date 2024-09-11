@@ -1,11 +1,12 @@
 import appConfig from "@cfce/app-config"
-import { type ClientInterfaces, chainConfig } from "@cfce/blockchain-tools"
+import { chainConfig } from "@cfce/blockchain-tools"
 import {
   type Chain,
   getUserByWallet,
   newUser,
   prismaClient,
 } from "@cfce/database"
+import type { AuthTypes } from "@cfce/types"
 import type { User } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
@@ -81,8 +82,6 @@ const credentialsDefinition = {
   network: { label: "network", type: "text" },
   currency: { label: "currency", type: "text" },
 }
-
-export type AuthTypes = ClientInterfaces | "github" | "google"
 
 const authorizeChain = async (credentials?: Credentials) => {
   if (!credentials) {

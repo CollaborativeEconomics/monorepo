@@ -1,4 +1,4 @@
-import type { AppConfig } from "./appConfigTypes"
+import type { AppConfig } from "@cfce/types"
 import giveCreditsDev from "./config/give-credits/appConfig.development"
 import giveCreditsProd from "./config/give-credits/appConfig.production"
 import giveCreditsStaging from "./config/give-credits/appConfig.staging"
@@ -37,6 +37,6 @@ if (!env || !appConfigs[appId][env]) {
   throw new Error(`App config not found for appId ${appId} and env ${env}`)
 }
 
-const appConfig = appConfigs[appId][env]
+const appConfig = appConfigs[appId][env] as AppConfig
 
 export default appConfig

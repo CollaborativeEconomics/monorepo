@@ -1,10 +1,6 @@
 import appConfig from "@cfce/app-config"
-import type {
-  ChainSlugs,
-  Interfaces,
-  TokenTickerSymbol,
-} from "@cfce/blockchain-tools"
 import type { Prisma } from "@cfce/database"
+import type { ChainSlugs, Interfaces, TokenTickerSymbol } from "@cfce/types"
 import type { Draft } from "immer" // TS doesn't like it if we don't import this
 import { atom } from "jotai"
 import { atomWithImmer } from "jotai-immer"

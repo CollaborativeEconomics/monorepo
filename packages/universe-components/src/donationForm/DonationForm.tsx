@@ -2,12 +2,11 @@
 import appConfig from '@cfce/app-config';
 import {
   BlockchainManager,
-  type ChainSlugs,
   getChainConfiguration,
   getWalletConfiguration,
 } from '@cfce/blockchain-tools';
-import type { Interfaces } from '@cfce/blockchain-tools/src/interfaces';
 import type { Prisma } from '@cfce/database';
+import type { ChainSlugs, Interfaces } from '@cfce/types';
 import {
   PAYMENT_STATUS,
   type ReceiptEmailBody,
@@ -153,7 +152,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
 
   // Get active chains, then get their configuration
   console.log({
-    appConfig: JSON.stringify(appConfig),
+    appConfig,
     // chains: JSON.stringify(appConfig.chains),
     // env: process.env.NEXT_RUNTIME,
   });
@@ -162,7 +161,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   ).map(chain => ({
     value: chain.slug,
     label: chain.name,
-    image: chain.icon,
+    image: '', //chain.icon,
   }));
 
   // Get active wallets, then get their configuration
@@ -171,7 +170,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   ).map(walletConfig => ({
     value: walletConfig.slug,
     label: walletConfig.name,
-    image: walletConfig.icon,
+    image: '', // walletConfig.icon,
   }));
 
   const buttonProps = useMemo(() => {

@@ -1,10 +1,5 @@
 import appConfig from "@cfce/app-config"
-import {
-  BlockchainManager,
-  type ChainSlugs,
-  type TokenTickerSymbol,
-  getCoinRate,
-} from "@cfce/blockchain-tools"
+import { BlockchainManager, getCoinRate } from "@cfce/blockchain-tools"
 import {
   DonationStatus,
   getInitiativeById,
@@ -14,6 +9,7 @@ import {
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
+import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 import { DateTime } from "luxon"
 
 interface mintAndSaveReceiptNFTParams {

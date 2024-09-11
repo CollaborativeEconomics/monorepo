@@ -1,14 +1,13 @@
+import { AuthTypes } from "./Auth"
 import type {
   ChainSlugs,
   ClientInterfaces,
   Network,
   TokenTickerSymbol,
-} from "@cfce/blockchain-tools"
-
-export type AuthTypes = ClientInterfaces | "github" | "google"
+} from "./BlockchainTools"
 
 type ContractType = "receiptMintbotERC721"
-export interface ChainConfig {
+export interface AppChainConfig {
   name: string
   slug: ChainSlugs
   network: string
@@ -40,7 +39,7 @@ export interface AppConfig {
     }
   }
   auth: AuthTypes[]
-  chains: ChainConfig[]
+  chains: AppChainConfig[]
   chainDefaults: {
     network: Network
     wallet: ClientInterfaces

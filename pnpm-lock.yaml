@@ -530,9 +530,9 @@ importers:
 
   packages/app-config:
     devDependencies:
-      '@cfce/blockchain-tools':
+      '@cfce/types':
         specifier: workspace:*
-        version: link:../blockchain-tools
+        version: link:../types
       '@cfce/utils':
         specifier: workspace:*
         version: link:../utils
@@ -597,6 +597,9 @@ importers:
         specifier: ^1.11.1
         version: 1.11.1
     devDependencies:
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -754,6 +757,22 @@ importers:
       typescript:
         specifier: latest
         version: 5.5.2
+
+  packages/types:
+    dependencies:
+      next-auth:
+        specifier: latest
+        version: 4.24.7(next@14.2.9)(react-dom@18.3.1)(react@18.3.1)
+    devDependencies:
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../database
+      '@types/node':
+        specifier: ^20.14.9
+        version: 20.14.11
+      typescript:
+        specifier: latest
+        version: 5.6.2
 
   packages/typescript-config: {}
 
@@ -926,6 +945,9 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
     devDependencies:
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
       '@cfce/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -972,6 +994,9 @@ importers:
         specifier: ^9.0.0
         version: 9.0.1
     devDependencies:
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
       '@cfce/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -1057,6 +1082,9 @@ importers:
         specifier: ^9.0.0
         version: 9.0.1
     devDependencies:
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
       '@smithy/types':
         specifier: ^3.4.0
         version: 3.4.0

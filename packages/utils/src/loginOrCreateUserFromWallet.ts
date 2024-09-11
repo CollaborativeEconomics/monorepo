@@ -1,12 +1,9 @@
 import {
   BlockchainManager,
-  type ChainSlugs,
-  ClientInterfaces,
-  type Interfaces,
   getChainConfiguration,
-  getWalletConfiguration,
 } from "@cfce/blockchain-tools"
 import { type User, getUserByWallet, newUser } from "@cfce/database"
+import type { ChainSlugs } from "@cfce/types"
 import { getDefaultStore } from "jotai"
 import { signIn } from "next-auth/react"
 import { appSettingsAtom } from "./state"

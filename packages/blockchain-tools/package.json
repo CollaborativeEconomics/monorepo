@@ -17,9 +17,6 @@
     "type": "git",
     "url": "git+https://github.com/CollaborativeEconomics/blockchain-tools.git"
   },
-  "files": [
-    "dist/"
-  ],
   "keywords": [
     "web3",
     "cfce",
@@ -33,6 +30,7 @@
   },
   "homepage": "https://github.com/CollaborativeEconomics/blockchain-tools#readme",
   "devDependencies": {
+    "@cfce/types": "workspace:*",
     "@types/jest": "^29.5.12",
     "@types/luxon": "^3.4.2",
     "@types/react": "^18.3.3",

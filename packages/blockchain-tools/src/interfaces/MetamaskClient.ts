@@ -1,5 +1,11 @@
 /// <reference path="./metamask.d.ts" />
 
+import type {
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+  TokenTickerSymbol,
+} from "@cfce/types"
 import type { MetaMaskInpageProvider } from "@metamask/providers"
 import Web3 from "web3"
 import type {
@@ -7,13 +13,7 @@ import type {
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
-import { ChainBaseClass } from "../chains"
-import type {
-  ChainSlugs,
-  Network,
-  NetworkConfig,
-  TokenTickerSymbol,
-} from "../chains/chainConfig"
+import ChainBaseClass from "../chains/ChainBaseClass"
 import erc20abi from "../contracts/solidity/erc20/erc20-abi.json"
 import type { Transaction } from "../types/transaction"
 
@@ -209,13 +209,13 @@ export default class MetaMaskWallet extends ChainBaseClass {
       //this.setNetwork(info.chainId);
       //this.loadWallet();
     }
-  
+
     async onDisconnect(info) {
       console.log('onDisconnect', info)
       //
       console.log('Disconnected')
     }
-  
+
     async onAccounts(info) {
       console.log('onAccounts', info)
       this.wallets = info;
@@ -223,7 +223,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
       console.log('My account', this.connectedWallet);
       this.getBalance(this.connectedWallet);
     }
-  
+
     async onChain(chainId) {
       console.log('onChain', chainId)
       if(chainId==this.chainId) { console.log('Already on chain', chainId); return; }
@@ -232,7 +232,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
       //this.requestAccount();
       //this.getAccounts();
     }
-  
+
     async onMessage(info) {
       console.log('onMessage', info)
     }
@@ -360,38 +360,38 @@ export default class MetaMaskWallet extends ChainBaseClass {
   }
 
   // TODO: is this used?
-  async callContract(
-    provider: any,
-    abi: any,
-    address: string,
-    method: string,
-    value: string,
-  ) {
-    if (!this.metamask) {
-      console.error("Error calling contract, Metamask not available")
-      return
-    }
-    if (!this.web3) {
-      console.error("Error calling contract, web3 not available")
-      return
-    }
-    console.log("Call", address, method)
-    const contract = new this.web3.eth.Contract(abi, address)
-    const gas = { gasPrice: 1000000000, gasLimit: 275000 }
-    //const res = contract.methods[method].call(gas)
-    const data = contract.methods[method]().encodeABI()
-    const tx = {
-      from: this.connectedWallet, // my wallet
-      to: address, // contract address
-      value: value, // this is the value in wei to send
-      data: data, // encoded method and params
-    }
-    const txHash = await this.metamask.request({
-      method: "eth_sendTransaction",
-      params: [tx],
-    })
-    console.log({ txHash })
-  }
+  // async callContract(
+  //   provider: any,
+  //   abi: any,
+  //   address: string,
+  //   method: string,
+  //   value: string,
+  // ) {
+  //   if (!this.metamask) {
+  //     console.error("Error calling contract, Metamask not available")
+  //     return
+  //   }
+  //   if (!this.web3) {
+  //     console.error("Error calling contract, web3 not available")
+  //     return
+  //   }
+  //   console.log("Call", address, method)
+  //   const contract = new this.web3.eth.Contract(abi, address)
+  //   const gas = { gasPrice: 1000000000, gasLimit: 275000 }
+  //   //const res = contract.methods[method].call(gas)
+  //   const data = contract.methods[method]().encodeABI()
+  //   const tx = {
+  //     from: this.connectedWallet, // my wallet
+  //     to: address, // contract address
+  //     value: value, // this is the value in wei to send
+  //     data: data, // encoded method and params
+  //   }
+  //   const txHash = await this.metamask.request({
+  //     method: "eth_sendTransaction",
+  //     params: [tx],
+  //   })
+  //   console.log({ txHash })
+  // }
 
   async sendPayment({
     address,

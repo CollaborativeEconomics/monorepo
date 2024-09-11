@@ -1,12 +1,9 @@
 'use client';
 import appConfig from '@cfce/app-config';
-import { type ChainSlugs, getChainConfiguration } from '@cfce/blockchain-tools';
+import { getChainConfiguration } from '@cfce/blockchain-tools';
+import type { AuthTypes, ChainSlugs } from '@cfce/types';
 import { AuthButton, Divider } from '@cfce/universe-components/ui';
-import {
-  type AuthTypes,
-  appSettingsAtom,
-  loginOrCreateUserFromWallet,
-} from '@cfce/utils';
+import { appSettingsAtom, loginOrCreateUserFromWallet } from '@cfce/utils';
 import { useAtomValue } from 'jotai';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -53,7 +50,7 @@ export default function Signin() {
             return (
               <div key={`auth-button-${slug}`}>
                 <Divider />
-                <img src={chainConfig.icon} alt={`${name} Login Button`} />
+                <img src={'chainConfig.icon'} alt={`${name} Login Button`} />
                 <h3>{name}</h3>
                 {wallets.map(wallet => {
                   return (

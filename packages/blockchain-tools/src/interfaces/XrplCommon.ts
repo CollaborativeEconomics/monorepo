@@ -8,7 +8,7 @@ import {
   isModifiedNode,
 } from "xrpl"
 import type { NFTokenPage } from "xrpl/dist/npm/models/ledger"
-import { ChainBaseClass } from "../chains"
+import ChainBaseClass from "../chains/ChainBaseClass"
 import { Transaction } from "../types/transaction"
 
 type transactionMethods =
