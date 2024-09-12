@@ -57,12 +57,14 @@ export default function CategorySelect(props: CategorySelectProps) {
     async function loadCategories() {
       const res = await fetch(`/api/categories?distinct=${distinct}`);
       let list = await res.json();
-      list = list.map((category: Category) => ({
-        value: category.slug,
-        label: category.title,
-      }));
       console.log('CATS', list);
-      setCategories(list);
+      if (list.success) {
+        list = list.map((category: Category) => ({
+          value: category.slug,
+          label: category.title,
+        }));
+        setCategories(list);
+      }
     }
     loadCategories();
   }, []);

@@ -28,8 +28,10 @@ export default function LocationSelect(props: LocationSelectProps) {
     async function loadLocations() {
       const res = await fetch('/api/locations');
       const list = await res.json();
-      setLocations(list);
       console.log('LOCS', list);
+      if (list.success) {
+        setLocations(list);
+      }
     }
     loadLocations();
   }, []);
