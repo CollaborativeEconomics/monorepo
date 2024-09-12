@@ -1,3 +1,4 @@
+"use server"
 import appConfig from "@cfce/app-config"
 import { BlockchainManager, getCoinRate } from "@cfce/blockchain-tools"
 import {

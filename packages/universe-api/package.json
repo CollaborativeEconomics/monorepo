@@ -192,6 +192,7 @@
   "devDependencies": {
     "@cfce/typescript-config": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "@cfce/types": "workspace:*",
     "@types/react": "latest",
     "next": "latest",
     "next-auth": "latest",

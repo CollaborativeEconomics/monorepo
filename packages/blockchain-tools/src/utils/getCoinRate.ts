@@ -34,14 +34,14 @@ export default async function getCoinRate({
       symbol,
       blockchain: chain,
     })
-    const exchangeRate = response.object?.data?.price
-    if (!exchangeRate) {
+    const rate = response.object?.data?.price
+    if (!rate || typeof rate !== "number") {
       console.log(response.object)
       throw new Error(
-        `No price quote found in response ${response.object?.data}`,
+        `No price quote found in response ${JSON.stringify(response.object?.data)}`,
       )
     }
-    return exchangeRate
+    return rate
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Error fetching crypto price quote: ${error.message}`)

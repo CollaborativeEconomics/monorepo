@@ -7,15 +7,14 @@ import {
 } from '@cfce/blockchain-tools';
 import type { Prisma } from '@cfce/database';
 import type { ChainSlugs, Interfaces } from '@cfce/types';
+import type { ReceiptNFTParams } from '@cfce/universe-api/receipts';
 import {
   PAYMENT_STATUS,
-  type ReceiptEmailBody,
   amountCoinAtom,
   amountUSDAtom,
   chainsState as chainStateAtom,
   donationFormState,
   fetchApi,
-  mintAndSaveReceiptNFT,
   postApi,
 } from '@cfce/utils';
 //import registerUser from "@/contracts/register"
@@ -43,7 +42,7 @@ interface DonationFormProps {
   }>;
 }
 
-async function sendReceipt(data: ReceiptEmailBody) {
+async function mintSaveAndEmailReceiptNFT(data: ReceiptNFTParams) {
   console.log('Sending receipt...', data);
   try {
     const result = await postApi('receipt', data);
@@ -67,6 +66,8 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const [chainState, setChainState] = useAtom(chainStateAtom);
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
     chainState;
+  console.log({ chainState });
+
   const [donationForm, setDonationForm] = useAtom(donationFormState);
   const { showUsd, paymentStatus, emailReceipt, name, email, amount } =
     donationForm;
@@ -112,7 +113,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   useEffect(() => {
     // Maybe Someday: update periodically or when the amount changes
     fetchApi(`rates?coin=${selectedToken}&chain=${selectedChain}`).then(
-      (rate: number) => {
+      ({ rate }: { rate: number }) => {
         if (rate) {
           setChainState(draft => {
             draft.exchangeRate = rate;
@@ -248,35 +249,24 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       }
 
       // Save donation to blockchain and DB
-      const donationResult = await mintAndSaveReceiptNFT({
+      // Send email, if provided
+      await mintSaveAndEmailReceiptNFT({
+        date: new Date().toISOString(),
+        donorName: name,
+        ...(emailReceipt ? { email } : {}),
+        organizationId: organization.id,
+        initiativeId: initiative.id,
         transaction: {
+          donorWalletAddress: paymentResult.walletAddress ?? '',
+          destinationWalletAddress,
           txId: paymentResult.txid ?? '',
           chain: selectedChain,
           token: selectedToken,
+          coinValue: coinAmount,
+          usdValue: usdAmount,
+          rate: exchangeRate,
         },
-        initiativeId: initiative.id,
-        donorWalletAddress: paymentResult.walletAddress ?? '',
-        amount: coinAmount,
-        rate: exchangeRate,
       });
-
-      if (!donationResult.success) {
-        throw new Error('Failed to save donation');
-      }
-
-      // Optionally send a receipt
-      if (emailReceipt) {
-        await sendReceipt({
-          date: new Date().toISOString(),
-          donorName: name,
-          organizationName: organization.name,
-          address: organization.mailingAddress ?? '',
-          ein: organization.EIN ?? '',
-          coinSymbol: selectedToken,
-          coinValue: coinAmount.toFixed(2),
-          usdValue: usdAmount.toFixed(2),
-        });
-      }
 
       // Final UI updates
       setButtonMessage('Thank you for your donation!');

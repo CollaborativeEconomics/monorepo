@@ -7,7 +7,6 @@
     "moduleResolution": "Bundler",
     "allowJs": true,
     "jsx": "preserve"
-    // "noEmit": true
   },
   "include": ["src", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]

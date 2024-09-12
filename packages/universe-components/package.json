@@ -48,6 +48,7 @@
     }
   },
   "devDependencies": {
+    "@cfce/universe-api": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
     "@cfce/types": "workspace:*",
     "@types/lodash": "^4.17.0",

@@ -13,9 +13,9 @@ console.log("AUTH CONFIG", appConfig)
 const providers = getAuthProviders(appConfig.auth)
 
 const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prismaClient),
+  // adapter: PrismaAdapter(prismaClient),
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
     updateAge: 24 * 60 * 60, // 24 hours
   },
