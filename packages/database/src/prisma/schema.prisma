@@ -1,5 +1,3 @@
-// Latest update May 8th 2024
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,40 +7,14 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
-enum Chain {
-  Arbitrum
-  Avalanche
-  Base
-  Binance
-  Celo
-  EOS
-  Ethereum
-  Filecoin
-  Flare
-  Optimism
-  Polygon
-  Stellar
-  Starknet
-  XDC
-  XinFin
-  XRPL
-}
-
-enum CreditType {
-  None
-  Carbon
-  Plastic
-  Biodiversity
-}
-
 model Account {
   id                String    @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
   access_token      String    @db.VarChar(255)
   provider          String    @db.VarChar(255)
   providerAccountId String    @db.VarChar(255)
   scope             String    @db.VarChar(255)
-  refresh_token     String?   @db.Text
-  expires_at        DateTime? @db.Timestamptz
+  refresh_token     String?
+  expires_at        DateTime? @db.Timestamptz(6)
   token_type        String?   @db.VarChar(255)
   type              String    @db.VarChar(255)
   userId            String    @db.Uuid
@@ -57,7 +29,8 @@ model Account {
 model Action {
   id               String @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
   hookId           String @db.Uuid
-  actionDefinition Json // Storing the ActionDefinition object as JSON
+  actionDefinition Json
+  index            Int    @default(0)
   hook             Hook   @relation(fields: [hookId], references: [id])
 
   @@map("actions")
@@ -101,9 +74,9 @@ model Category {
   title         String         @db.VarChar(255)
   description   String         @db.VarChar(255)
   image         String?        @db.VarChar(255)
+  donations     Donation[]
   initiatives   Initiative[]
   organizations Organization[]
-  donations     Donation[]
   stories       Story[]
 
   @@map("categories")
@@ -111,11 +84,11 @@ model Category {
 
 model Chapter {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  created     DateTime @default(now()) @db.Timestamptz
+  created     DateTime @default(now()) @db.Timestamptz(6)
   inactive    Boolean  @default(false)
   slug        String   @db.VarChar(255)
   name        String   @db.VarChar(255)
-  description String   @db.Text
+  description String
   location    String   @db.VarChar(255)
 
   @@map("chapters")
@@ -146,12 +119,12 @@ model Credit {
   type         CreditType
   description  String
   currency     String     @db.VarChar(20)
-  value        Int
+  value        Decimal    @default(0) @db.Decimal(8, 2)
   start        DateTime   @default(now()) @db.Timestamptz(6)
   finish       DateTime?  @db.Timestamptz(6)
   filled       Boolean    @default(false)
-  current      Int?       @default(0)
-  goal         Int?       @default(0)
+  current      Decimal?   @default(0) @db.Decimal(12, 2)
+  goal         Decimal?   @default(0) @db.Decimal(12, 2)
   initiative   Initiative @relation(fields: [initiativeId], references: [id])
   provider     Provider   @relation(fields: [providerId], references: [id])
 
@@ -169,35 +142,38 @@ model Cronjob {
 }
 
 model Donation {
-  id             String        @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  created        DateTime      @default(now()) @db.Timestamptz(6)
-  organizationId String        @db.Uuid
-  chapterId      String?       @db.Uuid
-  initiativeId   String?       @db.Uuid
-  userId         String?       @db.Uuid
-  paytype        String?       @db.VarChar(20)
-  network        String?       @db.VarChar(20)
-  wallet         String?       @db.VarChar(255)
-  amount         Decimal       @default(0) @db.Decimal(14, 4)
-  usdvalue       Decimal       @default(0) @db.Decimal(14, 4)
-  asset          String?       @db.VarChar(255)
-  issuer         String?       @db.VarChar(255)
-  status         Int           @default(0)
-  categoryId     String?       @db.Uuid
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created        DateTime     @default(now()) @db.Timestamptz(6)
+  organizationId String       @db.Uuid
+  chapterId      String?      @db.Uuid
+  initiativeId   String?      @db.Uuid
+  userId         String?      @db.Uuid
+  paytype        String?      @db.VarChar(20)
+  network        String?      @db.VarChar(20)
+  wallet         String?      @db.VarChar(255)
+  amount         Decimal      @default(0) @db.Decimal(14, 4)
+  usdvalue       Decimal      @default(0) @db.Decimal(14, 4)
+  asset          String?      @db.VarChar(255)
+  issuer         String?      @db.VarChar(255)
+  status         Int          @default(0)
+  categoryId     String?      @db.Uuid
   chain          Chain?
-  category       Category?     @relation(fields: [categoryId], references: [id])
-  initiative     Initiative?   @relation(fields: [initiativeId], references: [id])
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  storyId        String?      @db.Uuid
+  category       Category?    @relation(fields: [categoryId], references: [id])
+  initiative     Initiative?  @relation(fields: [initiativeId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  impactlinks    Impactlink[]
 
   @@map("donations")
 }
 
 model Hook {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  orgId       String   @db.VarChar(255)
-  triggerName String   @db.VarChar(255)
-  actions     Action[] // Relation to actions
-  createdAt   DateTime @default(now()) @db.Timestamptz
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  triggerName   String       @db.VarChar(255)
+  createdAt     DateTime     @default(now()) @db.Timestamptz(6)
+  orgId         String       @db.Uuid
+  actions       Action[]
+  organizations Organization @relation(fields: [orgId], references: [id])
 
   @@map("hooks")
 }
@@ -226,14 +202,16 @@ model Initiative {
   received       Int              @default(0)
   lastmonth      Int              @default(0)
   contractcredit String?          @db.VarChar(255)
+  unitvalue      Int?             @default(0)
+  unitlabel      String?          @db.VarChar(20)
   credits        Credit[]
+  donations      Donation[]
   category       Category?        @relation(fields: [categoryId], references: [id])
   organization   Organization     @relation(fields: [organizationId], references: [id])
   tiers          InitiativeTier[]
   nfts           NFTData[]
   stories        Story[]
   wallets        Wallet[]
-  donations      Donation[]
 
   @@map("initiatives")
 }
@@ -273,6 +251,7 @@ model NFTData {
   tokenId        String       @unique @db.VarChar(255)
   offerId        String?      @db.VarChar(255)
   status         Int          @default(0)
+  donationId     String?      @db.Uuid
   initiative     Initiative?  @relation(fields: [initiativeId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id])
   user           User         @relation(fields: [userId], references: [id])
@@ -329,13 +308,14 @@ model Organization {
   goal           Int?         @default(0)
   background     String?      @db.VarChar(255)
   artworks       Artwork[]
+  donations      Donation[]
+  hooks          Hook[]
   initiative     Initiative[]
   nfts           NFTData[]
   offers         Offer[]
   category       Category?    @relation(fields: [categoryId], references: [id])
   stories        Story[]
   wallets        Wallet[]
-  donations      Donation[]
 
   @@map("organizations")
 }
@@ -380,16 +360,19 @@ model Story {
   inactive       Boolean      @default(false)
   organizationId String       @db.Uuid
   initiativeId   String       @db.Uuid
-  categoryId     String?      @db.Uuid
-  name           String       @db.VarChar(255)
-  description    String       @db.VarChar(255)
-  amount         Int
-  image          String       @db.VarChar(255)
+  name           String?      @db.VarChar(255)
+  description    String?      @db.VarChar(255)
+  amount         Int?
+  image          String?      @db.VarChar(255)
   tokenId        String?      @db.VarChar(255)
   metadata       String?      @db.VarChar(255)
+  categoryId     String?      @db.Uuid
+  unitvalue      Int?         @default(0)
+  unitlabel      String?      @db.VarChar(40)
+  impactlinks    Impactlink[]
+  category       Category?    @relation(fields: [categoryId], references: [id])
   initiative     Initiative   @relation(fields: [initiativeId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id])
-  category       Category?    @relation(fields: [categoryId], references: [id])
   media          StoryMedia[]
 
   @@map("stories")
@@ -460,4 +443,106 @@ model Wallet {
   organizations  Organization @relation(fields: [organizationId], references: [id])
 
   @@map("wallets")
+}
+
+model Contract {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created              DateTime? @default(now()) @db.Timestamptz(6)
+  inactive             Boolean?  @default(false)
+  chain                String?   @db.VarChar(20)
+  contract_address     String?   @db.VarChar(128)
+  entity_id            String?   @db.VarChar(36)
+  admin_wallet_address String?   @db.VarChar(128)
+  contract_type        String?   @db.VarChar(40)
+  network              String?   @db.VarChar(10)
+  start_block          String?   @db.VarChar(20)
+
+  @@map("contracts")
+}
+
+model Eventmedia {
+  id       String    @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created  DateTime? @default(now()) @db.Timestamptz(6)
+  inactive Boolean?  @default(false)
+  eventid  String?   @db.Uuid
+  mediaurl String?   @db.VarChar(255)
+  mime     String?   @db.VarChar(60)
+
+  @@map("eventmedia")
+}
+
+model Events {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created        DateTime? @default(now()) @db.Timestamptz(6)
+  inactive       Boolean?  @default(false)
+  status         Int?      @default(0) @db.SmallInt
+  organizationid String?   @db.Uuid
+  initiativeid   String?   @db.Uuid
+  name           String?   @db.VarChar(100)
+  description    String?
+  location       String?   @db.VarChar(100)
+  budget         Int?      @default(0)
+  unitvalue      Int?      @default(0)
+  unitlabel      String?   @db.VarChar(40)
+  quantity       Int?      @default(0)
+  voltoearn      Boolean?  @default(false)
+  volunteers     Int?      @default(0)
+  image          String?   @db.VarChar(255)
+  payrate        Decimal?  @default(0) @db.Decimal(10, 2)
+
+  @@map("events")
+}
+
+model Impactlink {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created    DateTime? @default(now()) @db.Timestamptz(6)
+  storyid    String?   @db.Uuid
+  donationid String?   @db.Uuid
+  amount     Decimal?  @default(0.0) @db.Decimal(14, 4)
+  partial    Boolean?  @default(false)
+  donation   Donation? @relation(fields: [donationid], references: [id])
+  story      Story?    @relation(fields: [storyid], references: [id])
+
+  @@map("impactlink")
+}
+
+model Volunteers {
+  id       String    @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created  DateTime? @default(now()) @db.Timestamptz(6)
+  inactive Boolean?  @default(false)
+  status   Int?      @default(0) @db.SmallInt
+  eventid  String?   @db.Uuid
+  address  String?   @db.VarChar(255)
+  units    Int?      @default(0)
+  payrate  Int?      @default(0)
+  amount   Int?      @default(0)
+  nftid    String?   @db.VarChar(255)
+  chain    String?   @db.VarChar(20)
+
+  @@map("volunteers")
+}
+
+enum Chain {
+  Arbitrum
+  Avalanche
+  Base
+  Binance
+  Celo
+  EOS
+  Ethereum
+  Filecoin
+  Flare
+  Optimism
+  Polygon
+  Stellar
+  XDC
+  XRPL
+  Starknet
+}
+
+enum CreditType {
+  None
+  Carbon
+  Plastic
+  Biodiversity
 }
