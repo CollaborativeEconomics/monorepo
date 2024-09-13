@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import Dashboard from 'components/dashboard';
-import Sidebar from 'components/sidebar';
-import Title from 'components/title';
-import DonationsTable from 'components/donationstable';
-import TimeTab from 'components/timetab';
-import styles from 'styles/dashboard.module.css';
 import { type Donation, getDonations } from '@cfce/database';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import styles from 'styles/dashboard.module.css';
+import Dashboard from '../../../components/dashboard';
+import DonationsTable from '../../../components/donationstable';
+import Sidebar from '../../../components/sidebar';
+import TimeTab from '../../../components/timetab';
+import Title from '../../../components/title';
 
 function firstDayOfYear() {
   const year = new Date().getFullYear();

@@ -1,28 +1,24 @@
-import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useSession } from 'next-auth/react';
-import { getToken } from 'next-auth/jwt';
-import Dashboard from 'components/dashboard';
-import Sidebar from 'components/sidebar';
-import Title from 'components/title';
-import Initiative from 'components/initiative';
-import Label from 'components/form/label';
-import TextInput from 'components/form/textinput';
-import TextArea from 'components/form/textarea';
-import FileView from 'components/form/fileview';
-import Select from 'components/form/select';
-import Checkbox from 'components/form/checkbox';
-import ButtonBlue from 'components/buttonblue';
-import styles from 'styles/dashboard.module.css';
 //import { getOrganizationById, getProviders } from 'utils/registry'
-import { randomString, randomNumber } from 'utils/random';
-import dateToPrisma from 'utils/dateToPrisma';
-import { apiFetch } from 'utils/api';
 import {
+  type Provider,
   getOrganizationById,
   getProviders,
-  type Provider,
 } from '@cfce/database';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import styles from 'styles/dashboard.module.css';
+import ButtonBlue from '../../../components/buttonblue';
+import Dashboard from '../../../components/dashboard';
+import FileView from '../../../components/form/fileview';
+import Select from '../../../components/form/select';
+import TextArea from '../../../components/form/textarea';
+import TextInput from '../../../components/form/textinput';
+import Initiative from '../../../components/initiative';
+import Sidebar from '../../../components/sidebar';
+import Title from '../../../components/title';
+import dateToPrisma from '../../../utils/dateToPrisma';
+import { randomNumber, randomString } from '../../../utils/random';
 
 /*
 export async function getServerSideProps({req,res}) {
@@ -214,7 +210,9 @@ export default function Page() {
       }
     } catch (ex) {
       console.error(ex);
-      showMessage(`Error saving initiative: ${ex.message}`);
+      showMessage(
+        `Error saving initiative: ${ex instanceof Error ? ex.message : 'Unknown error'}`,
+      );
       setButtonState(ButtonState.READY);
     }
   }
