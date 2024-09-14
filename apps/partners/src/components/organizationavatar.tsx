@@ -3,7 +3,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-  AvatarProps,
+  type AvatarProps,
   AvatarTitle,
 } from '~/components/ui/avatar';
 import { cn } from '~/utils/shadCnUtil';

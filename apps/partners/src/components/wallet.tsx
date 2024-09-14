@@ -8,7 +8,7 @@ interface WalletProps {
   status?: string; // 0.pending 1.approved 2.rejected
 }
 
-function copyToClipboard(text) {
+function copyToClipboard(text: string) {
   navigator.clipboard.writeText(text).then(
     () => {
       console.log('Copytoclipboard', text);
@@ -27,7 +27,7 @@ const Wallet = (item: WalletProps) => {
       <button
         type="button"
         onClick={() => {
-          copyToClipboard(item.address);
+          copyToClipboard(item.address ?? '');
         }}
       >
         <Image

@@ -1,35 +1,25 @@
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { getOrganizations } from '@cfce/database';
+import { getServerSession } from 'next-auth';
+import { signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { type PropsWithChildren, useEffect, useState } from 'react';
+import type { PropsWithChildren } from 'react';
 import styles from '~/styles/dashboard.module.css';
+import OrganizationSelect from './OrganizationSelect';
 
 interface PageProps {
   className?: string;
   afterChange?: (orgId: string) => void;
 }
 
-const Sidebar = ({
+const Sidebar = async ({
   className,
   children,
   afterChange = id => {},
 }: PropsWithChildren<PageProps>) => {
-  const { data: session, status, update } = useSession();
-  const loading = status === 'loading';
+  const session = await getServerSession();
   console.log('SIDEBAR SESSION', session);
-  const [orgs, setOrgs] = useState([]);
-
-  useEffect(() => {
-    async function loadData() {
-      const data = await fetch('/api/organizations');
-      const info = await data.json();
-      console.log('ORGS', info);
-      if (info.success) {
-        setOrgs(info.result);
-      }
-    }
-    loadData();
-  }, []);
+  const organizations = await getOrganizations({});
 
   return (
     <div className={styles.sidebar}>
@@ -44,30 +34,12 @@ const Sidebar = ({
           />
         </Link>
       </div>
-      {session?.isAdmin && (
-        <div className="w-full box-border">
-          <select
-            className="my-4 w-full box-border"
-            value={session?.orgId}
-            onChange={evt => {
-              const orgId = evt.target.value;
-              console.log('Changed', orgId);
-              update({ orgId: orgId });
-              afterChange(orgId);
-            }}
-          >
-            {orgs ? (
-              orgs.map(item => (
-                <option value={item.id} key={item.id}>
-                  {item.name}
-                </option>
-              ))
-            ) : (
-              <option>No organizations...</option>
-            )}
-          </select>
-        </div>
-      )}
+      {session?.isAdmin && organizations?.length ? (
+        <OrganizationSelect
+          organizations={organizations}
+          afterChange={afterChange}
+        />
+      ) : null}
       <nav className={styles.menu}>
         <li className={styles.menuItem}>
           <Link href="/dashboard/organization">New Organization</Link>
@@ -87,9 +59,7 @@ const Sidebar = ({
       </nav>
       <div className={styles.loginBox}>
         <div className={styles.signedInStatus}>
-          <p
-            className={`nojs-show ${!session && loading ? styles.loading : styles.loaded}`}
-          >
+          <p className={`nojs-show ${!session}`}>
             {!session && (
               <>
                 <span className={styles.notSignedInText}>

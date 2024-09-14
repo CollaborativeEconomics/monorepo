@@ -101,6 +101,7 @@ export default function ShareModal() {
                   readOnly
                 />
                 <button
+                  type="button"
                   className="bg-indigo-500 text-white rounded text-sm py-2 px-5 mt-2 hover:bg-indigo-600"
                   onClick={evt => {
                     copyToClipboard(url);

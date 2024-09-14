@@ -1,19 +1,17 @@
 //import { getOrganizationById, getProviders } from 'utils/registry'
-import {
-  type Provider,
-  getOrganizationById,
-  getProviders,
-} from '@cfce/database';
+import type { Initiative, Prisma, Provider } from '@cfce/database';
+import { DatePicker } from '@cfce/universe-components/form';
+import { getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import InitiativeCard from '~/components/InitiativeCard';
 import ButtonBlue from '~/components/buttonblue';
 import Dashboard from '~/components/dashboard';
 import FileView from '~/components/form/fileview';
 import Select from '~/components/form/select';
 import TextArea from '~/components/form/textarea';
 import TextInput from '~/components/form/textinput';
-import Initiative from '~/components/initiative';
 import Sidebar from '~/components/sidebar';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
@@ -40,9 +38,7 @@ export async function getServerSideProps({req,res}) {
 //export default function Page({organization, providers}) {
 export default function Page() {
   const { data: session, update } = useSession();
-  //const orgId = organization?.id || ''
-  //const initiatives = organization?.initiative || []
-  const [initiatives, setInitiatives] = useState([]);
+  const [initiatives, setInitiatives] = useState<Initiative[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
   const [orgId, setOrgid] = useState(session?.orgId || '');
 
@@ -50,48 +46,51 @@ export default function Page() {
     async function loadData() {
       const oid = session?.orgId ?? '';
       console.log('GET ORG:', oid);
-      const org = await getOrganizationById(oid);
-      console.log('ORG:', org);
-      const fetchedProvider = await getProviders({});
+      const orgResponse = await fetch(`/api/organizations/${oid}`);
+      const orgData = await orgResponse.json();
+      if (orgData.success) {
+        const organization = orgData.data as Prisma.OrganizationGetPayload<{
+          include: { initiative: true };
+        }>;
+        console.log('ORG:', organization);
+        setOrgid(oid);
+        setInitiatives(organization?.initiative || []);
+      }
+
+      const fetchedProvider = await fetch('/api/providers');
+      const providerData = await fetchedProvider.json();
       console.log('PRV:', fetchedProvider);
-      setOrgid(oid);
-      setInitiatives(org?.initiative || []);
-      setProviders(fetchedProvider || []);
+      if (providerData.success) {
+        setProviders(providerData.data as Provider[]);
+      }
     }
     loadData();
   }, [session?.orgId]);
 
-  function startDate() {
-    return new Date().toJSON().substr(0, 10);
-  }
-
-  function addDays(days) {
+  function dayFromNow(days: number) {
     const now = new Date();
     now.setDate(now.getDate() + days);
     return now.toJSON().substr(0, 10);
   }
 
-  function listCredits() {
-    return [
-      { id: '0', name: 'No credits' },
-      { id: '1', name: 'Carbon credits' },
-      { id: '2', name: 'Plastic credits' },
-      { id: '3', name: 'Biodiversity credits' },
-    ];
-  }
+  const creditsList = [
+    { id: '0', name: 'No credits' },
+    { id: '1', name: 'Carbon credits' },
+    { id: '2', name: 'Plastic credits' },
+    { id: '3', name: 'Biodiversity credits' },
+  ];
 
-  function listProviders() {
+  const providersList = useMemo(() => {
     if (!providers) {
-      return [{ id: 0, name: 'No providers' }];
+      return [{ id: '0', name: 'No providers' }];
     }
     const list = [];
     for (let i = 0; i < providers.length; i++) {
       list.push({ id: providers[i].id, name: providers[i].name });
     }
-    return list;
-  }
+  }, [providers]);
 
-  async function saveImage(data) {
+  async function saveImage(data: { name: string; file: File }) {
     console.log('IMAGE', data);
     const body = new FormData();
     body.append('name', data.name);
@@ -101,7 +100,15 @@ export default function Page() {
     return result;
   }
 
-  async function saveCredit(data, id) {
+  async function saveCredit(
+    data: {
+      creditType: string;
+      creditDesc: string;
+      creditAmount: string;
+      provider: string;
+    },
+    id: string,
+  ) {
     console.log('Save credit', id, data);
     const credit = {
       type: data.creditType,
@@ -123,14 +130,19 @@ export default function Page() {
     return result;
   }
 
-  async function onSubmit(data) {
+  async function onSubmit(
+    data: Omit<
+      Prisma.InitiativeCreateInput,
+      'slug' | 'defaultAsset' | 'tag' | 'organization'
+    > & { image: FileList | null },
+  ) {
     console.log('SUBMIT', data);
     // TODO: Validate data
     if (!data.title) {
       showMessage('Title is required');
       return;
     }
-    if (!data.desc) {
+    if (!data.description) {
       showMessage('Description is required');
       return;
     }
@@ -162,9 +174,9 @@ export default function Page() {
     };
     const record = {
       title: data.title,
-      description: data.desc,
-      start: dateToPrisma(data.inidate),
-      end: dateToPrisma(data.enddate),
+      description: data.description,
+      start: data.start ? dateToPrisma(data.start) : undefined,
+      finish: data.finish ? dateToPrisma(data.finish) : undefined,
       defaultAsset: '',
       organizationId: orgId,
       tag: Number.parseInt(randomNumber(8)),
@@ -199,9 +211,10 @@ export default function Page() {
         showMessage('Error saving initiative: unknown');
         setButtonState(ButtonState.READY);
       } else {
-        if (data.creditType !== '0') {
-          saveCredit(data, result.id);
-        }
+        // TODO: add to db maybe?
+        // if (data.creditType !== '0') {
+        //   saveCredit(data, result.id);
+        // }
         //if(data.yesNFT){
         // TODO: Save initiative 1155 collection
         //}
@@ -217,10 +230,12 @@ export default function Page() {
     }
   }
 
-  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
+  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 } as const;
   const imgSource = '/media/upload.jpg';
 
-  function setButtonState(state) {
+  function setButtonState(
+    state: (typeof ButtonState)[keyof typeof ButtonState],
+  ) {
     switch (state) {
       case ButtonState.READY:
         setButtonText('SUBMIT');
@@ -246,21 +261,21 @@ export default function Page() {
   const { register, watch } = useForm({
     defaultValues: {
       title: '',
-      desc: '',
-      inidate: startDate(),
-      enddate: addDays(30),
+      description: '',
+      start: new Date().toJSON().substr(0, 10),
+      finish: dayFromNow(30),
       creditType: '0',
       creditDesc: '',
       creditAmount: '',
       provider: '',
-      image: '',
+      image: null as FileList | null,
     },
   });
   const [
     title,
-    desc,
-    inidate,
-    enddate,
+    description,
+    start,
+    finish,
     creditType,
     creditDesc,
     creditAmount,
@@ -268,9 +283,9 @@ export default function Page() {
     image,
   ] = watch([
     'title',
-    'desc',
-    'inidate',
-    'enddate',
+    'description',
+    'start',
+    'finish',
     'creditType',
     'creditDesc',
     'creditAmount',
@@ -280,9 +295,9 @@ export default function Page() {
 
   console.log('creditType', creditType);
 
-  async function onOrgChange(id) {
-    console.log('ORG CHAGED', orgId, 'to', id);
-  }
+  // async function onOrgChange(id) {
+  //   console.log('ORG CHAGED', orgId, 'to', id);
+  // }
 
   return (
     <Dashboard>
@@ -306,21 +321,13 @@ export default function Page() {
             />
             {/*<Label text="Upload Image" className="text-center" />*/}
             <TextInput label="Title" register={register('title')} />
-            <TextArea label="Description" register={register('desc')} />
-            <TextInput
-              label="Start Date"
-              register={register('inidate')}
-              type="date"
-            />
-            <TextInput
-              label="End Date"
-              register={register('enddate')}
-              type="date"
-            />
+            <TextArea label="Description" register={register('description')} />
+            <DatePicker label="Start Date" register={register('start')} />
+            <DatePicker label="End Date" register={register('finish')} />
             <Select
               label="Credits"
               register={register('creditType')}
-              options={listCredits()}
+              options={creditsList}
             />
             {typeof creditType === 'undefined' || creditType === '0' ? (
               ''
@@ -329,7 +336,7 @@ export default function Page() {
                 <Select
                   label="Provider"
                   register={register('provider')}
-                  options={listProviders()}
+                  options={providersList}
                 />
                 <TextInput
                   label="Description"
@@ -351,13 +358,13 @@ export default function Page() {
             onClick={() =>
               onSubmit({
                 title,
-                desc,
-                inidate,
-                enddate,
-                creditType,
-                creditDesc,
-                creditAmount,
-                provider,
+                description,
+                start,
+                finish,
+                // creditType,
+                // creditDesc,
+                // creditAmount,
+                // provider,
                 image,
               })
             }
@@ -369,7 +376,7 @@ export default function Page() {
         {initiatives ? (
           initiatives.map(item => (
             <div className={styles.mainBox} key={item.id}>
-              <Initiative key={item.id} {...item} />
+              <InitiativeCard key={item.id} {...item} />
             </div>
           ))
         ) : (

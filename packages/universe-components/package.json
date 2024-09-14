@@ -48,9 +48,9 @@
     }
   },
   "devDependencies": {
-    "@cfce/universe-api": "workspace:*",
-    "@cfce/typescript-config": "workspace:*",
     "@cfce/types": "workspace:*",
+    "@cfce/typescript-config": "workspace:*",
+    "@cfce/universe-api": "workspace:*",
     "@types/lodash": "^4.17.0",
     "@types/luxon": "^3.4.2",
     "@types/react": "latest",
@@ -88,10 +88,12 @@
     "clipboard-copy": "^4.0.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "date-fns": "4.0.0-beta.1",
     "jotai": "^2.9.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.399.0",
     "luxon": "^3.4.4",
+    "react-day-picker": "8.10.1",
     "react-hook-form": "^7.52.1",
     "swiper": "^11.0.7",
     "tailwind-merge": "^2.3.0"

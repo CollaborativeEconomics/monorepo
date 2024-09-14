@@ -127,9 +127,9 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const initiativeCredit =
     (initiative?.credits?.length ?? 0) > 0 ? initiative?.credits[0] : null;
   console.log('CREDIT', initiativeCredit);
-  const creditGoal = initiativeCredit?.goal || 1;
-  const currentCreditAmount = initiativeCredit?.current || 0;
-  const creditUnitValue = initiativeCredit?.value || 0;
+  const creditGoal = Number(initiativeCredit?.goal) || 1;
+  const currentCreditAmount = Number(initiativeCredit?.current) || 0;
+  const creditUnitValue = Number(initiativeCredit?.value) || 0;
   const creditCompletionPercentage = (
     (creditUnitValue * 100) /
     creditGoal
@@ -146,7 +146,8 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   console.log('MAXGOAL', maxGoal, maxValue);
   const tons = 173.243; // TODO: get from db?
   const tonx =
-    (initiativeCredit?.current ?? 0) / (initiativeCredit?.value ?? 0);
+    (Number(initiativeCredit?.current) ?? 0) /
+    (Number(initiativeCredit?.value) ?? 0);
   const perc = (tonx * 100) / tons;
   console.log('TONS', tons, tonx, perc, '%');
   // #endregion

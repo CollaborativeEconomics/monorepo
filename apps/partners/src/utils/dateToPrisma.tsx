@@ -1,16 +1,19 @@
-export default function dateToPrisma(sdate: number | string | Date): string | undefined {
-  let date = new Date()
-  let ret = null
+export default function dateToPrisma(
+  inputDate: number | string | Date,
+): string | null {
+  let parsedDate = new Date();
+  let formattedDate = null;
+
   try {
-    if (sdate instanceof Date) {
-      date = sdate
-    } else if (typeof sdate == 'string') {
-      date = new Date(sdate)
+    if (inputDate instanceof Date) {
+      parsedDate = inputDate;
+    } else if (typeof inputDate === 'string') {
+      parsedDate = new Date(inputDate);
     }
-    //ret = date.toJSON().replace('T', ' ').substring(0, 19)
-    ret = date.toISOString()
-  } catch (ex) {
-    console.error(ex)
+    formattedDate = parsedDate.toISOString();
+  } catch (error) {
+    console.error(error);
   }
-  return ret
+
+  return formattedDate;
 }

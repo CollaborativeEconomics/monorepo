@@ -19,10 +19,11 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
   }
   const organization = story.organization;
   const initiative = story.initiative;
-  const image =
-    (story.image.startsWith('ipfs:')
+  const image = story.image
+    ? story.image.startsWith('ipfs:')
       ? IPFSURL + story.image.substr(5)
-      : story.image) ?? '/nopic.png';
+      : story.image
+    : '/nopic.png';
 
   return (
     <Card className="flex flex-col overflow-hidden h-auto mx-2">
