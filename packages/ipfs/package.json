@@ -11,7 +11,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.608.0",
     "@vercel/blob": "^0.23.4",
-    "formidable": "^3.5.1"
+    "formidable": "^3.5.1",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@types/formidable": "^3.4.5",

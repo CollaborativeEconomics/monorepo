@@ -3,59 +3,28 @@ import styles from '../styles/dashboard.module.css';
 
 interface TimeTabProps {
   className?: string;
-  byYear: () => Promise<void>;
-  byMonth: () => Promise<void>;
-  byWeek: () => Promise<void>;
-  selected?: number;
+  setTimeframe: (timeframe: 'year' | 'month' | 'week') => void;
+  timeframe: 'year' | 'month' | 'week';
 }
 
 const TimeTab = ({
   className,
-  byYear,
-  byMonth,
-  byWeek,
-  selected,
-  ...rest
+  setTimeframe,
+  timeframe,
 }: TimeTabProps & HTMLProps<HTMLDivElement>) => {
-  function deselect() {
-    document.getElementById('timeYear')?.classList.remove('selected');
-    document.getElementById('timeMonth')?.classList.remove('selected');
-    document.getElementById('timeWeek')?.classList.remove('selected');
-  }
-
-  function select(n: number) {
-    switch (n) {
-      case 0:
-        document.getElementById('timeYear')?.classList.add('selected');
-        break;
-      case 1:
-        document.getElementById('timeMonth')?.classList.add('selected');
-        break;
-      case 2:
-        document.getElementById('timeWeek')?.classList.add('selected');
-        break;
-    }
-  }
-
   function onYear() {
     console.log('onYear');
-    deselect();
-    select(0);
-    byYear();
+    setTimeframe('year');
   }
 
   function onMonth() {
     console.log('onMonth');
-    deselect();
-    select(1);
-    byMonth();
+    setTimeframe('month');
   }
 
   function onWeek() {
     console.log('onWeek');
-    deselect();
-    select(2);
-    byWeek();
+    setTimeframe('week');
   }
 
   return (
@@ -63,7 +32,9 @@ const TimeTab = ({
       <button
         type="button"
         id="timeYear"
-        className={`${styles.buttonTime} selected`}
+        className={`${styles.buttonTime} ${
+          timeframe === 'year' ? 'selected' : ''
+        }`}
         onClick={onYear}
       >
         Year
@@ -71,7 +42,9 @@ const TimeTab = ({
       <button
         type="button"
         id="timeMonth"
-        className={styles.buttonTime}
+        className={`${styles.buttonTime} ${
+          timeframe === 'month' ? 'selected' : ''
+        }`}
         onClick={onMonth}
       >
         Month
@@ -79,7 +52,9 @@ const TimeTab = ({
       <button
         type="button"
         id="timeWeek"
-        className={styles.buttonTime}
+        className={`${styles.buttonTime} ${
+          timeframe === 'week' ? 'selected' : ''
+        }`}
         onClick={onWeek}
       >
         Week

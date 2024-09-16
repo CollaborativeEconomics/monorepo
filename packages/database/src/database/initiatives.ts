@@ -1,3 +1,4 @@
+import "server-only"
 import type { Initiative, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
 import type { ListQuery } from "../types"

@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cfce/universe-components": "workspace:*",
-    "@cfce/universe-api": "workspace:*",
-    "@cfce/blockchain-tools": "workspace:*",
-    "@cfce/database": "workspace:*",
     "@auth/prisma-adapter": "^1.0.1",
     "@aws-sdk/client-s3": "^3.608.0",
+    "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/database": "workspace:*",
+    "@cfce/ipfs": "workspace:*",
+    "@cfce/universe-api": "workspace:*",
+    "@cfce/universe-components": "workspace:*",
+    "@cfce/utils": "workspace:*",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-popover": "^1.1.1",
@@ -46,6 +48,7 @@
     "web3": "^4.6.0"
   },
   "devDependencies": {
+    "@types/formidable": "^3.4.5",
     "@types/luxon": "^3.4.2",
     "@types/node": "^18",
     "@types/react": "^18",

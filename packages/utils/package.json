@@ -25,6 +25,7 @@
     "luxon": "^3.4.4",
     "mailgun.js": "^7.0.4",
     "next-auth": "*",
+    "server-only": "^0.0.1",
     "ts-node": "^10.9.2",
     "uuid": "^10.0.0"
   },

@@ -93,22 +93,10 @@ export async function addStory(data: Story): Promise<Story> {
   return result
 }
 
-export async function newStory({
-  organizationId,
-  initiativeId,
-  ...story
-}: Omit<Story, "tokenId" | "created" | "categoryId">): Promise<Story> {
+export async function newStory(story: Prisma.StoryCreateInput): Promise<Story> {
   // Create the story DB entry with the data
   const dbStory = await prismaClient.story.create({
-    data: {
-      ...story,
-      organization: {
-        connect: { id: organizationId },
-      },
-      initiative: {
-        connect: { id: initiativeId },
-      },
-    },
+    data: story,
   })
   return dbStory
 }

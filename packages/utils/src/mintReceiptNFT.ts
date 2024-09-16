@@ -1,4 +1,4 @@
-"use server"
+import "server-only"
 import appConfig from "@cfce/app-config"
 import { BlockchainManager, getCoinRate } from "@cfce/blockchain-tools"
 import {
@@ -106,8 +106,8 @@ export async function mintAndSaveReceiptNFT({
     const credit = initiative?.credits?.[0]
     console.log("CREDIT", initiative?.credits)
     if (credit) {
-      const creditTon = credit.value / (rate || 1)
-      let offsetVal = creditTon > 0 ? +amountUSD / creditTon : 0
+      const creditTon = Number(credit.value) / (rate || 1)
+      let offsetVal = creditTon > 0 ? Number(amountUSD) / creditTon : 0
       // TODO: Why is this rounding the value? Seems like it should use the raw value
       if (offsetVal < 0.00005) {
         offsetVal = 0.0001

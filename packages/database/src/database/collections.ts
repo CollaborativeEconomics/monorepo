@@ -1,3 +1,4 @@
+import "server-only"
 import type { Collection } from "@prisma/client"
 import { prismaClient } from "../index"
 import type { ListQuery } from "../types"

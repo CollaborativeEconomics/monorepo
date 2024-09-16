@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "jsx": "react", // Choose "react", "react-jsx", or "react-jsxdev" based on your React version and preference,
+    "jsx": "react-jsx", // Choose "react", "react-jsx", or "react-jsxdev" based on your React version and preference,
     "baseUrl": "."
   },
   "include": [

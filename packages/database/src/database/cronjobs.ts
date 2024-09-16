@@ -1,6 +1,7 @@
+import "server-only"
 import type { Cronjob, Prisma } from "@prisma/client"
-import type { ListQuery } from "../types"
 import { prismaClient } from "../index"
+import type { ListQuery } from "../types"
 
 interface CronjobQuery extends ListQuery {
   cron?: string

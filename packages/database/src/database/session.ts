@@ -1,5 +1,6 @@
-import { type Session, prismaClient } from ".."
+import "server-only"
 import type { ListQuery } from "types"
+import { type Session, prismaClient } from ".."
 
 interface SessionQuery extends ListQuery {
   token?: string

@@ -1,6 +1,7 @@
+import "server-only"
 import type { Prisma, StoryMedia } from "@prisma/client"
-import { prismaClient } from ".."
 import type { ListQuery } from "types"
+import { prismaClient } from ".."
 
 interface StoryMediaQuery extends ListQuery {}
 

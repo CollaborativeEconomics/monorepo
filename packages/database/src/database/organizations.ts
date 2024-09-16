@@ -1,6 +1,7 @@
+import "server-only"
 import type { Chain, Organization, Prisma } from "@prisma/client"
-import { prismaClient } from ".."
 import type { ListQuery } from "types"
+import { prismaClient } from ".."
 
 interface OrganizationQuery extends ListQuery {
   category?: string
@@ -230,7 +231,7 @@ export async function getFeaturedOrganization(): Promise<Prisma.OrganizationGetP
 }
 
 export async function newOrganization(
-  data: Organization,
+  data: Prisma.OrganizationCreateInput,
 ): Promise<Organization> {
   const result = await prismaClient.organization.create({ data })
   return result

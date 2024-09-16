@@ -1,6 +1,7 @@
+import "server-only"
 import type { Offer } from "@prisma/client"
-import { prismaClient } from ".."
 import type { ListQuery } from "types"
+import { prismaClient } from ".."
 
 interface OfferQuery extends ListQuery {
   id?: string

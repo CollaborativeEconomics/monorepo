@@ -1,6 +1,6 @@
 import type { Chain, UserWallet } from "@prisma/client"
-import { prismaClient } from ".."
 import type { ListQuery } from "types"
+import { prismaClient } from ".."
 
 interface UserWalletQuery extends ListQuery {
   userId?: string

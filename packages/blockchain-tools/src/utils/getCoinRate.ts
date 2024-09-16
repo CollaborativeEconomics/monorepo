@@ -1,4 +1,4 @@
-"use server"
+import "server-only"
 import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 import { Mobula } from "mobula-sdk"
 
@@ -28,7 +28,6 @@ export default async function getCoinRate({
   chain,
   symbol,
 }: { symbol: TokenTickerSymbol; chain?: ChainSlugs }): Promise<number> {
-  "use server"
   try {
     const response = await mobula.fetchAssetMarketData({
       symbol,

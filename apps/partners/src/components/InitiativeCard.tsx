@@ -56,4 +56,4 @@ const InitiativeCard = (initiative: InitiativeProps) => {
   );
 };
 
-export default Initiative;
+export default InitiativeCard;

@@ -1,3 +1,4 @@
+import "server-only"
 import type { Donation, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
 import type { ListQuery } from "../types"

@@ -15,7 +15,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.608.0",
     "@prisma/client": "^5.11.0",
-    "prisma": "^5.9.1"
+    "prisma": "^5.9.1",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@types/formidable": "^3.4.5",
