@@ -52,9 +52,9 @@ export default function AddOrganizationForm({
         setButtonState(ButtonState.WAIT);
 
         const formData = new FormData();
-        Object.entries(data).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(data)) {
           formData.append(key, value);
-        });
+        }
 
         const result = await saveOrganization(formData);
 

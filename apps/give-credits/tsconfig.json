@@ -1,5 +1,7 @@
 {
   "extends": "@cfce/typescript-config/nextjs.json",
+  "strictNullChecks": true,
+  "declaration": false,
   "include": [
     "src",
     "next-env.d.ts",
@@ -15,7 +17,7 @@
     "outDir": "dist",
     "rootDirs": ["src", "."],
     "paths": {
-      "@/*": ["./*"]
+      "!/*": ["./src/*"]
     }
   }
 }

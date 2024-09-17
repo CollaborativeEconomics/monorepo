@@ -3,7 +3,7 @@
 import type { Donation } from '@cfce/database';
 import React, { useMemo, useState } from 'react';
 import styles from '~/styles/dashboard.module.css';
-import TimeTab from './timetab';
+import TimeTab from '../../../components/timetab';
 
 interface TableProps {
   data?: Donation[];

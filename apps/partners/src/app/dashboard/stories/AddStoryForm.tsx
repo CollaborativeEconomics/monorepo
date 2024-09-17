@@ -2,6 +2,7 @@
 'use client';
 
 import type { Category, Initiative } from '@cfce/database';
+import type { File } from 'formidable';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
@@ -23,12 +24,12 @@ interface FormData {
   name: string;
   desc: string;
   amount: string;
-  image1: FileList;
-  image2: FileList;
-  image3: FileList;
-  image4: FileList;
-  image5: FileList;
-  media: FileList;
+  image1: File[];
+  image2: File[];
+  image3: File[];
+  image4: File[];
+  image5: File[];
+  media: File[];
   yesNFT: boolean;
   categoryId: string;
 }
@@ -79,7 +80,7 @@ export default function AddStoryForm({
       }
 
       // Upload media file if present
-      let mediaUri;
+      let mediaUri: string | undefined;
       if (mediaFile?.[0]) {
         const mediaResponse = await saveFile(mediaFile[0]); // Upload media file
         if (mediaResponse.error) {

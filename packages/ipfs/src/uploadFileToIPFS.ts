@@ -12,7 +12,10 @@ export default async function uploadFileToIPFS(file: File): Promise<string> {
   if (!mimeType) {
     throw new Error("No MIME type found for file")
   }
-  // const size = file.size
+  const size = file.size
+  if (size > 10000000) {
+    throw new Error("File size too big")
+  }
 
   // Convert to bytes
   const fileBuffer = fs.readFileSync(file.filepath)
