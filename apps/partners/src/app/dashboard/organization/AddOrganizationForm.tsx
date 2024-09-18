@@ -2,7 +2,7 @@
 import type { Category, Prisma } from '@cfce/database';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { createOrganizationAction } from '~/actions/createOrganizationAction';
+import { createOrganizationAction } from './actions';
 import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
 import TextInput from '~/components/form/textinput';
