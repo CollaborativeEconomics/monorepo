@@ -10,7 +10,6 @@
   },
   "devDependencies": {
     "@cfce/types": "workspace:*",
-    "@cfce/utils": "workspace:*",
     "@types/node": "^20.14.9",
     "ts-node": "^10.9.2",
     "typescript": "latest"

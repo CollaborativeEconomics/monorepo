@@ -1,4 +1,4 @@
-import { getStoryById } from '@cfce/database';
+import { getDonations, getStoryById } from '@cfce/database';
 import Image from 'next/image';
 import Link from 'next/link';
 import ShareModal from '~/components/ShareModal';
@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader } from '~/components/ui/card';
 import { DateDisplay } from '~/components/ui/date-posted';
 import Gallery from '~/components/ui/gallery';
 import styles from '~/styles/dashboard.module.css';
-import { getDonationsByStory } from '~/utils/registry';
 
 async function getStoryData(id: string) {
   const story = await getStoryById(id);
@@ -17,13 +16,9 @@ async function getStoryData(id: string) {
   if (story.image) {
     media.unshift(story.image); // main image to the top, if it exists
   }
-  const donations = (await getDonationsByStory(id)) || [];
+  const donations = (await getDonations({ storyId: id })) || [];
   const total = donations.length
-    ? donations.reduce(
-        (sum: number, curr: { usdvalue: string }) =>
-          sum + Number.parseFloat(curr.usdvalue),
-        0,
-      )
+    ? donations.reduce((sum, curr) => sum + Number(curr.usdvalue), 0)
     : 0;
   return { story, media, donations, total };
 }

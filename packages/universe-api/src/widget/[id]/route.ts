@@ -1,14 +1,14 @@
-import { getCreditById, getInitiativeById } from '@cfce/database';
+import { getCreditById, getInitiativeById } from "@cfce/database"
 
 interface WidgetData {
-  id: string;
-  organization: string;
-  initiative: string;
-  goal: number;
-  current: number;
-  percent: string;
-  width: number;
-  url: string;
+  id: string
+  organization: string
+  initiative: string
+  goal: number
+  current: number
+  percent: string
+  width: number
+  url: string
 }
 
 function widgetHtml(data: WidgetData) {
@@ -59,58 +59,60 @@ function widgetHtml(data: WidgetData) {
         </div>
       </body>
     </html>
-  `;
-  return html;
+  `
+  return html
 }
 
 function NotFound(url: string) {
   const data = {
-    id: '',
-    organization: 'Carbon Widget',
-    initiative: 'Initiative not found',
+    id: "",
+    organization: "Carbon Widget",
+    initiative: "Initiative not found",
     goal: 0,
     current: 0,
-    percent: '0',
+    percent: "0",
     width: 0,
     url,
-  };
-  const html = widgetHtml(data);
-  return new Response(html, { headers: { 'Content-Type': 'text/html' } });
+  }
+  const html = widgetHtml(data)
+  return new Response(html, { headers: { "Content-Type": "text/html" } })
 }
 
 export async function GET(
   request: Request,
   context: { params: { id: string } },
 ) {
-  const id = context?.params?.id || '';
-  const requrl = new URL(request.url);
-  const credit = await getCreditById(id);
+  const id = context?.params?.id || ""
+  const requrl = new URL(request.url)
+  const credit = await getCreditById(id)
   if (!credit || !credit?.initiativeId) {
-    return NotFound(requrl.origin);
+    return NotFound(requrl.origin)
   }
-  const initiative = await getInitiativeById(credit?.initiativeId);
+  const initiative = await getInitiativeById(credit?.initiativeId)
   if (!initiative) {
-    return NotFound(requrl.origin);
+    return NotFound(requrl.origin)
   }
-  const url = `${requrl.origin}/initiatives/${initiative.id}`;
+  const url = `${requrl.origin}/initiatives/${initiative.id}`
   //console.log(credit)
   //console.log(initiative)
-  let percent = '0';
+  let percent = "0"
   if (credit?.goal && credit?.current) {
-    percent = ((credit?.current * 100) / credit?.goal || 0).toFixed(0);
+    percent = (
+      (Number(credit?.current) * 100) / Number(credit?.goal) || 0
+    ).toFixed(0)
   }
-  const width = Math.min((310 * Number.parseFloat(percent)) / 100, 310);
+  const width = Math.min((310 * Number.parseFloat(percent)) / 100, 310)
   const data = {
     id: initiative.id,
     organization: initiative.organization.name,
     initiative: `${initiative.title} Initiative`,
-    goal: credit.goal || 0,
-    current: credit.current || 0,
+    goal: Number(credit.goal) || 0,
+    current: Number(credit.current) || 0,
     percent,
     width,
     url,
-  };
-  console.log(data);
-  const html = widgetHtml(data);
-  return new Response(html, { headers: { 'Content-Type': 'text/html' } });
+  }
+  console.log(data)
+  const html = widgetHtml(data)
+  return new Response(html, { headers: { "Content-Type": "text/html" } })
 }

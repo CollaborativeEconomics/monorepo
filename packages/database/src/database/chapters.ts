@@ -1,7 +1,7 @@
 import "server-only"
 import type { Chapter } from "@prisma/client"
 import { prismaClient } from "../index"
-import type { ListQuery } from "../types"
+import type { ListQuery } from "@cfce/types"
 
 interface ChapterQuery extends ListQuery {
   orgId?: string

@@ -5,6 +5,7 @@ import Dashboard from '~/components/dashboard';
 import Sidebar from '~/components/sidebar';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
+
 export default async function Page() {
   const categories = await getCategories({});
 

@@ -1,4 +1,4 @@
-import { ReceiptStatus } from '@cfce/database';
+import { ReceiptStatus } from '@cfce/types';
 import { Slot } from '@radix-ui/react-slot';
 import { type VariantProps, cva } from 'class-variance-authority';
 import * as React from 'react';

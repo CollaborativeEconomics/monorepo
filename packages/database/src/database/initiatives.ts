@@ -1,7 +1,7 @@
 import "server-only"
 import type { Initiative, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "../types"
+import type { ListQuery } from "@cfce/types"
 
 interface InitiativeQuery extends ListQuery {
   orgId?: string

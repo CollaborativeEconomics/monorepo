@@ -45,6 +45,12 @@ const nextConfig = {
     }
     return config;
   },
+  env: {
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+    AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION,
+    AWS_MEDIA_BUCKET: process.env.AWS_MEDIA_BUCKET,
+  },
 };
 
 module.exports = nextConfig;

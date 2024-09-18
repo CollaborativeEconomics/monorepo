@@ -9,13 +9,7 @@ import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
 import AddStoryForm from './AddStoryForm';
 import { authOptions } from '@cfce/utils';
-
-interface DashboardPageProps {
-  orgId: string;
-  initiatives: Initiative[];
-  stories: StoryWithRelations[];
-  categories: Category[];
-}
+import Story from '~/components/story';
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions); // Fetch session
@@ -46,7 +40,7 @@ export default async function DashboardPage() {
         {stories.length > 0 ? (
           stories.map(item => (
             <div className={styles.mainBox} key={item.id}>
-              <Event {...item} />
+              <Story {...item} />
             </div>
           ))
         ) : (

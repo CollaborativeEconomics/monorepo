@@ -30,10 +30,10 @@
     "uuid": "^10.0.0"
   },
   "peerDependencies": {
+    "@cfce/types": "workspace:*",
     "@cfce/app-config": "workspace:*"
   },
   "devDependencies": {
-    "@cfce/types": "workspace:*",
     "@smithy/types": "^3.4.0",
     "@types/formidable": "^3.4.5",
     "@types/jest": "^29.5.12",

@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { SessionProvider } from 'next-auth/react';
+import { Inter } from 'next/font/google';
 
 export const metadata: Metadata = {
-  title: 'Your App Title',
-  description: 'Your app description',
+  title: 'Partners Portal',
+  description: 'CFCE Partners Portal',
 };
+
+const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -27,7 +30,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <SessionProvider>{children}</SessionProvider>
+        <div className={inter.className}>
+          <SessionProvider>{children}</SessionProvider>
+        </div>
       </body>
     </html>
   );

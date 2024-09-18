@@ -1,4 +1,21 @@
-import type { Chain } from "@cfce/database"
+// copy of database/src/prisma/schema.prisma Chain enum
+// importing here would cause a circular dependency
+type Chain =
+  | "Arbitrum"
+  | "Avalanche"
+  | "Base"
+  | "Binance"
+  | "Celo"
+  | "EOS"
+  | "Ethereum"
+  | "Filecoin"
+  | "Flare"
+  | "Optimism"
+  | "Polygon"
+  | "Starknet"
+  | "Stellar"
+  | "XDC"
+  | "XRPL"
 
 export const ChainSlugs = [
   "arbitrum",

@@ -1,7 +1,8 @@
+import 'server-only';
 import type { AuthTypes, ChainSlugs } from '@cfce/types';
 import { authConfig } from '@cfce/utils';
 import React from 'react';
-import { Button } from './button';
+import { Button } from '../ui/button';
 
 // TODO: extend with html button props, for some reason it was causing problems.
 interface AuthButtonProps {

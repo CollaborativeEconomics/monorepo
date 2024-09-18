@@ -1,7 +1,7 @@
 import "server-only"
-import type { Donation, Prisma } from "@prisma/client"
+import type { Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "../types"
+import type { ListQuery } from "@cfce/types"
 
 interface DonationQuery extends ListQuery {
   id?: string
@@ -9,6 +9,7 @@ interface DonationQuery extends ListQuery {
   chapterid?: string
   initid?: string
   userId?: string
+  storyId?: string
   wallet?: string
   from?: string
   to?: string
@@ -64,6 +65,10 @@ export async function getDonations(query: DonationQuery) {
 
   if (query?.userId) {
     filter.where.userId = query.userId
+  }
+
+  if (query?.storyId) {
+    filter.where.storyId = query.storyId
   }
 
   if (query?.wallet) {
