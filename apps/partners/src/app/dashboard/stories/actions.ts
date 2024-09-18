@@ -13,7 +13,7 @@ export async function saveStory({
   images,
   media,
 }: {
-  story: Prisma.StoryCreateInput
+  story: Omit<Prisma.StoryCreateInput, 'organization' | 'initiative'>
   organizationId: string
   initiativeId: string
   images?: (string | File)[]

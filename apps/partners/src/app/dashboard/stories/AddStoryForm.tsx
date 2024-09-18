@@ -10,8 +10,9 @@ import Checkbox from '~/components/form/checkbox';
 import Select from '~/components/form/select';
 import TextArea from '~/components/form/textarea';
 import TextInput from '~/components/form/textinput';
+import FileView from '~/components/form/fileview';
 import styles from '~/styles/dashboard.module.css';
-import { saveFile, saveStory } from './storyActions'; // Server actions
+import { saveStory } from './actions'; // Update this import
 
 interface AddStoryFormProps {
   orgId: string;
@@ -50,6 +51,16 @@ export default function AddStoryForm({
     formState: { errors },
   } = useForm<FormData>();
 
+  const initiativesOptions = initiatives.map(initiative => ({
+    id: initiative.id,
+    name: initiative.title,
+  }));
+
+  const categoriesOptions = categories.map(category => ({
+    id: category.id,
+    name: category.title,
+  }));
+
   const imageFields = watch(['image1', 'image2', 'image3', 'image4', 'image5']);
   const mediaFile = watch('media');
 
@@ -63,49 +74,35 @@ export default function AddStoryForm({
     setButtonText('WAIT');
     setMessage('Uploading files...');
 
-    const uploadedImages: string[] = [];
-
     try {
-      // Process each image file field
-      for (const [i, image] of Object.entries(imageFields)) {
-        if (image?.[0]) {
-          const imageResponse = await saveFile(image[0]); // Upload image
-          if (imageResponse.error) {
-            setMessage(`Error uploading image ${i}: ${imageResponse.error}`);
-            setButtonDisabled(false);
-            return;
-          }
-          uploadedImages.push(imageResponse.uri); // Store the uploaded image URL
-        }
-      }
+      const images = [
+        data.image1,
+        data.image2,
+        data.image3,
+        data.image4,
+        data.image5,
+      ]
+        .filter(img => img && img.length > 0)
+        .map(img => img[0]);
 
-      // Upload media file if present
-      let mediaUri: string | undefined;
-      if (mediaFile?.[0]) {
-        const mediaResponse = await saveFile(mediaFile[0]); // Upload media file
-        if (mediaResponse.error) {
-          setMessage(`Error uploading media: ${mediaResponse.error}`);
-          setButtonDisabled(false);
-          return;
-        }
-        mediaUri = mediaResponse.uri;
-      }
+      const media =
+        data.media && data.media.length > 0 ? data.media[0] : undefined;
 
-      // Create story with uploaded images and media
       const storyData = {
+        story: {
+          name: data.name,
+          description: data.desc,
+          amount: Number.parseInt(data.amount),
+          categoryId: data.categoryId,
+        },
         organizationId: orgId,
         initiativeId: data.initiativeId,
-        name: data.name,
-        description: data.desc,
-        amount: Number.parseInt(data.amount),
-        categoryId: data.categoryId,
-        image: uploadedImages[0] || '', // Use the first image as the main one
-        storyMedia: uploadedImages.slice(1), // The rest of the images
-        media: mediaUri || undefined, // Media file if present
+        images,
+        media,
       };
 
       const storyResponse = await saveStory(storyData);
-      if (storyResponse.error) {
+      if ('error' in storyResponse) {
         setMessage(`Error saving story: ${storyResponse.error}`);
         setButtonDisabled(false);
         return;
@@ -171,12 +168,12 @@ export default function AddStoryForm({
         <Select
           label="Initiative"
           register={register('initiativeId', { required: true })}
-          options={initiatives}
+          options={initiativesOptions}
         />
         <Select
           label="Category"
           register={register('categoryId', { required: true })}
-          options={categories}
+          options={categoriesOptions}
         />
         <TextInput
           label="Title"
@@ -196,7 +193,7 @@ export default function AddStoryForm({
           check={true}
         />
 
-        <ButtonBlue text={buttonText} disabled={buttonDisabled} type="submit" />
+        <ButtonBlue text={buttonText} disabled={buttonDisabled} />
 
         {/* Validation error handling */}
         {errors.name && <p className="error">Title is required</p>}

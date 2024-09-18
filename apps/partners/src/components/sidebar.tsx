@@ -6,6 +6,7 @@ import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
 import styles from '~/styles/dashboard.module.css';
 import OrganizationSelect from './OrganizationSelect';
+import { authOptions } from '@cfce/utils';
 
 interface PageProps {
   className?: string;
@@ -17,7 +18,7 @@ const Sidebar = async ({
   children,
   afterChange = id => {},
 }: PropsWithChildren<PageProps>) => {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   console.log('SIDEBAR SESSION', session);
   const organizations = await getOrganizations({});
 

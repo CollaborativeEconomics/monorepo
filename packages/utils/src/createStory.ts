@@ -34,7 +34,7 @@ async function processFile(
 }
 
 interface CreateStoryParams {
-  story: Prisma.StoryCreateInput
+  story: Omit<Prisma.StoryCreateInput, 'organization' | 'initiative'>
   organizationId: string
   initiativeId: string
   images?: (string | File)[]

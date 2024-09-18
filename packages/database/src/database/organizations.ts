@@ -140,7 +140,24 @@ export async function getOrganizations(
 export async function getOrganizationById(
   id: string,
 ): Promise<Prisma.OrganizationGetPayload<{
-  include: { initiative: true }
+  include: {
+    category: true,
+    wallets: true,
+    initiative: {
+      include: { credits: true },
+    },
+    stories: {
+      include: {
+        media: true,
+        organization: true,
+        initiative: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    },
+  }
 }> | null> {
   const include = {
     category: true,

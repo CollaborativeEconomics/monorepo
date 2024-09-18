@@ -107,7 +107,7 @@ const chainConfiguration: Chains = {
   },
   xinfin: {
     slug: "xinfin",
-    name: "XinFin",
+    name: "XDC",
     symbol: "XDC",
     logo: "xdc.svg",
     // icon: require("../assets/xdc.svg").default,

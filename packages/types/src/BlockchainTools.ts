@@ -33,7 +33,7 @@ export const ChainNames: Chain[] = [
   "Polygon",
   "Starknet",
   "Stellar",
-  "XinFin",
+  "XDC",
   "XRPL",
 ] as const
 

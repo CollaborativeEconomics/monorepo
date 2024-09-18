@@ -8,6 +8,7 @@ import Sidebar from '~/components/sidebar';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
 import AddStoryForm from './AddStoryForm';
+import { authOptions } from '@cfce/utils';
 
 interface DashboardPageProps {
   orgId: string;
@@ -17,7 +18,7 @@ interface DashboardPageProps {
 }
 
 export default async function DashboardPage() {
-  const session = await getServerSession(); // Fetch session
+  const session = await getServerSession(authOptions); // Fetch session
   const orgId = session?.orgId ?? '';
   const organization = await getOrganizationById(orgId);
   const initiatives = organization?.initiative || [];

@@ -4,7 +4,6 @@
   "declaration": false,
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "dist",
     "rootDirs": ["src", "."],
     "paths": {
       "~/*": ["./src/*"]
