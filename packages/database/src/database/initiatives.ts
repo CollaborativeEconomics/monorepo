@@ -1,7 +1,7 @@
 import "server-only"
+import type { ListQuery } from "@cfce/types"
 import type { Initiative, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "@cfce/types"
 
 interface InitiativeQuery extends ListQuery {
   orgId?: string
@@ -156,7 +156,7 @@ export async function getInitiativeByTag(tag: number) {
   return result
 }
 
-export async function newInitiative(data: Initiative) {
+export async function newInitiative(data: Prisma.InitiativeCreateInput) {
   const result = await prismaClient.initiative.create({ data })
   return result
 }

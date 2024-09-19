@@ -1,8 +1,8 @@
 'use client';
 
+import { DatePicker } from '@cfce/universe-components/form';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { DatePicker } from '@cfce/universe-components/form';
 import ButtonBlue from '~/components/buttonblue';
 import FileView from '~/components/form/fileview';
 import TextArea from '~/components/form/textarea';
@@ -11,20 +11,24 @@ import { createInitiative } from './action';
 
 type InitiativeFormProps = {
   orgId: string;
-  providers: any[]; // Replace 'any' with the correct type for providers
 };
 
-export default function InitiativeForm({
-  orgId,
-  providers,
-}: InitiativeFormProps) {
+type InitiativeFormData = {
+  title: string;
+  description: string;
+  start: string;
+  finish: string;
+  image: FileList;
+};
+
+export default function InitiativeForm({ orgId }: InitiativeFormProps) {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, setMessage] = useState(
     'Enter initiative info and upload image',
   );
 
-  const { register, handleSubmit, watch } = useForm({
+  const { register, handleSubmit, watch } = useForm<InitiativeFormData>({
     defaultValues: {
       title: '',
       description: '',
@@ -32,13 +36,12 @@ export default function InitiativeForm({
       finish: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         .toJSON()
         .substr(0, 10),
-      image: null as FileList | null,
     },
   });
 
   const image = watch('image');
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: InitiativeFormData) => {
     setButtonDisabled(true);
     setButtonText('WAIT');
     setMessage('Saving initiative...');
@@ -66,7 +69,7 @@ export default function InitiativeForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FileView
         id="imgFile"
-        register={register('image')}
+        register={register('image', { required: true })}
         source="/media/upload.jpg"
         width={250}
         height={250}

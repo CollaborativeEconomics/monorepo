@@ -1,4 +1,5 @@
 import { getDonations, getStoryById } from '@cfce/database';
+import { DateTime } from 'luxon';
 import Image from 'next/image';
 import Link from 'next/link';
 import ShareModal from '~/components/ShareModal';
@@ -27,13 +28,12 @@ export default async function Story({ params }: { params: { id: string } }) {
   const { id } = params;
   const { story, media, donations, total } = await getStoryData(id);
 
-  function shortDate(d: string) {
-    const opt: Intl.DateTimeFormatOptions = {
+  function formatDate(dateString: string) {
+    return DateTime.fromISO(dateString).toLocaleString({
       year: '2-digit',
       month: 'numeric',
       day: '2-digit',
-    };
-    return new Date(d).toLocaleDateString('en', opt);
+    });
   }
 
   return (
@@ -90,13 +90,13 @@ export default async function Story({ params }: { params: { id: string } }) {
               <h1 className="my-2">Donations</h1>
               <table className="w-full">
                 <tbody className="border-t-2">
-                  {donations?.map((item: any) => (
+                  {donations?.map(item => (
                     <tr key={item.id}>
-                      <td>{shortDate(item.created)}</td>
+                      <td>{formatDate(item.created.toISOString())}</td>
                       <td>{item.wallet?.substr(0, 10)}</td>
-                      <td align="right">{item.amount}</td>
+                      <td align="right">{item.amount.toString()}</td>
                       <td align="right">{item.asset}</td>
-                      <td align="right">{item.usdvalue}</td>
+                      <td align="right">{item.usdvalue.toString()}</td>
                       <td align="right">USD</td>
                     </tr>
                   ))}

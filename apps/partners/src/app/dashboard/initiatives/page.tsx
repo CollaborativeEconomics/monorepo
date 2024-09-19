@@ -1,4 +1,4 @@
-import { Initiative, getOrganizationById, getProviders } from '@cfce/database';
+import { type Initiative, getOrganizationById } from '@cfce/database';
 import { authOptions } from '@cfce/utils';
 import { getServerSession } from 'next-auth';
 import InitiativeCard from '~/components/InitiativeCard';
@@ -13,7 +13,6 @@ export default async function Page() {
   const orgId = session?.orgId || '';
 
   const organization = await getOrganizationById(orgId);
-  const providers = await getProviders({});
 
   const initiatives = organization?.initiative || [];
 
@@ -29,7 +28,7 @@ export default async function Page() {
           better place!
         </p>
         <div className={styles.mainBox}>
-          <InitiativeForm orgId={orgId} providers={providers} />
+          <InitiativeForm orgId={orgId} />
         </div>
         {initiatives.length > 0 ? (
           initiatives.map((item: Initiative) => (
