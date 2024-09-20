@@ -47,7 +47,16 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
     setMessage('Saving initiative...');
 
     try {
-      const result = await createInitiative(data, orgId);
+      const imageFiles = data.image ? Array.from(data.image) : [];
+
+      const result = await createInitiative(
+        {
+          ...data,
+          image: imageFiles,
+        },
+        orgId,
+      );
+
       if (result.success) {
         setMessage('Initiative saved successfully');
         setButtonText('DONE');
@@ -73,6 +82,7 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
         source="/media/upload.jpg"
         width={250}
         height={250}
+        multiple={true}
       />
       <TextInput label="Title" register={register('title')} />
       <TextArea label="Description" register={register('description')} />

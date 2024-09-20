@@ -4,10 +4,8 @@ import { useSession } from 'next-auth/react';
 
 const OrganizationSelect = ({
   organizations,
-  afterChange,
 }: {
   organizations: Organization[];
-  afterChange: (orgId: string) => void;
 }) => {
   const { data: session, update } = useSession();
   return (
@@ -17,9 +15,8 @@ const OrganizationSelect = ({
         value={session?.orgId}
         onChange={evt => {
           const orgId = evt.target.value;
-          console.log('Changed', orgId);
+          console.log('ORG CHANGED', orgId);
           update({ orgId: orgId });
-          afterChange(orgId);
         }}
       >
         {organizations ? (

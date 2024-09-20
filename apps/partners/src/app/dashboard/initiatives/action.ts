@@ -2,7 +2,6 @@
 
 import { type Prisma, newInitiative } from "@cfce/database"
 import { snakeCase } from "lodash"
-import dateToPrisma from "~/utils/dateToPrisma"
 import { randomNumber, randomString } from "~/utils/random"
 
 async function saveImage(data: { name: string; file: File }) {

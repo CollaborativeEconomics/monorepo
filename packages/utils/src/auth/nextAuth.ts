@@ -5,11 +5,16 @@ import {
   prismaClient,
 } from "@cfce/database"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import NextAuth, { type AuthOptions, type User } from "next-auth"
+import NextAuth, {
+  Awaitable,
+  RequestInternal,
+  type AuthOptions,
+  type User,
+} from "next-auth"
 import { getAuthProviders } from "../authConfig"
 // import authProviders, { type AuthTypes } from "./authProviders"
 
-console.log("AUTH CONFIG", appConfig)
+// console.log("AUTH CONFIG", appConfig)
 const providers = getAuthProviders(appConfig.auth)
 
 const authOptions: AuthOptions = {
@@ -19,15 +24,14 @@ const authOptions: AuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
     updateAge: 24 * 60 * 60, // 24 hours
   },
-  pages: {
-    signIn: "/signin",
-  },
+  // pages: {
+  //   signIn: "/signin",
+  // },
   providers,
   callbacks: {
     async jwt(args) {
       const { token, user, account, profile, isNewUser, trigger, session } =
         args
-
       // Handle account-related information
       if (account) {
         token.userId = account?.providerAccountId || ""
@@ -39,7 +43,6 @@ const authOptions: AuthOptions = {
         // @ts-ignore TODO: move this to state
         token.currency = user?.currency || ""
       }
-
       // Handle session updates
       if (trigger === "update" && session) {
         token.name = session?.name || ""
@@ -49,13 +52,11 @@ const authOptions: AuthOptions = {
           token.orgId = session.orgId
         }
       }
-
       // Handle organization and role-based logic
       if (token?.email) {
         const org = await getOrganizationByEmail(token.email)
         token.orgId = org?.id || token.orgId || ""
         token.orgName = org?.name || ""
-
         if (!org) {
           const user = await getUserByEmail(token.email)
           if (user && user.type === 9) {
@@ -69,12 +70,10 @@ const authOptions: AuthOptions = {
           }
         }
       }
-
       return token
     },
     async session(args) {
       const { session, token, user, trigger, newSession } = args
-
       // Handle organization and admin-related updates
       if (trigger === "update" && newSession?.orgId) {
         // @ts-ignore TODO: move this to state
@@ -87,7 +86,6 @@ const authOptions: AuthOptions = {
       session.orgName = (token?.orgName as string) ?? ""
       // @ts-ignore TODO: move this to state
       session.isAdmin = token?.userRole === "admin"
-
       // Handle user-related updates
       // @ts-ignore TODO: move this to state
       session.userId = (token?.userId as string) || ""
@@ -97,25 +95,23 @@ const authOptions: AuthOptions = {
       session.network = (token?.network as string) || ""
       // @ts-ignore TODO: move this to state
       session.currency = (token?.currency as string) || ""
-
       // Ensure session.user exists
       if (!session.user) {
         session.user = {}
       }
-
       // Update user information
       session.user.name = (token?.name as string) || ""
       session.user.email = (token?.email as string) || ""
       session.user.image = (token?.picture as string) || ""
-
       // Uncomment if needed:
       // session.decimals = (token?.decimals as string) || '';
       // session.wallet = (token?.wallet as string) || '';
-
       return session
     },
   },
 }
+
+console.log("AUTH OPTIONS", authOptions)
 
 const nextAuth: ReturnType<typeof NextAuth> = NextAuth(authOptions)
 

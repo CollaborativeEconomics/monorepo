@@ -1,8 +1,8 @@
-import { getOrganizationById } from '@cfce/database';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@cfce/utils';
 import { chainConfig } from '@cfce/blockchain-tools';
-import { type ChainSlugs } from '@cfce/types';
+import { getOrganizationById } from '@cfce/database';
+import type { ChainSlugs } from '@cfce/types';
+import { authOptions } from '@cfce/utils';
+import { getServerSession } from 'next-auth/next';
 import Title from '~/components/title';
 import Wallet from '~/components/wallet';
 import styles from '~/styles/dashboard.module.css';

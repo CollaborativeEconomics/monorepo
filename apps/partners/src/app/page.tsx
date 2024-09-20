@@ -1,12 +1,12 @@
-import React from 'react';
-import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@cfce/utils';
 import startCase from 'lodash/startCase';
+import { getServerSession } from 'next-auth/next';
+import React from 'react';
+import AuthHeader from '~/components/auth-header';
 import Footer from '~/components/footer';
-import Header from '~/components/header';
+import LinkButton from '~/components/linkbutton';
 import Main from '~/components/main';
 import Title from '~/components/title';
-import LinkButton from '~/components/linkbutton';
-import { authOptions } from '@cfce/utils';
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -24,7 +24,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header />
+      <AuthHeader />
       <Main>
         <Title text="Partners Portal" />
         <div className="py-4">

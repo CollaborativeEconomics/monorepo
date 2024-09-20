@@ -5,6 +5,8 @@
     "dev": "tsc --watch",
     "build": "rm -rf dist && tsc"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./auth": {
       "import": "./dist/auth/index.js",

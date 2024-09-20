@@ -1,6 +1,10 @@
-import React, { forwardRef, type HTMLProps } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  type MutableRefObject,
+} from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
-//import Image from 'next/image';
 
 interface FileProps {
   id?: string;
@@ -9,74 +13,93 @@ interface FileProps {
   width?: number;
   height?: number;
   register: UseFormRegisterReturn;
+  multiple?: boolean;
 }
 
-function onPreviewFile(
-  event: React.ChangeEvent<HTMLInputElement>,
-  imgId: string,
-) {
-  console.log('PREVIEW!', event);
-  const file = event?.target?.files?.[0];
-  if (!file) {
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = document.getElementById(imgId) as HTMLImageElement;
-    if (e.target?.result) {
-      img.setAttribute('src', e.target.result.toString());
+const FileView: React.FC<FileProps> = ({
+  id,
+  source,
+  className,
+  width = 250,
+  height = 250,
+  register,
+  multiple = false,
+}) => {
+  const [previews, setPreviews] = useState<string[]>([source || '']);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newPreviews = Array.from(files).map(file =>
+        URL.createObjectURL(file),
+      );
+      setPreviews(newPreviews);
     }
   };
-  reader.readAsDataURL(file);
-}
 
-const FileView = forwardRef<HTMLInputElement, FileProps>(
-  (
-    {
-      id,
-      source,
-      className,
-      width,
-      height,
-      register,
-      ...props
-    }: FileProps & HTMLProps<HTMLInputElement>,
-    ref,
-  ) => {
-    if (!width) {
-      width = 250;
-    }
-    if (!height) {
-      height = 250;
-    }
-    const style = 'mx-auto'; // w-64 h-64
-    //console.log('WxH', width, height, id)
-    const imgId = `file-upload-${id}`;
-    const size = `w-[${width}px] h-[${height}px]`;
-    return (
-      <div className={`relative ${size} m-4 ${className ?? ''}`}>
-        <input
-          type="file"
-          id={id}
-          {...props}
-          {...register}
-          ref={ref}
-          onChange={event => onPreviewFile(event, imgId)}
-          className="block absolute top-0 left-0 w-full h-full opacity-0 z-10 cursor-pointer"
-        />
-        <img
-          id={imgId}
-          className={style}
-          src={source}
-          width={`${width}px`}
-          height={`${height}px`}
-          alt="profile avatar"
-        />
+  useEffect(() => {
+    // Cleanup object URLs on component unmount
+    return () => {
+      for (const preview of previews) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [previews]);
+
+  const style = 'mx-auto';
+  const size = `w-[${width}px] h-[${height}px]`;
+
+  return (
+    <div className={`relative ${size} m-4 ${className ?? ''}`}>
+      <input
+        type="file"
+        id={id}
+        {...register}
+        ref={e => {
+          register.ref(e);
+          fileInputRef.current = e;
+        }}
+        onChange={handleFileChange}
+        className="hidden"
+        multiple={multiple}
+        accept="image/*"
+      />
+      <div className="flex flex-wrap gap-2">
+        {previews.map((preview, index) => (
+          <button
+            type="button"
+            key={`preview-${preview}`}
+            onClick={() => fileInputRef.current?.click()}
+            className="p-0 border-0 bg-transparent"
+          >
+            <img
+              className={style}
+              src={preview}
+              width={`${width}px`}
+              height={`${height}px`}
+              alt={`preview ${index + 1}`}
+            />
+          </button>
+        ))}
       </div>
-    );
-  },
-);
-
-FileView.displayName = 'FileView';
+      {previews.length === 0 && (
+        <div
+          className={`${size} border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer`}
+          onClick={() => fileInputRef.current?.click()}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              fileInputRef.current?.click();
+            }
+          }}
+          tabIndex={0}
+          role="button"
+        >
+          Click to upload images
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default FileView;

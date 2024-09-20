@@ -1,5 +1,7 @@
 'use client';
 
+import type { Chain } from '@cfce/database';
+import type { ChainSlugs } from '@cfce/types';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
@@ -7,8 +9,6 @@ import Select from '~/components/form/select';
 import TextInput from '~/components/form/textinput';
 import styles from '~/styles/dashboard.module.css';
 import { createWallet } from './actions';
-import { Chain } from '@cfce/database';
-import type { ChainSlugs } from '@cfce/types';
 
 type WalletFormProps = {
   orgId: string;

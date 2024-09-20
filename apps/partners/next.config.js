@@ -10,6 +10,7 @@ const nextConfig = {
       '@cfce/utils',
       '@cfce/universe-pages',
     ],
+    serverSourceMaps: true,
   },
   images: {
     remotePatterns: [
@@ -18,6 +19,12 @@ const nextConfig = {
         hostname: 'give.staging.cfce.io',
         port: '',
         pathname: '/media/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/a/**',
       },
       {
         protocol: 'https',

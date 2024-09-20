@@ -1,12 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}'
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './node_modules/@cfce/universe-components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     container: {
-      center: true
+      center: true,
     },
     extend: {
       colors: {
@@ -19,14 +19,14 @@ module.exports = {
           600: '#4a5070',
           700: '#272b36',
           800: '#17191f',
-          900: '#030b36'
+          900: '#030b36',
         },
         blue: {
           100: '#60688538',
-          700: '#3052ff'
-        }
-      }
+          700: '#3052ff',
+        },
+      },
     },
   },
   plugins: [],
-}
+};

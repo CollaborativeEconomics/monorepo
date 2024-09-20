@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
-import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
+import type { ReactNode } from 'react';
+import SessionProvider from '~/components/SessionProvider';
+import '~/styles/globals.css';
+import Sidebar from '~/components/sidebar';
 
 export const metadata: Metadata = {
   title: 'Partners Portal',
@@ -13,25 +15,11 @@ const inter = Inter({ subsets: ['latin'] });
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet"
-        />
-      </head>
       <body>
-        <div className={inter.className}>
-          <SessionProvider>{children}</SessionProvider>
+        <div className="flex">
+          <SessionProvider>
+            <main className="flex-1">{children}</main>
+          </SessionProvider>
         </div>
       </body>
     </html>
