@@ -17,7 +17,7 @@
     "outDir": "dist",
     "rootDirs": ["src", "."],
     "paths": {
-      "!/*": ["./src/*"]
+      "~/*": ["./src/*"]
     }
   }
 }

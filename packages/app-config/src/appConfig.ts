@@ -33,11 +33,17 @@ const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
 const appId = process.env.NEXT_PUBLIC_APP_ID as AppId | undefined
 const env = process.env.NEXT_PUBLIC_APP_ENV as Environment | undefined
 
-if (!appId || !appConfigs[appId]) {
+if (!appId) {
+  throw new Error("NEXT_PUBLIC_APP_ID not defined")
+}
+if (!appConfigs[appId]) {
   throw new Error(`App config not found for appId ${appId}`)
 }
 
-if (!env || !appConfigs[appId][env]) {
+if (!env) {
+  throw new Error("NEXT_PUBLIC_APP_ENV not defined")
+}
+if (!appConfigs[appId][env]) {
   throw new Error(`App config not found for appId ${appId} and env ${env}`)
 }
 

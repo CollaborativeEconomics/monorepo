@@ -1,25 +1,23 @@
 {
   "extends": "@cfce/typescript-config/nextjs.json",
+  "strictNullChecks": true,
+  "declaration": false,
+  "include": [
+    "src",
+    "next-env.d.ts",
+    "next-auth.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "public",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist", "work"],
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "ESNext",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
+    "outDir": "dist",
+    "rootDirs": ["src", "."],
     "paths": {
-      "@/lib/*": ["lib/*"]
+      "~/*": ["./src/*"]
     }
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "work"]
+  }
 }

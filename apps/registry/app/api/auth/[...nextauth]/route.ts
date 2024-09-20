@@ -1,1 +1,0 @@
-export * from "@cfce/universe-api/auth/[...nextauth]";
