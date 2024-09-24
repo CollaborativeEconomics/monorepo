@@ -258,7 +258,7 @@ export default async function Profile({
             {badges?.length > 0 ? (
               badges.map(donation => {
                 const badge = donation.category;
-                if (!badge ?? !badge?.image) {
+                if (!badge || !badge?.image) {
                   return null;
                 }
                 return (

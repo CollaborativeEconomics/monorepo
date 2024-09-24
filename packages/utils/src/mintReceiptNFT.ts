@@ -3,95 +3,161 @@ import appConfig from "@cfce/app-config"
 import { BlockchainManager, getCoinRate } from "@cfce/blockchain-tools"
 import {
   getInitiativeById,
+  getNFTbyTokenId,
   getOrganizationById,
   getUserByWallet,
   newNftData,
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
-import {
-  type ChainSlugs,
-  DonationStatus,
-  type TokenTickerSymbol,
-} from "@cfce/types"
+import { ChainSlugs, DonationStatus, TokenTickerSymbol } from "@cfce/types"
 import { DateTime } from "luxon"
+import { sendEmailReceipt } from "./mailgun"
 
-interface mintAndSaveReceiptNFTParams {
+interface MintAndSaveReceiptNFTParams {
   transaction: {
     txId: string
     chain: ChainSlugs
     token: TokenTickerSymbol
+    donorWalletAddress: string
+    destinationWalletAddress: string
+    amount: number
+    date: string
   }
   initiativeId: string
-  donorWalletAddress: string
-  amount: number
-  rate: number
+  organizationId: string
+  donorName?: string
+  email?: string
 }
 
 export async function mintAndSaveReceiptNFT({
-  transaction: { txId, chain, token },
+  transaction,
+  organizationId,
   initiativeId,
-  donorWalletAddress,
-  amount,
-}: mintAndSaveReceiptNFTParams) {
+  donorName = "Anonymous",
+  email,
+}: MintAndSaveReceiptNFTParams) {
   try {
-    // #region: Initialize fns and data
+    const {
+      txId,
+      chain,
+      token,
+      donorWalletAddress,
+      destinationWalletAddress,
+      amount,
+      date,
+    } = transaction
+
+    const rate = await getCoinRate({ chain, symbol: token })
+
+    // #region: Input validation
+    if (!txId || typeof txId !== "string") {
+      return { success: false, error: "Invalid transaction ID" }
+    }
+
+    if (!chain || !Object.values(ChainSlugs).includes(chain)) {
+      return { success: false, error: "Invalid chain" }
+    }
+
+    if (!token || !Object.values(TokenTickerSymbol).includes(token)) {
+      return { success: false, error: "Invalid token" }
+    }
+
+    if (!donorWalletAddress || typeof donorWalletAddress !== "string") {
+      return { success: false, error: "Invalid donor wallet address" }
+    }
+
+    if (
+      !destinationWalletAddress ||
+      typeof destinationWalletAddress !== "string"
+    ) {
+      return { success: false, error: "Invalid destination wallet address" }
+    }
+
+    if (typeof amount !== "number" || amount <= 0) {
+      return { success: false, error: "Invalid amount" }
+    }
+
+    if (!date || Number.isNaN(Date.parse(date))) {
+      return { success: false, error: "Invalid date" }
+    }
+
+    if (!organizationId || typeof organizationId !== "string") {
+      return { success: false, error: "Invalid organization ID" }
+    }
+
+    if (!initiativeId || typeof initiativeId !== "string") {
+      return { success: false, error: "Invalid initiative ID" }
+    }
+
+    if (!donorName || typeof donorName !== "string") {
+      return { success: false, error: "Invalid donor name" }
+    }
+
+    if (email && (typeof email !== "string" || !email.includes("@"))) {
+      return { success: false, error: "Invalid email address" }
+    }
+
+    if (typeof rate !== "number" || rate <= 0) {
+      return { success: false, error: "Invalid rate" }
+    }
+    // #endregion
+
+    // #region: Check for existing receipt
+    const existingReceipt = await getNFTbyTokenId(txId)
+    if (existingReceipt) {
+      return { success: false, error: "Receipt already exists" }
+    }
+    // #endregion
+
+    // #region: Initialize blockchain tools and verify transaction
     const chainTool = BlockchainManager[chain]?.server
     if (!chainTool) {
       console.error("No chain tool found for chain", chain)
       return { success: false, error: "No chain tool found for chain" }
     }
-    // Verify that the transaction is valid
+
     const txInfo = await chainTool.getTransactionInfo(txId)
     if ("error" in txInfo) {
       console.log("ERROR", "Transaction not found")
       throw new Error(`Transaction not found: ${txInfo.error}`)
     }
+    // #endregion
 
+    // #region: Fetch related data (user, initiative, organization)
     const created = DateTime.now().toFormat("yyyy-LL-dd HH:mm:ss")
 
-    // Get user data
     console.log("Donor", donorWalletAddress)
-    const user = await getUserByWallet(donorWalletAddress) // Should exist user by now
-    //console.log('USER', user)
+    const user = await getUserByWallet(donorWalletAddress)
     const userId = user?.id || ""
     if (!userId) {
       console.log("ERROR", "User not found")
       throw new Error("User not found")
     }
 
-    // Get initiative info
     const initiative = await getInitiativeById(initiativeId)
-    //console.log('INITIATIVE', initiative)
     if (!initiative) {
       console.log("ERROR", "Initiative not found")
       throw new Error("Initiative info not found")
     }
     const initiativeName = initiative.title || "Direct Donation"
 
-    // Get organization info
-    const organizationId = initiative.organizationId
     const organization = await getOrganizationById(organizationId)
-    //console.log('ORGANIZATION', organization)
     if (!organization) {
       console.log("ERROR", "Organization not found")
       throw new Error("Organization not found")
     }
     const organizationName = organization?.name
+    // #endregion
 
-    const rate = await getCoinRate({ symbol: token, chain }).catch(() => 0)
+    // #region: Calculate amounts and prepare metadata
     const amountCUR = (+amount).toFixed(4)
     const amountUSD = (+amount * rate).toFixed(4)
 
     const uriImage =
       initiative?.imageUri ||
       "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
-    //const uriImage = 'ipfs:QmdmPTsnJr2AwokcR1QC11s1T3NRUh9PK8jste1ngnuDzT' // thank you NFT
-    //let uriImage = 'https://ipfs.io/ipfs/bafybeihfgwla34hifpekxjpyga4bibjj3m37ul5j77br7q7vr4ajs4rgiq' // thank you NFT
-    //#endregion
 
-    //#region: Metadata from hook
-    // runHook takes 3 params. 1. The Trigger name 2. The organizations to check and 3. Additional data that can be used by the the hook
     const extraMetadata = await runHook(
       Triggers.addMetadataToNFTReceipt,
       `${organizationId}`,
@@ -102,30 +168,22 @@ export async function mintAndSaveReceiptNFT({
       },
     )
     console.log("EXTRA:", extraMetadata)
-    //#endregion
 
-    //#region: Credit metadata
     const creditMeta: { creditValue?: string } = {}
     const credit = initiative?.credits?.[0]
     console.log("CREDIT", initiative?.credits)
     if (credit) {
       const creditTon = Number(credit.value) / (rate || 1)
       let offsetVal = creditTon > 0 ? Number(amountUSD) / creditTon : 0
-      // TODO: Why is this rounding the value? Seems like it should use the raw value
       if (offsetVal < 0.00005) {
         offsetVal = 0.0001
       } // Round up
       const offsetTxt = `${offsetVal.toFixed(4)} Tons`
       creditMeta.creditValue = offsetTxt
-      console.log("CREDITVAL", credit.value)
-      console.log("CREDITTON", creditTon)
-      console.log("OFFSETVAL", offsetVal)
-      console.log("OFFSETTXT", offsetTxt)
     }
-    //#endregion
+    // #endregion
 
-    //#region: Save metadata
-    // Save metadata
+    // #region: Prepare and upload metadata
     const metadata = {
       ...creditMeta,
       ...(extraMetadata?.output ?? {}),
@@ -140,11 +198,10 @@ export async function mintAndSaveReceiptNFT({
       coinIssuer: chain,
       coinValue: amountCUR,
       usdValue: amountUSD,
-      // operation: opid,  <-- is this important?
     }
 
     console.log("META", metadata)
-    const fileId = `meta-${txId}` // unique file id, used to be opid, is this OK?
+    const fileId = `meta-${txId}`
     const bytes = Buffer.from(JSON.stringify(metadata, null, 2))
     const cidMeta = await uploadDataToIPFS(fileId, bytes, "text/plain")
     console.log("CID", cidMeta)
@@ -152,17 +209,14 @@ export async function mintAndSaveReceiptNFT({
       throw new Error("Error uploading metadata")
     }
     const uriMeta = `ipfs:${cidMeta}`
-    //let uriMeta = process.env.IPFS_GATEWAY_URL + cidMeta
     console.log("META URI", uriMeta)
-    //#endregion
+    // #endregion
 
     // #region: Mint NFT on chains
-    // Contracts we'll invoke to mint receipt NFTs
     const receiptConctractsByChain: Array<{
       chain: ChainSlugs
       contract: string
     }> = []
-    // Find all receipt contracts in the app config, add to array
     for (const chainSlug in appConfig.chains) {
       const chain = appConfig.chains.find(({ slug }) => slug === chainSlug)
       if (chain?.contracts.receiptMintbotERC721) {
@@ -203,7 +257,7 @@ export async function mintAndSaveReceiptNFT({
       }
     }
     const offerId = "" // no need for offers in soroban
-    //#endregion
+    // #endregion
 
     // #region: Save data to DB
     const data = {
@@ -219,7 +273,7 @@ export async function mintAndSaveReceiptNFT({
       coinLabel: chain,
       coinValue: amountCUR,
       usdValue: amountUSD,
-      tokenId: tokenId, // TODO: how to handle multiple tokenIds?
+      tokenId: tokenId,
       offerId: offerId,
       status: DonationStatus.claimed,
     }
@@ -229,9 +283,29 @@ export async function mintAndSaveReceiptNFT({
     if (!saved) {
       throw new Error("Problem saving NFT data to db")
     }
-    //#endregion
+    // #endregion
 
-    // Success
+    // #region: Send email receipt
+    if (email) {
+      const emailResponse = await sendEmailReceipt(email, {
+        date,
+        donorName,
+        organizationName: organization.name,
+        address: organization.mailingAddress ?? "",
+        ein: organization.EIN ?? "",
+        coinSymbol: token,
+        coinValue: amountCUR,
+        usdValue: amountUSD,
+      })
+      if (!emailResponse.success) {
+        console.warn(
+          `Minted NFT, but failed to send email receipt: ${emailResponse.error}`,
+        )
+      }
+    }
+    // #endregion
+
+    // #region: Return result
     console.log("Minting completed")
     const result = {
       success: true,
@@ -242,11 +316,15 @@ export async function mintAndSaveReceiptNFT({
     }
     console.log("RESULT", result)
     return result
+    // #endregion
   } catch (ex) {
     console.error(ex)
     if (ex instanceof Error) {
-      throw new Error(`Error minting NFT receipt: ${ex.message}`)
+      return {
+        success: false,
+        error: `Error minting NFT receipt: ${ex.message}`,
+      }
     }
-    throw new Error("Error minting NFT receipt: unknown error")
+    return { success: false, error: "Error minting NFT receipt: unknown error" }
   }
 }

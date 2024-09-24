@@ -8,9 +8,13 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    "./auth": {
-      "import": "./dist/auth/index.js",
-      "types": "./dist/auth/index.d.ts"
+    "./server/auth": {
+      "import": "./dist/server/auth/index.js",
+      "types": "./dist/server/auth/index.d.ts"
+    },
+    "./client/auth": {
+      "import": "./dist/client/auth/index.js",
+      "types": "./dist/client/auth/index.d.ts"
     },
     "./ui": {
       "import": "./dist/ui/index.js",

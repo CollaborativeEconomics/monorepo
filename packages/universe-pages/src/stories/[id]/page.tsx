@@ -20,7 +20,8 @@ export default async function Story(props: { params: { id: string } }) {
   }
 
   const media = story.media.map(it => it.media); // flatten list
-  media.unshift(story.image); // main image to the top
+  const image = story.image ? [story.image] : [];
+  media.unshift(...image); // main image to the top
 
   return (
     <main className="flex min-h-screen flex-col items-stretch container mt-12 pt-24">

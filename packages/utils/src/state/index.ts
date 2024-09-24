@@ -1,11 +1,10 @@
 import appConfig from "@cfce/app-config"
-import type { Prisma } from "@cfce/database"
 import type { ChainSlugs, Interfaces, TokenTickerSymbol } from "@cfce/types"
 import type { Draft } from "immer" // TS doesn't like it if we don't import this
 import { atom } from "jotai"
 import { atomWithImmer } from "jotai-immer"
 
-const chainsState = atomWithImmer<{
+const chainAtom = atomWithImmer<{
   selectedChain: ChainSlugs
   selectedWallet: Interfaces
   selectedToken: TokenTickerSymbol
@@ -36,7 +35,7 @@ interface DonationFormState {
   paymentStatus: (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]
 }
 
-const donationFormState = atomWithImmer<DonationFormState>({
+const donationFormAtom = atomWithImmer<DonationFormState>({
   amount: 0,
   name: "",
   email: "",
@@ -48,18 +47,18 @@ const donationFormState = atomWithImmer<DonationFormState>({
 })
 
 const amountUSDAtom = atom<number>((get) => {
-  const { showUsd, amount } = get(donationFormState)
+  const { showUsd, amount } = get(donationFormAtom)
   if (!showUsd) {
-    const exchangeRate = get(chainsState).exchangeRate
+    const exchangeRate = get(chainAtom).exchangeRate
     return amount * exchangeRate
   }
   return amount
 })
 
 const amountCoinAtom = atom<number>((get) => {
-  const { showUsd, amount } = get(donationFormState)
+  const { showUsd, amount } = get(donationFormAtom)
   if (showUsd) {
-    const exchangeRate = get(chainsState).exchangeRate
+    const exchangeRate = get(chainAtom).exchangeRate
     return amount / exchangeRate
   }
   return amount
@@ -78,8 +77,8 @@ const appSettingsAtom = atomWithImmer<AppSettings>({
 })
 
 export {
-  chainsState,
-  donationFormState,
+  chainAtom,
+  donationFormAtom,
   amountUSDAtom,
   amountCoinAtom,
   appSettingsAtom,

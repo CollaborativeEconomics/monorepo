@@ -2,7 +2,8 @@
 import appConfig from '@cfce/app-config';
 import { getChainConfiguration } from '@cfce/blockchain-tools';
 import type { AuthTypes, ChainSlugs } from '@cfce/types';
-import { AuthButton, Divider } from '@cfce/universe-components/ui';
+import { AuthButton } from '@cfce/universe-components/server/auth';
+import { Divider } from '@cfce/universe-components/ui';
 import { appSettingsAtom, loginOrCreateUserFromWallet } from '@cfce/utils';
 import { useAtomValue } from 'jotai';
 import { signIn } from 'next-auth/react';

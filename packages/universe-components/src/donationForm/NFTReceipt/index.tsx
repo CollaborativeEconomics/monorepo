@@ -3,8 +3,8 @@ import type { Prisma } from '@cfce/database';
 import {
   amountCoinAtom,
   amountUSDAtom,
-  chainsState,
-  donationFormState,
+  chainAtom,
+  donationFormAtom,
   localizedNumber,
 } from '@cfce/utils';
 import { useAtomValue } from 'jotai';
@@ -26,8 +26,8 @@ interface ReceiptNFTProps {
 
 export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
   const organization = initiative.organization;
-  const donationForm = useAtomValue(donationFormState);
-  const { selectedToken } = useAtomValue(chainsState);
+  const donationForm = useAtomValue(donationFormAtom);
+  const { selectedToken } = useAtomValue(chainAtom);
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
   // const [disabled, setDisabled] = useState(true);
