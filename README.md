@@ -1,14 +1,12 @@
-# Turborepo starter
+# CFCE Monorepo
 
-This is an official starter Turborepo.
+This is the CFCE Monorepo.
 
 ## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
+ 
+ - Run `nvm use`, or use node 18+
+ - Set up pnpm `npm i -g pnpm`
+ - Run `./setup-packages.sh` to install and build all packages
 
 ## What's inside?
 
