@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google';
 import styles from 'styles/dashboard.module.css';
+import SessionProvider from '~/components/SessionProvider';
 import Dashboard from '~/components/dashboard';
-import Session from '~/components/session';
 import Sidebar from '~/components/sidebar';
 
 const inter = Inter({ subsets: ['latin'] });

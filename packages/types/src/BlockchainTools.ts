@@ -102,7 +102,7 @@ interface TokenConfig {
 
 export interface ChainConfig {
   slug: ChainSlugs
-  name: string
+  name: Chain
   symbol: string
   icon: string // This should be a string path to the icon
   networks: Record<string, NetworkConfig>
