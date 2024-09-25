@@ -1,5 +1,5 @@
 "use server"
-import { type User, getUserByWallet, newUser } from "@cfce/database"
+import { type Chain, type User, getUserByWallet, newUser } from "@cfce/database"
 import { getSession } from "next-auth/react"
 
 async function authenticate() {
@@ -17,7 +17,10 @@ export async function fetchUserByWallet(
   return await getUserByWallet(walletAddress)
 }
 
-export async function createNewUser(walletAddress: string): Promise<User> {
+export async function createNewUser(
+  walletAddress: string,
+  chain: Chain,
+): Promise<User> {
   await authenticate()
   return await newUser({
     name: "Anonymous",
@@ -25,7 +28,7 @@ export async function createNewUser(walletAddress: string): Promise<User> {
     wallets: {
       create: {
         address: walletAddress,
-        chain: "chainName", // Replace with actual chain name
+        chain,
       },
     },
   })

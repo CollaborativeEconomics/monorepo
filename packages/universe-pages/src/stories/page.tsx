@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { getStories } from '@cfce/database';
 import { StoryCard } from '@cfce/universe-components/story';
 import { Title } from '@cfce/universe-components/ui';

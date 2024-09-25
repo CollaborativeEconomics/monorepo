@@ -1,4 +1,3 @@
-import type { NetworkConfig } from "@cfce/blockchain-tools"
 import {
   Address,
   BASE_FEE,

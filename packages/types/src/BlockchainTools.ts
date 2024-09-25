@@ -105,7 +105,7 @@ export interface ChainConfig {
   name: Chain
   symbol: TokenTickerSymbol
   logo: string
-  // icon: string
+  icon: string
   networks: Record<Network, NetworkConfig>
 }
 

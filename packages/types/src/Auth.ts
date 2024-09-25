@@ -7,7 +7,7 @@ export type AuthConfig = Record<
   AuthTypes,
   {
     authProvider: Provider
-    // icon: string
+    icon: string
     name: string
     slug: AuthTypes
   }

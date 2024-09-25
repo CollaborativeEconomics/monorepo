@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { getInitiatives } from '@cfce/database';
 import { InitiativeCard } from '@cfce/universe-components/initiative';
 import { SearchBar } from '@cfce/universe-components/search';

@@ -87,8 +87,7 @@ const authOptions: AuthOptions = {
       // @ts-ignore TODO: move this to state
       session.isAdmin = token?.userRole === "admin"
       // Handle user-related updates
-      // @ts-ignore TODO: move this to state
-      session.userId = (token?.userId as string) || ""
+      session.user.id = (token?.userId as string) || ""
       // @ts-ignore TODO: move this to state
       session.address = (token?.address as string) || ""
       // @ts-ignore TODO: move this to state

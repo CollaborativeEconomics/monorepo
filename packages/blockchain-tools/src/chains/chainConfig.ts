@@ -6,7 +6,7 @@ const chainConfiguration: Chains = {
     name: "Arbitrum",
     symbol: "ARB",
     logo: "arb.svg",
-    // icon: require("../assets/arb.svg").default,
+    icon: require("../assets/arb.svg").default,
     networks: {},
   },
   avalanche: {
@@ -14,7 +14,7 @@ const chainConfiguration: Chains = {
     name: "Avalanche",
     symbol: "AVAX",
     logo: "avax.svg",
-    // icon: require("../assets/avax.svg").default,
+    icon: require("../assets/avax.svg").default,
     networks: {},
   },
   base: {
@@ -22,7 +22,7 @@ const chainConfiguration: Chains = {
     name: "Base",
     symbol: "BASE",
     logo: "base.svg",
-    // icon: require("../assets/base.svg").default,
+    icon: require("../assets/base.svg").default,
     networks: {},
   },
   binance: {
@@ -30,7 +30,7 @@ const chainConfiguration: Chains = {
     name: "Binance",
     symbol: "BNB",
     logo: "bnb.svg",
-    // icon: require("../assets/bnb.svg").default,
+    icon: require("../assets/bnb.svg").default,
     networks: {},
   },
   celo: {
@@ -38,7 +38,7 @@ const chainConfiguration: Chains = {
     name: "Celo",
     symbol: "CELO",
     logo: "celo.svg",
-    // icon: require("../assets/celo.svg").default,
+    icon: require("../assets/celo.svg").default,
     networks: {},
   },
   eos: {
@@ -46,7 +46,7 @@ const chainConfiguration: Chains = {
     name: "EOS",
     symbol: "EOS",
     logo: "eos.svg",
-    // icon: require("../assets/eos.svg").default,
+    icon: require("../assets/eos.svg").default,
     networks: {},
   },
   ethereum: {
@@ -54,7 +54,7 @@ const chainConfiguration: Chains = {
     name: "Ethereum",
     symbol: "ETH",
     logo: "eth.svg",
-    // icon: require("../assets/eth.svg").default,
+    icon: require("../assets/eth.svg").default,
     networks: {},
   },
   filecoin: {
@@ -62,7 +62,7 @@ const chainConfiguration: Chains = {
     name: "Filecoin",
     symbol: "FIL",
     logo: "fil.svg",
-    // icon: require("../assets/fil.svg").default,
+    icon: require("../assets/fil.svg").default,
     networks: {},
   },
   flare: {
@@ -70,7 +70,7 @@ const chainConfiguration: Chains = {
     name: "Flare",
     symbol: "FLR",
     logo: "flr.svg",
-    // icon: require("../assets/flr.svg").default,
+    icon: require("../assets/flr.svg").default,
     networks: {},
   },
   optimism: {
@@ -78,7 +78,7 @@ const chainConfiguration: Chains = {
     name: "Optimism",
     symbol: "OP",
     logo: "op.svg",
-    // icon: require("../assets/op.svg").default,
+    icon: require("../assets/op.svg").default,
     networks: {},
   },
   polygon: {
@@ -86,7 +86,7 @@ const chainConfiguration: Chains = {
     name: "Polygon",
     symbol: "MATIC",
     logo: "matic.svg",
-    // icon: require("../assets/matic.svg").default,
+    icon: require("../assets/matic.svg").default,
     networks: {},
   },
   starknet: {
@@ -94,7 +94,7 @@ const chainConfiguration: Chains = {
     name: "Starknet",
     symbol: "STRK",
     logo: "strk.svg",
-    // icon: require("../assets/strk.svg").default,
+    icon: require("../assets/strk.svg").default,
     networks: {},
   },
   stellar: {
@@ -102,7 +102,7 @@ const chainConfiguration: Chains = {
     name: "Stellar",
     symbol: "XLM",
     logo: "xlm.svg",
-    // icon: require("../assets/xlm.svg").default,
+    icon: require("../assets/xlm.svg").default,
     networks: {},
   },
   xinfin: {
@@ -110,7 +110,7 @@ const chainConfiguration: Chains = {
     name: "XDC",
     symbol: "XDC",
     logo: "xdc.svg",
-    // icon: require("../assets/xdc.svg").default,
+    icon: require("../assets/xdc.svg").default,
     networks: {},
   },
   xrpl: {
@@ -118,7 +118,7 @@ const chainConfiguration: Chains = {
     name: "XRPL",
     symbol: "XRP",
     logo: "xrp.svg",
-    // icon: require("../assets/xrp.svg").default,
+    icon: require("../assets/xrp.svg").default,
     networks: {},
   },
 } as const
