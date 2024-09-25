@@ -3,19 +3,27 @@ import type { AppConfig } from "@cfce/types"
 import giveCreditsDev from "./config/give-credits/appConfig.development"
 import giveCreditsProd from "./config/give-credits/appConfig.production"
 import giveCreditsStaging from "./config/give-credits/appConfig.staging"
+import givingUniverseDev from "./config/giving-universe/appConfig.development"
+import givingUniverseProd from "./config/giving-universe/appConfig.production"
+import givingUniverseStaging from "./config/giving-universe/appConfig.staging"
 // partners
 import partnersDev from "./config/partners/appConfig.development"
 import partnersProd from "./config/partners/appConfig.production"
 import partnersStaging from "./config/partners/appConfig.staging"
 
 type Environment = "development" | "production" | "staging"
-type AppId = "give-credits" | "partners" | "registry"
+type AppId = "give-credits" | "giving-universe" | "partners" | "registry"
 
 const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
   "give-credits": {
     development: giveCreditsDev,
     production: giveCreditsProd,
     staging: giveCreditsStaging,
+  },
+  "giving-universe": {
+    development: givingUniverseDev,
+    production: givingUniverseProd,
+    staging: givingUniverseStaging,
   },
   partners: {
     development: partnersDev,

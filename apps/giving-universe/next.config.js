@@ -37,6 +37,7 @@ const nextConfig = {
     outputFileTracingRoot: path.join(process.cwd(), '../../'),
     optimizePackageImports: [
       '@cfce/universe-components',
+      '@cfce/blockchain-tools',
       '@cfce/utils',
       '@cfce/universe-pages',
     ],
