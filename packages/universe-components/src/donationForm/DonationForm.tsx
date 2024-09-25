@@ -122,7 +122,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       const paymentResult = await sendPayment(destinationWalletAddress, amount);
 
       if (!paymentResult.success) {
-        throw new Error('Payment failed');
+        throw new Error(`Payment error: ${paymentResult.error ?? 'unknown'}`);
       }
 
       const receiptResult = await mintAndSaveReceiptNFT({
