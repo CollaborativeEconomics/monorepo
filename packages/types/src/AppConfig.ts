@@ -25,6 +25,9 @@ export interface AppConfig {
       light: string
       dark: string
     }
+    options: {
+      showCarbonCreditDisplay: boolean
+    }
   }
   apis: {
     registry: {

@@ -8,22 +8,22 @@ interface WalletConfig {
 
 export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
   freighter: {
-    icon: require("../assets/freighter.svg").default,
+    icon: "/icons/freighter.webp",
     slug: "freighter",
     name: "Freighter",
   },
   metamask: {
-    icon: require("../assets/metamask.svg").default,
+    icon: "/icons/metamask.webp",
     slug: "metamask",
     name: "Metamask",
   },
   xaman: {
-    icon: require("../assets/xaman.svg").default,
+    icon: "/icons/xaman.webp",
     slug: "xaman",
     name: "Xaman",
   },
   argent: {
-    icon: require("../assets/argent.svg").default,
+    icon: "/icons/argent.webp",
     slug: "argent",
     name: "Argent",
   },

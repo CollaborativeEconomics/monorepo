@@ -18,7 +18,7 @@ import { CheckboxWithText } from '../ui/checkbox';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
-import { CarbonCreditCalculations } from './CarbonCreditCalculations';
+import { CarbonCreditDisplay } from './CarbonCreditDisplay';
 import { ChainSelect } from './ChainSelect';
 import { DonationAmountInput } from './DonationAmountInput';
 import { MintButton } from './MintButton';
@@ -191,10 +191,11 @@ export default function DonationForm({ initiative }: DonationFormProps) {
         </div>
         <Separator />
         <div className="px-6">
-          <CarbonCreditCalculations initiative={initiative} />
-          <div className="w-full my-6">
-            <Label>Amount</Label>
-            <DonationAmountInput className="pl-4" />
+          {appConfig.siteInfo.options.showCarbonCreditDisplay && (
+            <CarbonCreditDisplay initiative={initiative} />
+          )}
+          <div className="w-full mt-6 mb-2">
+            <DonationAmountInput label="Amount" />
             <RateMessage />
           </div>
           <Label htmlFor="name-input" className="mb-2">

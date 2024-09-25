@@ -1,1 +1,0 @@
-{"version":3,"file":"LoginButtons.d.ts","sourceRoot":"","sources":["LoginButtons.tsx"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAa,UAAU,EAAE,MAAM,aAAa,CAAC;AAKzD,UAAU,iBAAiB;IACzB,KAAK,EAAE,UAAU,CAAC;IAClB,OAAO,EAAE,MAAM,EAAE,CAAC;CACnB;AAED,MAAM,CAAC,OAAO,UAAU,YAAY,CAAC,EAAE,KAAK,EAAE,OAAO,EAAE,EAAE,iBAAiB,+BA8BzE"}

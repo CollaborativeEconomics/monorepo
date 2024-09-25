@@ -97,16 +97,15 @@ interface TokenConfig {
   name: string
   symbol: string
   decimals: number
-  logo: string
+  icon: string
 }
 
 export interface ChainConfig {
   slug: ChainSlugs
-  name: Chain
-  symbol: TokenTickerSymbol
-  logo: string
-  icon: string
-  networks: Record<Network, NetworkConfig>
+  name: string
+  symbol: string
+  icon: string // This should be a string path to the icon
+  networks: Record<string, NetworkConfig>
 }
 
 export type Interfaces =

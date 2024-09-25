@@ -4,10 +4,9 @@
   "description": "Common tools for interacting with diverse blockchains. Used in the CFCE ecosystem.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc && pnpm copy-assets",
+    "build": "rm -rf dist && tsc",
     "prepublishOnly": "npm run build",
     "addChain": "node src/utils/createChainFromTemplate.js",
-    "copy-assets": "cp -r src/assets dist/assets",
     "test": "jest"
   },
   "jest": {
