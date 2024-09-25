@@ -10,6 +10,10 @@ import type { AppConfig, AuthTypes } from "@cfce/types"
 const siteInfo = {
   title: "Giving Universe",
   description: "Make tax-deductible donations with crypto",
+  logo: {
+    light: "/newui/logo.svg",
+    dark: "/newui/logoWhite.svg",
+  },
 }
 
 const apis = {

@@ -21,6 +21,10 @@ export interface AppConfig {
   siteInfo: {
     title: string
     description: string
+    logo?: {
+      light: string
+      dark: string
+    }
   }
   apis: {
     registry: {

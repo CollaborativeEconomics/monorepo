@@ -31,6 +31,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    domains: ['your-domain.com'], // Replace with your actual domain
   },
   experimental: {
     // instrumentationHook: true,
