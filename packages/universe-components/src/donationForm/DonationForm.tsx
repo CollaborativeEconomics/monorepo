@@ -171,7 +171,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   ]);
 
   function validateForm({ email }: { email: string }) {
-    if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
+    if (email && !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
       throw new Error('Invalid email');
     }
   }
