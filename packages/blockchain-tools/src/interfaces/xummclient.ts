@@ -5,26 +5,26 @@ import XrplCommon from "./XrplCommon"
 export default class XummClient extends XrplCommon {
   wallet?: Xumm
 
-  initialize() {
-    try {
-      this.wallet = new Xumm(process.env.NEXT_PUBLIC_XUMM_API_KEY as string)
-    } catch (error) {
-      throw new Error(
-        `Error initializing Xumm client: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-      )
+  getWallet() {
+    if (!this.wallet) {
+      try {
+        this.wallet = new Xumm(process.env.NEXT_PUBLIC_XUMM_API_KEY as string)
+      } catch (error) {
+        throw new Error(
+          `Error initializing Xumm client: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
+        )
+      }
     }
     return this.wallet
   }
 
   async connect() {
     console.log("XRP Connecting...")
-    if (!this.wallet) {
-      this.wallet = this.initialize()
-    }
+    const wallet = this.getWallet()
     try {
-      const state = await this.wallet.authorize()
+      const state = await wallet.authorize()
       console.log("Xumm Authorized", state)
       if (!state) {
         console.log("Error: no state")
@@ -34,9 +34,7 @@ export default class XummClient extends XrplCommon {
         const flow = state
         const user = state.me
         const address = user.account
-        const network = (
-          (await this.wallet.user.networkType) ?? ""
-        ).toLowerCase()
+        const network = ((await wallet.user.networkType) ?? "").toLowerCase()
         const token = flow.jwt
         // const data = {
         //   wallet: "xumm",
@@ -72,6 +70,7 @@ export default class XummClient extends XrplCommon {
     walletAddress?: string
   }> {
     console.log("XRP Sending payment...", address, amount, memo)
+    const wallet = this.getWallet()
     try {
       const request: XummJsonTransaction = {
         TransactionType: "Payment",
@@ -82,10 +81,7 @@ export default class XummClient extends XrplCommon {
         request.DestinationTag = memo
       }
       //this.sendPayload(request, callback)
-      if (!this.wallet) {
-        return { success: false, error: "No wallet" }
-      }
-      const payload = await this?.wallet?.payload?.createAndSubscribe(
+      const payload = await wallet.payload?.createAndSubscribe(
         request,
         (event) => {
           if (Object.keys(event.data).indexOf("opened") > -1) {
@@ -109,7 +105,7 @@ export default class XummClient extends XrplCommon {
       if (!payload) {
         return { success: false, error: "No payload" }
       }
-      const data = await this.wallet.payload?.get(payload.created)
+      const data = await wallet.payload?.get(payload.created)
       console.log("RESOLVED")
       console.log("Payload resolved", resolved)
       if (!data) {
@@ -205,11 +201,9 @@ export default class XummClient extends XrplCommon {
 
   async sendPayload(request: XummJsonTransaction) {
     console.log("REQUEST", request)
-    if (!this.wallet) {
-      return { success: false, error: "No wallet" }
-    }
+    const wallet = this.getWallet()
     try {
-      const payload = await this?.wallet?.payload?.createAndSubscribe(
+      const payload = await wallet?.payload?.createAndSubscribe(
         request,
         (event) => {
           if (Object.keys(event.data).indexOf("opened") > -1) {
@@ -235,7 +229,7 @@ export default class XummClient extends XrplCommon {
       if (!payload) {
         return { success: false, error: "No payload" }
       }
-      const data = await this.wallet.payload?.get(payload.created)
+      const data = await wallet.payload?.get(payload.created)
       console.log("RESOLVED")
       console.log("Payload resolved", resolved)
       if (!data) {
