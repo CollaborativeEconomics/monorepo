@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { getOrganizations } from '@cfce/database';
 import { OrganizationCard } from '@cfce/universe-components/organization';
 import { SearchBar } from '@cfce/universe-components/search';

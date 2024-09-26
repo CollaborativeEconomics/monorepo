@@ -1,8 +1,8 @@
 // Mints NFT and returns tokenId
 //   metauri: uri to metadata
 import { Address } from "@stellar/stellar-sdk"
-import { networks } from "@/src/contracts/networks"
-import { submit } from "@/src/contracts/nft721/server"
+import { networks } from "~/contracts/networks"
+import { submit } from "~/contracts/nft721/server"
 
 export default async function mint(
   contractId: string,

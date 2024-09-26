@@ -32,7 +32,7 @@ export default function NavMenu() {
   const { data: session, status } = useSession();
   //console.log('Header Session', session, status)
   const avatar = session?.user?.image || '/media/nopic.png';
-  const userurl = session?.userId ? `/profile/${session?.userId}` : '';
+  const userurl = session?.user.id ? `/profile/${session?.user.id}` : '';
 
   return (
     <>

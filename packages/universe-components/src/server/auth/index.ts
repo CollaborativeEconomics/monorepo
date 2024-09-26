@@ -1,3 +1,3 @@
-import { AuthButton } from "./auth-button"
+import LoginButtons from "./LoginButtons"
 
-export { AuthButton }
+export { LoginButtons }

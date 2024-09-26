@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { getStoryById } from '@cfce/database';
 import { NotFound } from '@cfce/universe-components/navigation';
 import { OrganizationAvatar } from '@cfce/universe-components/organization';

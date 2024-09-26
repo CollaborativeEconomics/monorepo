@@ -1,6 +1,6 @@
-import { checkContract } from "@/src/contracts/credits/server"
-import { networks } from "@/src/contracts/networks"
 import { Address, nativeToScVal } from "@stellar/stellar-sdk"
+import { checkContract } from "~/contracts/credits/server"
+import { networks } from "~/contracts/networks"
 
 export default async function restoreContract(contractId: string) {
   try {

@@ -18,7 +18,7 @@ import { CheckboxWithText } from '../ui/checkbox';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
-import { CarbonCreditCalculations } from './CarbonCreditCalculations';
+import { CarbonCreditDisplay } from './CarbonCreditDisplay';
 import { ChainSelect } from './ChainSelect';
 import { DonationAmountInput } from './DonationAmountInput';
 import { MintButton } from './MintButton';
@@ -122,7 +122,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       const paymentResult = await sendPayment(destinationWalletAddress, amount);
 
       if (!paymentResult.success) {
-        throw new Error('Payment failed');
+        throw new Error(`Payment error: ${paymentResult.error ?? 'unknown'}`);
       }
 
       const receiptResult = await mintAndSaveReceiptNFT({
@@ -171,7 +171,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   ]);
 
   function validateForm({ email }: { email: string }) {
-    if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
+    if (email && !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
       throw new Error('Invalid email');
     }
   }
@@ -191,10 +191,11 @@ export default function DonationForm({ initiative }: DonationFormProps) {
         </div>
         <Separator />
         <div className="px-6">
-          <CarbonCreditCalculations initiative={initiative} />
-          <div className="w-full my-6">
-            <Label>Amount</Label>
-            <DonationAmountInput className="pl-4" />
+          {appConfig.siteInfo.options.showCarbonCreditDisplay && (
+            <CarbonCreditDisplay initiative={initiative} />
+          )}
+          <div className="w-full mt-6 mb-2">
+            <DonationAmountInput label="Amount" />
             <RateMessage />
           </div>
           <Label htmlFor="name-input" className="mb-2">

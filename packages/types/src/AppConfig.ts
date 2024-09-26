@@ -21,6 +21,13 @@ export interface AppConfig {
   siteInfo: {
     title: string
     description: string
+    logo?: {
+      light: string
+      dark: string
+    }
+    options: {
+      showCarbonCreditDisplay: boolean
+    }
   }
   apis: {
     registry: {

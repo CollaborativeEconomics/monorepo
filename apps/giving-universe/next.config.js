@@ -31,12 +31,14 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    domains: ['your-domain.com'], // Replace with your actual domain
   },
   experimental: {
     // instrumentationHook: true,
     outputFileTracingRoot: path.join(process.cwd(), '../../'),
     optimizePackageImports: [
       '@cfce/universe-components',
+      '@cfce/blockchain-tools',
       '@cfce/utils',
       '@cfce/universe-pages',
     ],

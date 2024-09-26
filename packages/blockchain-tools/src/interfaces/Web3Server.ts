@@ -68,7 +68,7 @@ export default class Web3Server extends ChainBaseClass {
     if (hasLogs) {
       console.log("LOGS.0", JSON.stringify(info?.logs[0].topics, null, 2))
       console.log("LOGS.1", JSON.stringify(info?.logs[1].topics, null, 2))
-      tokenNum = ` #${Number.parseInt(_get(info, "logs.0.topics.3", "0"), 16)}`
+      tokenNum = ` #${Number.parseInt(Buffer.from(_get(info, "logs.0.topics.3", Buffer.alloc(0))).toString("hex"), 16)}`
     }
     if (info.status === 1) {
       const tokenId = contractId + tokenNum

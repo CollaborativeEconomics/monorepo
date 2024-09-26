@@ -14,7 +14,6 @@ import { Menu } from 'lucide-react';
 import { type Session, getServerSession } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MobileMenuButton } from './MobileMenuButton';
 import OrganizationSelect from './OrganizationSelect';
 import SignInButton from './SignInButton';
 import SignOutButton from './SignOutButton';

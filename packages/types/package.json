@@ -6,12 +6,14 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc && pnpm copy-declarations",
+    "copy-declarations": "mkdir -p dist/declarations && cp -r src/declarations/* dist/declarations/"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.14.9",
-    "typescript": "latest"
+    "typescript": "latest",
+    "next-auth": "latest"
   },
   "peerDependencies": {
     "next-auth": "latest"

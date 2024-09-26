@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import * as React from 'react';
 import type { InputProps } from '../ui/input';
 import {
@@ -11,26 +12,26 @@ import {
 interface SelectOption {
   value: string;
   label: string;
-  image: string | JSX.Element;
+  icon: string;
 }
 
-export interface SelectInputProps<T extends string = string>
+export interface SelectInputProps<T extends string, U extends SelectOption>
   extends InputProps {
   className?: string;
   currentOption: T;
   handleChange: (item: T) => void;
-  options: SelectOption[];
+  options: U[];
   placeHolderText: string;
 }
 
-const DonationFormSelect = <T extends string = string>({
+const DonationFormSelect = <T extends string, U extends SelectOption>({
   className,
   options,
   currentOption,
   placeHolderText,
   handleChange,
   ...props
-}: SelectInputProps<T>) => {
+}: SelectInputProps<T, U>) => {
   return (
     <Select onValueChange={handleChange} defaultValue={currentOption}>
       <SelectTrigger
@@ -43,22 +44,23 @@ const DonationFormSelect = <T extends string = string>({
       </SelectTrigger>
 
       <SelectContent className="bg-white">
-        {options.map(option => {
-          return (
-            <SelectItem
-              className="bg-white text-black dark:text-white"
-              value={option.value}
-              key={option.value}
-            >
-              <div className="flex flex-row gap-3">
-                {/* TODO: FIX: IMAGE NOT FOUND IS CAUSING MULTIPLE PAGE RELOADS WITH COIN ID AS INIT ID */}
-                {/* @ts-ignore */}
-                <img src={option.image} width="30px" alt={option.label} />
-                <div className="my-auto">{option.label}</div>
-              </div>
-            </SelectItem>
-          );
-        })}
+        {options.map(option => (
+          <SelectItem
+            className="dark:bg-slate-500 bg-white text-black dark:text-white"
+            value={option.value}
+            key={option.value}
+          >
+            <div className="flex flex-row gap-3">
+              <Image
+                src={option.icon}
+                alt={option.label}
+                width={30}
+                height={30}
+              />
+              <div className="my-auto">{option.label}</div>
+            </div>
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );

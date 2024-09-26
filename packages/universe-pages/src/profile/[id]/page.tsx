@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   type NFTData,
   type Prisma,
@@ -20,7 +22,7 @@ import {
   TabsTrigger,
 } from '@cfce/universe-components/ui';
 import { uploadFile } from '@cfce/utils';
-import { LayoutList, Newspaper, Image as Picture } from 'lucide-react';
+import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
@@ -191,12 +193,7 @@ export default async function Profile({
                   );
                 })}
                 <span key={0} className="inline-block border rounded-full p-1">
-                  <Image
-                    src={'/coins/newcoin.png'}
-                    width={48}
-                    height={48}
-                    alt="New chain"
-                  />
+                  <Plus size={48} className="text-gray-400" />
                 </span>
               </div>
               <button
@@ -312,7 +309,7 @@ export default async function Profile({
               <div className="flex flex-row">
                 <Newspaper size={32} className="pr-2 cursor-pointer" />
                 <LayoutList size={32} className="pr-2 cursor-pointer" />
-                <Picture size={32} className="pr-2 cursor-pointer" />
+                <ImageIcon size={32} className="pr-2 cursor-pointer" />
               </div>
             </div>
             <div className="w-full border rounded-md p-10 bg-card">

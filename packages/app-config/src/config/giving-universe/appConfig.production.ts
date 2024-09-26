@@ -1,35 +1,23 @@
-import type {
-  AppChainConfig,
-  ChainSlugs,
-  ClientInterfaces,
-  Network,
-  TokenTickerSymbol,
-} from "@cfce/types"
 import type { AppConfig, AuthTypes } from "@cfce/types"
+import appConfigBase from "../appConfigBase"
 
-const siteInfo = {
+const appConfig: AppConfig = {
+  ...appConfigBase,
+}
+
+// Override siteInfo
+appConfig.siteInfo = {
+  ...appConfig.siteInfo,
   title: "Giving Universe",
   description: "Make tax-deductible donations with crypto",
-}
-
-const apis = {
-  registry: {
-    apiUrl: "https://registry.cfce.io/api",
-  },
-  ipfs: {
-    endpoint: "https://s3.filebase.com/",
-    region: "us-east-1",
-    gateway: "https://ipfs.filebase.io/ipfs/",
-    pinning: "https://api.filebase.io/v1/ipfs",
-    buckets: {
-      nfts: "cfce-give-nfts",
-      avatars: "cfce-profiles",
-      media: "cfce-media",
-    },
+  logo: {
+    light: "/newui/logo.svg",
+    dark: "/newui/logoWhite.svg",
   },
 }
 
-const chains: AppChainConfig[] = [
+// Override chains
+appConfig.chains = [
   {
     slug: "xinfin",
     name: "XinFin",
@@ -58,27 +46,15 @@ const chains: AppChainConfig[] = [
   },
 ]
 
-const auth = ["freighter"] as AuthTypes[]
+// Override auth
+appConfig.auth = ["freighter" as AuthTypes]
 
-interface ChainDefaults {
-  network: Network
-  wallet: ClientInterfaces
-  chain: ChainSlugs
-  coin: TokenTickerSymbol
-}
-const chainDefaults: ChainDefaults = {
+// Override chainDefaults
+appConfig.chainDefaults = {
   network: "mainnet",
   wallet: "freighter",
   chain: "stellar",
   coin: "XLM",
-}
-
-const appConfig: AppConfig = {
-  apis,
-  auth,
-  chains,
-  chainDefaults,
-  siteInfo,
 }
 
 export default appConfig

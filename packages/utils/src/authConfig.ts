@@ -1,3 +1,4 @@
+import { walletConfig } from "@cfce/blockchain-tools"
 import type { AuthConfig, AuthTypes } from "@cfce/types"
 import type { Provider } from "next-auth/providers/index"
 import authProviders from "./auth/authProviders"
@@ -5,13 +6,13 @@ import authProviders from "./auth/authProviders"
 const authConfig: AuthConfig = {
   freighter: {
     authProvider: authProviders.freighter,
-    // icon: walletConfig.freighter.icon,
+    icon: walletConfig.freighter.icon,
     name: "Freighter",
     slug: "freighter",
   },
   metamask: {
     authProvider: authProviders.metamask,
-    // icon: walletConfig.metamask.icon,
+    icon: walletConfig.metamask.icon,
     name: "Metamask",
     slug: "metamask",
   },
@@ -23,25 +24,25 @@ const authConfig: AuthConfig = {
   // },
   xaman: {
     authProvider: authProviders.xaman,
-    // icon: walletConfig.xaman.icon,
+    icon: walletConfig.xaman.icon,
     name: "Xaman",
     slug: "xaman",
   },
   argent: {
     authProvider: authProviders.argent,
-    // icon: walletConfig.argent.icon,
+    icon: walletConfig.argent.icon,
     name: "Argent",
     slug: "argent",
   },
   github: {
     authProvider: authProviders.github,
-    // icon: require("./assets/github.svg").default,
+    icon: require("./assets/github.svg").default,
     name: "Github",
     slug: "github",
   },
   google: {
     authProvider: authProviders.google,
-    // icon: require("./assets/google.svg").default,
+    icon: require("./assets/google.svg").default,
     name: "Google",
     slug: "google",
   },

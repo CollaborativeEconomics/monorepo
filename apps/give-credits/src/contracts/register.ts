@@ -1,42 +1,59 @@
-import { BASE_FEE, Account, Address, Asset, Contract, Horizon, Keypair, Networks, Operation, SorobanRpc, Transaction, TransactionBuilder, nativeToScVal, scValToNative } from '@stellar/stellar-sdk'
 import { signTransaction } from "@stellar/freighter-api"
-import { networks } from '@/src/contracts/networks'
-
+import {
+  Account,
+  Address,
+  Asset,
+  BASE_FEE,
+  Contract,
+  Horizon,
+  Keypair,
+  Networks,
+  Operation,
+  SorobanRpc,
+  Transaction,
+  TransactionBuilder,
+  nativeToScVal,
+  scValToNative,
+} from "@stellar/stellar-sdk"
+import { networks } from "~/contracts/networks"
 
 // FIX: Bug in Soroban, register user in contract on first use: invokeHostFunctionResourceLimitExceeded
 // https://github.com/eigerco/nebula/issues/41#issuecomment-1733511887
-export default async function registerUser(contractId:string, from:string) {
+export default async function registerUser(contractId: string, from: string) {
   try {
-    console.log('-- Register', contractId, from)
-    const netname = process.env.NEXT_PUBLIC_STELLAR_NETWORK||'testnet'
-    console.log('NETENV', netname)
+    console.log("-- Register", contractId, from)
+    const netname = process.env.NEXT_PUBLIC_STELLAR_NETWORK || "testnet"
+    console.log("NETENV", netname)
     const network = networks[netname]
-    console.log('NETWORK', network)
+    console.log("NETWORK", network)
     const soroban = new SorobanRpc.Server(network.soroban, { allowHttp: true })
     const adr = new Address(from).toScVal()
     const ctr = new Contract(contractId)
-    console.log('CTR', ctr)
-    const op = ctr.call('register', adr)
+    console.log("CTR", ctr)
+    const op = ctr.call("register", adr)
     //const op = ctr.call('getBalance')
-    console.log('OP', op)
+    console.log("OP", op)
     const account = await soroban.getAccount(from)
-    console.log('ACT', account)
+    console.log("ACT", account)
     //const base = await horizon.fetchBaseFee()
     //const fee = base.toString()
     const fee = BASE_FEE
-    const trx = new TransactionBuilder(account, {fee, networkPassphrase: network.passphrase})
+    const trx = new TransactionBuilder(account, {
+      fee,
+      networkPassphrase: network.passphrase,
+    })
       .addOperation(op)
       .setTimeout(30)
       .build()
-    console.log('TRX', trx)
-    const sim = await soroban.simulateTransaction(trx);
-    console.log('SIM', sim)
+    console.log("TRX", trx)
+    const sim = await soroban.simulateTransaction(trx)
+    console.log("SIM", sim)
     if (SorobanRpc.Api.isSimulationSuccess(sim) && sim.result !== undefined) {
-      console.log('RES', sim.result)
+      console.log("RES", sim.result)
       return true
     }
     return false
-/*
+    /*
       // Now prepare it???
       const txp = await soroban.prepareTransaction(trx)
       console.log('TXP',txp)
@@ -99,8 +116,8 @@ export default async function registerUser(contractId:string, from:string) {
       return false
     }
 */
-  } catch(ex) {
-    console.log('REG ERROR', ex)
+  } catch (ex) {
+    console.log("REG ERROR", ex)
     return false
   }
 }

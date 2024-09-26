@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { getOrganizationById, getStories } from '@cfce/database';
 import { InitiativeCard } from '@cfce/universe-components/initiative';
 import { OrganizationAvatar } from '@cfce/universe-components/organization';

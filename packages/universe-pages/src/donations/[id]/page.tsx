@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { getDonationById } from '@cfce/database';
 import { OrganizationAvatar } from '@cfce/universe-components/organization';
 import { Card, CardContent } from '@cfce/universe-components/ui';
