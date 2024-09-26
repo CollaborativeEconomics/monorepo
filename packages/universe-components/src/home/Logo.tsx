@@ -3,8 +3,8 @@ import Image from 'next/image';
 import React from 'react';
 
 const Logo = () => {
-  const logoLight = `${appConfig.siteInfo.logo?.light ?? 'logo.png'}`;
-  const logoDark = `${appConfig.siteInfo.logo?.dark ?? 'logoWhite.png'}`;
+  const logoLight = `${appConfig.siteInfo.logo?.light ?? '/newui/logo.png'}`;
+  const logoDark = `${appConfig.siteInfo.logo?.dark ?? '/newui/logoWhite.png'}`;
 
   return (
     <div className="w-60 lg:w-80 h-20 relative">

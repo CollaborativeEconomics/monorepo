@@ -3,6 +3,11 @@ import type { AppConfig } from "@cfce/types"
 import giveCreditsDev from "./config/give-credits/appConfig.development"
 import giveCreditsProd from "./config/give-credits/appConfig.production"
 import giveCreditsStaging from "./config/give-credits/appConfig.staging"
+// Give tron
+import giveTronDev from "./config/give-tron/appConfig.development"
+import giveTronProd from "./config/give-tron/appConfig.production"
+import giveTronStaging from "./config/give-tron/appConfig.staging"
+// Giving universe
 import givingUniverseDev from "./config/giving-universe/appConfig.development"
 import givingUniverseProd from "./config/giving-universe/appConfig.production"
 import givingUniverseStaging from "./config/giving-universe/appConfig.staging"
@@ -12,9 +17,19 @@ import partnersProd from "./config/partners/appConfig.production"
 import partnersStaging from "./config/partners/appConfig.staging"
 
 type Environment = "development" | "production" | "staging"
-type AppId = "give-credits" | "giving-universe" | "partners" | "registry"
+type AppId =
+  | "give-credits"
+  | "giving-universe"
+  | "give-tron"
+  | "partners"
+  | "registry"
 
 const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
+  "give-tron": {
+    development: giveTronDev,
+    production: giveTronProd,
+    staging: giveTronStaging,
+  },
   "give-credits": {
     development: giveCreditsDev,
     production: giveCreditsProd,
