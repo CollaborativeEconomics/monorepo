@@ -5,14 +5,23 @@ import XrplCommon from "./XrplCommon"
 export default class XummClient extends XrplCommon {
   wallet?: Xumm
 
-  initialize(apiKey: string) {
-    this.wallet = new Xumm(apiKey)
+  initialize() {
+    try {
+      this.wallet = new Xumm(process.env.NEXT_PUBLIC_XUMM_API_KEY as string)
+    } catch (error) {
+      throw new Error(
+        `Error initializing Xumm client: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+      )
+    }
+    return this.wallet
   }
 
   async connect() {
     console.log("XRP Connecting...")
     if (!this.wallet) {
-      return { success: false, error: "Missing Xumm API key" }
+      this.wallet = this.initialize()
     }
     try {
       const state = await this.wallet.authorize()
