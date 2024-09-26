@@ -1,11 +1,6 @@
 import appConfig from "@cfce/app-config"
 import { chainConfig } from "@cfce/blockchain-tools"
-import {
-  type Chain,
-  getUserByWallet,
-  newUser,
-  prismaClient,
-} from "@cfce/database"
+import { type Chain, getUserByWallet, newUser } from "@cfce/database"
 import type { AuthTypes } from "@cfce/types"
 import type { User } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"

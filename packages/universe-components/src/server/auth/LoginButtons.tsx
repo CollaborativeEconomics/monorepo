@@ -1,7 +1,6 @@
 import 'server-only';
 import type { AuthTypes, ChainSlugs } from '@cfce/types';
-import { loginOrCreateUserFromWallet } from '@cfce/utils';
-import { signIn } from 'next-auth/react';
+import { authConfig } from '@cfce/utils';
 import { AuthButton } from '../../client/auth/AuthButton';
 
 interface LoginButtonsProps {
@@ -12,13 +11,17 @@ interface LoginButtonsProps {
 export default function LoginButtons({ chain, wallets }: LoginButtonsProps) {
   return (
     <>
-      {wallets.map(wallet => (
-        <AuthButton
-          key={`auth-button-${chain}-${wallet}`}
-          chain={chain}
-          method={wallet as AuthTypes}
-        />
-      ))}
+      {wallets.map(wallet => {
+        const { name, icon, slug } = authConfig[wallet as AuthTypes];
+        return (
+          <AuthButton
+            key={`auth-button-${chain}-${wallet}`}
+            chain={chain}
+            method={wallet as AuthTypes}
+            config={{ name, icon, slug }}
+          />
+        );
+      })}
     </>
   );
 }
