@@ -14,6 +14,7 @@ type Chain =
   | "Polygon"
   | "Starknet"
   | "Stellar"
+  | "Tron"
   | "XDC"
   | "XRPL"
 
@@ -31,6 +32,7 @@ export const ChainSlugs = [
   "polygon",
   "starknet",
   "stellar",
+  "tron",
   "xinfin",
   "xrpl",
 ] as const
@@ -50,6 +52,7 @@ export const ChainNames: Chain[] = [
   "Polygon",
   "Starknet",
   "Stellar",
+  "Tron",
   "XDC",
   "XRPL",
 ] as const
@@ -83,6 +86,7 @@ export const TokenTickerSymbol = [
   "MATIC",
   "PGN",
   "STRK",
+  "TRX",
   "XLM",
   "XDC",
   "XRP",
@@ -109,13 +113,14 @@ export interface ChainConfig {
 }
 
 export type Interfaces =
+  | "argent"
   | "freighter"
   | "metamask"
+  | "stellar"
+  | "tronlink"
+  | "web3"
   | "xaman"
   | "xrpl"
-  | "web3"
-  | "stellar"
-  | "argent"
 
 export type ClientInterfaces = Exclude<Interfaces, "web3" | "xrpl" | "stellar">
 

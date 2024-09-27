@@ -10,6 +10,8 @@ import { get as _get } from "lodash"
 import type { Interface } from "../interfaces"
 import FreighterWallet from "../interfaces/FreighterWallet"
 import MetaMaskWallet from "../interfaces/MetamaskClient"
+import TronLinkWallet from "../interfaces/TronLinkClient"
+import TronServer from "../interfaces/TronServer"
 import StellarServer from "../interfaces/StellarServer"
 import Web3Server from "../interfaces/Web3Server"
 import XrplServer from "../interfaces/XrplServer"
@@ -78,6 +80,10 @@ const BlockchainManager = {
   stellar: {
     client: new FreighterWallet("stellar", getNetwork("stellar")),
     server: new StellarServer("stellar", getNetwork("stellar")),
+  },
+  tron: {
+    client: new TronLinkWallet("tron", getNetwork("tron")),
+    server: new TronServer("tron", getNetwork("tron")),
   },
   xinfin: {
     client: new MetaMaskWallet("xinfin", getNetwork("xinfin")),

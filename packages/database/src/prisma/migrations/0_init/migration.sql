@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Chain" AS ENUM ('Arbitrum', 'Avalanche', 'Base', 'Binance', 'Celo', 'EOS', 'Ethereum', 'Filecoin', 'Flare', 'Optimism', 'Polygon', 'Stellar', 'XDC', 'XRPL');
+CREATE TYPE "Chain" AS ENUM ('Arbitrum', 'Avalanche', 'Base', 'Binance', 'Celo', 'EOS', 'Ethereum', 'Filecoin', 'Flare', 'Optimism', 'Polygon', 'Stellar', 'Tron', 'XDC', 'XRPL');
 
 -- CreateEnum
 CREATE TYPE "CreditType" AS ENUM ('None', 'Carbon', 'Plastic', 'Biodiversity');

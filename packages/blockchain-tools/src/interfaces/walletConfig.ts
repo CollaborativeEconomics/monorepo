@@ -7,6 +7,11 @@ interface WalletConfig {
 }
 
 export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
+  argent: {
+    icon: "/icons/argent.webp",
+    slug: "argent",
+    name: "Argent",
+  },
   freighter: {
     icon: "/icons/freighter.webp",
     slug: "freighter",
@@ -17,15 +22,15 @@ export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
     slug: "metamask",
     name: "Metamask",
   },
+  tronlink: {
+    icon: "/icons/tronlink.webp",
+    slug: "tronlink",
+    name: "TronLink",
+  },
   xaman: {
     icon: "/icons/xaman.webp",
     slug: "xaman",
     name: "Xaman",
-  },
-  argent: {
-    icon: "/icons/argent.webp",
-    slug: "argent",
-    name: "Argent",
   },
 }
 

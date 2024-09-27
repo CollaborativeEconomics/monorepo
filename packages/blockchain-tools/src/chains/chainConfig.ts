@@ -92,6 +92,13 @@ const chainConfiguration: Chains = {
     icon: "/icons/xlm.webp",
     networks: {},
   },
+  tron: {
+    slug: "tron",
+    name: "Tron",
+    symbol: "TRX",
+    icon: "/icons/trx.webp",
+    networks: {},
+  },
   xinfin: {
     slug: "xinfin",
     name: "XDC",
@@ -461,6 +468,28 @@ chainConfiguration.stellar.networks.futurenet = {
   rpcUrl: "https://horizon-futurenet.stellar.org",
   wssurl: "",
   networkPassphrase: "Test SDF Future Network ; October 2022",
+}
+chainConfiguration.tron.networks.mainnet = {
+  id: 0,
+  name: "Tron Mainnet",
+  slug: "mainnet",
+  symbol: "TRX",
+  decimals: 18,
+  gasprice: "250000000",
+  explorer: "https://tronscan.org",
+  rpcUrl: "https://api.trongrid.io",
+  wssurl: "",
+}
+chainConfiguration.tron.networks.testnet = {
+  id: 0,
+  name: "Tron Testnet",
+  slug: "testnet",
+  symbol: "TRX",
+  decimals: 18,
+  gasprice: "250000000",
+  explorer: "https://shasta.tronscan.org",
+  rpcUrl: "https://api.shasta.trongrid.io",
+  wssurl: "",
 }
 chainConfiguration.xinfin.networks.mainnet = {
   id: 50,
