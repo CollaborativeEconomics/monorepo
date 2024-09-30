@@ -4,6 +4,8 @@ const path = require('node:path');
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+  productionBrowserSourceMaps: true,
+  serverSourceMaps: true,
   experimental: {
     // instrumentationHook: true,
     serverSourceMaps: true,
@@ -19,6 +21,7 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.externals = config.externals || [];
+      config.devtool = 'source-map';
       config.externals.push(({ context, request }, callback) => {
         if (/^node:/.test(request)) {
           return callback(null, `commonjs ${request}`);

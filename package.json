@@ -5,14 +5,13 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "pnpm biome format --write /**/*.{ts,tsx,md}",
     "matchVersions": "syncpack fix-mismatches",
     "updateDependencies": "syncpack update"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.2",
     "@cfce/typescript-config": "workspace:*",
-    "prettier": "^3.3.3",
     "syncpack": "^13.0.0",
     "turbo": "2.1.3"
   },
