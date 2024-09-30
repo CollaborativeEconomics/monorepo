@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import * as React from 'react';
-import type { InputProps } from '../ui/input';
+import type { InputProps } from '~/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from '~/ui/select';
 
 interface SelectOption {
   value: string;

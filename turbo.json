@@ -8,6 +8,9 @@
       "outputs": [".next/**", "!.next/cache/**"],
       "env": ["MOBULA_API_KEY"]
     },
+    "install": {
+      "dependsOn": ["^install"]
+    },
     "dev": {
       "cache": false,
       "persistent": true

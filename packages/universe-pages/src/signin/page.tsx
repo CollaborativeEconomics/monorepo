@@ -11,6 +11,7 @@ import { redirect } from 'next/navigation';
 
 export default async function Signin() {
   const session = await getServerSession(authOptions);
+  // @ts-ignore: module augmentation is hard, TODO: fix this
   const userId = session?.user?.id;
 
   if (userId) {

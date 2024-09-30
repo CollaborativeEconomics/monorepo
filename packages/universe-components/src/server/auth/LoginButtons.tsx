@@ -1,7 +1,7 @@
 import 'server-only';
 import type { AuthTypes, ChainSlugs } from '@cfce/types';
 import { authConfig } from '@cfce/utils';
-import { AuthButton } from '../../client/auth/AuthButton';
+import { AuthButton } from '~/client/auth/AuthButton';
 
 interface LoginButtonsProps {
   chain: ChainSlugs;

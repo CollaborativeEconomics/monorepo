@@ -1,14 +1,14 @@
 'use client';
 
+import Link from 'next/link';
 import React from 'react';
+import RiveAnimation from '../RiveAnimation';
 import {
   InstructionPaneSectionContent,
+  InstructionPaneSectionImageBlend,
   InstructionPaneSectionText,
   InstructionPaneSectionTitle,
-  InstructionPaneSectionImageBlend,
 } from './InstructionPaneSection';
-import Link from 'next/link';
-import RiveAnimation from '../RiveAnimation';
 
 export default function InstructionPanes() {
   return (

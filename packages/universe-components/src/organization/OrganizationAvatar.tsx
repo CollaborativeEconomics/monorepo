@@ -1,12 +1,12 @@
 import React from 'react';
-import { cn } from '../shadCnUtil';
+import { cn } from '~/shadCnUtil';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
   type AvatarProps,
   AvatarTitle,
-} from '../ui/avatar';
+} from '~/ui/avatar';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;

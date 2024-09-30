@@ -2,9 +2,9 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { type KeyboardEvent, useState } from 'react';
-import { Button } from '../ui/button';
-import { CardContent } from '../ui/card';
-import { Input } from '../ui/input';
+import { Button } from '~/ui/button';
+import { CardContent } from '~/ui/card';
+import { Input } from '~/ui/input';
 import CategorySelect from './CategorySelect';
 import InitiativeOrgSwitch from './InitiativeOrgSwitch';
 import LocationSelect from './LocationSelect';

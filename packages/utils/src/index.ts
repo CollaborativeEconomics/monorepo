@@ -1,3 +1,5 @@
+// import "@cfce/types/dist/declarations/next-auth.d.ts"
+
 export * from "./api"
 export {
   default as authConfig,

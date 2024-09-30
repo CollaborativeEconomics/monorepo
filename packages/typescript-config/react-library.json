@@ -4,9 +4,9 @@
   "extends": "./base.json",
   "compilerOptions": {
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports":true,
-    "jsx": "react-jsx",
-    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "jsx": "preserve",
+    "moduleResolution": "Bundler",
     "module": "ESNext"
   }
 }

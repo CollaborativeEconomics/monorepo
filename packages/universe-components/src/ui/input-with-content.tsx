@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { cn } from '../shadCnUtil';
+import { cn } from '~/shadCnUtil';
 import type { InputProps } from './input';
 
 export interface InputWithContentProps extends InputProps {

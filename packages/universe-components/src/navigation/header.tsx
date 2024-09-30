@@ -3,7 +3,7 @@ import { SessionProvider } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import React, { useEffect, useState, useCallback } from 'react';
-import Logo from '../home/Logo';
+import Logo from '~/home/Logo';
 import NavMenu from './NavigationMenu';
 
 function useScrollPosition() {

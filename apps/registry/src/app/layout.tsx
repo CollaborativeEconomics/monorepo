@@ -1,4 +1,4 @@
-import { SessionProvider } from '@cfce/universe-components/auth';
+import { SessionProvider } from '@cfce/universe-components/client/auth';
 
 export default function RootLayout({
   // Layouts must accept a children prop.

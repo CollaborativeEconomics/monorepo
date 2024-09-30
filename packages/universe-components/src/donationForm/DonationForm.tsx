@@ -13,11 +13,11 @@ import {
 } from '@cfce/utils';
 import { useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Card } from '../ui/card';
-import { CheckboxWithText } from '../ui/checkbox';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Separator } from '../ui/separator';
+import { Card } from '~/ui/card';
+import { CheckboxWithText } from '~/ui/checkbox';
+import { Input } from '~/ui/input';
+import { Label } from '~/ui/label';
+import { Separator } from '~/ui/separator';
 import { CarbonCreditDisplay } from './CarbonCreditDisplay';
 import { ChainSelect } from './ChainSelect';
 import { DonationAmountInput } from './DonationAmountInput';

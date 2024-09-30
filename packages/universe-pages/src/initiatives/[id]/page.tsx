@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getCoinRate } from '@cfce/blockchain-tools';
+import { getCoinRate } from '@cfce/blockchain-tools/server';
 import { getInitiativeById, getInitiatives } from '@cfce/database';
 import {
   DonationForm,

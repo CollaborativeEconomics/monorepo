@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { localizedNumber } from '@cfce/utils';
 import { Building2, DollarSign, Sprout, Target, UserIcon } from 'lucide-react';
-import { cn } from '../shadCnUtil';
+import { cn } from '~/shadCnUtil';
 import { ListObject } from './list-object';
 
 export interface Stats {

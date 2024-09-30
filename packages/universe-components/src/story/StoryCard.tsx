@@ -1,10 +1,10 @@
 import type { StoryWithRelations } from '@cfce/database';
 import Link from 'next/link';
 import React from 'react';
-import OrganizationAvatar from '../organization/OrganizationAvatar';
-import { Card, CardContent, CardHeader } from '../ui/card';
-import DateDisplay from '../ui/date-posted';
-import Gallery from '../ui/gallery';
+import OrganizationAvatar from '~/organization/OrganizationAvatar';
+import { Card, CardContent, CardHeader } from '~/ui/card';
+import DateDisplay from '~/ui/date-posted';
+import Gallery from '~/ui/gallery';
 
 interface StoryCardProps {
   story: StoryWithRelations;

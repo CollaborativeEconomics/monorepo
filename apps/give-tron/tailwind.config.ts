@@ -8,8 +8,8 @@ const config: Config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./node_modules/flowbite/**/*.js",
-    "./node_modules/@cfce/universe-components/**/*.tsx",
-    "./node_modules/@cfce/universe-pages/**/*.tsx",
+    "./node_modules/@cfce/universe-components/dist/**/*.tsx",
+    "./node_modules/@cfce/universe-pages/dist/**/*.tsx",
   ],
   theme: {
     container: {

@@ -1,12 +1,12 @@
 {
   "name": "@cfce/universe-components",
+  "version": "0.0.1",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsc --watch",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc && tsc-alias"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     "./server/auth": {
       "import": "./dist/server/auth/index.js",
@@ -64,11 +64,11 @@
     "@types/lodash": "^4.17.0",
     "@types/luxon": "^3.4.2",
     "@types/react": "latest",
+    "tsc-alias": "^1.8.8",
     "typescript": "latest"
   },
   "peerDependencies": {
     "next": "latest",
-    "next-auth": "^4.24.7",
     "next-themes": "^0.3.0"
   },
   "dependencies": {
@@ -76,6 +76,7 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "next-auth": "latest",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.0.4",

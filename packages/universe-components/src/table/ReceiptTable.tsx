@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
+} from '~/ui/table';
 
 interface ReceiptTableProps {
   receipts?: NFTDataWithRelations[];

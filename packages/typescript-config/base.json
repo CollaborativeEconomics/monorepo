@@ -13,7 +13,7 @@
     "lib": ["es2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleDetection": "force",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,

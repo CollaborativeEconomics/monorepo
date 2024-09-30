@@ -10,8 +10,8 @@ import {
 import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import React from 'react';
-import { TimestampToDateString } from '../../ui/date-posted';
-import { ReceiptStatus } from '../../ui/receipt-status';
+import { TimestampToDateString } from '~/ui/date-posted';
+import { ReceiptStatus } from '~/ui/receipt-status';
 import { NFTReceiptText } from './NFTReceiptText';
 
 interface ReceiptNFTProps {

@@ -10,12 +10,11 @@
     "updateDependencies": "syncpack update"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
+    "@biomejs/biome": "1.9.2",
     "@cfce/typescript-config": "workspace:*",
-    "@repo/eslint-config": "workspace:*",
-    "prettier": "^3.2.5",
-    "syncpack": "^12.4.0",
-    "turbo": "2.1.2"
+    "prettier": "^3.3.3",
+    "syncpack": "^13.0.0",
+    "turbo": "2.1.3"
   },
   "packageManager": "pnpm@8.9.0",
   "engines": {

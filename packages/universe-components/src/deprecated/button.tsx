@@ -1,5 +1,5 @@
-import React, { HTMLAttributes } from 'react'
-import Icon from '../ui/icon'
+import React, { HTMLAttributes } from 'react';
+import Icon from '~/ui/icon';
 
 interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   text: string;
@@ -23,7 +23,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       iconClassStyle,
       ...props
     }: ButtonProps,
-    ref
+    ref,
   ) => (
     <button
       className={`px-8 py-2 rounded-full uppercase flex flex-row justify-center ${className}`}
@@ -41,9 +41,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       {text}
       {props.children}
     </button>
-  )
-)
+  ),
+);
 
-Button.displayName = 'Button'
+Button.displayName = 'Button';
 
-export default Button
+export default Button;

@@ -3,10 +3,10 @@ import { Calendar as CalendarIcon } from 'lucide-react';
 import * as React from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
-import { cn } from '../shadCnUtil';
-import { Button } from '../ui';
-import { Calendar } from '../ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { cn } from '~/shadCnUtil';
+import { Button } from '~/ui';
+import { Calendar } from '~/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '~/ui/popover';
 
 interface DatePickerProps {
   register?: UseFormRegisterReturn;

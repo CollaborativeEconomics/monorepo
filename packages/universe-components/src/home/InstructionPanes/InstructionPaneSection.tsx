@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 
-import Parallax from '../../navigation/Parallax';
-import { cn } from '../../shadCnUtil';
+import Parallax from '~/navigation/Parallax';
+import { cn } from '~/shadCnUtil';
 import { OverlayHandler } from '../OverlayHandler';
 
 export interface InstructionImageProps {

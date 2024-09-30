@@ -2,9 +2,9 @@ import type { StoryWithRelations } from '@cfce/database';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import OrganizationAvatar from '../organization/OrganizationAvatar';
-import { Card, CardContent } from '../ui/card';
-import { DateDisplay } from '../ui/date-posted';
+import OrganizationAvatar from '~/organization/OrganizationAvatar';
+import { Card, CardContent } from '~/ui/card';
+import { DateDisplay } from '~/ui/date-posted';
 
 const IPFSURL = process.env.IPFS_GATEWAY_URL;
 

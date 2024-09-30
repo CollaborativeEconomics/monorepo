@@ -2,8 +2,13 @@
   "name": "@cfce/utils",
   "version": "0.0.1",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "test": "jest",
     "build": "rm -rf dist && tsc && cp -r ./src/assets ./dist/assets"
@@ -24,16 +29,16 @@
     "jotai-immer": "^0.4.1",
     "luxon": "^3.4.4",
     "mailgun.js": "10.2.3",
-    "next-auth": "*",
+    "next-auth": "latest",
     "server-only": "^0.0.1",
     "ts-node": "^10.9.2",
     "uuid": "^10.0.0"
   },
   "peerDependencies": {
-    "@cfce/types": "workspace:*",
     "@cfce/app-config": "workspace:*"
   },
   "devDependencies": {
+    "@cfce/types": "workspace:*",
     "@smithy/types": "^3.4.0",
     "@types/formidable": "^3.4.5",
     "@types/jest": "^29.5.12",

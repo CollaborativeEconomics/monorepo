@@ -2,7 +2,7 @@
 import type { AuthConfig, AuthTypes, ChainSlugs } from '@cfce/types';
 import { loginOrCreateUserFromWallet } from '@cfce/utils';
 import { signIn } from 'next-auth/react';
-import { Button } from '../../ui/button';
+import { Button } from '~/ui/button';
 
 // TODO: extend with html button props, for some reason it was causing problems.
 interface AuthButtonProps {

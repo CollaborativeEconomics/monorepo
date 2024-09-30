@@ -1,6 +1,6 @@
 "use server"
 import { type Chain, type User, getUserByWallet, newUser } from "@cfce/database"
-import { getServerSession } from "next-auth"
+import { getServerSession } from "next-auth/next"
 import { getSession } from "next-auth/react"
 import { authOptions } from "../auth/nextAuth"
 
