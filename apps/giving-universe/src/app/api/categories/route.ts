@@ -1,1 +1,1 @@
-export * from "@cfce/universe-api/categories";
+export { GET } from "@cfce/universe-api/categories"

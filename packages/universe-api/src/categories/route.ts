@@ -1,4 +1,5 @@
 import { getCategories } from "@cfce/database"
+import { headers } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
 
@@ -6,7 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     console.log("get")
 
-    const apiKey = req.headers.get("x-api-key")
+    const apiKey = headers().get("x-api-key")
     const authorized = await checkApiKey(apiKey)
 
     if (!authorized) {
