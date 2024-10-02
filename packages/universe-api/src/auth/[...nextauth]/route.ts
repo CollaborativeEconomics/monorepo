@@ -1,6 +1,5 @@
-// import { nextAuth } from "@cfce/utils"
+import { nextAuth } from "@cfce/utils"
 
-// export default nextAuth
-export default async function ASDF() {
-  return
-}
+export const dynamic = "force-dynamic"
+
+export default nextAuth

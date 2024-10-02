@@ -50,14 +50,16 @@ const nextConfig = {
   experimental: {
     instrumentationHook: true,
     outputFileTracingRoot: path.join(process.cwd(), '../../'),
+    esmExternals: true,
     optimizePackageImports: [
       '@cfce/universe-components',
       '@cfce/blockchain-tools',
       '@cfce/utils',
       '@cfce/universe-pages',
+      '@cfce/universe-api',
     ],
   },
-  // webpack: webpackConfig,
+  webpack: webpackConfig,
 };
 
 module.exports = withSentryConfig(nextConfig, {

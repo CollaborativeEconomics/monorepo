@@ -16,6 +16,7 @@ const nextConfig = {
       '@cfce/blockchain-tools',
       '@cfce/utils',
       '@cfce/universe-pages',
+      '@cfce/universe-api',
     ],
   },
   webpack: (config, { isServer }) => {

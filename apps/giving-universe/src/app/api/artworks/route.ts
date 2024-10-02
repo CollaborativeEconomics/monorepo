@@ -1,1 +1,1 @@
-export { GET, POST, DELETE } from "@cfce/universe-api/artworks"
+export * from "@cfce/universe-api/artworks"

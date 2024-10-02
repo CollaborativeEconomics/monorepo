@@ -3,8 +3,6 @@
   "display": "React Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "moduleResolution": "Bundler",
     "module": "ESNext"

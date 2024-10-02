@@ -3,6 +3,8 @@ import { headers } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
 
+export const dynamic = "force-dynamic"
+
 export async function GET(req: NextRequest) {
   try {
     console.log("get")
