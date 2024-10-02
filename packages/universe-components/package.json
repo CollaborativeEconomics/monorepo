@@ -2,7 +2,6 @@
   "name": "@cfce/universe-components",
   "version": "0.0.1",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "tsc --watch",
     "build": "rm -rf dist && tsc && tsc-alias"

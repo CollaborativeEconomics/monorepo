@@ -18,8 +18,6 @@ interface Credentials {
   currency: string
 }
 
-console.log({ CredentialsProvider, GithubProvider, GoogleProvider })
-
 async function getUserByCredentials(credentials?: Credentials) {
   console.log("CREDS", credentials)
   try {

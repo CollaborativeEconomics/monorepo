@@ -101,8 +101,6 @@ const authOptions: AuthOptions = {
   },
 }
 
-console.log("AUTH OPTIONS", authOptions)
-
 const nextAuth: ReturnType<typeof NextAuth> = NextAuth(authOptions)
 
 export { authOptions }

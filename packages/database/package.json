@@ -10,7 +10,7 @@
     "migrateDB": "prisma migrate dev",
     "migrateDBToProd": "prisma migrate deploy",
     "test": "jest",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && prisma generate && tsc"
   },
   "dependencies": {
     "@cfce/types": "workspace:*",

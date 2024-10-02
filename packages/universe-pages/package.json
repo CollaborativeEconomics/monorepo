@@ -1,6 +1,5 @@
 {
   "name": "@cfce/universe-pages",
-  "type": "module",
   "scripts": {
     "dev": "tsc --watch",
     "build": "rm -rf dist && tsc"

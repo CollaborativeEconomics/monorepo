@@ -1,7 +1,6 @@
 {
   "extends": "@cfce/typescript-config/base.json",
   "compilerOptions": {
-    "esModuleInterop": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "rootDir": "./src",
