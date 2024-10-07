@@ -3,11 +3,18 @@ import React from 'react';
 import appConfig from '@cfce/app-config';
 import { getChainConfiguration } from '@cfce/blockchain-tools';
 import type { ChainSlugs } from '@cfce/types';
-import { LoginButtons } from '@cfce/universe-components/server/auth';
-import { Divider } from '@cfce/universe-components/ui';
+import { AuthButton } from '@cfce/universe-components/client/auth';
 import { authOptions } from '@cfce/utils';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Separator,
+} from '@cfce/universe-components/ui';
 
 export default async function Signin() {
   const session = await getServerSession(authOptions);
@@ -22,23 +29,37 @@ export default async function Signin() {
   const chainConfigs = getChainConfiguration(chains.map(c => c.slug));
 
   return (
-    <div className="w-[500px] mt-48 p-12 mx-auto rounded-xl border">
-      <div className="mt-5">
-        <div className="text-center flex flex-col justify-center items-center">
-          <h2>Sign in:</h2>
+    <div className="container mx-auto mt-20">
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">
+            Sign in
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
           {chains.map(({ name, slug, wallets }, i) => {
             const chainConfig = chainConfigs[i];
             return (
               <div key={`auth-button-${slug}`}>
-                <Divider />
-                <img src={chainConfig.icon} alt={`${name} Login Button`} />
-                <h3>{name}</h3>
-                <LoginButtons chain={slug as ChainSlugs} wallets={wallets} />
+                {i > 0 && <Separator className="my-4" />}
+                {wallets.map(wallet => (
+                  <AuthButton
+                    key={wallet}
+                    method={wallet}
+                    chain={slug as ChainSlugs}
+                    config={{
+                      name: wallet,
+                      icon: chainConfig.icon,
+                      slug: wallet,
+                    }}
+                    className="mb-2"
+                  />
+                ))}
               </div>
             );
           })}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
