@@ -1,9 +1,9 @@
-import React from 'react';
+import type { Initiative } from '@cfce/database';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardContent } from '../ui/card';
-import { DateDisplay } from '../ui/date-posted';
-import type { Initiative } from '@cfce/database';
+import React from 'react';
+import { Card, CardContent } from '~/ui/card';
+import { DateDisplay } from '~/ui/date-posted';
 
 export default function InitiativeCardCompact(props: {
   initiative: Initiative;

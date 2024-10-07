@@ -3,16 +3,16 @@ import React, { useState, useEffect } from 'react';
 // import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
-import { cn } from '../shadCnUtil';
-import { Button } from '../ui/button';
+import { cn } from '~/shadCnUtil';
+import { Button } from '~/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+} from '~/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '~/ui/popover';
 
 interface LocationSelectProps {
   onChange?: (location: string) => void;

@@ -3,7 +3,6 @@
 # Define the order of packages
 packages=(
   "typescript-config"
-  "eslint-config"
   "types"
   "ipfs"
   "app-config"

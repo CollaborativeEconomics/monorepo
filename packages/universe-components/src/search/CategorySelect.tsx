@@ -3,16 +3,16 @@ import type { Category } from '@cfce/database';
 import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { cn } from '../shadCnUtil';
-import { Button } from '../ui/button';
+import { cn } from '~/shadCnUtil';
+import { Button } from '~/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+} from '~/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '~/ui/popover';
 
 /*
 const categories = [

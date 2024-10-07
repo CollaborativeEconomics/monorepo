@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Facebook, Globe, Twitter } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '../shadCnUtil';
+import { cn } from '~/shadCnUtil';
 
 export interface OrgSocialsProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;

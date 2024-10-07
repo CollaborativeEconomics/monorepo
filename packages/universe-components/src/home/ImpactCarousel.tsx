@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import type { Initiative } from '@cfce/database';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import InitiativeCardCompactShort from '../initiative/InitiativeCardCompactShort';
+import InitiativeCardCompactShort from '~/initiative/InitiativeCardCompactShort';
 
 export default function ImpactCarousel(props: { initiatives: Initiative[] }) {
   const initiatives = props.initiatives;

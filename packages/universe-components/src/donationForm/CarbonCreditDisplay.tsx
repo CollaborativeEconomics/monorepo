@@ -2,8 +2,8 @@ import type { Prisma } from '@cfce/database';
 import { amountUSDAtom } from '@cfce/utils';
 import { useAtomValue } from 'jotai';
 import React from 'react';
-import CarbonChart from '../CarbonChart';
-import Progress from '../ui/progressbar';
+import CarbonChart from '~/CarbonChart';
+import Progress from '~/ui/progressbar';
 
 interface CarbonCreditDisplayProps {
   initiative: Prisma.InitiativeGetPayload<{

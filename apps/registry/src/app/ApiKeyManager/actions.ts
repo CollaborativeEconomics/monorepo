@@ -21,5 +21,5 @@ export async function generateApiKey() {
   })
 
   revalidatePath("/ApiKeyManager")
-  return updatedUser.api_key
+  // return updatedUser.api_key
 }

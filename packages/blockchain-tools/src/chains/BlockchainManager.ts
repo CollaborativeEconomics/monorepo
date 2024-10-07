@@ -1,10 +1,5 @@
 import appConfig from "@cfce/app-config"
-import type {
-  ChainSlugs,
-  ClientInterfaces,
-  Network,
-  TokenTickerSymbol,
-} from "@cfce/types"
+import type { ChainSlugs, Network } from "@cfce/types"
 import { keys as _keys } from "lodash"
 import { get as _get } from "lodash"
 import type { Interface } from "../interfaces"

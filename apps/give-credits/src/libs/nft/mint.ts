@@ -113,7 +113,7 @@ async function mintOLD(account:string, metauri: string):Promise<MintResponse>{
       // StellarSDK interface from server.submitTransaction response without paging_token
       // Clone the result and get the paging_token from there
       const cloned = JSON.parse(JSON.stringify(minted))
-      const opid = (BigInt(cloned?.paging_token || '0') + BigInt(1)).toString() // eslint-disable-line
+      const opid = (BigInt(cloned?.paging_token || '0') + BigInt(1)).toString()
       console.log('Txid', opid)
       return {success:true, id:opid}
     } else {

@@ -7,7 +7,7 @@ import {
   type LucideIcon,
   RefreshCw,
 } from 'lucide-react';
-import { cn } from '../shadCnUtil';
+import { cn } from '~/shadCnUtil';
 
 export interface ReceiptStatusProps
   extends React.HTMLAttributes<HTMLDivElement> {

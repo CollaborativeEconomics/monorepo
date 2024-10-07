@@ -2,7 +2,18 @@
   "name": "@cfce/blockchain-tools",
   "version": "1.0.0",
   "description": "Common tools for interacting with diverse blockchains. Used in the CFCE ecosystem.",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server/index.js",
+      "types": "./dist/server/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "rm -rf dist && tsc",
     "prepublishOnly": "npm run build",
@@ -51,7 +62,7 @@
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",
     "mobula-sdk": "^1.6.0",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "server-only": "^0.0.1",
     "tronweb": "^6.0.0",
     "web3": "^4.6.0",

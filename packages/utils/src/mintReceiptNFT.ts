@@ -1,7 +1,8 @@
-// import "server-only"
 "use server"
+import "server-only"
 import appConfig from "@cfce/app-config"
-import { BlockchainManager, getCoinRate } from "@cfce/blockchain-tools"
+import { BlockchainManager } from "@cfce/blockchain-tools"
+import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   getInitiativeById,
   getNFTbyTokenId,

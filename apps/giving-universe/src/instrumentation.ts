@@ -1,11 +1,13 @@
-import appConfig from "@cfce/app-config"
-import { BlockchainManager } from "@cfce/blockchain-tools"
+import * as Sentry from "@sentry/nextjs"
 
-export function register() {
-  console.log("register")
-  if (appConfig.chains.some((c) => c.slug === "xrpl")) {
-    BlockchainManager.xrpl.client.initialize(
-      process.env.NEXT_PUBLIC_XUMM_API_KEY ?? "",
-    )
+export async function register() {
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    await import("../sentry.server.config")
+  }
+
+  if (process.env.NEXT_RUNTIME === "edge") {
+    await import("../sentry.edge.config")
   }
 }
+
+export const onRequestError = Sentry.captureRequestError

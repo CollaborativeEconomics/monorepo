@@ -1,21 +1,11 @@
 import appConfig from "@cfce/app-config"
-import {
-  getOrganizationByEmail,
-  getUserByEmail,
-  prismaClient,
-} from "@cfce/database"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import NextAuth, {
-  Awaitable,
-  RequestInternal,
-  type AuthOptions,
-  type User,
-} from "next-auth"
+import { getOrganizationByEmail, getUserByEmail } from "@cfce/database"
+import NextAuth, { type AuthOptions } from "next-auth"
 import { getAuthProviders } from "../authConfig"
-// import authProviders, { type AuthTypes } from "./authProviders"
 
-// console.log("AUTH CONFIG", appConfig)
 const providers = getAuthProviders(appConfig.auth)
+
+console.log({ providers })
 
 const authOptions: AuthOptions = {
   // adapter: PrismaAdapter(prismaClient),
@@ -87,6 +77,7 @@ const authOptions: AuthOptions = {
       // @ts-ignore TODO: move this to state
       session.isAdmin = token?.userRole === "admin"
       // Handle user-related updates
+      // @ts-ignore
       session.user.id = (token?.userId as string) || ""
       // @ts-ignore TODO: move this to state
       session.address = (token?.address as string) || ""
@@ -109,8 +100,6 @@ const authOptions: AuthOptions = {
     },
   },
 }
-
-console.log("AUTH OPTIONS", authOptions)
 
 const nextAuth: ReturnType<typeof NextAuth> = NextAuth(authOptions)
 

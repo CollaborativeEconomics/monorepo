@@ -3,8 +3,8 @@
 import { chainAtom, donationFormAtom } from '@cfce/utils';
 import { useAtom } from 'jotai';
 import React from 'react';
-import { InputWithContent, Label } from '../ui'; // Adjust the import path as necessary
-import { Switch } from '../ui/switch';
+import { InputWithContent, Label } from '~/ui'; // Adjust the import path as necessary
+import { Switch } from '~/ui/switch';
 
 interface DonationAmountInputProps {
   className?: string;

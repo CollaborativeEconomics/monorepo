@@ -2,6 +2,23 @@
   "extends": "@cfce/typescript-config/nextjs.json",
   "strictNullChecks": true,
   "declaration": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "rootDirs": [
+      "src",
+      "."
+    ],
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ]
+    }
+    // "module": "NodeNext",
+    // "moduleResolution": "NodeNext"
+    ,
+    "esModuleInterop": true
+  },
   "include": [
     "src",
     "next-env.d.ts",
@@ -9,15 +26,12 @@
     "**/*.ts",
     "**/*.tsx",
     "public",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "next.config.mjs"
   ],
-  "exclude": ["node_modules", "dist", "work"],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "dist",
-    "rootDirs": ["src", "."],
-    "paths": {
-      "~/*": ["./src/*"]
-    }
-  }
+  "exclude": [
+    "node_modules",
+    "dist",
+    "work"
+  ]
 }

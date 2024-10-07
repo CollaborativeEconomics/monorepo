@@ -1,4 +1,4 @@
-import { getCoinRate } from "@cfce/blockchain-tools"
+import { getCoinRate } from "@cfce/blockchain-tools/server"
 import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 import type { NextRequest } from "next/server"
 

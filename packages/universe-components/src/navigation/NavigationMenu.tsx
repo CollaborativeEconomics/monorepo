@@ -4,8 +4,8 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
-import { cn } from '../shadCnUtil';
-import { Button } from '../ui/button';
+import { cn } from '~/shadCnUtil';
+import { Button } from '~/ui/button';
 import DarkModeSwitcher from './DarkModeSwitcher';
 
 import {
@@ -16,7 +16,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '../ui/navigation-menu';
+} from '~/ui/navigation-menu';
 
 import {
   Sheet,
@@ -26,12 +26,13 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '../ui/sheet';
+} from '~/ui/sheet';
 
 export default function NavMenu() {
   const { data: session, status } = useSession();
   //console.log('Header Session', session, status)
   const avatar = session?.user?.image || '/media/nopic.png';
+  // @ts-ignore - module augmentation is hard
   const userurl = session?.user.id ? `/profile/${session?.user.id}` : '';
 
   return (

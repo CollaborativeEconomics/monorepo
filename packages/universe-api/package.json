@@ -1,6 +1,5 @@
 {
   "name": "@cfce/universe-api",
-  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -181,12 +180,12 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
-    "@next-auth/prisma-adapter": "^1.0.5",
+    "@next-auth/prisma-adapter": "^1.0.7",
     "@types/formidable": "^3.4.5",
     "@types/uuid": "^10.0.0",
-    "@vercel/blob": "^0.23.4",
+    "@vercel/blob": "0.24.0",
     "formidable": "^3.5.1",
-    "uuid": "^9.0.0"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@cfce/typescript-config": "workspace:*",

@@ -10,13 +10,13 @@
     "migrateDB": "prisma migrate dev",
     "migrateDBToProd": "prisma migrate deploy",
     "test": "jest",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && prisma generate && tsc"
   },
   "dependencies": {
     "@cfce/types": "workspace:*",
-    "@aws-sdk/client-s3": "^3.608.0",
-    "@prisma/client": "^5.11.0",
-    "prisma": "^5.9.1",
+    "@aws-sdk/client-s3": "^3.654.0",
+    "@prisma/client": "^5.19.1",
+    "prisma": "^5.19.1",
     "server-only": "^0.0.1"
   },
   "devDependencies": {

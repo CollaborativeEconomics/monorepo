@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
+} from '~/ui/table';
 
 interface DonationsTableSortableProps {
   donations?: DonationWithRelations[];

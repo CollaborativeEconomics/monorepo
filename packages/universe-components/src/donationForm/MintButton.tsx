@@ -3,7 +3,7 @@
 import { PAYMENT_STATUS, donationFormAtom } from '@cfce/utils';
 import { useAtom } from 'jotai';
 import React from 'react';
-import { Button } from '../ui/button';
+import { Button } from '~/ui/button';
 
 interface MintButtonProps {
   onClick: () => void;

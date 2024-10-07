@@ -1,12 +1,12 @@
 import type { Initiative } from '@cfce/database';
 import Image from 'next/image';
 import React from 'react';
-import OrganizationAvatar from '../organization/OrganizationAvatar';
-import { Button } from '../ui/button';
-import { Card, CardContent } from '../ui/card';
-import { DateDisplay } from '../ui/date-posted';
-import { Progress } from '../ui/progress';
-import { Separator } from '../ui/separator';
+import OrganizationAvatar from '~/organization/OrganizationAvatar';
+import { Button } from '~/ui/button';
+import { Card, CardContent } from '~/ui/card';
+import { DateDisplay } from '~/ui/date-posted';
+import { Progress } from '~/ui/progress';
+import { Separator } from '~/ui/separator';
 
 interface InitiativeCardCompactProps extends Initiative {
   name: string; // organization name
