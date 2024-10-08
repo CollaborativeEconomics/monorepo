@@ -35,8 +35,12 @@ export default class Wallet {
     try {
       console.log("CONNECT...")
       this.horizon = new StellarSDK.Horizon.Server(this.horizonurl || "")
-      this.myaccount = await requestAccess()
-      this.network = ((await getNetwork()) || "").toLowerCase()
+      const account = await requestAccess()
+      if ("error" in account) {
+        throw new Error(`Freighter access failed: ${account.error}`)
+      }
+      this.myaccount = account.address
+      this.network = ((await getNetwork()) || "").network.toLowerCase()
       this.netinfo = await getNetworkDetails()
       console.log("FNET", this.network)
       console.log("FINF", this.netinfo)
@@ -92,7 +96,7 @@ export default class Wallet {
       //console.log('TXS', txs)
 
       //const txs = new StellarSDK.TransactionBuilder.fromXDR(sgn, this.horizonurl)
-      const txs = StellarSDK.TransactionBuilder.fromXDR(sgn, net)
+      const txs = StellarSDK.TransactionBuilder.fromXDR(sgn.signedTxXdr, net)
       console.log("TXS", txs)
       const result = await this.horizon.submitTransaction(txs)
       console.log("RES", result)

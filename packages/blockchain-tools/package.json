@@ -44,7 +44,7 @@
     "@cfce/types": "workspace:*",
     "@types/jest": "^29.5.12",
     "@types/luxon": "^3.4.2",
-    "@types/react": "^18.3.3",
+    "@types/react": "latest",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
     "tsc-alias": "^1.8.8",
@@ -65,7 +65,7 @@
     "react": "^18.3.1",
     "server-only": "^0.0.1",
     "web3": "^4.6.0",
-    "xrpl": "^3.0.0",
+    "xrpl": "4.0.0",
     "xumm": "^1.7.7",
     "xumm-sdk": "^1.11.1"
   }
