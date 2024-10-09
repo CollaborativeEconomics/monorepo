@@ -1,10 +1,10 @@
-import { mockClient } from 'aws-sdk-client-mock';
-import { S3Client } from '@aws-sdk/client-s3';
+// import { mockClient } from 'aws-sdk-client-mock';
+// import { S3Client } from '@aws-sdk/client-s3';
 
-const s3ClientMock = mockClient(S3Client);
+// const s3ClientMock = mockClient(S3Client);
 
-jest.mock('@vercel/blob', () => ({
-  put: jest.fn().mockResolvedValue('abcd1234')
+jest.mock("@vercel/blob", () => ({
+  put: jest.fn().mockResolvedValue("abcd1234"),
 }))
 
-export { s3ClientMock };
+// export { s3ClientMock };
