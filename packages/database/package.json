@@ -13,13 +13,13 @@
     "build": "rm -rf dist && prisma generate && tsc"
   },
   "dependencies": {
-    "@cfce/types": "workspace:*",
     "@aws-sdk/client-s3": "^3.654.0",
     "@prisma/client": "^5.19.1",
     "prisma": "^5.19.1",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@cfce/types": "workspace:*",
     "@types/formidable": "^3.4.5",
     "@types/node": "^20.14.9",
     "jest": "^29.7.0",

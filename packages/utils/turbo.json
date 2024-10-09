@@ -13,5 +13,15 @@
     "XINFIN_MINTER_SECRET",
     "XINFIN_NETWORK",
     "TURBO_ENV"
-  ]
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "@cfce/registry-hooks#build",
+        "@cfce/blockchain-tools#build",
+        "@cfce/ipfs#build",
+        "@cfce/database#build"
+      ]
+    }
+  }
 }

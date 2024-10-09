@@ -1,0 +1,12 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "@cfce/blockchain-tools#build",
+        "@cfce/universe-components#build",
+        "@cfce/database#build"
+      ]
+    }
+  }
+}

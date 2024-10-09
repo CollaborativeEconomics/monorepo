@@ -4,10 +4,10 @@
   "tasks": {
     "build": {
       "dependsOn": [
-        "@cfce/registry-hooks#build",
-        "@cfce/blockchain-tools#build",
+        "@cfce/app-config#build",
         "@cfce/database#build",
-        "@cfce/utils#build"
+        "@cfce/ipfs#build",
+        "@cfce/registry-hooks#build"
       ]
     }
   }

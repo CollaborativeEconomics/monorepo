@@ -1,10 +1,9 @@
 {
   "extends": ["//"],
-  "globalEnv": ["GITHUB_ID", "GITHUB_SECRET", "MOBULA_API_KEY", "TURBO_ENV"],
   "tasks": {
     "build": {
       "dependsOn": [
-        "@cfce/registry-hooks#build",
+        "@cfce/app-config#build",
         "@cfce/blockchain-tools#build",
         "@cfce/database#build",
         "@cfce/utils#build"
