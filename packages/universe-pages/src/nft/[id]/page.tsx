@@ -16,14 +16,14 @@ export default async function NFT(props: { params: { id: string } }) {
     return <NotFound />;
   }
   //console.log('NFT', nft)
-  const imgsrc = process.env.IPFS_GATEWAY_URL + nft.imageUri.substr(5);
+  const imgsrc = appConfig.apis.ipfs.gateway + nft.imageUri.substr(5);
   const [contract, tokenId] = nft.tokenId.split(' ');
   const explorer = `${
     chainConfig.stellar.networks[
       appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network
     ].explorer
   }/contract/${contract}`;
-  const metalink = process.env.IPFS_GATEWAY_URL + nft.metadataUri.substr(5);
+  const metalink = appConfig.apis.ipfs.gateway + nft.metadataUri.substr(5);
 
   return (
     <main className="flex min-h-screen flex-col items-stretch container mt-12 pt-24">

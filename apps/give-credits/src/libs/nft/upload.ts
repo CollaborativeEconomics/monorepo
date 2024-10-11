@@ -23,15 +23,13 @@ export default async function upload(
       ContentType: mimeType,
       Body: bytes,
     }
-    const config = {
-      endpoint: process.env.IPFS_API_ENDPOINT || "",
-      region: process.env.AWS_DEFAULT_REGION || "",
-    }
     const client = new S3Client({
       endpoint: appConfig.apis.ipfs.endpoint,
       region: appConfig.apis.ipfs.region,
-      // accessKeyId: process.env.IPFS_API_KEY,
-      // secretAccessKey: process.env.IPFS_API_SECRET,
+      credentials: {
+        accessKeyId: process.env.IPFS_API_KEY || "",
+        secretAccessKey: process.env.IPFS_API_SECRET || "",
+      },
     })
     const action = new PutObjectCommand(params)
     const result = await client.send(action)

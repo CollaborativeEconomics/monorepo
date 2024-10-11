@@ -1,4 +1,6 @@
 import type { AppConfig } from "@cfce/types"
+// base/default
+import base from "./config/appConfigBase"
 // give-credits
 import giveCreditsDev from "./config/give-credits/appConfig.development"
 import giveCreditsProd from "./config/give-credits/appConfig.production"
@@ -56,20 +58,31 @@ const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
 const appId = process.env.NEXT_PUBLIC_APP_ID as AppId | undefined
 const env = process.env.NEXT_PUBLIC_APP_ENV as Environment | undefined
 
-if (!appId) {
-  throw new Error("NEXT_PUBLIC_APP_ID not defined")
-}
-if (!appConfigs[appId]) {
-  throw new Error(`App config not found for appId ${appId}`)
+const getAppConfig = (): AppConfig => {
+  if (!appId) {
+    console.warn("NEXT_PUBLIC_APP_ID not defined")
+    return base
+  }
+
+  if (!appConfigs[appId]) {
+    console.warn(`App config not found for appId ${appId}`)
+    return base
+  }
+
+  if (!env) {
+    console.warn("NEXT_PUBLIC_APP_ENV not defined")
+    return base
+  }
+
+  const envConfig = appConfigs[appId][env]
+  if (!envConfig) {
+    console.warn(`App config not found for appId ${appId} and env ${env}`)
+    return base
+  }
+
+  return envConfig
 }
 
-if (!env) {
-  throw new Error("NEXT_PUBLIC_APP_ENV not defined")
-}
-if (!appConfigs[appId][env]) {
-  throw new Error(`App config not found for appId ${appId} and env ${env}`)
-}
-
-const appConfig = appConfigs[appId][env] as AppConfig
+const appConfig = getAppConfig()
 
 export default appConfig
