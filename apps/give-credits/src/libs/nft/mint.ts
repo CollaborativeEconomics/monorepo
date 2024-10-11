@@ -20,7 +20,7 @@ export default async function mint(
     const network =
       nettype === "mainnet" ? networks?.mainnet : networks?.testnet
     console.log("NET", network)
-    const secret = process.env.CFCE_MINTER_WALLET_SECRET || ""
+    const secret = process.env.STELLAR_WALLET_SECRET || ""
     const method = "mint"
     const args = [new Address(to).toScVal()] // use nativeToScVal for other values
     const result = await submit(network, secret, contractId, method, args)

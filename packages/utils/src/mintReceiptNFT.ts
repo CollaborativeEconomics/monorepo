@@ -243,7 +243,8 @@ export async function mintAndSaveReceiptNFT({
         address: donorWalletAddress,
         uri: uriMeta,
         walletSeed:
-          process.env[`${chainContract.chain.toUpperCase()}_WALLET_SEED`] ?? "",
+          process.env[`${chainContract.chain.toUpperCase()}_WALLET_SECRET`] ??
+          "",
       })
       console.log("RESMINT", mintResponse)
       if (!mintResponse) {

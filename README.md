@@ -39,3 +39,7 @@ This is the CFCE Monorepo.
 1. Add the chain to `packages/database/src/prisma/schema.prisma` chain enum
 1. Add the chain to `packages/types/src/BlockchainTools.ts` (Chain, TokenTickerSymbol if relevant, ChainNames, and ChainSlugs)
 1. Add the chain to `packages/blockchain-tools/src/chains/chainConfig.ts` (entry + at least one network)
+
+## Using the blockchain tools
+
+For server-side blockchain interactions that require a wallet secret, use `${CHAIN_NAME}_WALLET_SECRET` from the .env.local file (e.g. `STELLAR_WALLET_SECRET` or `XRPL_WALLET_SECRET`).

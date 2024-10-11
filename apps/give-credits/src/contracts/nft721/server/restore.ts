@@ -11,7 +11,7 @@ export default async function restoreContract(contractId: string) {
     }
     if (
       !appConfig.chains.stellar?.contracts?.receiptMintbotERC721 ||
-      !process.env.CFCE_MINTER_WALLET_SECRET
+      !process.env.STELLAR_WALLET_SECRET
     ) {
       return { success: false, error: "Missing environment variables" }
     }
@@ -22,7 +22,7 @@ export default async function restoreContract(contractId: string) {
     const to = new Address(
       appConfig.chains.stellar?.contracts?.receiptMintbotERC721,
     ).toScVal()
-    const secret = process.env.CFCE_MINTER_WALLET_SECRET
+    const secret = process.env.STELLAR_WALLET_SECRET
     const method = "mint"
     const args = [to]
     const result = await checkContract(
