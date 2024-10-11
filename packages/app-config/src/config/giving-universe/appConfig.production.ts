@@ -40,6 +40,7 @@ appConfig.chains = {
     contracts: {},
     wallets: ["xaman"],
     tokens: ["XRP"],
+    destinationTag: "77777777",
   },
 }
 
