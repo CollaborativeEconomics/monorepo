@@ -37,12 +37,12 @@ export default async function Signin() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {Object.entries(chains).map(([slug, { wallets }], i) => {
+          {Object.entries(chains).map(([slug, { enabledWallets }], i) => {
             const chainConfig = chainConfigs[slug as ChainSlugs];
             return (
               <div key={`auth-button-${slug}`}>
                 {i > 0 && <Separator className="my-4" />}
-                {wallets.map(wallet => (
+                {enabledWallets.map(wallet => (
                   <AuthButton
                     key={wallet}
                     method={wallet}

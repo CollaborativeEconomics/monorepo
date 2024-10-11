@@ -24,7 +24,7 @@ appConfig.chains = {
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
     },
-    wallets: [],
+    enabledWallets: [],
     tokens: [],
   },
   stellar: {
@@ -34,7 +34,7 @@ appConfig.chains = {
       receiptMintbotERC721:
         "CDCTS77MPY6GXTGMFFIOWINMPBX4G7DELFEV34KTX5N2DZH43TGHMNU3",
     },
-    wallets: ["freighter"],
+    enabledWallets: ["freighter"],
     tokens: ["XLM", "USDC"],
   },
 }
