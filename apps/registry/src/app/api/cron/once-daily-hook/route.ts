@@ -2,7 +2,6 @@ import { newCronjob } from "@cfce/database"
 import { Triggers, runHook } from "@cfce/registry-hooks"
 import { type NextRequest, NextResponse } from "next/server"
 import { prepareDailyHook } from "~/lib/hooks/prepare"
-import "~/lib/hooks/initHooks"
 
 export async function GET(request: NextRequest) {
   const cronName = "once-daily-hook"

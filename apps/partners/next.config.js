@@ -55,10 +55,13 @@ const nextConfig = {
     return config;
   },
   env: {
-    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
-    AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION,
-    AWS_MEDIA_BUCKET: process.env.AWS_MEDIA_BUCKET,
+    IPFS_GATEWAY_URL: process.env.IPFS_GATEWAY_URL,
+    IPFS_API_ENDPOINT: process.env.IPFS_API_ENDPOINT,
+    IPFS_API_PINNING: process.env.IPFS_API_PINNING,
+    IPFS_API_KEY: process.env.IPFS_API_KEY,
+    IPFS_API_SECRET: process.env.IPFS_API_SECRET,
+    IPFS_DEFAULT_REGION: process.env.IPFS_DEFAULT_REGION,
+    IPFS_DEFAULT_BUCKET: process.env.IPFS_DEFAULT_BUCKET,
   },
 };
 

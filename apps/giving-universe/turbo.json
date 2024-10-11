@@ -8,7 +8,17 @@
   ],
   "tasks": {
     "build": {
-      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
+      "dependsOn": [
+        "@cfce/app-config#build",
+        "@cfce/blockchain-tools#build",
+        "@cfce/database#build",
+        "@cfce/registry-hooks#build",
+        "@cfce/universe-api#build",
+        "@cfce/universe-components#build",
+        "@cfce/universe-pages#build",
+        "@cfce/utils#build"
+      ]
     }
   }
 }

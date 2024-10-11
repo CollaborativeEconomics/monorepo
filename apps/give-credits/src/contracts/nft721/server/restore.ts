@@ -10,7 +10,7 @@ export default async function restoreContract(contractId: string) {
       return { success: false, error: "Contract id not provided" }
     }
     if (
-      !process.env.CFCE_MINTER_WALLET_ADDRESS ||
+      !appConfig.chains.stellar?.contracts?.receiptMintbotERC721 ||
       !process.env.CFCE_MINTER_WALLET_SECRET
     ) {
       return { success: false, error: "Missing environment variables" }
@@ -19,7 +19,9 @@ export default async function restoreContract(contractId: string) {
       networks[
         appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network
       ]
-    const to = new Address(process.env.CFCE_MINTER_WALLET_ADDRESS).toScVal()
+    const to = new Address(
+      appConfig.chains.stellar?.contracts?.receiptMintbotERC721,
+    ).toScVal()
     const secret = process.env.CFCE_MINTER_WALLET_SECRET
     const method = "mint"
     const args = [to]
