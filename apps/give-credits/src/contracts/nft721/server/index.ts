@@ -1,3 +1,5 @@
+import appConfig from "@cfce/app-config"
+import { getRpcUrl } from "@cfce/blockchain-tools"
 import {
   Address,
   BASE_FEE,
@@ -22,7 +24,11 @@ function sleep(ms: number) {
 
 //---- SUBMIT TX
 
-const RPC_SERVER = process.env.STELLAR_SOROBAN
+const RPC_SERVER = getRpcUrl(
+  "stellar",
+  appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network,
+  "soroban",
+)
 //const RPC_SERVER = "https://rpc-futurenet.stellar.org:443";
 //const RPC_SERVER = "https://soroban-testnet.stellar.org/";
 console.log("RPC", RPC_SERVER)

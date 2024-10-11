@@ -1,3 +1,5 @@
+import appConfig from "@cfce/app-config"
+import { getRpcUrl } from "@cfce/blockchain-tools"
 import { NextResponse } from "next/server"
 
 // Fetch stellar rpc servers
@@ -5,7 +7,12 @@ import { NextResponse } from "next/server"
 // On error returns error:message
 export default async function fetchLedger(query: string) {
   try {
-    const url = (process.env.NEXT_PUBLIC_STELLAR_HORIZON || "") + query
+    const url =
+      getRpcUrl(
+        "tron",
+        appConfig.chains.tron?.network ?? appConfig.chainDefaults.network,
+        "api",
+      ) + query
     console.log("FETCH", url)
     const options = {
       method: "GET",

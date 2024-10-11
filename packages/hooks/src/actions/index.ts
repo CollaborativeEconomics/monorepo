@@ -1,26 +1,36 @@
-import { ActionFunction, ActionName } from "../types";
-import createStory, { createStories, CreateStoriesParameters, CreateStoryParameters } from "./createStory";
-import fetchDataFromApi, { FetchDataFromApiParameters } from "./fetchDataFromApi";
-import { InputValuesParameters } from "./inputValues";
-import math, { MathParameters } from "./math";
-import transform, { TransformEachParameters, TransformParameters, transformEach } from "./transform";
-import inputValues from "./inputValues";
-import find, { FindParameters } from "./find";
-import filter, { FilterParameters } from "./filter";
-import formatDate, { FormatDateParameters } from "./formatDate";
+import type { ActionFunction, ActionName } from "../types"
+import createStory, {
+  createStories,
+  type CreateStoriesParameters,
+  type CreateStoryParameters,
+} from "./createStory"
+import fetchDataFromApi, {
+  type FetchDataFromApiParameters,
+} from "./fetchDataFromApi"
+import filter, { type FilterParameters } from "./filter"
+import find, { type FindParameters } from "./find"
+import formatDate, { type FormatDateParameters } from "./formatDate"
+import type { InputValuesParameters } from "./inputValues"
+import inputValues from "./inputValues"
+import math, { type MathParameters } from "./math"
+import transform, {
+  type TransformEachParameters,
+  type TransformParameters,
+  transformEach,
+} from "./transform"
 
 type Actions = {
-  fetchDataFromApi: ActionFunction<FetchDataFromApiParameters>,
-  math: ActionFunction<MathParameters>,
-  transform: ActionFunction<TransformParameters>,
-  transformEach: ActionFunction<TransformEachParameters>,
-  createStory: ActionFunction<CreateStoryParameters>,
-  createStories: ActionFunction<CreateStoriesParameters>,
-  inputValues: ActionFunction<InputValuesParameters>,
-  find: ActionFunction<FindParameters>,
-  filter: ActionFunction<FilterParameters>,
-  formatDate: ActionFunction<FormatDateParameters>,
-};
+  fetchDataFromApi: ActionFunction<FetchDataFromApiParameters>
+  math: ActionFunction<MathParameters>
+  transform: ActionFunction<TransformParameters>
+  transformEach: ActionFunction<TransformEachParameters>
+  createStory: ActionFunction<CreateStoryParameters>
+  createStories: ActionFunction<CreateStoriesParameters>
+  inputValues: ActionFunction<InputValuesParameters>
+  find: ActionFunction<FindParameters>
+  filter: ActionFunction<FilterParameters>
+  formatDate: ActionFunction<FormatDateParameters>
+}
 
 const actions: Record<ActionName, ActionFunction<any>> = {
   fetchDataFromApi,
@@ -35,4 +45,4 @@ const actions: Record<ActionName, ActionFunction<any>> = {
   formatDate,
 }
 
-export default actions;
+export default actions

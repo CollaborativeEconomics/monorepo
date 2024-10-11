@@ -17,7 +17,7 @@ export default class StellarServer extends ChainBaseClass {
 
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
-    this.sorobanServer = new SorobanRpc.Server(this.network.rpcUrl)
+    this.sorobanServer = new SorobanRpc.Server(this.network.rpcUrls.main)
   }
 
   async mintNFT({
@@ -36,7 +36,7 @@ export default class StellarServer extends ChainBaseClass {
     console.log(this.chain, "minting NFT to", address, uri)
     const contract = new Contract721({
       contractId,
-      rpcUrl: this.network.rpcUrl,
+      rpcUrl: this.network.rpcUrls.main,
       secret: walletSeed,
     })
     //console.log('CTR', contract.spec)
@@ -121,7 +121,7 @@ export default class StellarServer extends ChainBaseClass {
   async fetchLedger(query: string) {
     try {
       //let url = this.soroban + query
-      const url = this.chain.networks.horizon.rpcUrl + query
+      const url = this.chain.networks.horizon.rpcUrls.main + query
       console.log("FETCH", url)
       const options = {
         method: "GET",

@@ -831,6 +831,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.654.0
         version: 3.665.0
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../../packages/app-config
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
@@ -1071,6 +1074,9 @@ importers:
 
   packages/hooks:
     dependencies:
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
       '@cfce/database':
         specifier: workspace:*
         version: link:../database

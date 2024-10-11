@@ -29,7 +29,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
 
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
-    this.web3 = new Web3(this.network.rpcUrl)
+    this.web3 = new Web3(this.network.rpcUrls.main)
   }
 
   async connect() {
@@ -163,7 +163,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
                   decimals: provider.decimals,
                   symbol: provider.symbol,
                 },
-                rpcUrls: [provider.rpcUrl],
+                rpcUrls: [provider.rpcUrls.main],
                 blockExplorerUrls: [provider.explorer],
               },
             ],
@@ -542,7 +542,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
       body,
     }
     try {
-      const res = await fetch(this.network.rpcUrl, opt)
+      const res = await fetch(this.network.rpcUrls.main, opt)
       const inf = await res.json()
       return inf?.result
     } catch (ex) {

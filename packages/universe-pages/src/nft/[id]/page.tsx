@@ -1,5 +1,7 @@
 import React from 'react';
 
+import appConfig from '@cfce/app-config';
+import { chainConfig, getChainConfiguration } from '@cfce/blockchain-tools';
 import { getNFTById } from '@cfce/database';
 import { OrganizationAvatar } from '@cfce/universe-components/organization';
 import { Card, CardContent } from '@cfce/universe-components/ui';
@@ -16,7 +18,11 @@ export default async function NFT(props: { params: { id: string } }) {
   //console.log('NFT', nft)
   const imgsrc = process.env.IPFS_GATEWAY_URL + nft.imageUri.substr(5);
   const [contract, tokenId] = nft.tokenId.split(' ');
-  const explorer = `${process.env.NEXT_PUBLIC_STELLAR_EXPLORER}/contract/${contract}`;
+  const explorer = `${
+    chainConfig.stellar.networks[
+      appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network
+    ].explorer
+  }/contract/${contract}`;
   const metalink = process.env.IPFS_GATEWAY_URL + nft.metadataUri.substr(5);
 
   return (

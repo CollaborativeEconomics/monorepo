@@ -18,8 +18,7 @@ type ChainClasses<ClientClass = Interface, ServerClass = Interface> = {
 }
 
 const getNetwork = (slug: ChainSlugs): Network =>
-  appConfig.chains.find((c) => c.slug === slug)?.network ??
-  appConfig.chainDefaults.network
+  appConfig.chains[slug]?.network ?? appConfig.chainDefaults.network
 
 const BlockchainManager = {
   arbitrum: {
@@ -73,6 +72,11 @@ const BlockchainManager = {
   stellar: {
     client: new FreighterWallet("stellar", getNetwork("stellar")),
     server: new StellarServer("stellar", getNetwork("stellar")),
+  },
+  tron: {
+    // TODO: Add Tron wallet and server support
+    client: new MetaMaskWallet("tron", getNetwork("tron")),
+    server: new Web3Server("tron", getNetwork("tron")),
   },
   xinfin: {
     client: new MetaMaskWallet("xinfin", getNetwork("xinfin")),

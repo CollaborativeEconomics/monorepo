@@ -72,7 +72,7 @@ export default class XrplCommon extends ChainBaseClass {
     params: Record<string, unknown>,
   ) {
     try {
-      const url = this.network.rpcUrl
+      const url = this.network.rpcUrls.main
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },

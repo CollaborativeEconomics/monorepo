@@ -1,3 +1,9 @@
+import appConfig from "@cfce/app-config"
+import {
+  chainConfig,
+  getChainConfiguration,
+  getRpcUrl,
+} from "@cfce/blockchain-tools"
 import {
   Address,
   BASE_FEE,
@@ -20,8 +26,16 @@ const { Api, assembleTransaction } = SorobanRpc
 
 //---- SUBMIT TX
 
-const HORIZON_URL = process.env.NEXT_PUBLIC_STELLAR_HORIZON
-const SOROBAN_URL = process.env.STELLAR_SOROBAN
+const HORIZON_URL = getRpcUrl(
+  "stellar",
+  appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network,
+  "horizon",
+)
+const SOROBAN_URL = getRpcUrl(
+  "stellar",
+  appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network,
+  "soroban",
+)
 //const SOROBAN_URL = 'https://small-shy-borough.stellar-mainnet.quiknode.pro/53e6763ed40e4bc3202a8792d6d2d51706052755/'
 //const SOROBAN_URL = 'https://mainnet.stellar.validationcloud.io/v1/QW6tYBRenqUwP8d9ZJds44Dm-txH1497oDXcdC07xDo'
 //const SOROBAN_URL = 'https://soroban-mainnet.nownodes.io/32b582fb-d83b-44fc-8788-774de28395cb'

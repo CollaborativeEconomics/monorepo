@@ -13,7 +13,7 @@ appConfig.siteInfo = {
 }
 
 // Override chains (empty in this case)
-appConfig.chains = []
+appConfig.chains = {}
 
 // Override auth
 appConfig.auth = ["google" as AuthTypes]

@@ -1,3 +1,4 @@
+import appConfig from "@cfce/app-config"
 import type { ChainConfig, ChainSlugs, Chains } from "@cfce/types"
 
 const chainConfiguration: Chains = {
@@ -92,6 +93,13 @@ const chainConfiguration: Chains = {
     icon: "/icons/xlm.webp",
     networks: {},
   },
+  tron: {
+    slug: "tron",
+    name: "Tron",
+    symbol: "TRX",
+    icon: "/icons/trx.webp",
+    networks: {},
+  },
   xinfin: {
     slug: "xinfin",
     name: "XDC",
@@ -116,7 +124,9 @@ chainConfiguration.arbitrum.networks.mainnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://arbiscan.io",
-  rpcUrl: "https://arb1.arbitrum.io/rpc",
+  rpcUrls: {
+    main: "https://arb1.arbitrum.io/rpc",
+  },
   wssurl: "",
 }
 chainConfiguration.arbitrum.networks.testnet = {
@@ -127,7 +137,9 @@ chainConfiguration.arbitrum.networks.testnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://sepolia.arbiscan.io",
-  rpcUrl: "https://sepolia-rollup.arbitrum.io/rpc",
+  rpcUrls: {
+    main: "https://sepolia-rollup.arbitrum.io/rpc",
+  },
   wssurl: "",
 }
 chainConfiguration.avalanche.networks.mainnet = {
@@ -138,7 +150,9 @@ chainConfiguration.avalanche.networks.mainnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://snowtrace.io",
-  rpcUrl: "https://ethereum.publicnode.com",
+  rpcUrls: {
+    main: "https://ethereum.publicnode.com",
+  },
   wssurl: "",
 }
 chainConfiguration.avalanche.networks.testnet = {
@@ -149,7 +163,9 @@ chainConfiguration.avalanche.networks.testnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://testnet.snowtrace.io",
-  rpcUrl: "https://ethereum-goerli.publicnode.com",
+  rpcUrls: {
+    main: "https://ethereum-goerli.publicnode.com",
+  },
   wssurl: "",
 }
 chainConfiguration.base.networks.mainnet = {
@@ -160,7 +176,9 @@ chainConfiguration.base.networks.mainnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://basescan.org",
-  rpcUrl: "https://mainnet.base.org",
+  rpcUrls: {
+    main: "https://mainnet.base.org",
+  },
   wssurl: "",
 }
 chainConfiguration.base.networks.testnet = {
@@ -171,7 +189,9 @@ chainConfiguration.base.networks.testnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://testnet.basescan.org",
-  rpcUrl: "https://testnet.base.org",
+  rpcUrls: {
+    main: "https://testnet.base.org",
+  },
   wssurl: "",
 }
 chainConfiguration.binance.networks.mainnet = {
@@ -182,7 +202,9 @@ chainConfiguration.binance.networks.mainnet = {
   decimals: 18,
   gasprice: "9000000000",
   explorer: "https://bscscan.com",
-  rpcUrl: "https://bsc-dataseed.binance.org",
+  rpcUrls: {
+    main: "https://bsc-dataseed.binance.org",
+  },
   wssurl: "",
 }
 chainConfiguration.binance.networks.testnet = {
@@ -193,7 +215,9 @@ chainConfiguration.binance.networks.testnet = {
   decimals: 18,
   gasprice: "9000000000",
   explorer: "https://testnet.bscscan.com",
-  rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+  rpcUrls: {
+    main: "https://data-seed-prebsc-1-s1.binance.org:8545",
+  },
   wssurl: "",
 }
 chainConfiguration.celo.networks.mainnet = {
@@ -204,7 +228,9 @@ chainConfiguration.celo.networks.mainnet = {
   decimals: 18,
   gasprice: "10000000000",
   explorer: "https://explorer.celo.org",
-  rpcUrl: "https://forno.celo.org",
+  rpcUrls: {
+    main: "https://forno.celo.org",
+  },
   wssurl: "",
 }
 chainConfiguration.celo.networks.testnet = {
@@ -215,7 +241,9 @@ chainConfiguration.celo.networks.testnet = {
   decimals: 18,
   gasprice: "10000000000",
   explorer: "https://alfajores-blockscout.celo-testnet.org",
-  rpcUrl: "https://alfajores-forno.celo-testnet.org",
+  rpcUrls: {
+    main: "https://alfajores-forno.celo-testnet.org",
+  },
   wssurl: "",
 }
 chainConfiguration.eos.networks.mainnet = {
@@ -226,7 +254,9 @@ chainConfiguration.eos.networks.mainnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://explorer.eos.io",
-  rpcUrl: "https://api.eos.io",
+  rpcUrls: {
+    main: "https://api.eos.io",
+  },
   wssurl: "",
 }
 chainConfiguration.eos.networks.testnet = {
@@ -237,7 +267,9 @@ chainConfiguration.eos.networks.testnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://explorer.testnet.eos.io",
-  rpcUrl: "https://api.testnet.eos.io",
+  rpcUrls: {
+    main: "https://api.testnet.eos.io",
+  },
   wssurl: "",
 }
 chainConfiguration.ethereum.networks.mainnet = {
@@ -248,7 +280,9 @@ chainConfiguration.ethereum.networks.mainnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://etherscan.io",
-  rpcUrl: "https://ethereum.publicnode.com",
+  rpcUrls: {
+    main: "https://ethereum.publicnode.com",
+  },
   wssurl: "",
 }
 chainConfiguration.ethereum.networks.testnet = {
@@ -259,7 +293,9 @@ chainConfiguration.ethereum.networks.testnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://goerli.etherscan.io",
-  rpcUrl: "https://ethereum-goerli.publicnode.com",
+  rpcUrls: {
+    main: "https://ethereum-goerli.publicnode.com",
+  },
   wssurl: "",
 }
 chainConfiguration.filecoin.networks.mainnet = {
@@ -270,7 +306,9 @@ chainConfiguration.filecoin.networks.mainnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://filscan.io",
-  rpcUrl: "https://api.node.glif.io",
+  rpcUrls: {
+    main: "https://api.node.glif.io",
+  },
   wssurl: "",
 }
 chainConfiguration.filecoin.networks.testnet = {
@@ -281,7 +319,9 @@ chainConfiguration.filecoin.networks.testnet = {
   decimals: 18,
   gasprice: "250000000",
   explorer: "https://calibration.filscan.io",
-  rpcUrl: "https://api.calibration.node.glif.io",
+  rpcUrls: {
+    main: "https://api.calibration.node.glif.io",
+  },
   wssurl: "",
 }
 chainConfiguration.flare.networks.mainnet = {
@@ -292,7 +332,9 @@ chainConfiguration.flare.networks.mainnet = {
   decimals: 18,
   gasprice: "25000000000",
   explorer: "https://flare-explorer.flare.network",
-  rpcUrl: "https://mainnet.flare.network",
+  rpcUrls: {
+    main: "https://mainnet.flare.network",
+  },
   wssurl: "",
 }
 chainConfiguration.flare.networks.testnet = {
@@ -303,7 +345,9 @@ chainConfiguration.flare.networks.testnet = {
   decimals: 18,
   gasprice: "25000000000",
   explorer: "https://coston-explorer.flare.network",
-  rpcUrl: "https://coston-api.flare.network/ext/bc/C/rpc",
+  rpcUrls: {
+    main: "https://coston-api.flare.network/ext/bc/C/rpc",
+  },
   wssurl: "",
 }
 chainConfiguration.optimism.networks.mainnet = {
@@ -313,19 +357,23 @@ chainConfiguration.optimism.networks.mainnet = {
   symbol: "OP",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://goerli.etherscan.io",
-  rpcUrl: "https://ethereum-goerli.publicnode.com",
+  explorer: "https://optimistic.etherscan.io",
+  rpcUrls: {
+    main: "https://mainnet.optimism.io",
+  },
   wssurl: "",
 }
 chainConfiguration.optimism.networks.testnet = {
-  id: 5,
+  id: 420,
   name: "Optimism Testnet",
   slug: "testnet",
   symbol: "OP",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://goerli.etherscan.io",
-  rpcUrl: "https://ethereum-goerli.publicnode.com",
+  explorer: "https://goerli-optimism.etherscan.io",
+  rpcUrls: {
+    main: "https://goerli.optimism.io",
+  },
   wssurl: "",
 }
 chainConfiguration.polygon.networks.mainnet = {
@@ -336,7 +384,9 @@ chainConfiguration.polygon.networks.mainnet = {
   decimals: 18,
   gasprice: "20000000000",
   explorer: "https://polygonscan.com",
-  rpcUrl: "https://ethereum.publicnode.com",
+  rpcUrls: {
+    main: "https://polygon-rpc.com",
+  },
   wssurl: "",
 }
 chainConfiguration.polygon.networks.testnet = {
@@ -347,7 +397,9 @@ chainConfiguration.polygon.networks.testnet = {
   decimals: 18,
   gasprice: "20000000000",
   explorer: "https://mumbai.polygonscan.com",
-  rpcUrl: "https://ethereum-goerli.publicnode.com",
+  rpcUrls: {
+    main: "https://rpc-mumbai.maticvigil.com",
+  },
   wssurl: "",
 }
 chainConfiguration.starknet.networks.mainnet = {
@@ -357,9 +409,10 @@ chainConfiguration.starknet.networks.mainnet = {
   symbol: "STRK",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://goerli.etherscan.io",
-  rpcUrl:
-    "https://starknet-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+  explorer: "https://starkscan.co",
+  rpcUrls: {
+    main: "https://starknet-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+  },
   wssurl: "",
   tokens: {
     USDT: {
@@ -387,9 +440,10 @@ chainConfiguration.starknet.networks.testnet = {
   symbol: "STRK",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://goerli.etherscan.io",
-  rpcUrl:
-    "https://starknet-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+  explorer: "https://testnet.starkscan.co",
+  rpcUrls: {
+    main: "https://starknet-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+  },
   wssurl: "",
   tokens: {
     USDT: {
@@ -416,7 +470,12 @@ chainConfiguration.stellar.networks.mainnet = {
   decimals: 6,
   gasprice: "250000000",
   explorer: "https://stellarchain.io",
-  rpcUrl: "https://horizon.stellar.org",
+  rpcUrls: {
+    main: "https://horizon.stellar.org",
+    soroban:
+      "https://mainnet.stellar.validationcloud.io/v1/QW6tYBRenqUwP8d9ZJds44Dm-txH1497oDXcdC07xDo",
+    // You can add more RPC URLs here as needed
+  },
   wssurl: "",
   networkPassphrase: "Public Global Stellar Network ; September 2015",
   tokens: {
@@ -437,7 +496,10 @@ chainConfiguration.stellar.networks.testnet = {
   decimals: 6,
   gasprice: "250000000",
   explorer: "https://stellarchain.io",
-  rpcUrl: "https://horizon-testnet.stellar.org",
+  rpcUrls: {
+    main: "https://horizon-testnet.stellar.org",
+    soroban: "https://soroban-testnet.stellar.org",
+  },
   wssurl: "",
   networkPassphrase: "Test SDF Network ; September 2015",
   tokens: {
@@ -458,9 +520,38 @@ chainConfiguration.stellar.networks.futurenet = {
   decimals: 6,
   gasprice: "250000000",
   explorer: "https://stellarchain.io",
-  rpcUrl: "https://horizon-futurenet.stellar.org",
+  rpcUrls: {
+    main: "https://horizon-futurenet.stellar.org",
+    soroban: "https://horizon-futurenet.stellar.org",
+  },
   wssurl: "",
   networkPassphrase: "Test SDF Future Network ; October 2022",
+}
+chainConfiguration.tron.networks.mainnet = {
+  id: 728126428,
+  name: "Tron Mainnet",
+  slug: "mainnet",
+  symbol: "TRX",
+  decimals: 6, // TODO: verify
+  gasprice: "250000000", // TODO: verify
+  explorer: "https://tronscan.io",
+  rpcUrls: {
+    main: "https://api.trongrid.io/jsonrpc",
+  },
+  wssurl: "",
+}
+chainConfiguration.tron.networks.testnet = {
+  id: 2494104990,
+  name: "Tron Shasta Testnet",
+  slug: "testnet",
+  symbol: "TRX",
+  decimals: 6,
+  gasprice: "250000000",
+  explorer: "https://shasta.tronscan.io",
+  rpcUrls: {
+    main: "https://api.shasta.trongrid.io/jsonrpc",
+  },
+  wssurl: "",
 }
 chainConfiguration.xinfin.networks.mainnet = {
   id: 50,
@@ -470,7 +561,9 @@ chainConfiguration.xinfin.networks.mainnet = {
   decimals: 18,
   gasprice: "12500000000",
   explorer: "https://explorer.xinfin.network",
-  rpcUrl: "https://rpc.xinfin.network",
+  rpcUrls: {
+    main: "https://rpc.xinfin.network",
+  },
   wssurl: "",
 }
 chainConfiguration.xinfin.networks.testnet = {
@@ -481,7 +574,9 @@ chainConfiguration.xinfin.networks.testnet = {
   decimals: 18,
   gasprice: "12500000000",
   explorer: "https://explorer.apothem.network",
-  rpcUrl: "https://rpc.apothem.network",
+  rpcUrls: {
+    main: "https://rpc.apothem.network",
+  },
   wssurl: "",
 }
 chainConfiguration.xrpl.networks.mainnet = {
@@ -491,8 +586,10 @@ chainConfiguration.xrpl.networks.mainnet = {
   symbol: "XRP",
   decimals: 6,
   gasprice: "250000000",
-  explorer: "https://etherscan.io",
-  rpcUrl: "https://ethereum.publicnode.com",
+  explorer: "https://xrpscan.com",
+  rpcUrls: {
+    main: "https://xrplcluster.com",
+  },
   wssurl: "",
 }
 chainConfiguration.xrpl.networks.testnet = {
@@ -502,13 +599,48 @@ chainConfiguration.xrpl.networks.testnet = {
   symbol: "XRP",
   decimals: 6,
   gasprice: "250000000",
-  explorer: "https://goerli.etherscan.io",
-  rpcUrl: "https://ethereum-goerli.publicnode.com",
+  explorer: "https://testnet.xrpl.org",
+  rpcUrls: {
+    main: "https://s.altnet.rippletest.net:51234",
+  },
   wssurl: "",
 }
 
-export const getChainConfiguration = (slugs: ChainSlugs[]): ChainConfig[] => {
-  return slugs.map((slug) => chainConfiguration[slug])
+export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
+  const chainKeys = Object.keys(
+    appConfig.chains,
+  ) as (keyof typeof appConfig.chains)[]
+
+  return chainKeys.reduce(
+    (obj, key) => {
+      obj[key] = chainConfiguration[key]
+      return obj
+    },
+    {} as Record<ChainSlugs, ChainConfig>,
+  )
+}
+
+export const getRpcUrl = (
+  chain: ChainSlugs,
+  network: string,
+  rpcType = "main",
+): string => {
+  const chainConfig = chainConfiguration[chain]
+  if (!chainConfig) {
+    throw new Error(`Chain configuration not found for ${chain}`)
+  }
+
+  const networkConfig = chainConfig.networks[network]
+  if (!networkConfig) {
+    throw new Error(`Network configuration not found for ${chain} ${network}`)
+  }
+
+  const rpcUrl = networkConfig.rpcUrls[rpcType]
+  if (!rpcUrl) {
+    throw new Error(`RPC URL not found for ${chain} ${network} ${rpcType}`)
+  }
+
+  return rpcUrl
 }
 
 export default chainConfiguration

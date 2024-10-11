@@ -103,9 +103,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       const result = await chainInterface.sendPayment({
         address,
         amount: chainInterface.toBaseUnit(amount),
-        memo:
-          appConfig.chains.find(c => c.slug === selectedChain)
-            ?.destinationTag || '',
+        memo: appConfig.chains[selectedChain]?.destinationTag || '',
       });
       return result;
     },

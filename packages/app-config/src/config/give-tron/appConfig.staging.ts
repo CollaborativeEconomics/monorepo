@@ -1,4 +1,9 @@
-import type { AppConfig, AuthTypes } from "@cfce/types"
+import type {
+  AppChainConfig,
+  AppConfig,
+  AuthTypes,
+  ChainSlugs,
+} from "@cfce/types"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {
@@ -14,10 +19,17 @@ const apis = {
   },
 }
 
-const chains = appConfig.chains.map((chain) => ({
-  ...chain,
-  network: "testnet",
-}))
+// use testnet
+const chains = Object.entries(appConfig.chains).reduce(
+  (obj, [key, chain]) => {
+    obj[key as ChainSlugs] = {
+      ...chain,
+      network: "testnet",
+    }
+    return obj
+  },
+  {} as Record<ChainSlugs, AppChainConfig>,
+)
 
 const chainDefaults = {
   ...appConfig.chainDefaults,

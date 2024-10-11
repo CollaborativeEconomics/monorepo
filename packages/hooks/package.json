@@ -17,6 +17,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "@cfce/app-config": "workspace:*",
     "@cfce/database": "workspace:*",
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",

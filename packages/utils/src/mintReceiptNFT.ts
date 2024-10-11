@@ -195,7 +195,8 @@ export async function mintAndSaveReceiptNFT({
       organization: organizationName,
       initiative: initiativeName,
       image: uriImage,
-      network: process.env.NEXT_PUBLIC_STELLAR_NETWORK || "unknown",
+      network:
+        appConfig.chains?.stellar?.network ?? appConfig.chainDefaults.network,
       coinCode: token,
       coinIssuer: chain,
       coinValue: amountCUR,
@@ -219,8 +220,8 @@ export async function mintAndSaveReceiptNFT({
       chain: ChainSlugs
       contract: string
     }> = []
-    for (const chainSlug in appConfig.chains) {
-      const chain = appConfig.chains.find(({ slug }) => slug === chainSlug)
+    for (const chainSlug of Object.keys(appConfig.chains) as ChainSlugs[]) {
+      const chain = appConfig.chains[chainSlug]
       if (chain?.contracts.receiptMintbotERC721) {
         receiptConctractsByChain.push({
           chain: chainSlug as ChainSlugs,
@@ -270,7 +271,8 @@ export async function mintAndSaveReceiptNFT({
       initiative: { connect: { id: initiativeId } },
       metadataUri: uriMeta,
       imageUri: uriImage,
-      coinNetwork: process.env.NEXT_PUBLIC_STELLAR_NETWORK || "",
+      coinNetwork:
+        appConfig.chains?.stellar?.network ?? appConfig.chainDefaults.network,
       coinSymbol: token,
       coinLabel: chain,
       coinValue: amountCUR,

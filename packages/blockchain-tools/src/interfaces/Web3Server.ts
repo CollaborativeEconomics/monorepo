@@ -9,7 +9,7 @@ import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 export default class Web3Server extends ChainBaseClass {
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
-    this.web3 = new Web3(this.network.rpcUrl)
+    this.web3 = new Web3(this.network.rpcUrls.main)
   }
 
   async getGasPrice(minter: string, contractId: string, data: string) {
@@ -253,7 +253,7 @@ export default class Web3Server extends ChainBaseClass {
       body,
     }
     try {
-      const res = await fetch(this.network.rpcUrl, opt)
+      const res = await fetch(this.network.rpcUrls.main, opt)
       const inf = await res.json()
       return inf?.result
     } catch (ex) {

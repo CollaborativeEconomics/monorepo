@@ -1,3 +1,4 @@
+import appConfig from "@cfce/app-config"
 import { signTransaction } from "@stellar/freighter-api"
 import {
   Account,
@@ -22,7 +23,8 @@ import { networks } from "~/contracts/networks"
 export default async function registerUser(contractId: string, from: string) {
   try {
     console.log("-- Register", contractId, from)
-    const netname = process.env.NEXT_PUBLIC_STELLAR_NETWORK || "testnet"
+    const netname =
+      appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network
     console.log("NETENV", netname)
     const network = networks[netname]
     console.log("NETWORK", network)

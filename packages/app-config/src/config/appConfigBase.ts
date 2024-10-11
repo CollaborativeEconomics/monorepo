@@ -25,7 +25,7 @@ const apis: AppConfig["apis"] = {
   },
 }
 
-const chains: AppConfig["chains"] = []
+const chains: AppConfig["chains"] = {}
 
 const auth: AppConfig["auth"] = []
 

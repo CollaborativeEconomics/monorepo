@@ -19,8 +19,8 @@ class FreighterWallet extends ChainBaseClass {
 
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
-    this.horizon = this.horizon = new StellarSDK.Horizon.Server(
-      this.network.rpcUrl || "",
+    this.horizon = new StellarSDK.Horizon.Server(
+      this.network.rpcUrls.main || "",
     )
     console.log("FREIGHT INIT")
   }
@@ -56,9 +56,6 @@ class FreighterWallet extends ChainBaseClass {
     memo,
   }: { address: string; amount: number; memo: string }) {
     try {
-      // const nwk = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "").toUpperCase()
-      // const net = process.env.NEXT_PUBLIC_STELLAR_PASSPHRASE || ""
-      // console.log("NET:", nwk, this.network.networkPassphrase)
       console.log("From", this.connectedWallet)
       console.log("Paying", amount, "XLM to", address, "Memo", memo)
       const act = await this.horizon.loadAccount(this.connectedWallet)
@@ -70,7 +67,7 @@ class FreighterWallet extends ChainBaseClass {
       })
       const opt = {
         fee: `${fee}`,
-        network: this.network.rpcUrl,
+        network: this.network.rpcUrls.main,
         networkPassphrase: this.network.networkPassphrase,
       }
       const txn = new StellarSDK.TransactionBuilder(act, opt)

@@ -1,4 +1,5 @@
 const { withSentryConfig } = require('@sentry/nextjs');
+const { default: next } = require('next');
 const path = require('node:path');
 
 const webpackConfig = (config, { isServer }) => {
@@ -62,7 +63,7 @@ const nextConfig = {
   webpack: webpackConfig,
 };
 
-module.exports = withSentryConfig(nextConfig, {
+const sentryfulConfig = withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
   unstable_sentryWebpackPluginOptions: webpackConfig,
@@ -71,8 +72,8 @@ module.exports = withSentryConfig(nextConfig, {
   project: 'giving-universe',
 
   // Only print logs for uploading source maps in CI
-  silent: false,
-  // silent: !process.env.CI,
+  // silent: false,
+  silent: !process.env.CI,
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
@@ -102,4 +103,10 @@ module.exports = withSentryConfig(nextConfig, {
   // https://docs.sentry.io/product/crons/
   // https://vercel.com/docs/cron-jobs
   automaticVercelMonitors: true,
+
+  telemetry: false,
 });
+
+// TODO: sentry is timing out, so I disabled it for now
+// module.exports = sentryfulConfig;
+module.exports = nextConfig;

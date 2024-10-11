@@ -26,7 +26,7 @@ export default async function Signin() {
   }
 
   const chains = appConfig.chains;
-  const chainConfigs = getChainConfiguration(chains.map(c => c.slug));
+  const chainConfigs = getChainConfiguration();
 
   return (
     <div className="container mx-auto mt-20">
@@ -37,8 +37,8 @@ export default async function Signin() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {chains.map(({ name, slug, wallets }, i) => {
-            const chainConfig = chainConfigs[i];
+          {Object.entries(chains).map(([slug, { wallets }], i) => {
+            const chainConfig = chainConfigs[slug as ChainSlugs];
             return (
               <div key={`auth-button-${slug}`}>
                 {i > 0 && <Separator className="my-4" />}

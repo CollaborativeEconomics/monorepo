@@ -1,3 +1,5 @@
+import appConfig from "@cfce/app-config"
+import { chainConfig, getRpcUrl } from "@cfce/blockchain-tools"
 import {
   getNetwork,
   getNetworkDetails,
@@ -16,7 +18,11 @@ export default class Wallet {
   accounts?: [string] = undefined
   myaccount = ""
   horizon?: StellarSDK.Horizon.Server
-  horizonurl = process.env.NEXT_PUBLIC_STELLAR_HORIZON || ""
+  horizonurl = getRpcUrl(
+    "stellar",
+    appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network,
+    "horizon",
+  )
   provider = null
 
   constructor() {
@@ -53,9 +59,13 @@ export default class Wallet {
 
   async sendPayment(dst: string, amt: string, memo: string) {
     try {
-      const nwk = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "").toUpperCase()
-      const net = process.env.NEXT_PUBLIC_STELLAR_PASSPHRASE || ""
-      console.log("NET:", nwk, net)
+      const network =
+        appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network
+      const networkPassphrase =
+        chainConfig.stellar.networks[
+          network as keyof typeof chainConfig.stellar
+        ].networkPassphrase ?? ""
+      console.log("NET:", network, networkPassphrase)
       //let pub = process.env.NEXT_PUBLIC_NFT_ISSUER
       const pub = this.myaccount
       console.log("From", pub)
@@ -70,9 +80,13 @@ export default class Wallet {
         amount: amt,
         asset: StellarSDK.Asset.native(),
       })
-      const opt = { fee: `${fee}`, network: nwk, networkPassphrase: net }
+      const opt = {
+        fee: `${fee}`,
+        network: network.toUpperCase(),
+        networkPassphrase,
+      }
       const txn = new StellarSDK.TransactionBuilder(act, opt)
-        //.setNetworkPassphrase(net)
+        //.setNetworkPassphrase(networkPassphrase)
         .addOperation(opr)
         .setTimeout(30)
       if (memo) {
@@ -82,7 +96,7 @@ export default class Wallet {
       const txid = built.hash().toString("hex")
       const xdr = built.toXDR()
       console.log("XDR:", xdr)
-      const sgn = await signTransaction(xdr, { networkPassphrase: net })
+      const sgn = await signTransaction(xdr, { networkPassphrase })
       console.log("SGN:", sgn)
       //const env   = StellarSDK.xdr.Transaction.fromXDR(sgn, 'base64')
       //const env   = StellarSDK.xdr.TransactionEnvelope.fromXDR(sgn, 'base64')
@@ -96,7 +110,10 @@ export default class Wallet {
       //console.log('TXS', txs)
 
       //const txs = new StellarSDK.TransactionBuilder.fromXDR(sgn, this.horizonurl)
-      const txs = StellarSDK.TransactionBuilder.fromXDR(sgn.signedTxXdr, net)
+      const txs = StellarSDK.TransactionBuilder.fromXDR(
+        sgn.signedTxXdr,
+        network.toUpperCase(),
+      )
       console.log("TXS", txs)
       const result = await this.horizon.submitTransaction(txs)
       console.log("RES", result)

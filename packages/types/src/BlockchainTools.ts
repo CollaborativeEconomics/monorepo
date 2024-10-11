@@ -14,6 +14,7 @@ type Chain =
   | "Polygon"
   | "Starknet"
   | "Stellar"
+  | "Tron"
   | "XDC"
   | "XRPL"
 
@@ -31,6 +32,7 @@ export const ChainSlugs = [
   "polygon",
   "starknet",
   "stellar",
+  "tron",
   "xinfin",
   "xrpl",
 ] as const
@@ -63,7 +65,10 @@ export interface NetworkConfig {
   decimals: number
   gasprice: string
   explorer: string
-  rpcUrl: string
+  rpcUrls: {
+    main: string
+    [key: string]: string
+  }
   wssurl: string
   tokens?: Partial<Record<TokenTickerSymbol, TokenConfig>>
   networkPassphrase?: string
@@ -82,6 +87,7 @@ export const TokenTickerSymbol = [
   "OP",
   "MATIC",
   "PGN",
+  "TRX",
   "STRK",
   "XLM",
   "XDC",

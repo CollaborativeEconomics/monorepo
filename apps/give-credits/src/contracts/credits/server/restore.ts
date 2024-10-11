@@ -1,3 +1,4 @@
+import appConfig from "@cfce/app-config"
 import { Address, nativeToScVal } from "@stellar/stellar-sdk"
 import { checkContract } from "~/contracts/credits/server"
 import { networks } from "~/contracts/networks"
@@ -9,13 +10,15 @@ export default async function restoreContract(contractId: string) {
       return { success: false, error: "Contract id not provided" }
     }
     if (
-      !process.env.NEXT_PUBLIC_STELLAR_NETWORK ||
       !process.env.CFCE_MINTER_WALLET_ADDRESS ||
       !process.env.CFCE_MINTER_WALLET_SECRET
     ) {
       return { success: false, error: "Missing environment variables" }
     }
-    const network = networks[process.env.NEXT_PUBLIC_STELLAR_NETWORK]
+    const network =
+      networks[
+        appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network
+      ]
     console.log("NET", network)
     const from = new Address(process.env.CFCE_MINTER_WALLET_ADDRESS).toScVal()
     const secret = process.env.CFCE_MINTER_WALLET_SECRET

@@ -1,6 +1,7 @@
 "use client"
 import {
   BlockchainManager,
+  chainConfig,
   getChainConfiguration,
 } from "@cfce/blockchain-tools"
 import type { ChainSlugs } from "@cfce/types"
@@ -19,19 +20,19 @@ export default async function loginOrCreateUserFromWallet({
       throw new Error(`No wallet interface found for chain: ${chain}`)
     }
 
-    const chainConfig = getChainConfiguration([chain])[0]
+    const config = chainConfig[chain]
 
     const { network, walletAddress } = await walletInterface.connect()
     if (!walletAddress) {
       throw new Error(`No wallet address found: ${walletAddress}`)
     }
-    const chainNetwork = chainConfig.networks[network]
+    const chainNetwork = config.networks[network]
     if (!chainNetwork) {
       throw new Error(`No chain network found: ${network}`)
     }
 
     console.log("Wallet", walletAddress)
-    const chainName = chainConfig.name
+    const chainName = config.name
     const chainId = chainNetwork.id
     // server action
     let user = await fetchUserByWallet(walletAddress)
@@ -52,7 +53,7 @@ export default async function loginOrCreateUserFromWallet({
       chainName,
       chainId,
       network,
-      currency: chainConfig.symbol,
+      currency: config.symbol,
     })
   } catch (error) {
     console.error("Error during login or user creation:", error)

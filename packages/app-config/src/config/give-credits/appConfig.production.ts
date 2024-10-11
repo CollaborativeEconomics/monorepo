@@ -17,10 +17,9 @@ appConfig.siteInfo = {
 }
 
 // Override chains
-appConfig.chains = [
-  {
+appConfig.chains = {
+  xinfin: {
     slug: "xinfin",
-    name: "XinFin",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
@@ -28,9 +27,8 @@ appConfig.chains = [
     wallets: [],
     tokens: [],
   },
-  {
+  stellar: {
     slug: "stellar",
-    name: "Stellar",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721:
@@ -39,7 +37,7 @@ appConfig.chains = [
     wallets: ["freighter"],
     tokens: ["XLM", "USDC"],
   },
-]
+}
 
 // Override auth
 appConfig.auth = ["freighter" as AuthTypes]

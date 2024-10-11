@@ -1,4 +1,4 @@
-import { AuthTypes } from "./Auth"
+import type { AuthTypes } from "./Auth"
 import type {
   ChainSlugs,
   ClientInterfaces,
@@ -8,7 +8,6 @@ import type {
 
 type ContractType = "receiptMintbotERC721"
 export interface AppChainConfig {
-  name: string
   slug: ChainSlugs
   network: string
   contracts: Partial<Record<ContractType, string>>
@@ -46,7 +45,7 @@ export interface AppConfig {
     }
   }
   auth: AuthTypes[]
-  chains: AppChainConfig[]
+  chains: Partial<Record<ChainSlugs, AppChainConfig>>
   chainDefaults: {
     network: Network
     wallet: ClientInterfaces

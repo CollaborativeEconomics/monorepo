@@ -1,8 +1,9 @@
 {
   "extends": ["//"],
+  "globalEnv": ["CFCE_REGISTRY_API_KEY"],
   "tasks": {
     "build": {
-      "dependsOn": ["@cfce/database#build"]
+      "dependsOn": ["@cfce/database#build", "@cfce/app-config#build"]
     }
   }
 }
