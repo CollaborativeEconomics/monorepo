@@ -4,7 +4,7 @@ import type {
   AuthTypes,
   ChainSlugs,
 } from "@cfce/types"
-import appConfig from "./appConfig.production"
+import appConfig from "./appConfig.staging"
 
 const siteInfo = {
   ...appConfig.siteInfo,
@@ -19,16 +19,11 @@ const apis = {
   },
 }
 
-const chains = Object.entries(appConfig.chains).reduce(
-  (obj, [key, chain]) => {
-    obj[key as ChainSlugs] = {
-      ...chain,
-      network: "testnet",
-    }
-    return obj
-  },
-  {} as Record<ChainSlugs, AppChainConfig>,
-)
+const chains = {
+  xinfin: appConfig.chains.xinfin,
+  stellar: appConfig.chains.stellar,
+  xrpl: appConfig.chains.xrpl,
+}
 
 const chainDefaults = {
   ...appConfig.chainDefaults,

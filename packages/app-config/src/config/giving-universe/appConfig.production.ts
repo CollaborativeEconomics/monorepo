@@ -24,21 +24,22 @@ appConfig.chains = {
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
     },
-    wallets: ["metamask"],
+    enabledWallets: ["metamask"],
     tokens: ["XDC"],
   },
   stellar: {
     slug: "stellar",
     network: "mainnet",
     contracts: {},
-    wallets: ["freighter"],
+    enabledWallets: ["freighter"],
     tokens: ["XLM", "USDC"],
   },
   xrpl: {
     slug: "xrpl",
     network: "mainnet",
     contracts: {},
-    wallets: ["xaman"],
+    enabledWallets: ["xaman"],
+    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
     tokens: ["XRP"],
     destinationTag: "77777777",
   },
@@ -50,9 +51,9 @@ appConfig.auth = ["freighter" as AuthTypes]
 // Override chainDefaults
 appConfig.chainDefaults = {
   network: "mainnet",
-  wallet: "freighter",
-  chain: "stellar",
-  coin: "XLM",
+  wallet: "xaman",
+  chain: "xrpl",
+  coin: "XRP",
 }
 
 export default appConfig

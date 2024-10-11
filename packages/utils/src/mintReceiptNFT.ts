@@ -2,6 +2,7 @@
 import "server-only"
 import appConfig from "@cfce/app-config"
 import { BlockchainManager } from "@cfce/blockchain-tools"
+import { getWalletSecret } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   getInitiativeById,
@@ -235,6 +236,7 @@ export async function mintAndSaveReceiptNFT({
     }
 
     let tokenId = ""
+    const walletSecret = getWalletSecret(chain)
     for (const chainContract of receiptConctractsByChain) {
       const mintResponse = BlockchainManager[
         chainContract.chain
@@ -242,9 +244,7 @@ export async function mintAndSaveReceiptNFT({
         contractId: chainContract.contract,
         address: donorWalletAddress,
         uri: uriMeta,
-        walletSeed:
-          process.env[`${chainContract.chain.toUpperCase()}_WALLET_SECRET`] ??
-          "",
+        walletSeed: walletSecret,
       })
       console.log("RESMINT", mintResponse)
       if (!mintResponse) {
