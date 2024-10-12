@@ -6,7 +6,7 @@ This is the CFCE Monorepo.
  
  - Run `nvm use`, or use node 18+
  - Set up turbo`npm i -g turbo`
- - Set up pnpm `npm i -g pnpm`
+ - Set up pnpm `npm i -g pnpm` then `npx corepack up`
  - Copy the `.env.example` files to `.env.local` for each app
  - Run `pnpm install` from the root to install all packages
  - Run `turbo build` to build all apps and packages
