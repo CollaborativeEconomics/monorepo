@@ -5,7 +5,9 @@
       "dependsOn": [
         "@cfce/blockchain-tools#build",
         "@cfce/universe-components#build",
-        "@cfce/database#build"
+        "@cfce/database#build",
+        "@cfce/types#build",
+        "@cfce/utils#build"
       ]
     }
   }

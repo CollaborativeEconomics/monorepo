@@ -180,6 +180,7 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
+    "@cfce/utils": "workspace:*",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@types/formidable": "^3.4.5",
     "@types/uuid": "^10.0.0",
@@ -189,7 +190,6 @@
   },
   "devDependencies": {
     "@cfce/typescript-config": "workspace:*",
-    "@cfce/utils": "workspace:*",
     "@cfce/types": "workspace:*",
     "@types/react": "latest",
     "next": "latest",

@@ -7,7 +7,8 @@
         "@cfce/app-config#build",
         "@cfce/database#build",
         "@cfce/ipfs#build",
-        "@cfce/registry-hooks#build"
+        "@cfce/registry-hooks#build",
+        "@cfce/types#build"
       ]
     }
   }

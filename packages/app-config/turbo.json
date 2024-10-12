@@ -8,5 +8,10 @@
     "TURBO_ENV",
     "NEXT_PUBLIC_APP_ID",
     "NEXT_PUBLIC_APP_ENV"
-  ]
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["@cfce/types#build"]
+    }
+  }
 }

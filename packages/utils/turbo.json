@@ -15,7 +15,8 @@
         "@cfce/registry-hooks#build",
         "@cfce/blockchain-tools#build",
         "@cfce/ipfs#build",
-        "@cfce/database#build"
+        "@cfce/database#build",
+        "@cfce/types#build"
       ]
     }
   }
