@@ -10,7 +10,7 @@
     "migrateDB": "prisma migrate dev",
     "migrateDBToProd": "prisma migrate deploy",
     "test": "jest",
-    "build": "rm -rf dist && prisma generate && tsc"
+    "build": "rm -rf dist && prisma generate && tsc && [ -z \"${POSTGRES_PRISMA_URL}\" ] && echo \"POSTGRES_PRISMA_URL is not set\" || echo \"POSTGRES_PRISMA_URL is set and its length is ${#POSTGRES_PRISMA_URL}\""
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
