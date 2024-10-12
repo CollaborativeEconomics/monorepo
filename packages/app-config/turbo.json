@@ -1,7 +1,7 @@
 {
   "extends": ["//"],
   "globalEnv": [
-    "DATABASE_URL",
+    "POSTGRES_PRISMA_URL",
     "BLOB_READ_WRITE_TOKEN",
     "XINFIN_MINTER_SECRET",
     "XINFIN_NETWORK",
