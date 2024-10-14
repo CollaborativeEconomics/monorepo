@@ -2,7 +2,6 @@
   "extends": ["//"],
   "globalEnv": [
     "POSTGRES_PRISMA_URL",
-    "POSTGRES_PRISMA_URL",
     "IPFS_GATEWAY_URL",
     "IPFS_API_ENDPOINT",
     "IPFS_API_PINNING",
