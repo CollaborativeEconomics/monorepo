@@ -414,12 +414,11 @@ model User {
 }
 
 model UserWallet {
-  id      String  @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  address String  @db.VarChar(255)
-  userId  String  @db.Uuid
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  address String @db.VarChar(255)
+  userId  String @db.Uuid
   chain   Chain
-  network String? @db.VarChar(10)
-  users   User    @relation(fields: [userId], references: [id])
+  users   User   @relation(fields: [userId], references: [id])
 
   @@map("userwallets")
 }
@@ -440,7 +439,6 @@ model Wallet {
   initiativeId   String?      @db.Uuid
   address        String       @db.VarChar(255)
   chain          Chain
-  network        String?      @db.VarChar(10)
   initiatives    Initiative?  @relation(fields: [initiativeId], references: [id])
   organizations  Organization @relation(fields: [organizationId], references: [id])
 
@@ -524,19 +522,6 @@ model Volunteers {
   @@map("volunteers")
 }
 
-model TokenBoundAccount {
-  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created         DateTime? @default(now()) @db.Timestamptz(6)
-  entity_type     String?   @db.VarChar(20)
-  entity_id       String?   @db.Uuid
-  account_address String?   @db.VarChar(64)
-  parent_address  String?   @db.VarChar(64)
-  chain           String?   @db.VarChar(20)
-  network         String?   @db.VarChar(20)
-
-  @@map("token_bound_accounts")
-}
-
 enum Chain {
   Arbitrum
   Avalanche
@@ -549,11 +534,11 @@ enum Chain {
   Flare
   Optimism
   Polygon
-  Starknet
   Stellar
   Tron
   XDC
   XRPL
+  Starknet
 }
 
 enum CreditType {
