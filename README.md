@@ -15,6 +15,12 @@ This is the CFCE Monorepo.
 ### Types not updating
 Try restarting the typescript server: `cmd + shift + p`, then type `restart Typescript server`
 
+### Clearing cache and stuff
+Run `pnpm delete-node-modules` to delete all the node modules in the monorepo, then run `pnpm install`
+Run `pnpm update-dependencies` to update all the dependencies in the monorepo
+Run `pnpm match-versions` to make sure all the versions are synced (especially important for typescript and jotai)
+
+
  You can run `turbo watch build` to automatically build packages as you change and update them so the changes appear immediately as you're developing.
 
 ## Apps

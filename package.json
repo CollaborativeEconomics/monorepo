@@ -6,8 +6,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "pnpm biome format --write /**/*.{ts,tsx,md}",
-    "matchVersions": "syncpack fix-mismatches",
-    "updateDependencies": "syncpack update"
+    "match-versions": "syncpack fix-mismatches",
+    "update-dependencies": "syncpack update",
+    "delete-node-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.2",

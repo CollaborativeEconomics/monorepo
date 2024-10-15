@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
     "db:migrate": "prisma migrate dev",
     "db:migrate-prod": "prisma migrate deploy",
     "test": "jest",

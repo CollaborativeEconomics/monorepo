@@ -3,7 +3,7 @@
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "install", "db:generate"],
       "inputs": [".env", ".env.local"],
       "outputs": [".next/**", "!.next/cache/**"],
       "env": ["MOBULA_API_KEY"]
