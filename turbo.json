@@ -8,6 +8,9 @@
       "outputs": [".next/**", "!.next/cache/**"],
       "env": ["MOBULA_API_KEY"]
     },
+    "db:generate": {
+      "cache": false
+    },
     "install": {
       "dependsOn": ["^install"]
     },

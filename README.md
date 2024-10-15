@@ -11,6 +11,10 @@ This is the CFCE Monorepo.
  - Run `pnpm install` from the root to install all packages
  - Run `turbo build` to build all apps and packages
 
+## Troubleshooting
+### Types not updating
+Try restarting the typescript server: `cmd + shift + p`, then type `restart Typescript server`
+
  You can run `turbo watch build` to automatically build packages as you change and update them so the changes appear immediately as you're developing.
 
 ## Apps
