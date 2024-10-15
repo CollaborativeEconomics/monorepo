@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const { searchParams } = new URL(req.url)
     const userId = searchParams.get("userId")
-    const { address, chain } = await req.json()
+    const { address, chain, network } = await req.json()
     if (!userId) {
       return NextResponse.json(
         { success: false, error: "User ID required" },
@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
 
     const result = await newUserWallet({
       chain,
+      network,
       address,
       userId,
     })
