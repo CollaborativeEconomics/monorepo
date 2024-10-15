@@ -3,6 +3,7 @@
   "globalEnv": ["POSTGRES_PRISMA_URL"],
   "tasks": {
     "build": {
+      "env": ["POSTGRES_PRISMA_URL"],
       "dependsOn": ["@cfce/types#build", "install", "db:generate"]
     }
   }
