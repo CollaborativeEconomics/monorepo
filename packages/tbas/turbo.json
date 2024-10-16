@@ -1,0 +1,7 @@
+{
+  "extends": ["//"],
+  "globalEnv": [
+    "TBA_MASTER_PRIVATE_KEY",
+    "TURBO_ENV"
+  ]
+}
