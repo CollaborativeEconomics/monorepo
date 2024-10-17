@@ -29,6 +29,7 @@ This is the CFCE Monorepo.
 - `@cfce/app-config`: Static configuration for each app (see app-config/src/config/*)
 - `@cfce/database`: CRUD operations, Prisma definition, and types for DB interaction
 - `@cfce/registry-hooks`: Hook/action functions for interacting with the registry and automating tasks
+- `@cfce/tbas`: ERC-6551 Token Bound Accounts utility lib
 - `@cfce/types`: Shared type definitions
 - `@cfce/universe-api`: The registry API
 - `@cfce/universe-components`: Reusable components
