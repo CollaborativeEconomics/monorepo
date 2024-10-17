@@ -10,7 +10,7 @@
     "db:migrate": "prisma migrate dev",
     "db:migrate-prod": "prisma migrate deploy",
     "test": "jest",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && prisma generate && tsc && node -r dotenv/config -e \"const url = process.env.POSTGRES_PRISMA_URL; console.log(url ? 'POSTGRES_PRISMA_URL length: ' + url.length : 'POSTGRES_PRISMA_URL is not set')\""
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
