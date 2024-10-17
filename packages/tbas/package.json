@@ -9,6 +9,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@cfce/blockchain-tools": "workspace:*",
     "server-only": "^0.0.1",
     "viem": "^2.21.26"
   },

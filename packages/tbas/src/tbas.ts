@@ -1,9 +1,8 @@
 import "server-only"
-import { getContract, createPublicClient, createWalletClient, http } from 'viem'
+import { Address, getContract, createPublicClient, createWalletClient, http, custom, TransactionReceipt } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { xdcTestnet as chain } from 'viem/chains'
-import { abi721, abi6551registry } from '@cfce/blockchain-tools/contracts'
-
+import { abi721, abi6551registry } from '@cfce/blockchain-tools'
 
 /* TBAS - Token Bound Accounts ERC 6551
 
@@ -19,9 +18,17 @@ import { abi721, abi6551registry } from '@cfce/blockchain-tools/contracts'
 
 */
 
+// Move to types/global.d.ts
+declare global {
+  interface Window {
+    ethereum: any
+  }
+}
+
+
 // Move to config.ts 
 const settings = {
-  privateKey : process.env.TBAS_MASTER_PRIVATE_KEY,
+  privateKey : process.env.TBAS_MASTER_PRIVATE_KEY || '0x0',
   registryAddress : '0x000000006551c19487814612e58FE06813775758',
   implementationAddress : '0x41C8f39463A868d3A88af00cd0fe7102F30E44eC',
   tokenContract: '0xdFDf018665F2C5c18a565ce0a2CfF0EA2187ebeF',
@@ -46,13 +53,13 @@ function newClient(){
 async function getReceipt(txid:string){
   console.log('Getting receipt for tx', txid)
   const client = newClient()
-  let receipt = false
+  let receipt:TransactionReceipt | undefined;
   let count = 0
   while(!receipt || count < 10){
     count += 1
     console.log('TRY', count)
     await sleep(3000) // TODO: incremental sleep
-    receipt = await client.public.getTransactionReceipt({ hash: txid })
+    receipt = await client.public.getTransactionReceipt({ hash: txid as Address })
     if(!receipt){ continue }
     //console.log('REC', receipt)
     console.log('OK', receipt?.status)
@@ -74,20 +81,20 @@ async function mainAccount(){
 export async function createAccount(tokenContract:string, tokenId:string, chainId:string, waitForReceipt=false){
   console.log('Creating account...')
   const client = newClient()
-  const serverAccount = privateKeyToAccount(settings.privateKey)
+  const serverAccount = privateKeyToAccount(settings.privateKey as Address)
   const contract = getContract({
     client,
     abi: abi6551registry,
-    address: settings.registryAddress
+    address: settings.registryAddress as Address
   })
 
   // Simulate
   const { request } = await client.public.simulateContract({
     account: serverAccount,
-    address: settings.registryAddress,
+    address: settings.registryAddress as Address,
     abi: abi6551registry,
     functionName: 'createAccount',
-    args: [settings.implementationAddress, settings.baseSalt, chainId, tokenContract, tokenId],
+    args: [settings.implementationAddress as Address, settings.baseSalt as Address, BigInt(chainId), tokenContract as Address, BigInt(tokenId)],
   })
 
   // Send to chain
@@ -113,12 +120,19 @@ export async function createAccount(tokenContract:string, tokenId:string, chainI
 // Get account address from contract
 export async function getAccount(tokenContract:string, tokenId:string, chainId:string){
   console.log('Getting account...')
+  const client = newClient()
   const contract = getContract({
     client: client.public,
     abi: abi6551registry,
-    address: settings.registryAddress
+    address: settings.registryAddress as Address
   })
-  const address = await contract.read.account([settings.implementationAddress, settings.baseSalt, chainId, tokenContract, tokenId])
+  const address = await contract.read.account([
+    settings.implementationAddress as Address,
+    settings.baseSalt as Address,
+    BigInt(chainId),
+    tokenContract as Address,
+    BigInt(tokenId)
+  ])
   console.log('TBA', address)
   return address
 }
