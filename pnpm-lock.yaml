@@ -1153,6 +1153,9 @@ importers:
 
   packages/tbas:
     dependencies:
+      '@cfce/blockchain-tools':
+        specifier: workspace:*
+        version: link:../blockchain-tools
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
