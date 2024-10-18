@@ -2,6 +2,7 @@
   "extends": ["//"],
   "tasks": {
     "build": {
+      "outputs": ["dist/**/*.js", "dist/**/*.d.ts", "dist/**/*.map"],
       "env": [
         "POSTGRES_PRISMA_URL",
         "IPFS_API_KEY",

@@ -1,4 +1,9 @@
 {
   "extends": ["//"],
-  "globalEnv": ["TURBO_ENV"]
+  "globalEnv": ["TURBO_ENV"],
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**/*.d.ts"]
+    }
+  }
 }
