@@ -1,7 +1,14 @@
 {
   "extends": ["//"],
   "globalEnv": [
-    "TBAS_MASTER_PRIVATE_KEY",
-    "TURBO_ENV"
-  ]
+    "TURBO_ENV",
+    "XINFIN_WALLET_SECRET"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "@cfce/blockchain-tools#build"
+      ]
+    }
+  }
 }

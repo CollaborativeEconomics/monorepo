@@ -16,7 +16,8 @@
         "@cfce/blockchain-tools#build",
         "@cfce/ipfs#build",
         "@cfce/database#build",
-        "@cfce/types#build"
+        "@cfce/types#build",
+        "@cfce/tbas#build"
       ]
     }
   }

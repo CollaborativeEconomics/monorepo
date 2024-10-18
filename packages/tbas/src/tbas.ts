@@ -28,7 +28,7 @@ declare global {
 
 // Move to config.ts 
 const settings = {
-  privateKey : process.env.TBAS_MASTER_PRIVATE_KEY || '0x0',
+  privateKey : process.env.XINFIN_WALLET_SECRET || '0x0',
   registryAddress : '0x000000006551c19487814612e58FE06813775758',
   implementationAddress : '0x41C8f39463A868d3A88af00cd0fe7102F30E44eC',
   tokenContract: '0xdFDf018665F2C5c18a565ce0a2CfF0EA2187ebeF',
@@ -80,41 +80,49 @@ async function mainAccount(){
 // Create token bound account from implementation
 export async function createAccount(tokenContract:string, tokenId:string, chainId:string, waitForReceipt=false){
   console.log('Creating account...')
-  const client = newClient()
-  const serverAccount = privateKeyToAccount(settings.privateKey as Address)
-  const contract = getContract({
-    client,
-    abi: abi6551registry,
-    address: settings.registryAddress as Address
-  })
-
-  // Simulate
-  const { request } = await client.public.simulateContract({
-    account: serverAccount,
-    address: settings.registryAddress as Address,
-    abi: abi6551registry,
-    functionName: 'createAccount',
-    args: [settings.implementationAddress as Address, settings.baseSalt as Address, BigInt(chainId), tokenContract as Address, BigInt(tokenId)],
-  })
-
-  // Send to chain
-  const txid = await client.wallet.writeContract(request)
-  console.log('TXID', txid)
-
-  // Tx receipt
-  if(waitForReceipt){
-    const receipt = await getReceipt(txid)
-    if(!receipt){
-      return { status: 'notfound', txid, address:'' }
-    }
-    if(receipt.status=='success'){
-      const address = '0x'+receipt?.logs[0].data.substr(26,66)
-      console.log('TBA', address, receipt.status)
-      return { status: receipt.status, txid, address }
-    }
-    return { status: receipt.status, txid, address:'' }
+  if(!settings.privateKey || settings.privateKey=='0x0'){
+    return { status: 'error', txid:'', address:'', error:'private key not found' }
   }
-  return { status: 'pending', txid, address:'' }
+  try {
+    const client = newClient()
+    const serverAccount = privateKeyToAccount(settings.privateKey as Address)
+    const contract = getContract({
+      client,
+      abi: abi6551registry,
+      address: settings.registryAddress as Address
+    })
+
+    // Simulate
+    const { request } = await client.public.simulateContract({
+      account: serverAccount,
+      address: settings.registryAddress as Address,
+      abi: abi6551registry,
+      functionName: 'createAccount',
+      args: [settings.implementationAddress as Address, settings.baseSalt as Address, BigInt(chainId), tokenContract as Address, BigInt(tokenId)],
+    })
+
+    // Send to chain
+    const txid = await client.wallet.writeContract(request)
+    console.log('TXID', txid)
+
+    // Tx receipt
+    if(waitForReceipt){
+      const receipt = await getReceipt(txid)
+      if(!receipt){
+        return { status: 'notfound', txid, address:'', error:'' }
+      }
+      if(receipt.status=='success'){
+        const address = '0x'+receipt?.logs[0].data.substr(26,66)
+        console.log('TBA', address, receipt.status)
+        return { status: receipt.status, txid, address, error:'' }
+      }
+      return { status: receipt.status, txid, address:'', error:'' }
+    }
+    return { status: 'pending', txid, address:'', error:'' }
+  } catch(ex:any) {
+    console.error(ex)
+    return { status: 'error', txid:'', address:'', error:ex.message }
+  }
 }
 
 // Get account address from contract

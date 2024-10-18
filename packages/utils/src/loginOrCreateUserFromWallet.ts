@@ -38,7 +38,8 @@ export default async function loginOrCreateUserFromWallet({
     let user = await fetchUserByWallet(walletAddress)
     if (!user) {
       // server action
-      user = await createNewUser(walletAddress, chainName)
+      const useTBA = true
+      user = await createNewUser(walletAddress, chainName, network, useTBA)
     }
     console.log("UserId", user.id)
 
