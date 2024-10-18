@@ -1,6 +1,5 @@
 {
   "extends": ["//"],
-  "globalEnv": ["POSTGRES_PRISMA_URL"],
   "tasks": {
     "build": {
       "env": ["POSTGRES_PRISMA_URL"],
