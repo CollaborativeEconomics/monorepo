@@ -1,6 +1,6 @@
 import "server-only"
 import { prismaClient } from ".."
-import { Prisma, Events } from "@prisma/client"
+import { Prisma, Event } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
 
 interface EventQuery extends ListQuery {
@@ -9,7 +9,7 @@ interface EventQuery extends ListQuery {
   initid?: string
 }
 
-export async function getEvents(query:EventQuery): Promise<Events|Array<Events>|null> {
+export async function getEvents(query:EventQuery) {
   let where = {}
   let skip = 0
   let take = 100
@@ -17,7 +17,7 @@ export async function getEvents(query:EventQuery): Promise<Events|Array<Events>|
   let include = {}
 
   if (query?.id) {
-    const result = await prismaClient.events.findUnique({ where: { id: query.id } })
+    const result = await prismaClient.event.findUnique({ where: { id: query.id } })
     return result
   }
 
@@ -36,24 +36,24 @@ export async function getEvents(query:EventQuery): Promise<Events|Array<Events>|
     if (page < 0) { page = 0 }
     if (size < 0) { size = 100 }
     if (size > 200) { size = 200 }
-    let start = page * size
+    const start = page * size
     filter.skip = start
     filter.take = size
     filter.orderBy = { name: 'asc' }
   }
-  let data = await prismaClient.events.findMany(filter)
+  let data = await prismaClient.event.findMany(filter)
 
   return data
 }
 
-export async function getEventById(id:string): Promise<Events|null> {
-  const result = await prismaClient.events.findUnique({ where: { id } })
+export async function getEventById(id:string) {
+  const result = await prismaClient.event.findUnique({ where: { id } })
   return result;
 }
 
-export async function newEvent(data:Prisma.EventsCreateInput): Promise<Events> {
+export async function newEvent(data:Prisma.EventCreateInput) {
   console.log('DATA', data)
-  const result = await prismaClient.events.create({data})
+  const result = await prismaClient.event.create({data})
   console.log('NEWEVENT', result)
   return result
 }

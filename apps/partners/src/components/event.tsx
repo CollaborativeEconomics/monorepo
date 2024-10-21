@@ -1,8 +1,8 @@
-import type { Events } from '@cfce/database';
+import type { Event as EventType } from '@cfce/database';
 import { DateTime } from 'luxon';
 import Image from 'next/image';
 
-const Event = (event: Events) => {
+const Event = (event: EventType) => {
   //console.log('ENV', process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL)
   return (
     <div className="flex flex-row justify-start w-full">
