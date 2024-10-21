@@ -2,7 +2,9 @@ import "server-only"
 import { Address, getContract, createPublicClient, createWalletClient, http, custom, TransactionReceipt } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { xdcTestnet as chain } from 'viem/chains'
-import { abi721, abi6551registry } from '@cfce/blockchain-tools'
+import { abi721, abi6551registry, BlockchainManager } from '@cfce/blockchain-tools'
+import { type EntityType } from '@cfce/types'
+//import { newAccount } from "@cfce/database"
 
 /* TBAS - Token Bound Accounts ERC 6551
 
@@ -143,6 +145,78 @@ export async function getAccount(tokenContract:string, tokenId:string, chainId:s
   ])
   console.log('TBA', address)
   return address
+}
+
+
+export async function newTokenBoundAccount(entityType:string, entityId:string){
+  try {
+    // TODO: move to config?
+    const chain = 'xdc' // XDC TESTNET APOTHEM
+    const chainId = '51'
+    const network = 'testnet'
+    const tokenContract = '0xdFDf018665F2C5c18a565ce0a2CfF0EA2187ebeF'
+    // mint nft for tba in main 721 contract
+    const resMint = await mintAccountNFT(entityId) // <<<<< 
+    console.log('NFT', resMint)
+    const tokenId = resMint.tokenId
+    console.log('TokenID', tokenId)
+    // create token bound account for user in xdc
+    const resTBA = await createAccount(tokenContract, tokenId, chainId)
+    console.log('TBA', resTBA)
+    const address = resTBA.address
+    // add tba record to db
+    if(resTBA){
+      //const resDB = await newAccount(entityType, entityId, address, chain, network)
+      //console.log('DB', resDB)
+    }
+    return address
+  } catch(ex:any) {
+    console.error(ex)
+    return null
+  }
+}
+
+
+
+// @ts-ignore turbo should error out if these are not set
+// const XinFinSDK = new XinFinServer({ walletSeed: process.env.XINFIN_MINTER_SECRET, network: process.env.XINFIN_NETWORK });
+
+
+const uuidToUint256 = (uuid: string) => {
+  const hex = uuid.replace(/-/g, "")
+  const bigIntUUID = BigInt(`0x${hex}`)
+  // Since UUID is 128-bit, we shift it left by 128 places to fit into a 256-bit space
+  const uint256 = bigIntUUID << BigInt(128)
+  return uint256
+}
+
+/**
+ * Given a entity ID, mint a TBA NFT for the entity
+ * @param entityId UUIID from registry db
+ * @param tokenCID CID from IPFS
+ */
+export async function mintAccountNFT(entityId: string) {
+  const address = process.env.XINFIN_MINTER_WALLET
+  const contractId = process.env.XINFIN_NFT6551_CONTRACT // 0xcBbB500f1CF1D6C44B0d7C9ff40292f8a0E756D7
+  const walletSeed = process.env.XINFIN_MINTER_SECRET
+  const tokenId = uuidToUint256(entityId).toString()
+  console.log({ contractId, address, tokenId })
+
+  if (!address || !contractId || !walletSeed) {
+    throw new Error("Missing wallet or contract info")
+  }
+
+  const response = await BlockchainManager.xinfin.server.mintNFT721({
+    address,
+    tokenId,
+    contractId,
+    walletSeed,
+  })
+  if ("error" in response) {
+    throw new Error(response.error)
+  }
+  console.log("Minted NFT", response.txId, response.tokenId)
+  return response
 }
 
 

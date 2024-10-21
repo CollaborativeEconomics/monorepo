@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/types": "workspace:*",
     "server-only": "^0.0.1",
     "viem": "^2.21.26"
   },

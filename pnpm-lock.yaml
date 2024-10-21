@@ -1156,6 +1156,9 @@ importers:
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../blockchain-tools
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -1480,6 +1483,9 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@cfce/tbas':
+        specifier: workspace:*
+        version: link:../tbas
       '@next-auth/prisma-adapter':
         specifier: ^1.0.7
         version: 1.0.7(@prisma/client@5.19.1)(next-auth@4.24.8)

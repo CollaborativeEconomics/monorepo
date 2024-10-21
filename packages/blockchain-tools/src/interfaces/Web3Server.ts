@@ -83,6 +83,68 @@ export default class Web3Server extends ChainBaseClass {
     return { success: false, error: "Something went wrong" }
   }
 
+  // Base erc721 passing token id as uuid instead of auto-incrementing id
+  async mintNFT721({
+    address,
+    tokenId,
+    contractId,
+    walletSeed
+  }: { address: string; tokenId: string; contractId: string; walletSeed: string }) {
+    console.log(this.chain, "Server minting NFT721 to", address, 'tokenID', tokenId)
+    if (!this.web3) {
+      console.error("Web3 not available")
+      return { success: false, error: "Web3 not available" }
+    }
+    if (!walletSeed) {
+      console.error("Wallet not available")
+      return { success: false, error: "Wallet not available" }
+    }
+    const acct = this.web3.eth.accounts.privateKeyToAccount(walletSeed)
+    const minter = acct.address
+    const instance = new this.web3.eth.Contract(Abi721, contractId)
+    const noncex = await this.web3.eth.getTransactionCount(minter, "latest")
+    const nonce = Number(noncex)
+    const tokenInt = Number(tokenId)
+    console.log("MINTER", minter)
+    console.log("NONCE", nonce)
+    const data = instance.methods.safeMint(address, tokenInt).encodeABI()
+    console.log("DATA", data)
+    const gas = await this.getGasPrice(minter, contractId, data)
+
+    const tx = {
+      from: minter, // minter wallet
+      to: contractId, // contract address
+      value: "0", // this is the value in wei to send
+      data: data, // encoded method and params
+      gas: gas.gasLimit,
+      gasPrice: gas.gasPrice,
+      nonce,
+    }
+    console.log("TX", tx)
+
+    const sign = await this.web3.eth.accounts.signTransaction(tx, walletSeed)
+    const info = await this.web3.eth.sendSignedTransaction(sign.rawTransaction)
+    console.log("INFO", info)
+    const hasLogs = info.logs.length > 0
+    let tokenNum = ""
+    if (hasLogs) {
+      console.log("LOGS.0", JSON.stringify(info?.logs[0].topics, null, 2))
+      console.log("LOGS.1", JSON.stringify(info?.logs[1].topics, null, 2))
+      tokenNum = ` #${Number.parseInt(Buffer.from(_get(info, "logs.0.topics.3", Buffer.alloc(0))).toString("hex"), 16)}`
+    }
+    if (info.status === 1) {
+      const tokenId = contractId + tokenNum
+      const result = {
+        success: true,
+        txId: Buffer.from(info?.transactionHash).toString("hex"),
+        tokenId,
+      }
+      console.log("RESULT", result)
+      return result
+    }
+    return { success: false, error: "Something went wrong" }
+  }
+
   // address is receiver, tokenId is db impact id, uri is ipfs:metadata
   async mintNFT1155({
     address,

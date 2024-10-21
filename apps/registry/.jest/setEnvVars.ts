@@ -3,11 +3,12 @@ process.env.IPFS_API_KEY = "109aflksjfklasjfk"
 process.env.IPFS_API_SECRET = "asdlkjafoiaj930fj"
 
 // XinFin
+process.env.XINFIN_NETWORK = "testnet"
+process.env.XINFIN_MINTER_WALLET = "0xMINTERWALLET"
 process.env.XINFIN_MINTER_SECRET = "0xABC123"
 process.env.XINFIN_NFT721_CONTRACT = "0xXYZ789"
 process.env.XINFIN_NFT1155_CONTRACT = "0xQWE456"
-process.env.XINFIN_NETWORK = "testnet"
-process.env.XINFIN_MINTER_WALLET = "0xMINTERWALLET"
+process.env.XINFIN_NFT6551_CONTRACT = "0xQWE789"
 
 // POSTGRES
 process.env.POSTGRES_URL = "postgresql"
