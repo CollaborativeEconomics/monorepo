@@ -1,6 +1,6 @@
 import "server-only"
 import { prismaClient } from ".."
-import { Prisma, Contract } from "@prisma/client"
+import type { Prisma, Contract } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
 
 interface ContractQuery extends ListQuery {
@@ -11,7 +11,7 @@ interface ContractQuery extends ListQuery {
   contract_type?: string
 }
 
-export async function getContracts(query:ContractQuery): Promise<Contract | Array<Contract> | null> {
+export async function getContracts(query:ContractQuery) {
   let where = {}
   let skip = 0
   let take = 100
@@ -35,7 +35,7 @@ export async function getContracts(query:ContractQuery): Promise<Contract | Arra
     if (page < 0) { page = 0 }
     if (size < 0) { size = 100 }
     if (size > 200) { size = 200 }
-    let start = page * size
+    const start = page * size
     filter.skip = start
     filter.take = size
     //filter.orderBy = { name: 'asc' }
@@ -44,22 +44,22 @@ export async function getContracts(query:ContractQuery): Promise<Contract | Arra
   return result
 }
 
-export async function getContractById(id:string): Promise<Contract | null> {
+export async function getContractById(id:string) {
   const  result = await prismaClient.contract.findUnique({ where: { id } })
   return result
 }
 
-export async function getContract(entity_id:string, chain:string, network:string, contract_type:string): Promise<Array<Contract>> {
+export async function getContract(entity_id:string, chain:string, network:string, contract_type:string) {
   const  result = await prismaClient.contract.findMany({ where: { entity_id, chain, network, contract_type } })
   return result
 }
 
-export async function newContract(data:Prisma.ContractCreateInput): Promise<Contract> {
+export async function newContract(data:Prisma.ContractCreateInput) {
   const  result = await prismaClient.contract.create({ data })
   return result
 }
 
-export async function updateContract(id:string, data:Prisma.ContractUpdateInput): Promise<Contract> {
+export async function updateContract(id:string, data:Prisma.ContractUpdateInput) {
   const  result = await prismaClient.contract.update({ where: { id }, data })
   return result
 }

@@ -1,6 +1,6 @@
 import "server-only"
 import { prismaClient } from ".."
-import { Prisma, Volunteers } from "@prisma/client"
+import type { Prisma, Volunteer } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
 
 interface VolunteerQuery extends ListQuery {
@@ -8,7 +8,7 @@ interface VolunteerQuery extends ListQuery {
   eventid?: string
 }
 
-export async function getVolunteers(query:VolunteerQuery): Promise<Volunteers|Array<Volunteers>|null> {
+export async function getVolunteers(query:VolunteerQuery) {
   let where = {}
   let skip = 0
   let take = 100
@@ -16,7 +16,7 @@ export async function getVolunteers(query:VolunteerQuery): Promise<Volunteers|Ar
   let include = {}
 
   if (query?.id) {
-    const result = await prismaClient.volunteers.findUnique({ where: { id: query.id } })
+    const result = await prismaClient.volunteer.findUnique({ where: { id: query.id } })
     return result
   }
 
@@ -36,19 +36,19 @@ export async function getVolunteers(query:VolunteerQuery): Promise<Volunteers|Ar
     filter.take = size
     filter.orderBy = { name: 'asc' }
   }
-  let data = await prismaClient.volunteers.findMany(filter)
+  let data = await prismaClient.volunteer.findMany(filter)
 
   return data
 }
 
-export async function getVolunteerById(id:string): Promise<Volunteers|null> {
-  const result = await prismaClient.volunteers.findUnique({ where: { id } })
+export async function getVolunteerById(id:string) {
+  const result = await prismaClient.volunteer.findUnique({ where: { id } })
   return result;
 }
 
-export async function newVolunteer(data:Prisma.VolunteersCreateInput): Promise<Volunteers> {
+export async function newVolunteer(data:Prisma.VolunteerCreateInput) {
   console.log('DATA', data)
-  const result = await prismaClient.volunteers.create({data})
+  const result = await prismaClient.volunteer.create({data})
   console.log('NEW.VOLUNTEER', result)
   return result
 }
