@@ -12,10 +12,10 @@ interface ContractQuery extends ListQuery {
 }
 
 export async function getContracts(query:ContractQuery) {
-  let where = {}
-  let skip = 0
-  let take = 100
-  let orderBy = {}
+  const where = {}
+  const skip = 0
+  const take = 100
+  const orderBy = {}
   //let include = {}
 
   if (query?.id) {
@@ -28,10 +28,10 @@ export async function getContracts(query:ContractQuery) {
     return result
   }
 
-  let filter = { where, skip, take, orderBy }
+  const filter = { where, skip, take, orderBy }
   if (query?.page || query?.size) {
-    let page = parseInt(query?.page || '0')
-    let size = parseInt(query?.size || '100')
+    let page = Number.parseInt(query?.page || '0', 10)
+    let size = Number.parseInt(query?.size || '100', 10)
     if (page < 0) { page = 0 }
     if (size < 0) { size = 100 }
     if (size > 200) { size = 200 }

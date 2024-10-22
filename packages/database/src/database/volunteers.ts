@@ -10,10 +10,10 @@ interface VolunteerQuery extends ListQuery {
 
 export async function getVolunteers(query:VolunteerQuery) {
   let where = {}
-  let skip = 0
-  let take = 100
-  let orderBy = {}
-  let include = {}
+  const skip = 0
+  const take = 100
+  const orderBy = {}
+  const include = {}
 
   if (query?.id) {
     const result = await prismaClient.volunteer.findUnique({ where: { id: query.id } })
@@ -24,20 +24,19 @@ export async function getVolunteers(query:VolunteerQuery) {
     where = { eventid: query.eventid }
   }
 
-  let filter = { where, skip, take, orderBy }
+  const filter = { where, skip, take, orderBy }
   if (query?.page || query?.size) {
-    let page = parseInt(query?.page || '0')
-    let size = parseInt(query?.size || '100')
+    let page = Number.parseInt(query?.page || '0', 10)
+    let size = Number.parseInt(query?.size || '100', 10)
     if (page < 0) { page = 0 }
     if (size < 0) { size = 100 }
     if (size > 200) { size = 200 }
-    let start = page * size
+    const start = page * size
     filter.skip = start
     filter.take = size
     filter.orderBy = { name: 'asc' }
   }
-  let data = await prismaClient.volunteer.findMany(filter)
-
+  const data = await prismaClient.volunteer.findMany(filter)
   return data
 }
 
