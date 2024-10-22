@@ -1,6 +1,6 @@
 import "server-only"
 import { prismaClient } from ".."
-import { Prisma, Event } from "@prisma/client"
+import type { Prisma, Event } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
 
 interface EventQuery extends ListQuery {
@@ -11,10 +11,10 @@ interface EventQuery extends ListQuery {
 
 export async function getEvents(query:EventQuery) {
   let where = {}
-  let skip = 0
-  let take = 100
-  let orderBy = {}
-  let include = {}
+  const skip = 0
+  const take = 100
+  const orderBy = {}
+  const include = {}
 
   if (query?.id) {
     const result = await prismaClient.event.findUnique({ where: { id: query.id } })
@@ -29,10 +29,10 @@ export async function getEvents(query:EventQuery) {
     where = { initiativeid: query.initid }
   }
 
-  let filter = { where, skip, take, orderBy }
+  const filter = { where, skip, take, orderBy }
   if (query?.page || query?.size) {
-    let page = parseInt(query?.page || '0')
-    let size = parseInt(query?.size || '100')
+    let page = Number.parseInt(query?.page || '0', 10)
+    let size = Number.parseInt(query?.size || '100', 10)
     if (page < 0) { page = 0 }
     if (size < 0) { size = 100 }
     if (size > 200) { size = 200 }
@@ -41,8 +41,7 @@ export async function getEvents(query:EventQuery) {
     filter.take = size
     filter.orderBy = { name: 'asc' }
   }
-  let data = await prismaClient.event.findMany(filter)
-
+  const data = await prismaClient.event.findMany(filter)
   return data
 }
 
@@ -52,9 +51,9 @@ export async function getEventById(id:string) {
 }
 
 export async function newEvent(data:Prisma.EventCreateInput) {
-  console.log('DATA', data)
+  //console.log('DATA', data)
   const result = await prismaClient.event.create({data})
-  console.log('NEWEVENT', result)
+  //console.log('NEWEVENT', result)
   return result
 }
 
