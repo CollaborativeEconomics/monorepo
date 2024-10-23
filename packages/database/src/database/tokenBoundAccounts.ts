@@ -14,11 +14,8 @@ export async function getAccount(entity_type:string, entity_id:string, chain:str
     chain,
     network
   }
-  const data = await prismaClient.tokenBoundAccount.findMany({where})
-  if(data && data?.length > 0){
-    return data[0]
-  }
-  return null
+  const data = await prismaClient.tokenBoundAccount.findFirst({where})
+  return data
 }
 
 export async function getAccounts(query:TBAQuery) {
