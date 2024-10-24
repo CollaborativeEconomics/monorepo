@@ -1,4 +1,5 @@
 import { getUsers, newUser } from "@cfce/database"
+import { createNewUser } from "@cfce/utils"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
 
