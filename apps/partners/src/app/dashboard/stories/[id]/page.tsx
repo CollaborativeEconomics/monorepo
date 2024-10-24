@@ -24,8 +24,12 @@ async function getStoryData(id: string) {
   return { story, media, donations, total };
 }
 
-export default async function Story({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function Story({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const { story, media, donations, total } = await getStoryData(id);
 
   function formatDate(dateString: string) {

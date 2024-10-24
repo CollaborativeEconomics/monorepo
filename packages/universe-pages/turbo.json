@@ -3,13 +3,7 @@
   "globalEnv": ["BLOB_READ_WRITE_TOKEN", "TURBO_ENV"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "@cfce/blockchain-tools#build",
-        "@cfce/universe-components#build",
-        "@cfce/database#build",
-        "@cfce/types#build",
-        "@cfce/utils#build"
-      ]
+      "dependsOn": ["^build"]
     }
   }
 }

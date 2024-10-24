@@ -9,16 +9,7 @@
         "NEXT_PUBLIC_APP_ID",
         "MOBULA_API_KEY"
       ],
-      "dependsOn": [
-        "@cfce/app-config#build",
-        "@cfce/blockchain-tools#build",
-        "@cfce/database#build",
-        "@cfce/registry-hooks#build",
-        "@cfce/universe-api#build",
-        "@cfce/universe-components#build",
-        "@cfce/universe-pages#build",
-        "@cfce/utils#build"
-      ]
+      "dependsOn": ["^build"]
     }
   }
 }

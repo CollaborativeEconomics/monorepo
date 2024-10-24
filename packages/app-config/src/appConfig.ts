@@ -5,6 +5,10 @@ import base from "./config/appConfigBase"
 import giveCreditsDev from "./config/give-credits/appConfig.development"
 import giveCreditsProd from "./config/give-credits/appConfig.production"
 import giveCreditsStaging from "./config/give-credits/appConfig.staging"
+// give-stark
+import giveStarkDev from "./config/give-stark/appConfig.development"
+import giveStarkProd from "./config/give-stark/appConfig.production"
+import giveStarkStaging from "./config/give-stark/appConfig.staging"
 // Give tron
 import giveTronDev from "./config/give-tron/appConfig.development"
 import giveTronProd from "./config/give-tron/appConfig.production"
@@ -25,8 +29,13 @@ type AppId =
   | "give-tron"
   | "partners"
   | "registry"
-
+  | "give-stark"
 const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
+  "give-stark": {
+    development: giveStarkDev,
+    production: giveStarkProd,
+    staging: giveStarkStaging,
+  },
   "give-tron": {
     development: giveTronDev,
     production: giveTronProd,
