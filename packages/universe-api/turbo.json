@@ -6,16 +6,5 @@
     "MOBULA_API_KEY",
     "TURBO_ENV",
     "BLOB_READ_WRITE_TOKEN"
-  ],
-  "tasks": {
-    "build": {
-      "dependsOn": [
-        "@cfce/registry-hooks#build",
-        "@cfce/blockchain-tools#build",
-        "@cfce/database#build",
-        "@cfce/utils#build",
-        "@cfce/types#build"
-      ]
-    }
-  }
+  ]
 }

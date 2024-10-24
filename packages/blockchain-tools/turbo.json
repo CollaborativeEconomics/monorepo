@@ -3,13 +3,7 @@
   "globalEnv": ["GITHUB_ID", "GITHUB_SECRET", "MOBULA_API_KEY", "TURBO_ENV"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "@cfce/app-config#build",
-        "@cfce/database#build",
-        "@cfce/ipfs#build",
-        "@cfce/registry-hooks#build",
-        "@cfce/types#build"
-      ]
+      "dependsOn": ["^build"]
     }
   }
 }

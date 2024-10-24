@@ -5,9 +5,9 @@ import { StoryCard } from '@cfce/universe-components/story';
 import { Title } from '@cfce/universe-components/ui';
 
 export default async function Impact(props: {
-  searchParams?: { initiative?: string };
+  searchParams?: Promise<{ initiative?: string }>;
 }) {
-  const initid = props.searchParams?.initiative || '';
+  const initid = (await props.searchParams)?.initiative || '';
   console.log('InitID', initid);
   let stories = [];
   if (initid) {

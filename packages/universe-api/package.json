@@ -192,14 +192,13 @@
     "@cfce/typescript-config": "workspace:*",
     "@cfce/types": "workspace:*",
     "@types/react": "latest",
-    "next": "latest",
-    "next-auth": "latest",
+    "next": "^15.0.1",
+    "next-auth": "^4.24.8",
     "next-themes": "latest",
     "typescript": "latest"
   },
   "peerDependencies": {
-    "next": "latest",
-    "next-auth": "latest",
+    "next": "^15.0.1",
     "next-themes": "latest",
     "react": "^18.3.1"
   }

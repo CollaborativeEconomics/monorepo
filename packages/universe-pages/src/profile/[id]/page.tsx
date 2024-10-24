@@ -60,7 +60,9 @@ async function fetchUserData(userId: string) {
     };
   } catch (error) {
     throw new Error(
-      `Error fetching user data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      `Error fetching user data: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
     );
   }
 }
@@ -95,12 +97,13 @@ async function handleSaveProfile(formData: FormData, userId: string) {
 }
 
 export default async function Profile({
-  params: { id: userId },
-  searchParams: { tab = 'receipts' },
+  params,
+  searchParams,
 }: {
-  params: { id?: string };
-  searchParams: { tab?: string };
+  params: Promise<{ id?: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
+  const userId = (await params).id;
   if (!userId) {
     return <NotFound />;
   }

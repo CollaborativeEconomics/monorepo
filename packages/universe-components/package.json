@@ -66,7 +66,7 @@
     "typescript": "latest"
   },
   "peerDependencies": {
-    "next": "latest",
+    "next": "^15.0.1",
     "next-themes": "^0.3.0"
   },
   "dependencies": {
@@ -74,7 +74,7 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
-    "next-auth": "latest",
+    "next-auth": "^4.24.8",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.0.4",
