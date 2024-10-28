@@ -9,8 +9,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import NotFound from '../../not-found';
 
-export default async function NFT(props: { params: { id: string } }) {
-  const id = props.params.id;
+export default async function NFT(props: { params: Promise<{ id: string }> }) {
+  const id = (await props.params).id;
   const nft = await getNFTById(id);
   if (!nft) {
     return <NotFound />;

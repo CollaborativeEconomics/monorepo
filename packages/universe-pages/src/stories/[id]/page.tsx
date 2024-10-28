@@ -14,8 +14,10 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default async function Story(props: { params: { id: string } }) {
-  const storyid = props.params.id;
+export default async function Story(props: {
+  params: Promise<{ id: string }>;
+}) {
+  const storyid = (await props.params).id;
   const story = await getStoryById(storyid);
   if (!story) {
     return <NotFound />;
