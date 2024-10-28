@@ -1,9 +1,9 @@
 import "server-only"
-import { Address, getContract, createPublicClient, createWalletClient, http, custom, TransactionReceipt } from 'viem'
+import { type Address, getContract, createPublicClient, createWalletClient, http, custom, type TransactionReceipt } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { xdcTestnet as chain } from 'viem/chains'
 import { abi721, abi6551registry, BlockchainManager } from '@cfce/blockchain-tools'
-import { type EntityType } from '@cfce/types'
+import type { EntityType } from '@cfce/types'
 //import { newAccount } from "@cfce/database"
 
 /* TBAS - Token Bound Accounts ERC 6551
@@ -47,7 +47,7 @@ function newClient(){
   console.log('URL', rpcUrl)
   const publicClient = createPublicClient({ chain, transport: http(rpcUrl) }) 
   // Metamask, use only in client
-  const walletClient = createWalletClient({ chain, transport: custom(window?.ethereum!) })
+  const walletClient = createWalletClient({ chain, transport: custom(window?.ethereum) })
   return {public: publicClient, wallet: walletClient }
 }
  
@@ -82,7 +82,7 @@ async function mainAccount(){
 // Create token bound account from implementation
 export async function createAccount(tokenContract:string, tokenId:string, chainId:string, waitForReceipt=false){
   console.log('Creating account...')
-  if(!settings.privateKey || settings.privateKey=='0x0'){
+  if(!settings.privateKey || settings.privateKey==='0x0'){
     return { status: 'error', txid:'', address:'', error:'private key not found' }
   }
   try {
@@ -113,8 +113,8 @@ export async function createAccount(tokenContract:string, tokenId:string, chainI
       if(!receipt){
         return { status: 'notfound', txid, address:'', error:'' }
       }
-      if(receipt.status=='success'){
-        const address = '0x'+receipt?.logs[0].data.substr(26,66)
+      if(receipt.status==='success'){
+        const address = `0x${receipt?.logs[0].data.substr(26,66)}`
         console.log('TBA', address, receipt.status)
         return { status: receipt.status, txid, address, error:'' }
       }

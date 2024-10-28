@@ -28,6 +28,8 @@ async function getUserByCredentials(credentials?: Credentials) {
     if (!user) {
       const uuid = uuidv7()
       const mail = `_${uuid.substr(0, 8)}@example.com`
+      // TODO: replace newUser with createNewUser for TBA
+      //user = await createNewUser(walletAddress, chainName, network, useTBA)
       const result = await newUser({
         created: new Date(),
         api_key: uuid,

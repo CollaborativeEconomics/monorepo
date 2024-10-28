@@ -21,11 +21,26 @@ export async function fetchUserByWallet(
   return await getUserByWallet(walletAddress)
 }
 
+/*
+interface UserType {
+  created?: Date
+  api_key?: string
+  name?: string
+  description?: string
+  email?: string
+  emailVerified?: boolean
+  image?: string
+  wallet?: string
+  inactive?: boolean
+}
+*/
+
+// TODO: pass data as user interface
 export async function createNewUser(
   walletAddress: string,
   chain: Chain,
   network: string,
-  tba: boolean = false
+  tba = false
 ): Promise<User> {
   await authenticate()
   const user = await newUser({

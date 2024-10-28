@@ -2,7 +2,6 @@
   "extends": ["//"],
   "globalEnv": [
     "POSTGRES_PRISMA_URL",
-    "POSTGRES_PRISMA_URL",
     "IPFS_GATEWAY_URL",
     "IPFS_API_ENDPOINT",
     "IPFS_API_PINNING",
@@ -14,7 +13,8 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["@cfce/types#build"]
+      "env": ["POSTGRES_PRISMA_URL"],
+      "dependsOn": ["@cfce/types#build", "install", "db:generate"]
     }
   }
 }

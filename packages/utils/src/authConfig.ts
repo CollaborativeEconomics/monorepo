@@ -49,9 +49,10 @@ const authConfig: AuthConfig = {
 }
 
 export function getAuthProviders(methods: AuthTypes[]): Provider[] {
-  console.log("getting auth providers", methods)
-
-  return methods.map((method) => authConfig[method].authProvider)
+  console.log("Getting auth providers", methods)
+  const providers = methods.map((method) => authConfig[method].authProvider)
+  console.log('PROVIDERS', providers)
+  return providers
 }
 
 export default authConfig

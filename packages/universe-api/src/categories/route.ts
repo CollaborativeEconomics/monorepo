@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     console.log("get")
 
-    const apiKey = headers().get("x-api-key")
+    const apiKey = (await headers()).get("x-api-key")
     const authorized = await checkApiKey(apiKey)
 
     if (!authorized) {

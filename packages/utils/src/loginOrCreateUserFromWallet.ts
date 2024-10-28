@@ -39,6 +39,8 @@ export default async function loginOrCreateUserFromWallet({
     if (!user) {
       // server action
       const useTBA = true
+      // TODO: pass user to createNewUser
+      //user = await createNewUser(userData, chainName, network, useTBA)
       user = await createNewUser(walletAddress, chainName, network, useTBA)
     }
     console.log("UserId", user.id)

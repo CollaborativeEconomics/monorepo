@@ -1,4 +1,5 @@
 import { getUsers, newUser } from "@cfce/database"
+//import { createNewUser } from "@cfce/utils"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
 
@@ -49,6 +50,8 @@ export async function POST(req: NextRequest) {
 
     console.log("auth")
     const record = await req.json()
+    // TODO: replace newUser with createNewUser for TBA
+    //user = await createNewUser(walletAddress, chainName, network, useTBA)
     const result = await newUser(record)
     return NextResponse.json({ success: true, data: result }, { status: 201 }) // Status code 201 for successful POST request
   } catch (error) {

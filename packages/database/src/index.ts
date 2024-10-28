@@ -13,12 +13,12 @@ export type {
   Credit,
   Cronjob,
   Donation,
-  Events,
-  Eventmedia,
+  Event,
+  EventMedia,
   Hook,
   Initiative,
   InitiativeTier,
-  Impactlink,
+  ImpactLink,
   NFTData,
   Offer,
   Organization,
@@ -28,10 +28,11 @@ export type {
   Setting,
   Story,
   StoryMedia,
+  TokenBoundAccount,
   User,
   UserWallet,
   VerificationToken,
-  Volunteers,
+  Volunteer,
   Wallet,
 } from "@prisma/client"
 
@@ -40,10 +41,13 @@ export * from "./database/artworks"
 export * from "./database/categories"
 export * from "./database/chapters"
 export * from "./database/collections"
+export * from "./database/contracts"
 export * from "./database/credits"
 export * from "./database/cronjobs"
 export * from "./database/donations"
+export * from "./database/events"
 export * from "./database/hook"
+export * from "./database/impact"
 export * from "./database/initiatives"
 export * from "./database/locations"
 export * from "./database/nftData"
@@ -54,6 +58,8 @@ export * from "./database/session"
 export * from "./database/settings"
 export * from "./database/stories"
 export * from "./database/storyMedia"
+export * from "./database/tokenBoundAccounts"
 export * from "./database/userWallets"
 export * from "./database/users"
+export * from "./database/volunteers"
 export * from "./database/wallets"
