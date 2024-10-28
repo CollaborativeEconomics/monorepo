@@ -7,7 +7,7 @@ import {
 import type { ChainSlugs } from "@cfce/types"
 import { getDefaultStore } from "jotai"
 import { signIn } from "next-auth/react"
-import { createNewUser, fetchUserByWallet } from "./server-actions/user"
+import { createAnonymousUser, fetchUserByWallet } from "./server-actions/user"
 import { appSettingsAtom } from "./state"
 
 export default async function loginOrCreateUserFromWallet({
@@ -39,9 +39,7 @@ export default async function loginOrCreateUserFromWallet({
     if (!user) {
       // server action
       const useTBA = true
-      // TODO: pass user to createNewUser
-      //user = await createNewUser(userData, chainName, network, useTBA)
-      user = await createNewUser(walletAddress, chainName, network, useTBA)
+      user = await createAnonymousUser(walletAddress, chainName, network, useTBA)
     }
     console.log("UserId", user.id)
 

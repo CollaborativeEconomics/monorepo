@@ -3,7 +3,7 @@
   "globalEnv": ["POSTGRES_PRISMA_URL"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "install"],
       "inputs": ["$TURBO_DEFAULT", ".env*"]
     },
     "db:generate": {

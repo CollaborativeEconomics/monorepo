@@ -18,9 +18,9 @@ import Link from 'next/link';
 import NotFound from '../../not-found';
 
 export default async function Home(props: {
-  params: { organizationId: string };
+  params: Promise<{ organizationId: string }>;
 }) {
-  const orgId = props?.params?.organizationId || null;
+  const orgId = (await props.params)?.organizationId || null;
   if (!orgId) {
     return <NotFound />;
   }

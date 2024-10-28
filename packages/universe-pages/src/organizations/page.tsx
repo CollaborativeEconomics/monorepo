@@ -6,11 +6,13 @@ import { SearchBar } from '@cfce/universe-components/search';
 import { Card } from '@cfce/universe-components/ui';
 
 export default async function Organizations(props: {
-  searchParams: { query?: string; category?: string; location?: string };
+  searchParams: Promise<{
+    query?: string;
+    category?: string;
+    location?: string;
+  }>;
 }) {
-  const query = props.searchParams?.query || '';
-  const category = props.searchParams?.category || '';
-  const location = props.searchParams?.location || '';
+  const { query, category, location } = await props.searchParams;
   console.log('SEARCH', query, category, location);
   const data =
     (await getOrganizations({ search: query, category, location })) || [];

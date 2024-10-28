@@ -35,8 +35,10 @@ class FreighterWallet extends ChainBaseClass {
   async connect() {
     try {
       console.log("CONNECT...")
-      this.connectedWallet = await requestAccess()
-      this.horizonConfig.network = ((await getNetwork()) || "").toLowerCase()
+      this.connectedWallet = await (await requestAccess()).address
+      this.horizonConfig.network = (
+        (await getNetwork()).network || ""
+      ).toLowerCase()
       this.horizonConfig.netinfo = await getNetworkDetails()
       console.log("FNET", this.network)
       return {
@@ -98,7 +100,7 @@ class FreighterWallet extends ChainBaseClass {
 
       //const txs = new StellarSDK.TransactionBuilder.fromXDR(sgn, this.horizonurl)
       const txs = StellarSDK.TransactionBuilder.fromXDR(
-        sgn,
+        sgn.signedTxXdr,
         this.network?.networkPassphrase ?? "",
       )
       console.log("TXS", txs)

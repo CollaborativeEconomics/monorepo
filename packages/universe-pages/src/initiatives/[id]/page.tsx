@@ -13,8 +13,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import NotFound from '../../not-found';
 
-export default async function Handler(props: { params: { id: string } }) {
-  const params = props.params;
+export default async function Initiative(props: {
+  params: Promise<{ id: string }>;
+}) {
+  const params = await props.params;
   const initiative = (await getInitiativeById(params?.id)) || null;
   //console.log('INIT', initiative)
   if (!initiative) {

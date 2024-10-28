@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import React from 'react';
 
 export default async function Widget() {
-  const hdrs = headers();
+  const hdrs = await headers();
   const host = hdrs.get('host');
   const url = `https://${host}/api/widget/123456-789012`;
 

@@ -26,13 +26,7 @@
         "TURBO_ENV"
       ],
       "dependsOn": [
-        "@cfce/types#build",
-        "@cfce/registry-hooks#build",
-        "@cfce/blockchain-tools#build",
-        "@cfce/ipfs#build",
-        "@cfce/database#build",
-        "@cfce/types#build",
-        "@cfce/tbas#build"
+        "^build"
       ]
     }
   }

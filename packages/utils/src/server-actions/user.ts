@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react"
 import { authOptions } from "../auth/nextAuth"
 import { EntityType } from "@cfce/types"
 import { newTokenBoundAccount } from "@cfce/tbas"
+import { v7 as uuidv7 } from "uuid"
 
 async function authenticate() {
   const session = await getServerSession(authOptions)
@@ -35,7 +36,53 @@ interface UserType {
 }
 */
 
-// TODO: pass data as user interface
+export async function createNewUser(data: User, tba = false) {
+  await authenticate()
+  const user = await newUser(data)
+  if(tba){
+    console.log('TBA will be created for user ', user?.id)
+    const account = await newTokenBoundAccount(EntityType.user, user?.id)
+    console.log('TBA created', account)
+  }
+  return user
+}
+
+export async function createAnonymousUser(walletAddress: string, chain: Chain, network: string, tba = false) {
+  await authenticate()
+  const uuid = uuidv7()
+  const mail = `_${uuid.substr(0, 8)}@example.com`
+  const data = {
+    api_key: uuid,
+    api_key_enabled: false,
+    created: new Date(),
+    description: "",
+    email: mail,
+    emailVerified: false,
+    image: "",
+    inactive: false,
+    name: "Anonymous",
+    type: 0,
+    wallet: walletAddress,
+    wallets: {
+      create: [
+        {
+          chain: chain as Chain,
+          network: network || 'testnet',
+          address: walletAddress
+        }
+      ]
+    }
+  }
+  const user = await newUser(data)
+  if(tba){
+    console.log('TBA will be created for user ', user?.id)
+    const account = await newTokenBoundAccount(EntityType.user, user?.id)
+    console.log('TBA created', account)
+  }
+  return user
+}
+
+/*
 export async function createNewUser(
   walletAddress: string,
   chain: Chain,
@@ -61,3 +108,4 @@ export async function createNewUser(
   }
   return user
 }
+*/

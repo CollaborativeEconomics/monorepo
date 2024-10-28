@@ -15,11 +15,13 @@ export const metadata: Metadata = {
 };
 
 export default async function Handler(props: {
-  searchParams?: { query?: string; category?: string; location?: string };
+  searchParams?: Promise<{
+    query?: string;
+    category?: string;
+    location?: string;
+  }>;
 }) {
-  // const query = props?.searchParams?.query || '';
-  // const category = props?.searchParams?.category || '';
-  // const location = props?.searchParams?.location || '';
+  // const { query, category, location } = await props.searchParams;
   const initiatives = (await getInitiatives({})) || [];
   return (
     <>
