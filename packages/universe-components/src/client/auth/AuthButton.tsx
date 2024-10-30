@@ -24,6 +24,7 @@ export function AuthButton({
 }: AuthButtonProps) {
   async function onLogin(method: AuthTypes, chain?: ChainSlugs) {
     console.log('LOGIN');
+    console.log('method', method);
     switch (method) {
       case 'github':
         signIn('github');
@@ -35,7 +36,7 @@ export function AuthButton({
         if (!chain) {
           throw new Error('No chain provided');
         }
-        loginOrCreateUserFromWallet({ chain });
+        loginOrCreateUserFromWallet({ chain, method });
     }
   }
 
