@@ -1,7 +1,6 @@
 'use client';
 import type { AuthTypes, ChainSlugs } from '@cfce/types';
-import { loginOrCreateUserFromWallet } from '@cfce/utils';
-import { signIn } from 'next-auth/react';
+import { loginOrCreateUserFromWallet, signIn } from '@cfce/utils';
 import { Button } from '~/ui/button';
 
 interface AuthButtonProps {

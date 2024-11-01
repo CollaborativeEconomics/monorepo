@@ -21,8 +21,12 @@ import {
   TabsList,
   TabsTrigger,
 } from '@cfce/universe-components/ui';
+<<<<<<< HEAD
 import { LogOut } from '@cfce/universe-components/client/auth';
 import { uploadFile } from '@cfce/utils';
+=======
+import { signOut, uploadFile } from '@cfce/utils';
+>>>>>>> 793fc72 (upgrade next-auth to na@5; temporarily disable partner middleware)
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';

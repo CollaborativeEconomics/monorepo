@@ -4,8 +4,7 @@ import appConfig from '@cfce/app-config';
 import { getChainConfiguration } from '@cfce/blockchain-tools';
 import type { ChainSlugs } from '@cfce/types';
 import { AuthButton } from '@cfce/universe-components/client/auth';
-import { authOptions } from '@cfce/utils';
-import { getServerSession } from 'next-auth';
+import { auth } from '@cfce/utils';
 import { redirect } from 'next/navigation';
 
 import {
@@ -17,8 +16,7 @@ import {
 } from '@cfce/universe-components/ui';
 
 export default async function Signin() {
-  const session = await getServerSession(authOptions);
-  console.log('session', session)
+  const session = await auth();
   // @ts-ignore: module augmentation is hard, TODO: fix this
   const userId = session?.user?.id;
 
@@ -27,6 +25,7 @@ export default async function Signin() {
   }
 
   const chains = appConfig.chains;
+  console.log({ chains });
   const chainConfigs = getChainConfiguration();
 
   return (

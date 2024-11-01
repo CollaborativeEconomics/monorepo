@@ -1,11 +1,8 @@
 "use server"
 import { type Chain, type User, getUserByWallet, newUser } from "@cfce/database"
-import { getServerSession } from "next-auth/next"
-import { getSession } from "next-auth/react"
-import { authOptions } from "../auth/nextAuth"
-
+// import { auth } from "@cfce/utils"
 // async function authenticate() {
-//   const session = await getServerSession(authOptions)
+//   const session = await auth()
 //   if (!session) {
 //     throw new Error("Unauthorized")
 //   }

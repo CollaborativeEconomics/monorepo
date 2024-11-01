@@ -1,14 +1,13 @@
 // /app/dashboard/page.tsx
 import { getCategories, getOrganizationById, getStories } from '@cfce/database';
-import { authOptions } from '@cfce/utils';
-import { getServerSession } from 'next-auth';
+import { auth } from '@cfce/utils';
 import Story from '~/components/story';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
 import AddStoryForm from './AddStoryForm';
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions); // Fetch session
+  const session = await auth(); // Fetch session
   const orgId = session?.orgId ?? '';
   const organization = await getOrganizationById(orgId);
   const initiatives = organization?.initiative || [];

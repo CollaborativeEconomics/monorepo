@@ -19,9 +19,12 @@ const apis = {
   },
 }
 
-const chains: AppConfig['chains'] = {
-  starknet: { ...appConfig.chains.starknet, network: 'testnet' } as AppChainConfig,
-  xinfin: { ...appConfig.chains.xinfin, network: 'testnet' } as AppChainConfig,
+const chains: AppConfig["chains"] = {
+  starknet: {
+    ...appConfig.chains.starknet,
+    network: "testnet",
+  } as AppChainConfig,
+  xinfin: { ...appConfig.chains.xinfin, network: "testnet" } as AppChainConfig,
 }
 
 const chainDefaults = {
