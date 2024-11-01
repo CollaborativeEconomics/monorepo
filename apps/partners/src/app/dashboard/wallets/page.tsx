@@ -1,8 +1,7 @@
 import { chainConfig } from '@cfce/blockchain-tools';
 import { getOrganizationById } from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
-import { authOptions } from '@cfce/utils';
-import { getServerSession } from 'next-auth/next';
+import { auth } from '@cfce/utils';
 import Title from '~/components/title';
 import Wallet from '~/components/wallet';
 import styles from '~/styles/dashboard.module.css';
@@ -16,7 +15,7 @@ async function getWalletData(orgId: string) {
 }
 
 export default async function WalletsPage() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const orgId = session?.orgId as string;
   if (!orgId) throw new Error('Not authorized');
 

@@ -67,14 +67,14 @@
   },
   "peerDependencies": {
     "next": "^15.0.1",
-    "next-themes": "^0.3.0"
+    "next-themes": "*"
   },
   "dependencies": {
     "@cfce/app-config": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
-    "next-auth": "^4.24.8",
+    "next-auth": "5.0.0-beta.25",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.0.4",

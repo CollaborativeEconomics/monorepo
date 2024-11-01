@@ -21,9 +21,8 @@ import {
   TabsList,
   TabsTrigger,
 } from '@cfce/universe-components/ui';
-import { uploadFile } from '@cfce/utils';
+import { signOut, uploadFile } from '@cfce/utils';
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
-import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import NotFound from '../../not-found';
@@ -202,7 +201,7 @@ export default async function Profile({
               <button
                 type="button"
                 className="block w-2/3 mt-4 mx-auto py-1 px-8 bg-red-400 text-white rounded-full"
-                onClick={() => signOut({ callbackUrl: '/' })}
+                onClick={() => signOut({ redirect: true, redirectTo: '/' })}
               >
                 Log Out
               </button>

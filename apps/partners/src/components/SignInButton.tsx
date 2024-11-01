@@ -1,5 +1,5 @@
 'use client';
-import { signIn } from 'next-auth/react';
+import { signIn } from '@cfce/utils';
 import React from 'react';
 
 interface SignInButtonProps {

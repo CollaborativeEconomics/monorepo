@@ -1,20 +1,18 @@
-"use client"
-import {
-  BlockchainManager,
-  chainConfig,
-  getChainConfiguration,
-} from "@cfce/blockchain-tools"
-import type { ChainSlugs } from "@cfce/types"
+import { BlockchainManager, chainConfig } from "@cfce/blockchain-tools"
+import type { User } from "@cfce/database"
+import type { AuthTypes, ChainSlugs } from "@cfce/types"
 import { getDefaultStore } from "jotai"
-import { signIn } from "next-auth/react"
-import { createNewUser, fetchUserByWallet } from "./server-actions/user"
+import { signIn } from "./auth/nextAuth"
+import { registryApi } from "./registryApi"
+// import { createNewUser, fetchUserByWallet } from "./server-actions/user"
 import { appSettingsAtom } from "./state"
 
 export default async function loginOrCreateUserFromWallet({
   chain,
-}: { chain: ChainSlugs }) {
+  method,
+}: { chain: ChainSlugs; method: AuthTypes }) {
   try {
-    console.log("LOGIN")
+    console.log("LOGIN", { chain, method })
     const walletInterface = BlockchainManager[chain]?.client // TODO: handle multiple wallets per chain
     if (!walletInterface) {
       throw new Error(`No wallet interface found for chain: ${chain}`)
@@ -35,10 +33,23 @@ export default async function loginOrCreateUserFromWallet({
     const chainName = config.name
     const chainId = chainNetwork.id
     // server action
-    let user = await fetchUserByWallet(walletAddress)
+    let { data: user } = await registryApi.get<User>(
+      `/users?wallet=${walletAddress}`,
+    )
     if (!user) {
       // server action
-      user = await createNewUser(walletAddress, chainName)
+      // user = await createNewUser(walletAddress, chainName)
+      const response = await registryApi.post<User>("/users", {
+        name: "Anonymous",
+        wallet: walletAddress,
+        wallets: {
+          create: {
+            address: walletAddress,
+            chain,
+          },
+        },
+      })
+      user = response.data
     }
     console.log("UserId", user.id)
 
@@ -47,7 +58,7 @@ export default async function loginOrCreateUserFromWallet({
       draft.userId = user.id
     })
 
-    await signIn(chain, {
+    await signIn(method, {
       callbackUrl: `/profile/${user.id}`,
       address: walletAddress,
       chainName,

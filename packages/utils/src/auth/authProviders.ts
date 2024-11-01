@@ -1,13 +1,14 @@
 import appConfig from "@cfce/app-config"
 import { chainConfig } from "@cfce/blockchain-tools"
-import { type Chain, getUserByWallet, newUser } from "@cfce/database"
+import type { Chain } from "@cfce/database"
 import type { AuthTypes } from "@cfce/types"
 import type { User } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
-import type { Provider } from "next-auth/providers/index"
+import type { CredentialInput, Provider } from "next-auth/providers/index"
 import { v7 as uuidv7 } from "uuid"
+import { registryApi } from "../registryApi"
 
 interface Credentials {
   id: string
@@ -18,17 +19,20 @@ interface Credentials {
   currency: string
 }
 
-async function getUserByCredentials(credentials?: Credentials) {
+async function getUserByCredentials(credentials: Credentials) {
   console.log("CREDS", credentials)
   try {
-    let user: User | null = await getUserByWallet(credentials?.address || "")
+    // let user: User | null = await getUserByWallet(credentials?.address || "")
+    let { data: user } = await registryApi.get<User>(
+      `/users?wallet=${credentials?.address}`,
+    )
     console.log("USER", user)
     const chain =
       credentials?.chain ?? chainConfig[appConfig.chainDefaults.chain].name
     if (!user) {
       const uuid = uuidv7()
       const mail = `_${uuid.substr(0, 8)}@example.com`
-      const result = await newUser({
+      const { data: result } = await registryApi.post<User>("/users", {
         created: new Date(),
         api_key: uuid,
         name: "Anonymous",
@@ -69,7 +73,7 @@ async function getUserByCredentials(credentials?: Credentials) {
   }
 }
 
-const credentialsDefinition = {
+const credentialsDefinition: Record<string, CredentialInput> = {
   id: { label: "id", type: "text" },
   address: { label: "address", type: "text" },
   chain: { label: "chain", type: "text" },
@@ -78,12 +82,15 @@ const credentialsDefinition = {
   currency: { label: "currency", type: "text" },
 }
 
-const authorizeChain = async (credentials?: Credentials) => {
+const authorizeChain = async (
+  credentials: Partial<Record<keyof Credentials, unknown>>,
+) => {
   if (!credentials) {
     return null
   }
   try {
-    const user = await getUserByCredentials(credentials)
+    // TODO: this hack shouldn't be needed
+    const user = await getUserByCredentials(credentials as Credentials)
     return user
   } catch (ex) {
     console.error("ERROR:", ex)

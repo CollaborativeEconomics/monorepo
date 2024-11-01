@@ -1,13 +1,12 @@
 import appConfig from "@cfce/app-config"
-import { getOrganizationByEmail, getUserByEmail } from "@cfce/database"
-import NextAuth, { type AuthOptions } from "next-auth"
+import type { Organization, User } from "@cfce/database"
+import NextAuth, { type NextAuthResult, type NextAuthConfig } from "next-auth"
 import { getAuthProviders } from "../authConfig"
+import { registryApi } from "../registryApi"
 
 const providers = getAuthProviders(appConfig.auth)
 
-console.log({ providers })
-
-const authOptions: AuthOptions = {
+const authOptions: NextAuthConfig = {
   // adapter: PrismaAdapter(prismaClient),
   session: {
     strategy: "jwt",
@@ -44,11 +43,17 @@ const authOptions: AuthOptions = {
       }
       // Handle organization and role-based logic
       if (token?.email) {
-        const org = await getOrganizationByEmail(token.email)
+        // const org = await getOrganizationByEmail(token.email)
+        const { data: org } = await registryApi.get<Organization>(
+          `/organizations?email=${token.email}`,
+        )
         token.orgId = org?.id || token.orgId || ""
         token.orgName = org?.name || ""
         if (!org) {
-          const user = await getUserByEmail(token.email)
+          // const user = await getUserByEmail(token.email)
+          const { data: user } = await registryApi.get<User>(
+            `/users?email=${token.email}`,
+          )
           if (user && user.type === 9) {
             if (!token.orgId) {
               token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
@@ -85,10 +90,6 @@ const authOptions: AuthOptions = {
       session.network = (token?.network as string) || ""
       // @ts-ignore TODO: move this to state
       session.currency = (token?.currency as string) || ""
-      // Ensure session.user exists
-      if (!session.user) {
-        session.user = {}
-      }
       // Update user information
       session.user.name = (token?.name as string) || ""
       session.user.email = (token?.email as string) || ""
@@ -101,7 +102,10 @@ const authOptions: AuthOptions = {
   },
 }
 
-const nextAuth: ReturnType<typeof NextAuth> = NextAuth(authOptions)
+const nextAuth = NextAuth(authOptions)
+const { signIn, signOut } = nextAuth
+// \/ \/ \/  some weird TS bug: https://github.com/nextauthjs/next-auth/issues/10568 \/ \/ \/
+const auth: NextAuthResult["auth"] = nextAuth.auth
+const handlers: NextAuthResult["handlers"] = nextAuth.handlers
 
-export { authOptions }
-export default nextAuth
+export { authOptions, auth, handlers, signIn, signOut }

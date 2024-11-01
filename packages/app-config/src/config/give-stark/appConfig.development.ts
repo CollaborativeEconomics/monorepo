@@ -20,9 +20,7 @@ const apis = {
 }
 
 const chains = {
-  xinfin: appConfig.chains.xinfin,
-  stellar: appConfig.chains.stellar,
-  xrpl: appConfig.chains.xrpl,
+  starknet: appConfig.chains.starknet,
 }
 
 const chainDefaults = {
