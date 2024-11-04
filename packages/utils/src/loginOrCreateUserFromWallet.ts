@@ -38,6 +38,7 @@ export default async function loginOrCreateUserFromWallet({
     let { data: user } = await registryApi.get<User>(
       `/users?wallet=${walletAddress}`,
     )
+    console.log("got user", user)
     if (!user) {
       // server action
       // user = await createNewUser(walletAddress, chainName)
@@ -52,8 +53,8 @@ export default async function loginOrCreateUserFromWallet({
         },
       })
       user = response.data
+      console.log("created user", user)
     }
-    console.log("UserId", user.id)
 
     getDefaultStore().set(appSettingsAtom, (draft) => {
       draft.walletAddress = walletAddress

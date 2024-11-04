@@ -1,3 +1,5 @@
+import appConfig from "@cfce/app-config"
+
 interface ApiResponse<T> {
   data: T
   success: boolean
@@ -8,10 +10,12 @@ export class RegistryApi {
   private baseUrl: string
 
   constructor() {
-    this.baseUrl = process.env.CFCE_REGISTRY_API_URL || ""
+    // Use window.location.origin in the browser, fallback to "/" for SSR
+    this.baseUrl =
+      typeof window !== "undefined" ? `${window.location.origin}/api` : "/api"
 
     if (!this.baseUrl) {
-      throw new Error("CFCE_REGISTRY_API_URL environment variable is not set")
+      throw new Error("Registry API URL is not set")
     }
   }
 
