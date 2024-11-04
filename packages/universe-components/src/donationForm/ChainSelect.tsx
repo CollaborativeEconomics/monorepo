@@ -37,6 +37,14 @@ export function ChainSelect() {
       handleChange={chain => {
         setChainState(draft => {
           draft.selectedChain = chain;
+          const chainConfig = appConfig.chains[chain];
+          if (!chainConfig) {
+            throw new Error(
+              `Chain ${chain} not found in appConfig. Check ${process.env.NEXT_PUBLIC_APP_ID}/appConfig.${process.env.NEXT_PUBLIC_ENV}.ts`,
+            );
+          }
+          const defaultToken = chainConfig.tokens[0];
+          draft.selectedToken = defaultToken;
         });
       }}
       placeHolderText="...select a cryptocurrency"
