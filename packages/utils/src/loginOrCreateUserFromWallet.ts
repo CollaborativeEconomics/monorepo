@@ -1,20 +1,16 @@
-"use client"
-import {
-  BlockchainManager,
-  chainConfig,
-  getChainConfiguration,
-} from "@cfce/blockchain-tools"
+import { BlockchainManager, chainConfig } from "@cfce/blockchain-tools"
+import type { User } from "@cfce/database"
 import type { AuthTypes, ChainSlugs } from "@cfce/types"
 import { getDefaultStore } from "jotai"
 import { signIn } from "./auth/nextAuth"
 import { registryApi } from "./registryApi"
 // import { createNewUser, fetchUserByWallet } from "./server-actions/user"
 import { appSettingsAtom } from "./state"
-import type { User } from "@cfce/database"
 
 export default async function loginOrCreateUserFromWallet({
-  chain, method
-}: { chain: ChainSlugs, method: AuthTypes }) {
+  chain,
+  method,
+}: { chain: ChainSlugs; method: AuthTypes }) {
   try {
     console.log("LOGIN", { chain, method })
     const walletInterface = BlockchainManager[chain]?.client // TODO: handle multiple wallets per chain
@@ -39,14 +35,26 @@ export default async function loginOrCreateUserFromWallet({
     const chainName = config.name
     const chainId = chainNetwork.id
     // server action
-    console.log("About to fetch user...")
-    let user = await fetchUserByWallet(walletAddress)
-
-    if (user === null) {
-      user = await createNewUser(walletAddress, chainName)
+    let { data: user } = await registryApi.get<User>(
+      `/users?wallet=${walletAddress}`,
+    )
+    console.log("got user", user)
+    if (!user) {
+      // server action
+      // user = await createNewUser(walletAddress, chainName)
+      const response = await registryApi.post<User>("/users", {
+        name: "Anonymous",
+        wallet: walletAddress,
+        wallets: {
+          create: {
+            address: walletAddress,
+            chain,
+          },
+        },
+      })
+      user = response.data
+      console.log("created user", user)
     }
-
-    console.log("UserId", user?.id)
 
     getDefaultStore().set(appSettingsAtom, (draft) => {
       draft.walletAddress = walletAddress

@@ -16,7 +16,7 @@ import {
 } from '@cfce/universe-components/ui';
 
 export default async function Signin() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   console.log('session', session)
   // @ts-ignore: module augmentation is hard, TODO: fix this
   const userId = session?.user?.id;
