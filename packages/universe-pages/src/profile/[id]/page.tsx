@@ -21,9 +21,9 @@ import {
   TabsList,
   TabsTrigger,
 } from '@cfce/universe-components/ui';
+import { LogOut } from '@cfce/universe-components/client/auth';
 import { uploadFile } from '@cfce/utils';
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
-import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import NotFound from '../../not-found';
@@ -68,10 +68,12 @@ async function fetchUserData(userId: string) {
 }
 
 // Server Action to handle form submission
-async function handleSaveProfile(formData: FormData, userId: string) {
+async function handleSaveProfile(formData: FormData) {
+  'use server'
   const file = formData.get('file') as File | null;
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
+  const userId = formData.get('userId') as string;
 
   let image = (formData.get('currentImage') as string) ?? '';
 
@@ -118,7 +120,7 @@ export default async function Profile({
         {/* Avatar */}
         <div className="border rounded-md p-8 w-full lg:w-2/4 bg-card">
           <form
-            action={formData => handleSaveProfile(formData, userId)}
+            action={handleSaveProfile}
             method="post"
             encType="multipart/form-data"
           >
@@ -131,6 +133,7 @@ export default async function Profile({
                 alt="Avatar"
               />
               <input type="file" name="file" className="mr-4" />
+              <input type="hidden" name="userId" value={userId} />
               <div className="flex flex-col flex-start items-start w-full rounded-full">
                 <input
                   type="text"
@@ -199,13 +202,7 @@ export default async function Profile({
                   <Plus size={48} className="text-gray-400" />
                 </span>
               </div>
-              <button
-                type="button"
-                className="block w-2/3 mt-4 mx-auto py-1 px-8 bg-red-400 text-white rounded-full"
-                onClick={() => signOut({ callbackUrl: '/' })}
-              >
-                Log Out
-              </button>
+              <LogOut />
             </>
           ) : (
             <>

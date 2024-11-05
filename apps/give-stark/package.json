@@ -72,6 +72,7 @@
     "sharp": "0.33.5",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
+    "starknetkit": "^2.3.3",
     "swiper": "^11.0.7",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",

@@ -4,7 +4,7 @@ import type {
   AuthTypes,
   ChainSlugs,
 } from "@cfce/types"
-import appConfig from "./appConfig.staging"
+import appConfig from "./appConfig.production"
 
 const siteInfo = {
   ...appConfig.siteInfo,
@@ -19,10 +19,9 @@ const apis = {
   },
 }
 
-const chains = {
-  xinfin: appConfig.chains.xinfin,
-  stellar: appConfig.chains.stellar,
-  xrpl: appConfig.chains.xrpl,
+const chains: AppConfig['chains'] = {
+  starknet: { ...appConfig.chains.starknet, network: 'testnet' } as AppChainConfig,
+  xinfin: { ...appConfig.chains.xinfin, network: 'testnet' } as AppChainConfig,
 }
 
 const chainDefaults = {

@@ -79,6 +79,7 @@ const credentialsDefinition = {
 }
 
 const authorizeChain = async (credentials?: Credentials) => {
+  console.log("Credentials", credentials)
   if (!credentials) {
     return null
   }
@@ -94,7 +95,7 @@ const authorizeChain = async (credentials?: Credentials) => {
 const authProviders: Record<AuthTypes, Provider> = {
   argent: CredentialsProvider({
     id: "Argent",
-    name: "Argent - Arbitrum",
+    name: "Argent",
     credentials: credentialsDefinition,
     authorize: authorizeChain,
   }),
