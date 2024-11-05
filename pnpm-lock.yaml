@@ -344,7 +344,7 @@ importers:
         version: 4.14.4(react@18.3.1)
       '@sentry/nextjs':
         specifier: ^8.32.0
-        version: 8.34.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.0.1(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.96.1)
+        version: 8.34.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.0.1(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.96.1)
       '@stellar/freighter-api':
         specifier: 3.0.0
         version: 3.0.0
@@ -787,7 +787,7 @@ importers:
         version: 4.14.4(react@18.3.1)
       '@sentry/nextjs':
         specifier: ^8.32.0
-        version: 8.34.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.0.1(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.96.1)
+        version: 8.34.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.0.1(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.96.1)
       '@stellar/freighter-api':
         specifier: 3.0.0
         version: 3.0.0
@@ -1193,6 +1193,109 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.5.5)(typescript@5.6.3)
+      typescript:
+        specifier: latest
+        version: 5.6.3
+
+  packages/auth:
+    dependencies:
+      '@auth/prisma-adapter':
+        specifier: ^2.7.2
+        version: 2.7.2(@prisma/client@5.20.0(prisma@5.20.0))
+      '@aws-sdk/client-s3':
+        specifier: ^3.654.0
+        version: 3.670.0
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
+      '@cfce/blockchain-tools':
+        specifier: workspace:*
+        version: link:../blockchain-tools
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../database
+      '@cfce/ipfs':
+        specifier: workspace:*
+        version: link:../ipfs
+      '@cfce/registry-hooks':
+        specifier: workspace:*
+        version: link:../hooks
+      '@cfce/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@tanstack/react-query':
+        specifier: ^5.51.21
+        version: 5.59.13(react@18.3.1)
+      '@vercel/blob':
+        specifier: 0.24.1
+        version: 0.24.1
+      form-data:
+        specifier: ^4.0.0
+        version: 4.0.1
+      formidable:
+        specifier: ^3.5.1
+        version: 3.5.1
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
+      jotai:
+        specifier: ^2.9.1
+        version: 2.10.0(@types/react@18.3.12)(react@18.3.1)
+      jotai-immer:
+        specifier: ^0.4.1
+        version: 0.4.1(immer@10.1.1)(jotai@2.10.0(@types/react@18.3.12)(react@18.3.1))
+      luxon:
+        specifier: ^3.4.4
+        version: 3.5.0
+      mailgun.js:
+        specifier: 10.2.3
+        version: 10.2.3
+      next-auth:
+        specifier: 5.0.0-beta.25
+        version: 5.0.0-beta.25(next@15.0.1(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@22.5.5)(typescript@5.6.3)
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
+    devDependencies:
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
+      '@smithy/types':
+        specifier: ^3.4.0
+        version: 3.5.0
+      '@types/formidable':
+        specifier: ^3.4.5
+        version: 3.4.5
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
+      '@types/luxon':
+        specifier: ^3.4.2
+        version: 3.4.2
+      '@types/node':
+        specifier: 22.5.5
+        version: 22.5.5
+      '@types/react':
+        specifier: latest
+        version: 18.3.12
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
+      aws-sdk-client-mock:
+        specifier: ^4.0.1
+        version: 4.0.2
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.5.5)(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.3))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@22.5.5)(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.3)))(typescript@5.6.3)
       typescript:
         specifier: latest
         version: 5.6.3
@@ -13125,7 +13228,7 @@ snapshots:
       '@sentry/types': 8.34.0
       '@sentry/utils': 8.34.0
 
-  '@sentry/nextjs@8.34.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.0.1(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.96.1)':
+  '@sentry/nextjs@8.34.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.0.1(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.96.1)':
     dependencies:
       '@opentelemetry/instrumentation-http': 0.53.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.27.0
@@ -13155,7 +13258,7 @@ snapshots:
       - react
       - supports-color
 
-  '@sentry/nextjs@8.34.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.0.1(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.96.1)':
+  '@sentry/nextjs@8.34.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.0.1(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.96.1)':
     dependencies:
       '@opentelemetry/instrumentation-http': 0.53.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.27.0

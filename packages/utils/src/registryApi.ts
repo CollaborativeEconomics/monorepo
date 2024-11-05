@@ -1,5 +1,3 @@
-import appConfig from "@cfce/app-config"
-
 interface ApiResponse<T> {
   data: T
   success: boolean

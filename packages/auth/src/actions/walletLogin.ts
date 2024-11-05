@@ -1,7 +1,7 @@
 "use server"
 import type { AuthTypes, ChainConfig } from "@cfce/types"
 import { signIn } from "next-auth/react"
-import { createNewUser, fetchUserByWallet } from "./server-actions/user"
+import { createNewUser, fetchUserByWallet } from "./createNewUser"
 
 export default async function loginOrCreateUserFromWallet(
   method: AuthTypes,
@@ -42,7 +42,6 @@ export default async function loginOrCreateUserFromWallet(
 
     console.log("UserId", user?.id)
 
-    await signIn(method, {
     await signIn(method, {
       callbackUrl: `/profile/${user.id}`,
       address: walletAddress,
