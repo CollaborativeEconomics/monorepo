@@ -42,9 +42,9 @@ appConfig.auth = ["argent" as AuthTypes]
 // Override chainDefaults
 appConfig.chainDefaults = {
   network: "mainnet",
-  wallet: "xaman",
-  chain: "xrpl",
-  coin: "XRP",
+  wallet: "argent",
+  chain: "starknet",
+  coin: "ETH",
 }
 
 export default appConfig

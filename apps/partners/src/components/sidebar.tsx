@@ -9,9 +9,9 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@cfce/universe-components/ui';
-import { authOptions } from '@cfce/utils';
+import { auth } from '@cfce/utils';
 import { Menu } from 'lucide-react';
-import { type Session, getServerSession } from 'next-auth';
+import type { Session } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import OrganizationSelect from './OrganizationSelect';
@@ -104,7 +104,7 @@ const SidebarContent = ({
 );
 
 const Sidebar = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const organizations = await getOrganizations({});
 
   let currentOrg = null;

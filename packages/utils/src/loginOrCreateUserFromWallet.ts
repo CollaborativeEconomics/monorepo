@@ -6,8 +6,9 @@ import {
 } from "@cfce/blockchain-tools"
 import type { AuthTypes, ChainSlugs } from "@cfce/types"
 import { getDefaultStore } from "jotai"
-import { signIn } from "next-auth/react"
-import { createNewUser, fetchUserByWallet } from "./server-actions/user"
+import { signIn } from "./auth/nextAuth"
+import { registryApi } from "./registryApi"
+// import { createNewUser, fetchUserByWallet } from "./server-actions/user"
 import { appSettingsAtom } from "./state"
 import type { User } from "@cfce/database"
 
@@ -15,7 +16,7 @@ export default async function loginOrCreateUserFromWallet({
   chain, method
 }: { chain: ChainSlugs, method: AuthTypes }) {
   try {
-    console.log("LOGIN")
+    console.log("LOGIN", { chain, method })
     const walletInterface = BlockchainManager[chain]?.client // TODO: handle multiple wallets per chain
     if (!walletInterface) {
       throw new Error(`No wallet interface found for chain: ${chain}`)

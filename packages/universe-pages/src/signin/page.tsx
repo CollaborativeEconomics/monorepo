@@ -4,8 +4,7 @@ import appConfig from '@cfce/app-config';
 import { getChainConfiguration } from '@cfce/blockchain-tools';
 import type { ChainSlugs } from '@cfce/types';
 import { AuthButton } from '@cfce/universe-components/client/auth';
-import { authOptions } from '@cfce/utils';
-import { getServerSession } from 'next-auth';
+import { auth } from '@cfce/utils';
 import { redirect } from 'next/navigation';
 
 import {
@@ -27,6 +26,7 @@ export default async function Signin() {
   }
 
   const chains = appConfig.chains;
+  console.log({ chains });
   const chainConfigs = getChainConfiguration();
 
   return (

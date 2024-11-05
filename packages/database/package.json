@@ -26,10 +26,10 @@
   "devDependencies": {
     "@cfce/types": "workspace:*",
     "@types/formidable": "^3.4.5",
-    "@types/node": "^20.14.9",
+    "@types/node": "22.5.5",
     "dotenv": "^16.4.5",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.2",
+    "ts-jest": "^29.2.5",
     "typescript": "latest"
   },
   "prisma": {
