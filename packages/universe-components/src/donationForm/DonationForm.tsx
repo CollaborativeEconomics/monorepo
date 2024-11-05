@@ -35,6 +35,17 @@ interface DonationFormProps {
   }>;
 }
 
+// Add this function above the DonationForm component
+const getFallbackAddress = (chainName?: string): string => {
+  const fallbackAddresses: Record<string, string> = {
+    'Ethereum': '0x1234567890123456789012345678901234567890',
+    'Polygon': '0x1234567890123456789012345678901234567890',
+    'Starknet': '0x05a12d15f93dcbddec0653fc77dd96713fb154667f2384a51d4c10405b251ccf',
+  };
+  
+  return chainName ? fallbackAddresses[chainName] || '' : '';
+};
+
 export default function DonationForm({ initiative }: DonationFormProps) {
   const contractId = initiative.contractcredit; // needed for CC contract
   const organization = initiative.organization;
@@ -66,19 +77,29 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   }, []);
 
   const destinationWalletAddress = useMemo(() => {
-    const chainName = chainInterface?.chain.name;
+    const chainName = chainInterface?.chain.name;    
+
     const initiativeWallet = initiative?.wallets?.find(
       w => w.chain === chainName,
     );
     if (initiativeWallet) {
       return initiativeWallet.address;
     }
+
     const organizationWallet = organization?.wallets.find(
       w => w.chain === chainName,
     )?.address;
+
     if (organizationWallet) {
       return organizationWallet;
     }
+
+    // Use fallback address if both initiative and organization wallets are not found
+    const fallbackAddress = getFallbackAddress(chainName);
+    if (fallbackAddress) {
+      return fallbackAddress;
+    }
+
     handleError(new Error('No wallet found for chain'));
     return '';
   }, [organization, initiative, chainInterface, handleError]);

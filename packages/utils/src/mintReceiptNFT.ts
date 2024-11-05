@@ -237,18 +237,17 @@ export async function mintAndSaveReceiptNFT({
 
     let tokenId = ""
     const walletSecret = getWalletSecret(chain)
+    // Revert if error persist
     for (const chainContract of receiptConctractsByChain) {
-      const mintResponse = BlockchainManager[
-        chainContract.chain
-      ]?.server.mintNFT({
+      const mintResponse = BlockchainManager[chainContract.chain]?.server?.mintNFT?.({
         contractId: chainContract.contract,
         address: donorWalletAddress,
         uri: uriMeta,
         walletSeed: walletSecret,
-      })
-      console.log("RESMINT", mintResponse)
+      }) ?? null;
+
       if (!mintResponse) {
-        throw new Error("Error minting NFT")
+        throw new Error('Failed to mint NFT');
       }
       if ("error" in mintResponse && typeof mintResponse.error === "string") {
         throw new Error(mintResponse.error)

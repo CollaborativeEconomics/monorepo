@@ -18,6 +18,7 @@ import {
 
 export default async function Signin() {
   const session = await getServerSession(authOptions);
+  console.log('session', session)
   // @ts-ignore: module augmentation is hard, TODO: fix this
   const userId = session?.user?.id;
 

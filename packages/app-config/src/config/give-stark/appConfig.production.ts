@@ -37,7 +37,7 @@ appConfig.chains = {
 } satisfies AppConfig["chains"]
 
 // Override auth
-appConfig.auth = ["freighter" as AuthTypes]
+appConfig.auth = ["argent" as AuthTypes]
 
 // Override chainDefaults
 appConfig.chainDefaults = {
