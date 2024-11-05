@@ -1,8 +1,8 @@
 "use server"
 
-import { signIn } from "../auth/nextAuth"
 import authConfig from "../authConfig"
+import { signIn } from "../nextAuth"
 
-export async function googleLogin() {
+export default async function googleLogin() {
   await signIn("google", authConfig.github)
 }

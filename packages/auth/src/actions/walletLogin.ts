@@ -1,9 +1,10 @@
 "use server"
 import type { AuthTypes, ChainConfig } from "@cfce/types"
 import { signIn } from "next-auth/react"
-import { createNewUser, fetchUserByWallet } from "./createNewUser"
+import createNewUser from "./createNewUser"
+import fetchUserByWallet from "./fetchUserByWallet"
 
-export default async function loginOrCreateUserFromWallet(
+export default async function walletLogin(
   method: AuthTypes,
   {
     walletAddress,
@@ -38,6 +39,10 @@ export default async function loginOrCreateUserFromWallet(
 
     if (user === null) {
       user = await createNewUser(walletAddress, chainConfig.name)
+    }
+
+    if (!user) {
+      throw new Error("User not found or created")
     }
 
     console.log("UserId", user?.id)

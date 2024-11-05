@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "rm -rf dist && tsc && cp -r ./src/assets ./dist/assets"
+    "build": "rm -rf dist && tsc"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",

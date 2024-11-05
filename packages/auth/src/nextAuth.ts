@@ -1,8 +1,13 @@
 import appConfig from "@cfce/app-config"
-import type { Organization, User } from "@cfce/database"
+import {
+  type Organization,
+  type User,
+  getOrganizationByEmail,
+  getUserByEmail,
+} from "@cfce/database"
+import { registryApi } from "@cfce/utils"
 import NextAuth, { type NextAuthResult, type NextAuthConfig } from "next-auth"
-import { getAuthProviders } from "../authConfig"
-import { registryApi } from "../registryApi"
+import { getAuthProviders } from "./authConfig"
 
 const providers = getAuthProviders(appConfig.auth)
 
@@ -43,17 +48,17 @@ const authOptions: NextAuthConfig = {
       }
       // Handle organization and role-based logic
       if (token?.email) {
-        // const org = await getOrganizationByEmail(token.email)
-        const { data: org } = await registryApi.get<Organization>(
-          `/organizations?email=${token.email}`,
-        )
+        const org = await getOrganizationByEmail(token.email)
+        // const { data: org } = await registryApi.get<Organization>(
+        //   `/organizations?email=${token.email}`,
+        // )
         token.orgId = org?.id || token.orgId || ""
         token.orgName = org?.name || ""
         if (!org) {
-          // const user = await getUserByEmail(token.email)
-          const { data: user } = await registryApi.get<User>(
-            `/users?email=${token.email}`,
-          )
+          const user = await getUserByEmail(token.email)
+          // const { data: user } = await registryApi.get<User>(
+          //   `/users?email=${token.email}`,
+          // )
           if (user && user.type === 9) {
             if (!token.orgId) {
               token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental

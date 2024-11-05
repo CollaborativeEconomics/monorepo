@@ -4,7 +4,7 @@ import {
   chainConfig as chainConfigs,
 } from '@cfce/blockchain-tools';
 import type { AuthTypes, ChainSlugs } from '@cfce/types';
-import { loginOrCreateUserFromWallet } from '@cfce/utils';
+import { walletLogin } from '../actions';
 import { BaseLoginButton } from './BaseLoginButton';
 
 interface WalletLoginButtonProps {
@@ -33,7 +33,7 @@ export function WalletLoginButton({
       throw new Error(`No wallet address found: ${walletAddress}`);
     }
 
-    await loginOrCreateUserFromWallet(method, {
+    await walletLogin(method, {
       walletAddress,
       chainConfig,
       network,

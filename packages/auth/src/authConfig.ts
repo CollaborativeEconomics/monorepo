@@ -1,7 +1,7 @@
 import { walletConfig } from "@cfce/blockchain-tools"
 import type { AuthConfig, AuthTypes } from "@cfce/types"
 import type { Provider } from "next-auth/providers/index"
-import authProviders from "./auth/authProviders"
+import authProviders from "./authProviders"
 
 const authConfig: AuthConfig = {
   freighter: {

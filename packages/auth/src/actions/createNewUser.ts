@@ -16,7 +16,7 @@ export async function fetchUserByWallet(
   return await getUserByWallet(walletAddress)
 }
 
-export async function createNewUser(
+export default async function createNewUser(
   walletAddress: string,
   chain: Chain,
 ): Promise<User> {

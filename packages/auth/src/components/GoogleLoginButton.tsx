@@ -1,4 +1,4 @@
-import { signIn } from '@cfce/utils';
+import { signIn } from '../nextAuth';
 import { BaseLoginButton } from './BaseLoginButton';
 
 interface GoogleLoginButtonProps {
