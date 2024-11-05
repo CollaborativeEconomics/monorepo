@@ -7,10 +7,6 @@
     "build": "rm -rf dist && tsc && tsc-alias"
   },
   "exports": {
-    "./server/auth": {
-      "import": "./dist/server/auth/index.js",
-      "types": "./dist/server/auth/index.d.ts"
-    },
     "./client/auth": {
       "import": "./dist/client/auth/index.js",
       "types": "./dist/client/auth/index.d.ts"
