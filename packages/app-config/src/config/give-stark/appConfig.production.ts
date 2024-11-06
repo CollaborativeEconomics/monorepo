@@ -44,7 +44,7 @@ appConfig.chainDefaults = {
   network: "mainnet",
   wallet: "argent",
   chain: "starknet",
-  coin: "ETH",
+  coin: "STRK",
 }
 
 export default appConfig

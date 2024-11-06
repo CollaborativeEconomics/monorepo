@@ -24,6 +24,8 @@ import { DonationAmountInput } from './DonationAmountInput';
 import { MintButton } from './MintButton';
 import { RateMessage } from './RateMessage';
 import { WalletSelect } from './WalletSelect';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "~/ui/dialog";
+import { Button } from "~/ui/button";
 
 interface DonationFormProps {
   initiative: Prisma.InitiativeGetPayload<{
@@ -50,6 +52,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const contractId = initiative.contractcredit; // needed for CC contract
   const organization = initiative.organization;
   const [loading, setLoading] = useState(false);
+  const [balanceDialogOpen, setBalanceDialogOpen] = useState(false);
   const [chainState, setChainState] = useAtom(chainAtom);
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
     chainState;
@@ -116,6 +119,14 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     );
   }, [selectedToken, selectedChain, setChainState]);
 
+  const checkBalance = useCallback(async () => {
+    if (!chainInterface || !('getBalance' in chainInterface)) {
+      throw new Error('No chain interface or getBalance not supported');
+    }
+    const balance = await chainInterface.getBalance();
+    return Number(balance) >= chainInterface.toBaseUnit(amount);
+  }, [chainInterface, amount]);
+
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPayment) {
@@ -134,6 +145,12 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const onSubmit = useCallback(async () => {
     try {
       validateForm({ email });
+
+      const hasBalance = await checkBalance();
+      if (!hasBalance) {
+        setBalanceDialogOpen(true);
+        return;
+      }
 
       setLoading(true);
       setButtonMessage('Approving payment...');
@@ -184,6 +201,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     selectedChain,
     selectedToken,
     sendPayment,
+    checkBalance,
     initiative,
     setDonationForm,
     handleError,
@@ -247,6 +265,37 @@ export default function DonationForm({ initiative }: DonationFormProps) {
           <p className="mt-2 text-sm">{buttonMessage}</p>
         </div>
       </Card>
+      <Dialog open={balanceDialogOpen} onOpenChange={setBalanceDialogOpen}>
+        <DialogContent className="p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold">
+              Insufficient Funds
+            </DialogTitle>
+            <DialogDescription className="text-white-600">
+              You do not have enough funds in your wallet to complete this transaction. Click on the button below to add funds to your wallet.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex justify-between">
+            <DialogClose>
+              <Button
+                variant={"link"}
+                onClick={() => {
+                  window.open(
+                    'https://changelly.com/buy',
+                    '_blank'
+                  );
+                }}
+                className="bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Buy {selectedToken} on Changelly
+              </Button>
+            </DialogClose>
+            <DialogClose className="text-white-500 hover:underline">
+              Close
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
