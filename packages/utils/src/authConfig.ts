@@ -49,9 +49,9 @@ const authConfig: AuthConfig = {
 }
 
 export function getAuthProviders(methods: AuthTypes[]): Provider[] {
-  console.log("Getting auth providers", methods)
+  //console.log("Getting auth providers", methods)
   const providers = methods.map((method) => authConfig[method].authProvider)
-  console.log('PROVIDERS', providers)
+  //console.log('PROVIDERS', providers)
   return providers
 }
 

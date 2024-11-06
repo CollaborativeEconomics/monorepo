@@ -560,9 +560,9 @@ chainConfiguration.xinfin.networks.mainnet = {
   symbol: "XDC",
   decimals: 18,
   gasprice: "12500000000",
-  explorer: "https://explorer.xinfin.network",
+  explorer: "https://xdcscan.com",
   rpcUrls: {
-    main: "https://rpc.xinfin.network",
+    main: "https://rpc.xdcrpc.com",
   },
   wssurl: "",
 }
@@ -573,9 +573,9 @@ chainConfiguration.xinfin.networks.testnet = {
   symbol: "XDC",
   decimals: 18,
   gasprice: "12500000000",
-  explorer: "https://explorer.apothem.network",
+  explorer: "https://testnet.xdcscan.com",
   rpcUrls: {
-    main: "https://rpc.apothem.network",
+    main: "https://erpc.apothem.network",
   },
   wssurl: "",
 }

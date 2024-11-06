@@ -14,12 +14,12 @@ const uuidToUint256 = (uuid: string) => {
 /**
  * Given a entity ID, mint a TBA NFT for the entity
  * @param entityId UUIID from registry db
- * @param tokenCID CID from IPFS
  */
+
 export async function mintAccountNFT(entityId: string) {
-  const address = process.env.XINFIN_MINTER_WALLET
+  const address = process.env.XINFIN_WALLET_ADDRESS
+  const walletSeed = process.env.XINFIN_WALLET_SECRET
   const contractId = process.env.XINFIN_NFT6551_CONTRACT // 0xcBbB500f1CF1D6C44B0d7C9ff40292f8a0E756D7
-  const walletSeed = process.env.XINFIN_MINTER_SECRET
   const tokenId = uuidToUint256(entityId).toString()
   console.log({ contractId, address, tokenId })
 

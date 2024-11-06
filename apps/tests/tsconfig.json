@@ -1,0 +1,23 @@
+{
+  "extends": "@cfce/typescript-config/nextjs.json",
+  "strictNullChecks": true,
+  "declaration": false,
+  "include": [
+    "src",
+    "next-env.d.ts",
+    "next-auth.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "public",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist", "work"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "rootDirs": ["src", "."],
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  }
+}

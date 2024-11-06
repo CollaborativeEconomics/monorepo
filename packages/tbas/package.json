@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/database": "workspace:*",
     "@cfce/types": "workspace:*",
     "server-only": "^0.0.1",
-    "viem": "^2.21.26"
+    "viem": "^2.21.40"
   },
   "devDependencies": {
     "@smithy/types": "^3.4.0",
