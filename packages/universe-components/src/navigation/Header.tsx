@@ -1,10 +1,9 @@
 'use client';
-import { SessionProvider } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import React, { useEffect, useState, useCallback } from 'react';
 import Logo from '~/home/Logo';
-import NavMenu from './NavigationMenu';
+import NavigationMenu from './NavigationMenu';
 
 function useScrollPosition() {
   const [scrollY, setScrollY] = useState(0);
@@ -43,9 +42,7 @@ export default function Header() {
           <Logo />
         </Link>
         <div className="flex flex-row items-center">
-          <SessionProvider>
-            <NavMenu />
-          </SessionProvider>
+          <NavigationMenu />
         </div>
       </div>
     </header>

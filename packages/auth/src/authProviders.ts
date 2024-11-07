@@ -1,8 +1,8 @@
 import appConfig from "@cfce/app-config"
 import { chainConfig } from "@cfce/blockchain-tools"
-import { type Chain, getUserByWallet, newUser } from "@cfce/database"
+import type { Chain, User } from "@cfce/database/types"
 import type { AuthTypes } from "@cfce/types"
-import type { User } from "next-auth"
+import { registryApi } from "@cfce/utils"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
@@ -21,14 +21,18 @@ interface Credentials {
 async function getUserByCredentials(credentials?: Credentials) {
   console.log("CREDS", credentials)
   try {
-    let user: User | null = await getUserByWallet(credentials?.address || "")
+    // let user: User | null = await getUserByWallet(credentials?.address || "")
+    const result = await registryApi.get<User>(
+      `/users?wallet=${credentials?.address}`,
+    )
+    let user = result.data
     console.log("USER", user)
     const chain =
       credentials?.chain ?? chainConfig[appConfig.chainDefaults.chain].name
     if (!user) {
       const uuid = uuidv7()
       const mail = `_${uuid.substr(0, 8)}@example.com`
-      const result = await newUser({
+      const userData = {
         created: new Date(),
         api_key: uuid,
         name: "Anonymous",
@@ -46,11 +50,12 @@ async function getUserByCredentials(credentials?: Credentials) {
             },
           ],
         },
-      })
-      if (!result.id) {
+      }
+      const result = await registryApi.post<User>("/users", userData)
+      if (!result) {
         return null
       }
-      user = result
+      user = result.data
     }
     const info = {
       id: user?.id,

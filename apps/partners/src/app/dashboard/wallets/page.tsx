@@ -1,7 +1,7 @@
+import { auth } from '@cfce/auth';
 import { chainConfig } from '@cfce/blockchain-tools';
 import { getOrganizationById } from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
-import { auth } from '@cfce/utils';
 import Title from '~/components/title';
 import Wallet from '~/components/wallet';
 import styles from '~/styles/dashboard.module.css';

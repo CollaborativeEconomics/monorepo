@@ -1,6 +1,6 @@
 'use client';
 
-import { auth, signIn, signOut } from '@cfce/utils';
+import { auth, signIn, signOut } from '@cfce/auth';
 import React from 'react';
 
 export default async function LoginButton() {

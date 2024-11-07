@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
-import SessionProvider from '~/components/SessionProvider';
 import '~/styles/globals.css';
 import Sidebar from '~/components/sidebar';
 
@@ -17,9 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <div className="flex">
-          <SessionProvider>
-            <main className="flex-1">{children}</main>
-          </SessionProvider>
+          <main className="flex-1">{children}</main>
         </div>
       </body>
     </html>

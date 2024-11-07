@@ -1,10 +1,9 @@
 import React from 'react';
 
 import appConfig from '@cfce/app-config';
+import { AuthButton, auth } from '@cfce/auth';
 import { getChainConfiguration } from '@cfce/blockchain-tools';
 import type { ChainSlugs } from '@cfce/types';
-import { AuthButton } from '@cfce/universe-components/client/auth';
-import { auth } from '@cfce/utils';
 import { redirect } from 'next/navigation';
 
 import {
@@ -17,10 +16,8 @@ import {
 
 export default async function Signin() {
   const session = await auth();
-<<<<<<< HEAD
-=======
-  console.log('session', session)
->>>>>>> ced8653 (Making changes)
+  console.log('session', session);
+
   // @ts-ignore: module augmentation is hard, TODO: fix this
   const userId = session?.user?.id;
 
@@ -51,11 +48,6 @@ export default async function Signin() {
                     key={wallet}
                     method={wallet}
                     chain={slug as ChainSlugs}
-                    config={{
-                      name: wallet,
-                      icon: chainConfig.icon,
-                      slug: wallet,
-                    }}
                     className="mb-2"
                   />
                 ))}

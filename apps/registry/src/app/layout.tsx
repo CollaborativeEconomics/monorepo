@@ -1,5 +1,3 @@
-import { SessionProvider } from '@cfce/universe-components/client/auth';
-
 export default function RootLayout({
   // Layouts must accept a children prop.
   // This will be populated with nested layouts or pages
@@ -9,9 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <SessionProvider>
-        <body>{children}</body>
-      </SessionProvider>
+      <body>{children}</body>
     </html>
   );
 }

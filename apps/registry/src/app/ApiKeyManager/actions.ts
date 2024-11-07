@@ -1,7 +1,7 @@
 "use server"
 
+import { auth } from "@cfce/auth"
 import { prismaClient } from "@cfce/database"
-import { auth } from "@cfce/utils"
 import { revalidatePath } from "next/cache"
 
 export async function generateApiKey() {

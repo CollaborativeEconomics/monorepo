@@ -1,4 +1,4 @@
-import { signIn } from '../nextAuth';
+import { googleLogin } from '../actions';
 import { BaseLoginButton } from './BaseLoginButton';
 
 interface GoogleLoginButtonProps {
@@ -6,11 +6,6 @@ interface GoogleLoginButtonProps {
 }
 
 export function GoogleLoginButton({ className }: GoogleLoginButtonProps) {
-  async function googleLogin() {
-    'use server';
-    await signIn('google');
-  }
-
   return (
     <form action={googleLogin}>
       <BaseLoginButton

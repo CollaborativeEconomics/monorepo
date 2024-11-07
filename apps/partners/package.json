@@ -18,6 +18,7 @@
     "@cfce/universe-api": "workspace:*",
     "@cfce/universe-components": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "@cfce/auth": "workspace:*",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-popover": "^1.1.1",

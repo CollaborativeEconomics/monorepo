@@ -1,5 +1,5 @@
+import { auth } from "@cfce/auth"
 import { setUser } from "@cfce/database"
-import { auth } from "@cfce/utils"
 import { type NextRequest, NextResponse } from "next/server"
 import { v4 as uuidv4 } from "uuid"
 

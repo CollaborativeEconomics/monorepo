@@ -70,7 +70,7 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
-    "next-auth": "5.0.0-beta.25",
+    "@cfce/auth": "workspace:*",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.0.4",

@@ -1,5 +1,4 @@
-'use client';
-import { signOut } from '@cfce/utils';
+import { signOut } from '@cfce/auth';
 import React from 'react';
 
 interface SignOutButtonProps {

@@ -1,6 +1,6 @@
 "use server"
 import { type Chain, type User, getUserByWallet, newUser } from "@cfce/database"
-// import { auth } from "@cfce/utils"
+// import { auth } from "@cfce/auth"
 // async function authenticate() {
 //   const session = await auth()
 //   if (!session) {

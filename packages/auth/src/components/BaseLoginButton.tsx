@@ -1,5 +1,6 @@
 'use client';
-import { Button } from '@cfce/universe-components/ui';
+
+import { Button } from './Button';
 
 interface BaseLoginButtonProps {
   icon: string;
@@ -19,8 +20,7 @@ export function BaseLoginButton({
   return (
     <Button
       type={type}
-      variant="outline"
-      className={`w-full flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${className}`}
+      className={`w-full gap-2 py-2 px-4 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${className}`}
       onClick={onClick}
     >
       <img src={icon} alt={`${name} icon`} className="w-5 h-5" />

@@ -1,23 +1,27 @@
-import type { ChainSlugs, Network } from "@cfce/types"
-import { connect, disconnect, Connector } from "starknetkit"
-import { RpcProvider, Account, constants, Contract, num } from "starknet"
-import type { GetTransactionReceiptResponse, Call, AccountInterface } from "starknet"
 import {
+  type DeploymentData,
+  type ExecuteCallsOptions,
+  type GasTokenPrice,
+  type GaslessCompatibility,
+  type GaslessOptions,
+  type PaymasterReward,
+  SEPOLIA_BASE_URL,
   executeCalls,
   fetchAccountCompatibility,
   fetchAccountsRewards,
   fetchGasTokenPrices,
-  type GaslessCompatibility,
-  type GaslessOptions,
-  type GasTokenPrice,
-  type PaymasterReward,
-  SEPOLIA_BASE_URL,
-  type ExecuteCallsOptions,
   fetchGaslessStatus,
-  type DeploymentData,
-} from '@avnu/gasless-sdk'
+} from "@avnu/gasless-sdk"
+import type { ChainSlugs, Network } from "@cfce/types"
+import { constants, Account, Contract, RpcProvider, num } from "starknet"
+import type {
+  AccountInterface,
+  Call,
+  GetTransactionReceiptResponse,
+} from "starknet"
+import { Connector, connect, disconnect } from "starknetkit"
+import { formatEther, parseEther } from "viem"
 import ChainBaseClass from "../chains/ChainBaseClass"
-import { parseEther, formatEther } from "viem"
 import { ERC20 } from "../contracts/starknet/Abi"
 
 class StarknetWallet extends ChainBaseClass {
@@ -29,15 +33,13 @@ class StarknetWallet extends ChainBaseClass {
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
     this.provider = new RpcProvider({
-      nodeUrl: process.env.STARKNET_RPC_URI
+      nodeUrl: process.env.STARKNET_RPC_URI,
     })
-    console.log("STARKNET INIT")
-    console.log("RPC provider", this.provider)
   }
 
   async init() {
     const starknet = await connect({
-        modalMode: "alwaysAsk"
+      modalMode: "alwaysAsk",
     })
     if (starknet?.wallet) {
       return { success: true }
@@ -47,7 +49,7 @@ class StarknetWallet extends ChainBaseClass {
 
   async getWallet() {
     const wallet = await connect({
-      modalMode: "alwaysAsk"
+      modalMode: "alwaysAsk",
     })
     return wallet
   }
@@ -56,15 +58,17 @@ class StarknetWallet extends ChainBaseClass {
     try {
       console.log("CONNECT...")
       const wallet = await this.getWallet()
-      
+
       if (wallet?.connector?.account && wallet?.connector) {
-        this.connectedWallet = (await wallet.connector.account(this.provider)).address
+        this.connectedWallet = (
+          await wallet.connector.account(this.provider)
+        ).address
         this.account = new Account(
           this.provider,
           (await wallet.connector.account(this.provider)).address,
-          (await wallet.connector.account(this.provider)).signer
+          (await wallet.connector.account(this.provider)).signer,
         )
-        
+
         return {
           success: true,
           walletAddress: this.connectedWallet,
@@ -89,11 +93,11 @@ class StarknetWallet extends ChainBaseClass {
         throw new Error("Wallet not connected")
       }
 
-
       const account = await starknet.connector?.account(this.provider)
       console.log("Account", account)
-      console.log("Account connected", )
-      const contractId = "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"
+      console.log("Account connected")
+      const contractId =
+        "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"
       // const contract = new Contract(ERC20, num.toHex(contractId), account)
       console.log("Amount", amount)
       // console.log("Contract", contract)
@@ -122,7 +126,7 @@ class StarknetWallet extends ChainBaseClass {
       // console.log("Amount in Wei:", amountWei);
       // const weihex = `0x${amountWei.toString(16)}`
       // console.log("Amount in Hex:", weihex);
-      
+
       // console.log("Creating calls array with:", {
       //   address,
       //   weihex
@@ -165,50 +169,42 @@ class StarknetWallet extends ChainBaseClass {
       //   amount: 1n * 10n ** 18n,
       // })
 
+      // Gasless Transaction
 
-        // Gasless Transaction
-  
-        const weihex = `0x${amount.toString(16)}`;
-  
-        const options: GaslessOptions = {
-          baseUrl: SEPOLIA_BASE_URL,
-          apiPublicKey: process.env.NEXT_PUBLIC_AVNU_PUBLIC_KEY,
-          apiKey: process.env.NEXT_PUBLIC_AVNU_KEY,
-        };
+      const weihex = `0x${amount.toString(16)}`
 
-        const gasTokenPrice = await fetchGasTokenPrices(options);
-        console.log('GasTokenPrice', gasTokenPrice);
-  
-        const calls: Call[] = [
-          {
-            entrypoint: 'transfer',
-            // entrypoint: 'donate',
-            contractAddress: contractId,
-            calldata: [address, weihex, '0x0'],
-            // calldata: [weihex],
-          },
-        ];
-        console.log("Calls", calls)
+      const options: GaslessOptions = {
+        baseUrl: SEPOLIA_BASE_URL,
+        apiPublicKey: process.env.NEXT_PUBLIC_AVNU_PUBLIC_KEY,
+        apiKey: process.env.NEXT_PUBLIC_AVNU_KEY,
+      }
 
-        if (!account) {
-          throw new Error("Account not found")
-        }
+      const gasTokenPrice = await fetchGasTokenPrices(options)
+      console.log("GasTokenPrice", gasTokenPrice)
 
-        // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-        let txid;
-        try {
-          txid = (
-            await executeCalls(
-            account,
-            calls,
-            {},
-            options
-            )
-          );
+      const calls: Call[] = [
+        {
+          entrypoint: "transfer",
+          // entrypoint: 'donate',
+          contractAddress: contractId,
+          calldata: [address, weihex, "0x0"],
+          // calldata: [weihex],
+        },
+      ]
+      console.log("Calls", calls)
+
+      if (!account) {
+        throw new Error("Account not found")
+      }
+
+      // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+      let txid
+      try {
+        txid = await executeCalls(account, calls, {}, options)
       } catch (err) {
         console.error("Error executing calls", err)
       }
-        
+
       console.log("TX", txid)
       const tx = txid?.transactionHash
 
@@ -242,13 +238,12 @@ class StarknetWallet extends ChainBaseClass {
     }
   }
 
-  
-
   async getTransactionInfo(txid: string) {
     try {
       console.log("Get tx info by txid", txid)
       const txInfo = await this.provider.waitForTransaction(txid)
-      const txReceipt: GetTransactionReceiptResponse = await this.provider.getTransactionReceipt(txid)
+      const txReceipt: GetTransactionReceiptResponse =
+        await this.provider.getTransactionReceipt(txid)
 
       if (!txInfo || !txReceipt) {
         console.log("ERROR", "Transaction not found:", txid)
@@ -273,51 +268,49 @@ class StarknetWallet extends ChainBaseClass {
       }
       return { error: "Unknown error" }
     }
-}
-
-async fetchLedger(method: unknown, params: unknown): Promise<unknown> {
-  const data = { id: "1", jsonrpc: "2.0", method, params }
-  const body = JSON.stringify(data)
-  const opt = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
   }
-  try {
-    const res = await fetch(this.network.rpcUrls.main, opt)
-    const inf = await res.json()
-    return inf?.result
-  } catch (ex) {
-    console.error(ex)
-    if (ex instanceof Error) {
-      return { error: ex.message }
+
+  async fetchLedger(method: unknown, params: unknown): Promise<unknown> {
+    const data = { id: "1", jsonrpc: "2.0", method, params }
+    const body = JSON.stringify(data)
+    const opt = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
     }
-    return { error: "Error fetching from ledger" }
+    try {
+      const res = await fetch(this.network.rpcUrls.main, opt)
+      const inf = await res.json()
+      return inf?.result
+    } catch (ex) {
+      console.error(ex)
+      if (ex instanceof Error) {
+        return { error: ex.message }
+      }
+      return { error: "Error fetching from ledger" }
+    }
   }
-}
 
-async mintNFT(params: {
-    address: string;
-    uri: string;
-    taxon?: number;
-    transfer?: boolean;
-    contractId: string;
-    walletSeed: string;
+  async mintNFT(params: {
+    address: string
+    uri: string
+    taxon?: number
+    transfer?: boolean
+    contractId: string
+    walletSeed: string
   }) {
     console.log(
-      'Minting NFT, wait...',
+      "Minting NFT, wait...",
       params.address,
       params.uri,
       params.taxon,
       params.transfer,
       params.contractId,
-      params.walletSeed
-    );
+      params.walletSeed,
+    )
 
-    return { success: true };
+    return { success: true }
   }
 }
-
-
 
 export default StarknetWallet

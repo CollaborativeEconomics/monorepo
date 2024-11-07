@@ -1,6 +1,6 @@
 'use client';
-import { Button } from '@cfce/universe-components/ui';
 
+import { Button } from './Button';
 // Note: Logout works with a direct link to NextAuth's unbranded /api/auth/signout
 // however signOut does not appear to work consistently (e.g. doesn't clear session) and may cause redirect loops
 

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { LogoutButton } from '@cfce/auth';
 import {
   type NFTData,
   type Prisma,
@@ -21,12 +22,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@cfce/universe-components/ui';
-<<<<<<< HEAD
-import { LogOut } from '@cfce/universe-components/client/auth';
 import { uploadFile } from '@cfce/utils';
-=======
-import { signOut, uploadFile } from '@cfce/utils';
->>>>>>> 793fc72 (upgrade next-auth to na@5; temporarily disable partner middleware)
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
@@ -73,7 +69,7 @@ async function fetchUserData(userId: string) {
 
 // Server Action to handle form submission
 async function handleSaveProfile(formData: FormData) {
-  'use server'
+  'use server';
   const file = formData.get('file') as File | null;
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
@@ -206,7 +202,7 @@ export default async function Profile({
                   <Plus size={48} className="text-gray-400" />
                 </span>
               </div>
-              <LogOut />
+              <LogoutButton />
             </>
           ) : (
             <>

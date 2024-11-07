@@ -1,4 +1,4 @@
-import { signIn } from '../nextAuth';
+import { githubLogin } from '../actions';
 import { BaseLoginButton } from './BaseLoginButton';
 
 interface GithubLoginButtonProps {
@@ -6,11 +6,6 @@ interface GithubLoginButtonProps {
 }
 
 export function GithubLoginButton({ className }: GithubLoginButtonProps) {
-  async function githubLogin() {
-    'use server';
-    await signIn('github');
-  }
-
   return (
     <form action={githubLogin}>
       <BaseLoginButton

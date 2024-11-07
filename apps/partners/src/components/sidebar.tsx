@@ -1,3 +1,4 @@
+import { auth } from '@cfce/auth';
 import {
   type Organization,
   getOrganizationById,
@@ -9,7 +10,6 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@cfce/universe-components/ui';
-import { auth } from '@cfce/utils';
 import { Menu } from 'lucide-react';
 import type { Session } from 'next-auth';
 import Image from 'next/image';
