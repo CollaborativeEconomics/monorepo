@@ -62,7 +62,7 @@
     "typescript": "latest"
   },
   "peerDependencies": {
-    "next": "^15.0.1",
+    "next": "^15.0.3",
     "next-themes": "*"
   },
   "dependencies": {

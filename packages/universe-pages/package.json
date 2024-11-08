@@ -74,14 +74,14 @@
     "@cfce/typescript-config": "workspace:*",
     "@types/react": "latest",
     "@types/uuid": "^10.0.0",
-    "next": "^15.0.1",
+    "next": "^15.0.3",
     "next-auth": "5.0.0-beta.25",
     "next-themes": "*",
     "typescript": "latest"
   },
   "peerDependencies": {
     "@cfce/app-config": "workspace:*",
-    "next": "^15.0.1",
+    "next": "^15.0.3",
     "next-themes": "latest",
     "react": "^18.3.1"
   }

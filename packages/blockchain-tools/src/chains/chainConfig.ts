@@ -435,14 +435,14 @@ chainConfiguration.starknet.networks.mainnet = {
 }
 chainConfiguration.starknet.networks.testnet = {
   id: 0,
-  name: "Starknet Testnet",
+  name: "Starknet Sepolia",
   slug: "testnet",
   symbol: "STRK",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://testnet.starkscan.co",
+  explorer: "https://sepolia.starkscan.co/",
   rpcUrls: {
-    main: "https://starknet-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+    main: "https://starknet-sepolia.public.blastapi.io",
   },
   wssurl: "",
   tokens: {

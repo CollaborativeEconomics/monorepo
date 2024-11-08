@@ -4,6 +4,7 @@ import {
   chainConfig as chainConfigs,
 } from '@cfce/blockchain-tools';
 import type { AuthTypes, ChainSlugs } from '@cfce/types';
+import { useCallback } from 'react';
 import { walletLogin } from '../actions';
 import { BaseLoginButton } from './BaseLoginButton';
 
@@ -19,10 +20,11 @@ export function WalletLoginButton({
   className,
 }: WalletLoginButtonProps) {
   const chainConfig = chainConfigs[chain];
+  console.log('WalletLoginButton', { method, chain, className, chainConfig });
   const walletInterface =
     BlockchainManager[chain as keyof typeof BlockchainManager]?.client;
 
-  async function handleLogin() {
+  const handleLogin = useCallback(async () => {
     if (!walletInterface) {
       throw new Error(`No wallet interface found for chain: ${chain}`);
     }
@@ -38,12 +40,12 @@ export function WalletLoginButton({
       chainConfig,
       network,
     });
-  }
+  }, [method, chain, walletInterface, chainConfig]);
 
   return (
     <BaseLoginButton
       onClick={handleLogin}
-      icon={`/images/${chain}-wallet.svg`}
+      icon={chainConfig.icon}
       name={`${chainConfig.name} Wallet`}
       className={className}
     />

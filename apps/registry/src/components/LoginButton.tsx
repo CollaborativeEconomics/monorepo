@@ -1,6 +1,4 @@
-'use client';
-
-import { auth, signIn, signOut } from '@cfce/auth';
+import { auth, githubLogin, signIn, signOutAction } from '@cfce/auth';
 import React from 'react';
 
 export default async function LoginButton() {
@@ -9,18 +7,18 @@ export default async function LoginButton() {
     return (
       <>
         Signed in as {session.user?.email} <br />
-        <button onClick={() => signOut()} type="button">
-          Sign out
-        </button>
+        <form action={signOutAction}>
+          <button type="submit">Sign out</button>
+        </form>
       </>
     );
   }
   return (
     <>
       Not signed in <br />
-      <button onClick={() => signIn()} type="button">
-        Sign in
-      </button>
+      <form action={githubLogin}>
+        <button type="submit">Sign in</button>
+      </form>
     </>
   );
 }

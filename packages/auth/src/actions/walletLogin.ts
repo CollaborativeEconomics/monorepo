@@ -1,6 +1,6 @@
 "use server"
 import type { AuthTypes, ChainConfig } from "@cfce/types"
-import { signIn } from "next-auth/react"
+import { signIn } from "../nextAuth"
 import createNewUser from "./createNewUser"
 import fetchUserByWallet from "./fetchUserByWallet"
 

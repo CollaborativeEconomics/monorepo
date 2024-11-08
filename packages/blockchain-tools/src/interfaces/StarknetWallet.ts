@@ -51,6 +51,7 @@ class StarknetWallet extends ChainBaseClass {
     const wallet = await connect({
       modalMode: "alwaysAsk",
     })
+    console.log("Starknet Wallet", wallet)
     return wallet
   }
 

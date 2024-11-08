@@ -94,6 +94,4 @@ const getAppConfig = (): AppConfig => {
 
 const appConfig = getAppConfig()
 
-console.log({ appConfig, appId, env })
-
 export default appConfig

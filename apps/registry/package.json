@@ -28,7 +28,7 @@
     "formidable": "^3.5.1",
     "install": "^0.13.0",
     "mongodb": "6.9.0",
-    "next": "^15.0.1",
+    "next": "^15.0.3",
     "next-auth": "5.0.0-beta.25",
     "next-swagger-doc": "0.4.0",
     "next-themes": "latest",
