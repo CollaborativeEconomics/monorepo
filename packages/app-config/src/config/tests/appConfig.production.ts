@@ -18,8 +18,8 @@ appConfig.siteInfo = {
 
 // Override chains
 appConfig.chains = {
-  xinfin: {
-    slug: "xinfin",
+  xdc: {
+    slug: "xdc",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
@@ -36,7 +36,7 @@ appConfig.auth = ["metamask" as AuthTypes]
 appConfig.chainDefaults = {
   network: "mainnet",
   wallet: "metamask",
-  chain: "xinfin",
+  chain: "xdc",
   coin: "XDC",
 }
 

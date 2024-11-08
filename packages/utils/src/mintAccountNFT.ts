@@ -1,5 +1,5 @@
 // @ts-ignore turbo should error out if these are not set
-// const XinFinSDK = new XinFinServer({ walletSeed: process.env.XINFIN_MINTER_SECRET, network: process.env.XINFIN_NETWORK });
+// const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
 
 import { BlockchainManager } from "@cfce/blockchain-tools"
 
@@ -17,9 +17,9 @@ const uuidToUint256 = (uuid: string) => {
  */
 
 export async function mintAccountNFT(entityId: string) {
-  const address = process.env.XINFIN_WALLET_ADDRESS
-  const walletSeed = process.env.XINFIN_WALLET_SECRET
-  const contractId = process.env.XINFIN_NFT6551_CONTRACT // 0xcBbB500f1CF1D6C44B0d7C9ff40292f8a0E756D7
+  const address = process.env.XDC_WALLET_ADDRESS
+  const walletSeed = process.env.XDC_WALLET_SECRET
+  const contractId = process.env.XDC_NFT6551_CONTRACT // 0xcBbB500f1CF1D6C44B0d7C9ff40292f8a0E756D7
   const tokenId = uuidToUint256(entityId).toString()
   console.log({ contractId, address, tokenId })
 
@@ -27,7 +27,7 @@ export async function mintAccountNFT(entityId: string) {
     throw new Error("Missing wallet or contract info")
   }
 
-  const response = await BlockchainManager.xinfin.server.mintNFT721({
+  const response = await BlockchainManager.xdc.server.mintNFT721({
     address,
     tokenId,
     contractId,

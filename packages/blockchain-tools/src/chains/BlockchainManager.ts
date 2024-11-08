@@ -78,9 +78,9 @@ const BlockchainManager = {
     client: new MetaMaskWallet("tron", getNetwork("tron")),
     server: new Web3Server("tron", getNetwork("tron")),
   },
-  xinfin: {
-    client: new MetaMaskWallet("xinfin", getNetwork("xinfin")),
-    server: new Web3Server("xinfin", getNetwork("xinfin")),
+  xdc: {
+    client: new MetaMaskWallet("xdc", getNetwork("xdc")),
+    server: new Web3Server("xdc", getNetwork("xdc")),
   },
   xrpl: {
     client: new XummClient("xrpl", getNetwork("xrpl")),

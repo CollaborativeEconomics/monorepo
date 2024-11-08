@@ -63,7 +63,7 @@ export async function insertUserWallets() {
     {"userId":"33e56182-3d0b-42ff-80df-647e93e0471d","address":"rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp","chain":"XRPL"},
     {"userId":"41b0c159-ced0-4dbc-8e35-333f43839950","address":"rP1ZoX2N78958qPRHodB6K4rw6RiZGHTqG","chain":"XRPL"},
     {"userId":"5b4703f1-e290-4d6a-aa9b-c1e28a467f60","address":"rhJ6HKU4rLXGEkKHXLRoL7B61XvLz9JCem","chain":"XRPL"},
-    {"userId":"58743dcb-3fe0-4a9d-b90e-cec1c9c50116","address":"0x1ac546d21473062f3c3b16b6392a2ec26f4539f0","chain":"XinFin"}  ]})
+    {"userId":"58743dcb-3fe0-4a9d-b90e-cec1c9c50116","address":"0x1ac546d21473062f3c3b16b6392a2ec26f4539f0","chain":"XDC"}  ]})
   return res
 }
 
@@ -84,7 +84,7 @@ export async function insertWallets() {
     {"organizationId":"509bbc92-533d-4dbe-b025-22f34824623a","address":"0x1ac546d21473062f3c3b16b6392a2ec26f4539f0","chain":"Flare"},
     {"organizationId":"509bbc92-533d-4dbe-b025-22f34824623a","address":"0x1AC546d21473062F3c3B16B6392A2EC26F4539f0","chain":"Polygon"},
     {"organizationId":"509bbc92-533d-4dbe-b025-22f34824623a","address":"0x396AB8c38ae4321Ae96fb6d32903f51E66c3F748","chain":"Ethereum"},
-    {"organizationId":"509bbc92-533d-4dbe-b025-22f34824623a","address":"0xd6313419edc84e2991be9c44d85e76eb43912931","chain":"XinFin"},
+    {"organizationId":"509bbc92-533d-4dbe-b025-22f34824623a","address":"0xd6313419edc84e2991be9c44d85e76eb43912931","chain":"XDC"},
     {"organizationId":"509bbc92-533d-4dbe-b025-22f34824623a","address":"GCFED2OC5W2S46UYVUY6K3CDFXTCIY2FHU3RN2FM4P2WT224OYTTJXUL","chain":"Stellar"},
     {"organizationId":"509bbc92-533d-4dbe-b025-22f34824623a","address":"rP1ZoX2N78958qPRHodB6K4rw6RiZGHTqG","chain":"XRPL"},
     {"organizationId":"bc46afc0-7bc8-4e87-b136-d173a5e781b1","address":"GC6CMMEAZEJMBDUK7RZQWPEGJMG3JCBVW2YAHSNXAS2AOLBEYF4CMYR2","chain":"Stellar"},

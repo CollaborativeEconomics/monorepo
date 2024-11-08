@@ -100,8 +100,8 @@ const chainConfiguration: Chains = {
     icon: "/icons/trx.webp",
     networks: {},
   },
-  xinfin: {
-    slug: "xinfin",
+  xdc: {
+    slug: "xdc",
     name: "XDC",
     symbol: "XDC",
     icon: "/icons/xdc.webp",
@@ -553,9 +553,9 @@ chainConfiguration.tron.networks.testnet = {
   },
   wssurl: "",
 }
-chainConfiguration.xinfin.networks.mainnet = {
+chainConfiguration.xdc.networks.mainnet = {
   id: 50,
-  name: "XinFin Mainnet",
+  name: "XDC Mainnet",
   slug: "mainnet",
   symbol: "XDC",
   decimals: 18,
@@ -566,9 +566,9 @@ chainConfiguration.xinfin.networks.mainnet = {
   },
   wssurl: "",
 }
-chainConfiguration.xinfin.networks.testnet = {
+chainConfiguration.xdc.networks.testnet = {
   id: 51,
-  name: "XinFin Testnet",
+  name: "XDC Testnet",
   slug: "testnet",
   symbol: "XDC",
   decimals: 18,

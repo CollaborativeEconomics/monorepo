@@ -18,7 +18,7 @@ export default class Web3Server extends ChainBaseClass {
     console.log("GAS", Number.parseInt(gasPrice, 16), gasPrice)
     const checkGas = await this.fetchLedger("eth_estimateGas", [ { from: minter, to: contractId, data } ]) || '0x1e8480' // 2000000
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
-    const gasLimit = '0x' + Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16) // add 20% just in case
+    const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
     return { gasPrice, gasLimit }
   }
 
@@ -110,6 +110,7 @@ export default class Web3Server extends ChainBaseClass {
     const data = instance.methods.safeMint(address, tokenId).encodeABI()
     console.log("DATA", data)
     const gas = await this.getGasPrice(minter, contractId, data)
+    //gas.gasLimit = '0x1e8480' // 2,000,000 wei
     console.log("GAS", gas)
 
     const tx = {
@@ -313,6 +314,7 @@ export default class Web3Server extends ChainBaseClass {
   }
 
   async fetchLedger(method: string, params: unknown) {
+    console.log('FETCH', this.network.rpcUrls.main)
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)
     const opt = {

@@ -35,7 +35,7 @@ interface ChainSettings {
 function getSettings(net:string){
   const Settings:Record<string, ChainSettings> = {
     'mainnet': {
-      chain: 'xinfin',
+      chain: 'xdc',
       chainId: '50',
       rpcUrl: 'https://rpc.xdcrpc.com',
       registryAddress : '0x000000006551c19487814612e58fe06813775758',
@@ -44,7 +44,7 @@ function getSettings(net:string){
       baseSalt: '0x0000000000000000000000000000000000000000000000000000000000000001'
     },
     'testnet': {
-      chain: 'xinfin',
+      chain: 'xdc',
       chainId: '51',
       rpcUrl: 'https://erpc.apothem.network',
       registryAddress : '0x000000006551c19487814612e58fe06813775758',
@@ -96,7 +96,7 @@ async function getReceipt(txid:string){
 }
 
 // @ts-ignore turbo should error out if these are not set
-// const XinFinSDK = new XinFinServer({ walletSeed: process.env.XINFIN_WALLET_SECRET });
+// const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_WALLET_SECRET });
 const uuidToUint256 = (uuid: string) => {
   const hex = uuid.replace(/-/g, "")
   const bigIntUUID = BigInt(`0x${hex}`)
@@ -111,8 +111,8 @@ const uuidToUint256 = (uuid: string) => {
  * @param entityId UUID from registry db
  */
 export async function mintAccountNFT(entityId: string) {
-  const address    = process.env.XINFIN_WALLET_ADDRESS
-  const walletSeed = process.env.XINFIN_WALLET_SECRET
+  const address    = process.env.XDC_WALLET_ADDRESS
+  const walletSeed = process.env.XDC_WALLET_SECRET
   const contractId = settings.tokenContract
   const tokenId    = uuidToUint256(entityId).toString()
   console.log('MINTER', address)
@@ -124,7 +124,7 @@ export async function mintAccountNFT(entityId: string) {
     throw new Error("Missing wallet or contract info")
   }
 
-  const response = await BlockchainManager.xinfin.server.mintNFT721({
+  const response = await BlockchainManager.xdc.server.mintNFT721({
     address,
     tokenId,
     contractId,
@@ -140,7 +140,7 @@ export async function mintAccountNFT(entityId: string) {
 // Create token bound account from implementation
 export async function createAccount(tokenContract:string, tokenId:string, chainId:string, waitForReceipt=false){
   console.log('Creating account...')
-  const privateKey = process.env.XINFIN_WALLET_SECRET || ''
+  const privateKey = process.env.XDC_WALLET_SECRET || ''
   if(!privateKey){
     return { status: 'error', txid:'', address:'', error:'Private key not found' }
   }

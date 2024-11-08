@@ -2,7 +2,7 @@
   "extends": ["//"],
   "globalEnv": [
     "TURBO_ENV",
-    "XINFIN_WALLET_SECRET"
+    "XDC_WALLET_SECRET"
   ],
   "tasks": {
     "build": {

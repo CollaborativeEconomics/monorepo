@@ -33,7 +33,7 @@ export const ChainSlugs = [
   "starknet",
   "stellar",
   "tron",
-  "xinfin",
+  "xdc",
   "xrpl",
 ] as const
 export type ChainSlugs = (typeof ChainSlugs)[number]

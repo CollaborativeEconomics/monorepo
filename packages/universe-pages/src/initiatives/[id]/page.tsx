@@ -32,7 +32,7 @@ export default async function Initiative(props: {
   const stories = initiative.stories;
   console.log('STORIES', stories.length);
   // TODO: use default chain
-  const rate = await getCoinRate({ symbol: 'XDC', chain: 'xinfin' });
+  const rate = await getCoinRate({ symbol: 'XDC', chain: 'xdc' });
   // TODO: use carbon only if initiative has credits
   //const carbon = await getCarbon();
   let carbon = '0';

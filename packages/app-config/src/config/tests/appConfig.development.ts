@@ -20,7 +20,7 @@ const apis = {
 }
 
 const chains = {
-  xinfin: appConfig.chains.xinfin
+  xdc: appConfig.chains.xdc
 }
 
 const chainDefaults = {
