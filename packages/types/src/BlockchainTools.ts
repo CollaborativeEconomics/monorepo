@@ -72,6 +72,8 @@ export interface NetworkConfig {
   wssurl: string
   tokens?: Partial<Record<TokenTickerSymbol, TokenConfig>>
   networkPassphrase?: string
+  contracts?: Record<string,string>
+  wallet?: string
 }
 
 export const TokenTickerSymbol = [

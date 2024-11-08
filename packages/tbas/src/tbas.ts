@@ -2,7 +2,7 @@ import "server-only"
 import { type Address, getContract, createPublicClient, createWalletClient, http, custom, type TransactionReceipt } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { xdc, xdcTestnet } from 'viem/chains'
-import { abi721, abi6551registry, BlockchainManager } from '@cfce/blockchain-tools'
+import { abi721, abi6551registry as registryABI, BlockchainManager, chainConfig } from '@cfce/blockchain-tools'
 import { newTokenBoundAccount } from '@cfce/database'
 import type { EntityType } from '@cfce/types'
 
@@ -20,8 +20,18 @@ import type { EntityType } from '@cfce/types'
 
 */
 
+const chainSlug = 'xdc'
 const network = process.env.NEXT_PUBLIC_APP_ENV==='production' ? 'mainnet' : 'testnet'
+const settings = chainConfig.xdc.networks[network]
+console.log('SET', settings)
+const chainId = settings.id.toString()
+const registryAddress = (settings.contracts?.tba6551RegistryAddress || '0x0') as Address
+const implementationAddress = (settings.contracts?.tba6551ImplementationAddress || '0x0') as Address
+const tokenContract = settings.contracts?.tba721TokenContract || '0x0'
+const baseSalt = '0x0000000000000000000000000000000000000000000000000000000000000001' as Address
 
+
+/*
 interface ChainSettings {
   chain: string
   chainId: string
@@ -32,7 +42,7 @@ interface ChainSettings {
   baseSalt: string
 }
 
-function getSettings(net:string){
+function getSettings_OLD(net:string){
   const Settings:Record<string, ChainSettings> = {
     'mainnet': {
       chain: 'xdc',
@@ -55,8 +65,9 @@ function getSettings(net:string){
   }
   return Settings[net]
 }
+*/
 
-const settings = getSettings(network)
+
 
 function sleep(ms:number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -111,9 +122,9 @@ const uuidToUint256 = (uuid: string) => {
  * @param entityId UUID from registry db
  */
 export async function mintAccountNFT(entityId: string) {
-  const address    = process.env.XDC_WALLET_ADDRESS
   const walletSeed = process.env.XDC_WALLET_SECRET
-  const contractId = settings.tokenContract
+  const address    = settings.wallet
+  const contractId = tokenContract
   const tokenId    = uuidToUint256(entityId).toString()
   console.log('MINTER', address)
   console.log('CONTRACT', contractId)
@@ -149,17 +160,17 @@ export async function createAccount(tokenContract:string, tokenId:string, chainI
     const serverAccount = privateKeyToAccount(privateKey as Address)
     const contract = getContract({
       client,
-      abi: abi6551registry,
-      address: settings.registryAddress as Address
+      abi: registryABI,
+      address: registryAddress
     })
 
     // Simulate
     const { request } = await client.public.simulateContract({
       account: serverAccount,
-      address: settings.registryAddress as Address,
-      abi: abi6551registry,
+      address: registryAddress,
+      abi: registryABI,
       functionName: 'createAccount',
-      args: [settings.implementationAddress as Address, settings.baseSalt as Address, BigInt(chainId), tokenContract as Address, BigInt(tokenId)],
+      args: [implementationAddress, baseSalt, BigInt(chainId), tokenContract as Address, BigInt(tokenId)],
     })
 
     // Send to chain
@@ -189,16 +200,16 @@ export async function createAccount(tokenContract:string, tokenId:string, chainI
 
 // Get account address from contract
 export async function getAccount(tokenContract:string, tokenId:string, chainId:string){
-  console.log('Getting account...')
+  console.log('Getting account...', tokenContract, tokenId, chainId)
   const client = newClient()
   const contract = getContract({
     client: client.public,
-    abi: abi6551registry,
-    address: settings.registryAddress as Address
+    abi: registryABI,
+    address: registryAddress
   })
   const address = await contract.read.account([
-    settings.implementationAddress as Address,
-    settings.baseSalt as Address,
+    implementationAddress,
+    baseSalt,
     BigInt(chainId),
     tokenContract as Address,
     BigInt(tokenId)
@@ -210,11 +221,7 @@ export async function getAccount(tokenContract:string, tokenId:string, chainId:s
 
 export async function newAccount(entity_type:string, entity_id:string){
   try {
-    const chainName = settings.chain
-    const chainId = settings.chainId
-    const tokenContract = settings.tokenContract
-    // mint nft for tba in main 721 contract
-    const resMint = await mintAccountNFT(entity_id)
+    const resMint = await mintAccountNFT(entity_id) // mint nft for tba in main 721 contract
     console.log('NFT', resMint)
     const tokenId = resMint.tokenId
     console.log('TokenID', tokenId)
@@ -226,7 +233,7 @@ export async function newAccount(entity_type:string, entity_id:string){
     //const address = resTBA.address
     // add tba record to db
     if(resTBA){
-      const data = {entity_type, entity_id, account_address, chain: chainName, network}
+      const data = {entity_type, entity_id, account_address, chain: chainSlug, network}
       const resDB = await newTokenBoundAccount(data)
       console.log('DB', resDB)
     }
