@@ -1,3 +1,3 @@
-import { createAccount, getAccount, newAccount, mintAccountNFT } from "./tbas"
+import { createTBAccount, getTBAccount, newTBAccount, mintTBAccountNFT } from "./tbas"
 
-export { createAccount, getAccount, newAccount, mintAccountNFT }
+export { createTBAccount, getTBAccount, newTBAccount, mintTBAccountNFT }

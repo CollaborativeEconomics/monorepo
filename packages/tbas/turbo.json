@@ -3,13 +3,5 @@
   "globalEnv": [
     "TURBO_ENV",
     "XDC_WALLET_SECRET"
-  ],
-  "tasks": {
-    "build": {
-      "dependsOn": [
-        "@cfce/blockchain-tools#build",
-        "@cfce/types#build"
-      ]
-    }
-  }
+  ]
 }

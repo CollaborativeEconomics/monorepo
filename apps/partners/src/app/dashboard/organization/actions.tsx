@@ -4,7 +4,7 @@
 import { type Prisma, newOrganization } from '@cfce/database';
 import { revalidatePath } from 'next/cache';
 import { EntityType } from "@cfce/types"
-import { newAccount } from "@cfce/tbas"
+import { newTBAccount } from "@cfce/tbas"
 
 export async function createOrganizationAction(
   organization: Prisma.OrganizationCreateInput,
@@ -16,7 +16,7 @@ export async function createOrganizationAction(
   // Create TBA for organization
   if(tba && savedOrganization?.id){
     console.log('TBA will be created for organization ', savedOrganization.id)
-    const account = await newAccount(EntityType.organization, savedOrganization.id)
+    const account = await newTBAccount(EntityType.organization, savedOrganization.id)
     console.log('TBA created', account)
   }
 

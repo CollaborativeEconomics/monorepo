@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth/next"
 import { getSession } from "next-auth/react"
 import { authOptions } from "../auth/nextAuth"
 import { EntityType } from "@cfce/types"
-import { newAccount } from "@cfce/tbas"
+import { newTBAccount } from "@cfce/tbas"
 import { v7 as uuidv7 } from "uuid"
 
 async function authenticate() {
@@ -41,7 +41,7 @@ export async function createNewUser(data: User, tba = false) {
   const user = await newUser(data)
   if(tba && user?.id){
     console.log('TBA will be created for user ', user.id)
-    const account = await newAccount(EntityType.user, user.id)
+    const account = await newTBAccount(EntityType.user, user.id)
     console.log('TBA created', account)
   }
   return user
@@ -76,7 +76,7 @@ export async function createAnonymousUser(walletAddress: string, chain: Chain, n
   const user = await newUser(data)
   if(tba && user?.id){
     console.log('TBA will be created for user ', user.id)
-    const account = await newAccount(EntityType.user, user.id)
+    const account = await newTBAccount(EntityType.user, user.id)
     console.log('TBA created', account)
   }
   return user
