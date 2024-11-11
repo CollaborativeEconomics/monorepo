@@ -25,7 +25,12 @@ export default class Wallet {
   )
   provider = null
 
+  constructor() {
+    console.log("FREIGHT INIT")
+  }
+
   async init() {
+    //console.log('INIT...')
     if (await isConnected()) {
       return { success: true }
     }

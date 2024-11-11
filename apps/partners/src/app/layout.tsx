@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 import '~/styles/globals.css';
+import { SessionProvider } from 'next-auth/react';
 import Sidebar from '~/components/sidebar';
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <div className="flex">
-          <main className="flex-1">{children}</main>
+          <SessionProvider>
+            <main className="flex-1">{children}</main>
+          </SessionProvider>
         </div>
       </body>
     </html>

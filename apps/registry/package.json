@@ -21,7 +21,6 @@
     "@cfce/registry-hooks": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@cfce/auth": "workspace:*",
-    "@auth/prisma-adapter": "^2.7.2",
     "@prisma/client": "^5.19.1",
     "@vercel/blob": "0.24.1",
     "@vercel/postgres": "0.10.0",

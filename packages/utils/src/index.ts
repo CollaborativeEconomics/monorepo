@@ -1,5 +1,3 @@
-// import "@cfce/types/dist/declarations/next-auth.d.ts"
-
 export * from "./api"
 export { default as createStory } from "./createStory"
 export { default as localizedNumber } from "./localizedNumber"

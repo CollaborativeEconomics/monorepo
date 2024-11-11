@@ -177,7 +177,6 @@
     }
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.7.2",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",

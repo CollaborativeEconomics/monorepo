@@ -37,7 +37,7 @@ appConfig.chains = {
 }
 
 // Override auth
-appConfig.auth = ["freighter" as AuthTypes]
+appConfig.auth = ["metamask" as AuthTypes]
 
 // Override chainDefaults
 appConfig.chainDefaults = {
