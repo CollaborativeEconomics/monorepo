@@ -106,7 +106,8 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       console.log('CONNECT', connected)
       const data = {
         address,
-        amount: chainInterface.toBaseUnit(amount),
+        amount: amount, // amount conversion should be done on the wallet side
+        //amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || '',
       }
       const result = await chainInterface.sendPayment(data);

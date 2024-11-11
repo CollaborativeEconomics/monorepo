@@ -295,21 +295,21 @@ export default class Web3Server extends ChainBaseClass {
   // }
   async getTransactionInfo(txId: string) {
     const txInfo = await this.fetchLedger("eth_getTransactionByHash", [txId])
+    console.log('TX', txInfo)
 
     if (!txInfo || txInfo.error) {
       return { error: "Transaction not found" }
     }
 
-    const result = txInfo.result
     return {
-      id: result.hash,
-      hash: result.hash,
-      from: result.from,
-      to: result.to,
-      value: result.value,
-      fee: (BigInt(result.gas) * BigInt(result.gasPrice)).toString(),
-      timestamp: "", // Ethereum transactions do not directly provide a timestamp
-      blockNumber: Number.parseInt(result.blockNumber, 16),
+      id: txInfo.hash,
+      hash: txInfo.hash,
+      from: txInfo.from,
+      to: txInfo.to,
+      value: txInfo.value,
+      fee: (BigInt(txInfo.gas) * BigInt(txInfo.gasPrice)).toString(),
+      blockNumber: Number.parseInt(txInfo.blockNumber, 16),
+      timestamp: "" // Ethereum transactions do not directly provide a timestamp
     }
   }
 

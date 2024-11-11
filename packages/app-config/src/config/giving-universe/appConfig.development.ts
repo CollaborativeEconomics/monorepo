@@ -27,7 +27,9 @@ const chains = {
 
 const chainDefaults = {
   ...appConfig.chainDefaults,
+  chain: "xdc",
   network: "testnet",
+  wallet: "metamask"
 }
 
 const auth = appConfig.auth as AuthTypes[]

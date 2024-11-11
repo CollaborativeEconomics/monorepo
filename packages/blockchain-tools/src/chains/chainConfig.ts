@@ -511,6 +511,10 @@ chainConfiguration.stellar.networks.testnet = {
       icon: "icons/usdc.webp",
     },
   },
+  contracts: {
+    credits: "CAIRWEYKTLVRQBXQGYNLDUAKWIUV4NO6WPTCMVHH2BOMUUUBTXRJF43R",
+    NFToken: "CCUOIXOK4BIV2O7ANQ2JKUCMQS7JUQW3XISWNZTEQUIUGPHX7I5KV5UD"
+  }
 }
 chainConfiguration.stellar.networks.futurenet = {
   id: 0,
