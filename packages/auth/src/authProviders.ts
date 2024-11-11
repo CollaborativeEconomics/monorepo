@@ -3,11 +3,12 @@ import { chainConfig } from "@cfce/blockchain-tools"
 import type { Chain, User } from "@cfce/database/types"
 import type { AuthTypes } from "@cfce/types"
 import { registryApi } from "@cfce/utils"
+//import type { User } from "next-auth"
+import { createAnonymousUser } from "@cfce/utils"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import type { Provider } from "next-auth/providers/index"
-import { v7 as uuidv7 } from "uuid"
 
 interface Credentials {
   id: string
@@ -27,8 +28,6 @@ async function getUserByCredentials(credentials?: Credentials) {
     )
     let user = result.data
     console.log("USER", user)
-    const chain =
-      credentials?.chain ?? chainConfig[appConfig.chainDefaults.chain].name
     if (!user) {
       const uuid = uuidv7()
       const mail = `_${uuid.substr(0, 8)}@example.com`
@@ -53,6 +52,9 @@ async function getUserByCredentials(credentials?: Credentials) {
       }
       const result = await registryApi.post<User>("/users", userData)
       if (!result) {
+      const useTBA = true
+      const result = await createAnonymousUser(address, chain as Chain, network, useTBA)
+      if (!result.id) {
         return null
       }
       user = result.data

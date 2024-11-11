@@ -3,10 +3,7 @@ import React from 'react';
 import appConfig from '@cfce/app-config';
 import { getCoinRate } from '@cfce/blockchain-tools/server';
 import { getInitiativeById, getInitiatives } from '@cfce/database';
-import {
-  DonationForm,
-  NFTReceipt,
-} from '@cfce/universe-components/donationForm';
+import { DonationForm, NFTReceipt } from '@cfce/universe-components/donationForm';
 import { InitiativeCardCompact } from '@cfce/universe-components/initiative';
 import { OrganizationAvatar } from '@cfce/universe-components/organization';
 import { Separator } from '@cfce/universe-components/ui';

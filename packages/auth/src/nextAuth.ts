@@ -9,6 +9,7 @@ console.log("AUTH PROVIDERS", providers, appConfig.auth)
 
 const authOptions: NextAuthConfig = {
   // adapter: PrismaAdapter(prismaClient),
+  providers,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -17,7 +18,6 @@ const authOptions: NextAuthConfig = {
   // pages: {
   //   signIn: "/signin",
   // },
-  providers,
   callbacks: {
     async jwt(args) {
       const { token, user, account, profile, isNewUser, trigger, session } =
@@ -101,7 +101,8 @@ const authOptions: NextAuthConfig = {
       return session
     },
   },
-}
+} // satisfies NextAuthOptions
+// REF: https://next-auth.js.org/configuration/nextjs
 
 const nextAuth = NextAuth(authOptions)
 const { signIn, signOut } = nextAuth

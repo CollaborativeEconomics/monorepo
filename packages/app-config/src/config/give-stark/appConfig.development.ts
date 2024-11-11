@@ -4,7 +4,7 @@ import type {
   AuthTypes,
   ChainSlugs,
 } from "@cfce/types"
-import appConfig from "./appConfig.production"
+import appConfig from "./appConfig.staging"
 
 const siteInfo = {
   ...appConfig.siteInfo,

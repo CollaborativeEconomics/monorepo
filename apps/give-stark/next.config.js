@@ -61,6 +61,4 @@ const nextConfig = {
   webpack: webpackConfig,
 };
 
-// TODO: sentry is timing out, so I disabled it for now
-// module.exports = sentryfulConfig;
 module.exports = nextConfig;

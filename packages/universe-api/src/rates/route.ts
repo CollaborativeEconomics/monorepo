@@ -13,6 +13,6 @@ export async function GET(request: NextRequest) {
     console.log("Ticker:", symbol, chain, rate)
     return Response.json({ coin: symbol, rate })
   } catch (ex) {
-    console.error("Error in CMC ticker:", ex)
+    console.error("Error getting ticker:", ex)
   }
 }

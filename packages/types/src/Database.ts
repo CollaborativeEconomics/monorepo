@@ -20,3 +20,29 @@ export const ReceiptStatus = {
   pending: "Pending",
   rejected: "Rejected",
 } as const
+
+// Used for identifying entities in token bound accounts model
+export const EntityType = {
+  all: "all",
+  organization: "organization",
+  initiative: "initiative",
+  event: "event",
+  impact: "impact",
+  story: "story",
+  user: "user",
+} as const
+
+// Used in contracts model
+export type ContractType = {
+  "721": "721",
+  "1155": "1155",
+  "Credits": "Credits",
+  "CreditaHash": "CreditaHash",
+  "Factory": "Factory",
+  "NFTReceipt": "NFTReceipt",
+  "NFTReceiptHash": "NFTReceiptHash",
+  "TBAImplementation": "TBAImplementation",
+  "TBARegistry": "TBARegistry",
+  "V2E": "V2E",
+}
+

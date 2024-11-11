@@ -18,22 +18,8 @@ appConfig.siteInfo = {
 
 // Override chains
 appConfig.chains = {
-  starknet: {
-    slug: "starknet",
-    network: "mainnet",
-    contracts: {},
-    enabledWallets: ["argent"],
-    tokens: ["ETH", "STRK"],
-  },
-  xinfin: {
-    slug: "xinfin",
-    network: "mainnet",
-    contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-    },
-    enabledWallets: [],
-    tokens: [],
-  },
+  starknet: { ...appConfig.chains.starknet, network: "testnet" },
+  xdc: { ...appConfig.chains.xdc, network: "testnet" },
 } satisfies AppConfig["chains"]
 
 // Override auth

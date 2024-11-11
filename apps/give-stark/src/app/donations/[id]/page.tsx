@@ -3,9 +3,9 @@ import React from 'react';
 import { getDonationById } from '@cfce/database';
 import { OrganizationAvatar } from '@cfce/universe-components/organization';
 import { Card, CardContent } from '@cfce/universe-components/ui';
+import NotFound from '@cfce/universe-pages/not-found';
 import Image from 'next/image';
 import Link from 'next/link';
-import NotFound from '@cfce/universe-pages/not-found';
 
 export default async function Donation(props: {
   params: Promise<{ id: string }>;

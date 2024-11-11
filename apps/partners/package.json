@@ -14,6 +14,7 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/ipfs": "workspace:*",
+    "@cfce/tbas": "workspace:*",
     "@cfce/types": "workspace:*",
     "@cfce/universe-api": "workspace:*",
     "@cfce/universe-components": "workspace:*",

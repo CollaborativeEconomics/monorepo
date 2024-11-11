@@ -179,11 +179,14 @@ export default class Contract721 {
     contract: Contract,
     network: NetworkConfig,
   ) {
+    console.log("RESTORE CHAIN TOOLS", contract, network)
     const instance = contract.getFootprint()
     const account = await this.server.getAccount(signer.publicKey())
-    const wasmEntry = await this.server.getLedgerEntries(
-      this.getWasmLedgerKey(instance),
-    )
+    console.log("ACT", account)
+    const wasmKey = this.getWasmLedgerKey(instance)
+    console.log("WASM", wasmKey)
+    // @ts-ignore: why this type fails? Stellar docs broken?
+    const wasmEntry = await this.server.getLedgerEntries(wasmKey)
     const data = new SorobanDataBuilder()
       // @ts-ignore: types suck donkey balls
       .setReadWrite([instance, wasmEntry])
