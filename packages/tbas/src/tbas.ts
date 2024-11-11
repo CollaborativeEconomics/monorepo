@@ -88,7 +88,7 @@ function newClient(){
   return {public: publicClient, wallet: walletClient }
 }
  
-
+/*
 async function getReceipt(txid:string){
   console.log('Getting receipt for tx', txid)
   const client = newClient()
@@ -103,9 +103,10 @@ async function getReceipt(txid:string){
     console.log('OK', receipt?.status)
     console.log('REC', receipt)
     return receipt
-  }      
+  }
   return null
 }
+*/
 
 // @ts-ignore turbo should error out if these are not set
 // const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_WALLET_SECRET });
@@ -180,7 +181,7 @@ export async function createTBAccount(tokenContract:string, tokenId:string, chai
 
     // Tx receipt
     if(waitForReceipt){
-      const receipt = await getReceipt(txid)
+      const receipt = await client.public.waitForTransactionReceipt({hash:txid})
       if(!receipt){
         return { status: 'notfound', txid, address:'', error:'' }
       }
