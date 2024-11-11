@@ -22,6 +22,7 @@ import type {
 import { Connector, connect, disconnect } from "starknetkit"
 import { formatEther, parseEther } from "viem"
 import ChainBaseClass from "../chains/ChainBaseClass"
+import chainConfiguration from "../chains/chainConfig"
 import { ERC20 } from "../contracts/starknet/Abi"
 
 class StarknetWallet extends ChainBaseClass {
@@ -33,7 +34,7 @@ class StarknetWallet extends ChainBaseClass {
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
     this.provider = new RpcProvider({
-      nodeUrl: process.env.STARKNET_RPC_URI,
+      nodeUrl: chainConfiguration.starknet.networks[network].rpcUrls.main,
     })
   }
 

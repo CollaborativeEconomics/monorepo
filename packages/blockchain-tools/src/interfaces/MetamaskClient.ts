@@ -33,7 +33,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
   }
 
   async connect() {
-    console.log("Wallet starting...", this.network)
+    // console.log("Wallet starting...", this.network)
     //console.log('window.ethereum')
     try {
       this.metamask = window.ethereum
