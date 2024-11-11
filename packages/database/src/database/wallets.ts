@@ -1,7 +1,7 @@
 import "server-only"
+import { prismaClient } from ".."
 import type { Prisma, Wallet } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
-import { prismaClient } from ".."
 
 interface WalletQuery extends ListQuery {
   address?: string

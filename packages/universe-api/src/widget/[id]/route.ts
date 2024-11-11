@@ -1,5 +1,5 @@
 import { getCreditById, getInitiativeById } from "@cfce/database"
-
+import type { NextRequest } from "next/server"
 interface WidgetData {
   id: string
   organization: string
@@ -79,10 +79,10 @@ function NotFound(url: string) {
 }
 
 export async function GET(
-  request: Request,
-  context: { params: { id: string } },
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> },
 ) {
-  const id = context?.params?.id || ""
+  const id = (await context?.params)?.id || ""
   const requrl = new URL(request.url)
   const credit = await getCreditById(id)
   if (!credit || !credit?.initiativeId) {

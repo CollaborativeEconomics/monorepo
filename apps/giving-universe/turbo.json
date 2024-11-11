@@ -1,24 +1,15 @@
 {
   "extends": ["//"],
-  "globalEnv": [
-    "POSTGRES_PRISMA_URL",
-    "NEXT_PUBLIC_APP_ENV",
-    "NEXT_PUBLIC_APP_ID",
-    "MOBULA_API_KEY"
-  ],
   "tasks": {
     "build": {
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
-      "dependsOn": [
-        "@cfce/app-config#build",
-        "@cfce/blockchain-tools#build",
-        "@cfce/database#build",
-        "@cfce/registry-hooks#build",
-        "@cfce/universe-api#build",
-        "@cfce/universe-components#build",
-        "@cfce/universe-pages#build",
-        "@cfce/utils#build"
-      ]
+      "env": [
+        "POSTGRES_PRISMA_URL",
+        "NEXT_PUBLIC_APP_ENV",
+        "NEXT_PUBLIC_APP_ID",
+        "MOBULA_API_KEY"
+      ],
+      "dependsOn": ["^build"]
     }
   }
 }

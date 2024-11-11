@@ -18,20 +18,20 @@ appConfig.siteInfo = {
 
 // Override chains
 appConfig.chains = {
-  xinfin: {
-    slug: "xinfin",
+  xdc: {
+    slug: "xdc",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
     },
-    wallets: ["metamask"],
+    enabledWallets: ["metamask"],
     tokens: ["XDC"],
   },
   tron: {
     slug: "tron",
     network: "mainnet",
     contracts: {},
-    wallets: ["freighter"],
+    enabledWallets: ["freighter"],
     tokens: ["TRX", "USDT"],
   },
 }

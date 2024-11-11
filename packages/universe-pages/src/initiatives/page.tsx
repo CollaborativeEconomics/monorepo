@@ -5,12 +5,16 @@ import { InitiativeCard } from '@cfce/universe-components/initiative';
 import { SearchBar } from '@cfce/universe-components/search';
 import { Card } from '@cfce/universe-components/ui';
 
-export default async function Initiatives(props: {
-  searchParams: { query?: string; category?: string; location?: string };
+export default async function Initiatives({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    query?: string;
+    category?: string;
+    location?: string;
+  }>;
 }) {
-  const query = props.searchParams?.query || '';
-  const category = props.searchParams?.category || '';
-  const location = props.searchParams?.location || '';
+  const { query, category, location } = await searchParams;
   console.log('SEARCH', query, category, location);
   const data =
     (await getInitiatives({

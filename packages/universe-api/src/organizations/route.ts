@@ -1,10 +1,13 @@
 import { getOrganizations, newOrganization } from "@cfce/database"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
+import { headers } from 'next/headers'
 
 export async function GET(req: NextRequest) {
   try {
-    const apiKey = req.headers.get("x-api-key")
+    //const apiKey = req.headers.get('x-api-key')
+    const apiKey = (await headers()).get('x-api-key')
+
     const authorized = await checkApiKey(apiKey)
 
     if (!authorized) {
@@ -30,12 +33,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey)
-
-    if (!authorized) {
-      return NextResponse.json({ success: false }, { status: 403 })
-    }
+    // TODO: ENABLE THIS
+    //const apiKey = req.headers.get("x-api-key")
+    //const authorized = await checkApiKey(apiKey)
+    //if (!authorized) {
+    //  return NextResponse.json({ success: false }, { status: 403 })
+    //}
 
     const { wallets, ...organization } = await req.json()
     const result = await newOrganization({

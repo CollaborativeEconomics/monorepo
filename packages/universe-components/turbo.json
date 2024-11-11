@@ -1,13 +1,4 @@
 {
   "extends": ["//"],
-  "tasks": {
-    "build": {
-      "dependsOn": [
-        "@cfce/app-config#build",
-        "@cfce/blockchain-tools#build",
-        "@cfce/database#build",
-        "@cfce/utils#build"
-      ]
-    }
-  }
+  "tasks": {}
 }

@@ -6,12 +6,13 @@ import type {
   TokenTickerSymbol,
 } from "./BlockchainTools"
 
-type ContractType = "receiptMintbotERC721"
+type ContractType = "receiptMintbotERC721" | "credits"
 export interface AppChainConfig {
   slug: ChainSlugs
   network: string
   contracts: Partial<Record<ContractType, string>>
-  wallets: ClientInterfaces[]
+  wallet?: string
+  enabledWallets: ClientInterfaces[]
   tokens: TokenTickerSymbol[]
   destinationTag?: string
 }

@@ -35,14 +35,16 @@ interface DonationFormProps {
   }>;
 }
 
+function sleep(ms:number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default function DonationForm({ initiative }: DonationFormProps) {
   const contractId = initiative.contractcredit; // needed for CC contract
   const organization = initiative.organization;
   const [loading, setLoading] = useState(false);
   const [chainState, setChainState] = useAtom(chainAtom);
-  const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
-    chainState;
-
+  const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState;
   const [donationForm, setDonationForm] = useAtom(donationFormAtom);
   const { emailReceipt, name, email, amount } = donationForm;
   const usdAmount = useAtomValue(amountUSDAtom);
@@ -100,11 +102,15 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       if (!chainInterface?.sendPayment) {
         throw new Error('No chain interface');
       }
-      const result = await chainInterface.sendPayment({
+      const connected = await chainInterface.connect()
+      console.log('CONNECT', connected)
+      const data = {
         address,
         amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || '',
-      });
+      }
+      const result = await chainInterface.sendPayment(data);
+      console.log('PAYMENT RESULT', result)
       return result;
     },
     [chainInterface, selectedChain],
@@ -123,8 +129,9 @@ export default function DonationForm({ initiative }: DonationFormProps) {
         throw new Error(`Payment error: ${paymentResult.error ?? 'unknown'}`);
       }
 
-      const receiptResult = await mintAndSaveReceiptNFT({
-        donorName: name,
+      setButtonMessage('Minting NFT receipt...');
+      const data = {
+        donorName: name || 'Anonymous',
         email: emailReceipt ? email : undefined,
         organizationId: organization.id,
         initiativeId: initiative.id,
@@ -136,8 +143,13 @@ export default function DonationForm({ initiative }: DonationFormProps) {
           txId: paymentResult.txid ?? '',
           chain: selectedChain,
           token: selectedToken,
-        },
-      });
+        }
+      }
+      console.log('NFT', data)
+      await sleep(2000) // Wait for tx to confirm
+      console.log('SLEEP')
+      const receiptResult = await mintAndSaveReceiptNFT(data);
+      console.log('RESULT', receiptResult)
 
       if ('error' in receiptResult) {
         throw new Error(receiptResult.error ?? 'Failed to process receipt');

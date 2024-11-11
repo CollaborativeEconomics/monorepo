@@ -100,8 +100,8 @@ const chainConfiguration: Chains = {
     icon: "/icons/trx.webp",
     networks: {},
   },
-  xinfin: {
-    slug: "xinfin",
+  xdc: {
+    slug: "xdc",
     name: "XDC",
     symbol: "XDC",
     icon: "/icons/xdc.webp",
@@ -511,6 +511,10 @@ chainConfiguration.stellar.networks.testnet = {
       icon: "icons/usdc.webp",
     },
   },
+  contracts: {
+    credits: "CAIRWEYKTLVRQBXQGYNLDUAKWIUV4NO6WPTCMVHH2BOMUUUBTXRJF43R",
+    NFToken: "CCUOIXOK4BIV2O7ANQ2JKUCMQS7JUQW3XISWNZTEQUIUGPHX7I5KV5UD"
+  }
 }
 chainConfiguration.stellar.networks.futurenet = {
   id: 0,
@@ -553,31 +557,47 @@ chainConfiguration.tron.networks.testnet = {
   },
   wssurl: "",
 }
-chainConfiguration.xinfin.networks.mainnet = {
+chainConfiguration.xdc.networks.mainnet = {
   id: 50,
-  name: "XinFin Mainnet",
+  name: "XDC Mainnet",
   slug: "mainnet",
   symbol: "XDC",
   decimals: 18,
   gasprice: "12500000000",
-  explorer: "https://explorer.xinfin.network",
+  explorer: "https://xdcscan.com",
   rpcUrls: {
-    main: "https://rpc.xinfin.network",
+    main: "https://rpc.xdcrpc.com",
   },
   wssurl: "",
+  wallet: '0x1ac546d21473062f3c3b16b6392a2ec26f4539f0',
+  contracts: {
+    tba6551RegistryAddress : '0x000000006551c19487814612e58fe06813775758',
+    tba6551ImplementationAddress : '0x41c8f39463a868d3a88af00cd0fe7102f30e44ec',
+    tba721TokenContract: '0x0',
+    nft721TokenContract: '0x0',
+    nft1155TokenContract: '0x0',
+  }
 }
-chainConfiguration.xinfin.networks.testnet = {
+chainConfiguration.xdc.networks.testnet = {
   id: 51,
-  name: "XinFin Testnet",
+  name: "XDC Testnet",
   slug: "testnet",
   symbol: "XDC",
   decimals: 18,
   gasprice: "12500000000",
-  explorer: "https://explorer.apothem.network",
+  explorer: "https://testnet.xdcscan.com",
   rpcUrls: {
-    main: "https://rpc.apothem.network",
+    main: "https://erpc.apothem.network",
   },
   wssurl: "",
+  wallet: '0x1ac546d21473062f3c3b16b6392a2ec26f4539f0',
+  contracts: {
+    tba6551RegistryAddress : '0x000000006551c19487814612e58fe06813775758',
+    tba6551ImplementationAddress : '0x41c8f39463a868d3a88af00cd0fe7102f30e44ec',
+    tba721TokenContract: '0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7',
+    nft721TokenContract: '0xa3a3d70Ec57bC30472CD687F3D530b3431292989',
+    nft1155TokenContract: '0xc917ff4128525a65639d18f1d240a788081f022d',
+  }
 }
 chainConfiguration.xrpl.networks.mainnet = {
   id: 0,

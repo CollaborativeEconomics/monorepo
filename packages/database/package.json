@@ -5,16 +5,21 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prisma": "prisma generate",
-    "postinstall": "prisma generate",
-    "migrateDB": "prisma migrate dev",
-    "migrateDBToProd": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate-prod": "prisma migrate deploy",
     "test": "jest",
-    "build": "rm -rf dist && prisma generate && tsc"
+    "studio": "prisma studio",
+    "build": "rm -rf dist && prisma generate && tsc && node -r dotenv/config -e \"const url = process.env.POSTGRES_PRISMA_URL; console.log(url ? 'POSTGRES_PRISMA_URL length: ' + url.length : 'POSTGRES_PRISMA_URL is not set')\"",
+    "prebuild": "pnpm run db:generate",
+    "predev": "pnpm run db:generate",
+    "postinstall": "pnpm db:generate"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
     "@prisma/client": "^5.19.1",
+    "@vercel/postgres": "0.10.0",
     "prisma": "^5.19.1",
     "server-only": "^0.0.1"
   },
@@ -22,11 +27,12 @@
     "@cfce/types": "workspace:*",
     "@types/formidable": "^3.4.5",
     "@types/node": "^20.14.9",
+    "dotenv": "^16.4.5",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
     "typescript": "latest"
   },
   "prisma": {
-    "schema": "src/prisma/schema.prisma"
+    "schema": "prisma/schema.prisma"
   }
 }

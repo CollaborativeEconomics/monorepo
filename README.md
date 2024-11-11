@@ -6,10 +6,20 @@ This is the CFCE Monorepo.
  
  - Run `nvm use`, or use node 18+
  - Set up turbo`npm i -g turbo`
- - Set up pnpm `npm i -g pnpm`
+ - Set up pnpm `npm i -g pnpm` then `npx corepack up`
  - Copy the `.env.example` files to `.env.local` for each app
  - Run `pnpm install` from the root to install all packages
  - Run `turbo build` to build all apps and packages
+
+## Troubleshooting
+### Types not updating
+Try restarting the typescript server: `cmd + shift + p`, then type `restart Typescript server`
+
+### Clearing cache and stuff
+Run `pnpm delete-node-modules` to delete all the node modules in the monorepo, then run `pnpm install`
+Run `pnpm update-dependencies` to update all the dependencies in the monorepo
+Run `pnpm match-versions` to make sure all the versions are synced (especially important for typescript and jotai)
+
 
  You can run `turbo watch build` to automatically build packages as you change and update them so the changes appear immediately as you're developing.
 
@@ -29,6 +39,7 @@ This is the CFCE Monorepo.
 - `@cfce/app-config`: Static configuration for each app (see app-config/src/config/*)
 - `@cfce/database`: CRUD operations, Prisma definition, and types for DB interaction
 - `@cfce/registry-hooks`: Hook/action functions for interacting with the registry and automating tasks
+- `@cfce/tbas`: ERC-6551 Token Bound Accounts utility lib
 - `@cfce/types`: Shared type definitions
 - `@cfce/universe-api`: The registry API
 - `@cfce/universe-components`: Reusable components

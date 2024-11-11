@@ -6,11 +6,13 @@ import AddOrganizationForm from './AddOrganizationForm';
 
 export default async function Page() {
   const categories = await getCategories({});
+  const list = categories.map(it=>{ return {id:it.id, name:it.title} })
+  //console.log('CATS', list)
 
   return (
     <div className={styles.content}>
       <Title text="New Organization" />
-      <AddOrganizationForm categories={categories} />
+      <AddOrganizationForm categories={list} />
     </div>
   );
 }

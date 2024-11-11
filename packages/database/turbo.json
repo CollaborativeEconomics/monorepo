@@ -2,7 +2,6 @@
   "extends": ["//"],
   "globalEnv": [
     "POSTGRES_PRISMA_URL",
-    "DATABASE_URL",
     "IPFS_GATEWAY_URL",
     "IPFS_API_ENDPOINT",
     "IPFS_API_PINNING",
@@ -11,5 +10,11 @@
     "IPFS_DEFAULT_REGION",
     "IPFS_DEFAULT_BUCKET",
     "BLOB_READ_WRITE_TOKEN"
-  ]
+  ],
+  "tasks": {
+    "build": {
+      "env": ["POSTGRES_PRISMA_URL"],
+      "dependsOn": ["^build"]
+    }
+  }
 }

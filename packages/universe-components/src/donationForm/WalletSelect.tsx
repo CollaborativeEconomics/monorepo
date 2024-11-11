@@ -21,7 +21,7 @@ export function WalletSelect() {
   const wallets: WalletOption[] = React.useMemo(
     () =>
       getWalletConfiguration(
-        appConfig.chains[selectedChain]?.wallets ?? [],
+        appConfig.chains[selectedChain]?.enabledWallets ?? [],
       ).map(walletConfig => ({
         value: walletConfig.slug,
         label: walletConfig.name,

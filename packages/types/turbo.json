@@ -1,9 +1,10 @@
 {
   "extends": ["//"],
-  "globalEnv": [
-    "IPFS_API_KEY",
-    "IPFS_API_SECRET",
-    "BLOB_READ_WRITE_TOKEN",
-    "TURBO_ENV"
-  ]
+  "globalEnv": ["TURBO_ENV"],
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**/*.d.ts"],
+      "dependsOn": ["^build"]
+    }
+  }
 }

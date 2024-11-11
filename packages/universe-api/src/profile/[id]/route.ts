@@ -5,12 +5,13 @@ import {
   getUserById,
   setUser,
 } from "@cfce/database"
+import type { NextRequest } from "next/server"
 
 export async function GET(
-  request: Request,
-  context: { params: { id: string } },
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> },
 ) {
-  const id = context?.params?.id || ""
+  const id = (await context?.params)?.id || ""
   try {
     const user = (await getUserById(id)) || null
     if (!user) {
@@ -34,10 +35,10 @@ export async function GET(
 }
 
 export async function POST(
-  request: Request,
-  context: { params: { id: string } },
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> },
 ) {
-  const id = context?.params?.id || ""
+  const id = (await context?.params)?.id || ""
   try {
     const body = await request.json()
     console.log("USER", body)

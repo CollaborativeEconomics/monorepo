@@ -1,13 +1,13 @@
 import appConfig from "@cfce/app-config"
 import { chainConfig } from "@cfce/blockchain-tools"
-import { type Chain, getUserByWallet, newUser } from "@cfce/database"
+import { type Chain, type User, getUserByWallet } from "@cfce/database"
 import type { AuthTypes } from "@cfce/types"
-import type { User } from "next-auth"
+//import type { User } from "next-auth"
+import { createAnonymousUser } from "@cfce/utils"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import type { Provider } from "next-auth/providers/index"
-import { v7 as uuidv7 } from "uuid"
 
 interface Credentials {
   id: string
@@ -21,32 +21,14 @@ interface Credentials {
 async function getUserByCredentials(credentials?: Credentials) {
   console.log("CREDS", credentials)
   try {
-    let user: User | null = await getUserByWallet(credentials?.address || "")
+    const chain   = credentials?.chain ?? chainConfig[appConfig.chainDefaults.chain].name
+    const network = credentials?.network || 'testnet'
+    const address = credentials?.address || ''
+    let user: User | null = await getUserByWallet(address)
     console.log("USER", user)
-    const chain =
-      credentials?.chain ?? chainConfig[appConfig.chainDefaults.chain].name
     if (!user) {
-      const uuid = uuidv7()
-      const mail = `_${uuid.substr(0, 8)}@example.com`
-      const result = await newUser({
-        created: new Date(),
-        api_key: uuid,
-        name: "Anonymous",
-        description: "",
-        email: mail,
-        emailVerified: false,
-        image: "",
-        inactive: false,
-        wallet: credentials?.address || "",
-        wallets: {
-          create: [
-            {
-              chain: chain as Chain,
-              address: credentials?.address || "",
-            },
-          ],
-        },
-      })
+      const useTBA = true
+      const result = await createAnonymousUser(address, chain as Chain, network, useTBA)
       if (!result.id) {
         return null
       }

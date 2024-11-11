@@ -1,14 +1,34 @@
 import appConfig from "@cfce/app-config"
 import { getOrganizationByEmail, getUserByEmail } from "@cfce/database"
 import NextAuth, { type AuthOptions } from "next-auth"
+//import type { NextAuthOptions } from "next-auth"
 import { getAuthProviders } from "../authConfig"
 
 const providers = getAuthProviders(appConfig.auth)
 
-console.log({ providers })
+//console.log({ providers })
+
+/*
+export interface AuthOptions {
+  adapter?: Adapter;
+  callbacks?: Partial<CallbacksOptions>;
+  cookies?: Partial<CookiesOptions>;
+  debug?: boolean;
+  events?: Partial<EventCallbacks>;
+  jwt?: Partial<JWTOptions>;
+  logger?: Partial<LoggerInstance>;
+  pages?: Partial<PagesOptions>;
+  providers: Provider[];
+  secret?: string;
+  session?: Partial<SessionOptions>;
+  theme?: Theme;
+  useSecureCookies?: boolean;
+}
+*/
 
 const authOptions: AuthOptions = {
   // adapter: PrismaAdapter(prismaClient),
+  providers,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -17,7 +37,6 @@ const authOptions: AuthOptions = {
   // pages: {
   //   signIn: "/signin",
   // },
-  providers,
   callbacks: {
     async jwt(args) {
       const { token, user, account, profile, isNewUser, trigger, session } =
@@ -99,7 +118,8 @@ const authOptions: AuthOptions = {
       return session
     },
   },
-}
+} // satisfies NextAuthOptions
+// REF: https://next-auth.js.org/configuration/nextjs
 
 const nextAuth: ReturnType<typeof NextAuth> = NextAuth(authOptions)
 
