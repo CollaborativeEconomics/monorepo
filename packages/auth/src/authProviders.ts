@@ -100,36 +100,40 @@ const authorizeChain = async (
 }
 
 const authProviders: Record<AuthTypes, Provider> = {
-  argent: CredentialsProvider({
+  argent: {
     id: "Argent",
     name: "Argent",
+    type: "credentials",
     credentials: credentialsDefinition,
     authorize: authorizeChain,
-  }),
+  },
   // lobstr: CredentialsProvider({
   //   id: "Lobstr",
   //   name: "Stellar - Lobstr",
   //   credentials: credentialsDefinition,
   //   authorize: authorizeChain,
   // }),
-  freighter: CredentialsProvider({
+  freighter: {
     id: "Freighter",
     name: "Stellar - Freighter",
+    type: "credentials",
     credentials: credentialsDefinition,
     authorize: authorizeChain,
-  }),
-  xaman: CredentialsProvider({
+  },
+  xaman: {
     id: "Xaman",
     name: "XRPL - Xaman",
+    type: "credentials",
     credentials: credentialsDefinition,
     authorize: authorizeChain,
-  }),
-  metamask: CredentialsProvider({
-    id: "Metamask",
+  },
+  metamask: {
+    id: "metamask",
     name: "Metamask",
+    type: "credentials",
     credentials: credentialsDefinition,
     authorize: authorizeChain,
-  }),
+  },
   google: GoogleProvider({
     clientId: process.env.GOOGLE_CLIENT_ID ?? "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
@@ -163,5 +167,7 @@ const authProviders: Record<AuthTypes, Provider> = {
   })
 */
 }
+
+console.log("AUTH PROVIDERS", authProviders)
 
 export default authProviders

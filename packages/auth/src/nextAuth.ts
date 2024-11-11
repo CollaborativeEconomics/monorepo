@@ -5,6 +5,7 @@ import NextAuth, { type NextAuthResult, type NextAuthConfig } from "next-auth"
 import { getAuthProviders } from "./authConfig"
 
 const providers = getAuthProviders(appConfig.auth)
+console.log("AUTH PROVIDERS", providers, appConfig.auth)
 
 const authOptions: NextAuthConfig = {
   // adapter: PrismaAdapter(prismaClient),

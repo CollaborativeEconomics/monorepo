@@ -53,7 +53,7 @@ export default async function walletLogin(
     currency,
   })
   await signIn(method, {
-    redirect: false,
+    // redirect: false,
     callbackUrl: `/profile/${user.id}`,
     address: walletAddress,
     chainName,

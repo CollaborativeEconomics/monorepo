@@ -1,9 +1,4 @@
 {
   "extends": ["//"],
-  "globalEnv": ["BLOB_READ_WRITE_TOKEN", "TURBO_ENV"],
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"]
-    }
-  }
+  "globalEnv": ["BLOB_READ_WRITE_TOKEN", "TURBO_ENV"]
 }
