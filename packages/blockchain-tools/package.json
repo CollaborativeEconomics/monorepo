@@ -48,7 +48,7 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "tsc-alias": "^1.8.8",
-    "typescript": "*"
+    "typescript": "^5.4.3"
   },
   "dependencies": {
     "@avnu/gasless-sdk": "^0.1.6",

@@ -181,6 +181,10 @@ class StarknetWallet extends ChainBaseClass {
         apiKey: process.env.NEXT_PUBLIC_AVNU_KEY,
       }
 
+      if (!options.apiPublicKey || !options.apiKey) {
+        throw new Error("AVNU API keys are not defined in environment variables")
+      }
+
       const gasTokenPrice = await fetchGasTokenPrices(options)
       console.log("GasTokenPrice", gasTokenPrice)
 
@@ -205,6 +209,7 @@ class StarknetWallet extends ChainBaseClass {
         txid = await executeCalls(account, calls, {}, options)
       } catch (err) {
         console.error("Error executing calls", err)
+        throw err
       }
 
       console.log("TX", txid)
