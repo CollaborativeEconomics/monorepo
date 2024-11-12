@@ -208,6 +208,7 @@ export default async function Profile({
             <>
               <p>No wallets</p>
               <button type="button">Connect Wallet</button>
+              <LogoutButton />
             </>
           )}
         </div>

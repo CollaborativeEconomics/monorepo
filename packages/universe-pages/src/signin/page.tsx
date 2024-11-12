@@ -35,18 +35,18 @@ export default async function Signin() {
             Sign in
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="flex flex-col">
           {Object.entries(chains).map(([slug, { enabledWallets }], i) => {
             const chainConfig = chainConfigs[slug as ChainSlugs];
             return (
-              <div key={`auth-button-${slug}`}>
+              <div key={`auth-button-${slug} w-full flex`}>
                 {i > 0 && <Separator className="my-4" />}
                 {enabledWallets.map(wallet => (
                   <AuthButton
+                    className="w-full"
                     key={wallet}
                     method={wallet}
                     chain={slug as ChainSlugs}
-                    className="mb-2"
                   />
                 ))}
               </div>

@@ -11,18 +11,15 @@ interface AuthButtonProps {
 }
 
 export function AuthButton({ method, chain, className }: AuthButtonProps) {
-  // Validate chain requirement early
-  if (method !== 'github' && method !== 'google' && !chain) {
-    console.error('Chain is required for wallet login');
-    return null; // or render an error state
-  }
-
   switch (method) {
     case 'github':
       return <GithubLoginButton className={className} />;
     case 'google':
       return <GoogleLoginButton className={className} />;
-    default:
+    default: {
+      if (typeof chain === 'undefined') {
+        throw new Error('Chain is required for wallet login');
+      }
       return (
         <WalletLoginButton
           chain={chain}
@@ -30,5 +27,6 @@ export function AuthButton({ method, chain, className }: AuthButtonProps) {
           className={className}
         />
       );
+    }
   }
 }

@@ -50,19 +50,13 @@ export default async function walletLogin(
     throw new Error("User not found or created")
   }
 
-  try {
-    await signIn(method, {
-      // redirect: false,
-      callbackUrl: `/profile/${user.id}`,
-      address: walletAddress,
-      chainName,
-      chainId,
-      network,
-      currency,
-    })
-  } catch (error) {
-    throw new Error(
-      `Failed to sign in: ${error instanceof Error ? error.message : "Unknown error"}`,
-    )
-  }
+  await signIn(method, {
+    // redirect: false,
+    callbackUrl: `/profile/${user.id}`,
+    address: walletAddress,
+    chainName,
+    chainId,
+    network,
+    currency,
+  })
 }
