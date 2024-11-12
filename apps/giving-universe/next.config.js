@@ -48,9 +48,8 @@ const nextConfig = {
     ],
     domains: ['your-domain.com'], // Replace with your actual domain
   },
+  outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
-    instrumentationHook: true,
-    outputFileTracingRoot: path.join(process.cwd(), '../../'),
     esmExternals: true,
     optimizePackageImports: [
       '@cfce/universe-components',

@@ -4,7 +4,7 @@ import type {
   AuthTypes,
   ChainSlugs,
 } from "@cfce/types"
-import appConfig from "./appConfig.production"
+import appConfig from "./appConfig.staging"
 
 const siteInfo = {
   ...appConfig.siteInfo,
@@ -19,9 +19,10 @@ const apis = {
   },
 }
 
-const chains: AppConfig['chains'] = {
-  starknet: { ...appConfig.chains.starknet, network: 'testnet', contracts: {receiptMintbotERC721: '0x045d8da8227be85fec28cd4ba98b33bb1fba0408e1d78947a2d628c34e06ed4c'} } as AppChainConfig,
-  xinfin: { ...appConfig.chains.xinfin, network: 'testnet' } as AppChainConfig,
+const chains = {
+  xdc: appConfig.chains.xdc,
+  stellar: appConfig.chains.stellar,
+  xrpl: appConfig.chains.xrpl,
 }
 
 const chainDefaults = {

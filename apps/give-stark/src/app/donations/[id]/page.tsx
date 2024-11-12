@@ -1,2 +1,1 @@
-export { default } from '@cfce/universe-pages/donations';
-export const dynamic = 'force-dynamic';
+export { default } from '@cfce/universe-pages/donations/[id]';

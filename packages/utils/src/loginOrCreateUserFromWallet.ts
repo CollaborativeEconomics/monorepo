@@ -2,9 +2,8 @@ import { BlockchainManager, chainConfig } from "@cfce/blockchain-tools"
 import type { User } from "@cfce/database"
 import type { AuthTypes, ChainSlugs } from "@cfce/types"
 import { getDefaultStore } from "jotai"
-import { signIn } from "./auth/nextAuth"
-import { registryApi } from "./registryApi"
-// import { createNewUser, fetchUserByWallet } from "./server-actions/user"
+import { signIn } from "next-auth/react"
+import { createAnonymousUser, fetchUserByWallet } from "./server-actions/user"
 import { appSettingsAtom } from "./state"
 
 export default async function loginOrCreateUserFromWallet({
@@ -41,20 +40,10 @@ export default async function loginOrCreateUserFromWallet({
     console.log("got user", user)
     if (!user) {
       // server action
-      // user = await createNewUser(walletAddress, chainName)
-      const response = await registryApi.post<User>("/users", {
-        name: "Anonymous",
-        wallet: walletAddress,
-        wallets: {
-          create: {
-            address: walletAddress,
-            chain,
-          },
-        },
-      })
-      user = response.data
-      console.log("created user", user)
+      const useTBA = true
+      user = await createAnonymousUser(walletAddress, chainName, network, useTBA)
     }
+    console.log("UserId", user.id)
 
     getDefaultStore().set(appSettingsAtom, (draft) => {
       draft.walletAddress = walletAddress

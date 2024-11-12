@@ -3,9 +3,9 @@ import { auth } from "@cfce/utils"
 import { type NextRequest, NextResponse } from "next/server"
 import { v4 as uuidv4 } from "uuid"
 
-export async function PUT(req: NextRequest) {
+export async function PUT(req: NextRequest, res: NextResponse) {
   try {
-    const session = await auth()
+    const session = await getServerSession(authOptions) // TODO: FAILS TO BUILD
 
     if (!session || !session.user) {
       return NextResponse.json(

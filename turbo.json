@@ -23,5 +23,8 @@
     "//#format-and-lint:fix": {
       "cache": false
     }
+  },
+  "remoteCache": {
+    "enabled": false
   }
 }

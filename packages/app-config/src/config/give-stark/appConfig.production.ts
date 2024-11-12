@@ -21,12 +21,12 @@ appConfig.chains = {
   starknet: {
     slug: "starknet",
     network: "mainnet",
-    contracts: {receiptMintbotERC721: ''},
+    contracts: {},
     enabledWallets: ["argent"],
     tokens: ["ETH", "STRK"],
   },
-  xinfin: {
-    slug: "xinfin",
+  xdc: {
+    slug: "xdc",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
@@ -37,14 +37,14 @@ appConfig.chains = {
 } satisfies AppConfig["chains"]
 
 // Override auth
-appConfig.auth = ["argent" as AuthTypes]
+appConfig.auth = ["freighter" as AuthTypes]
 
 // Override chainDefaults
 appConfig.chainDefaults = {
   network: "mainnet",
-  wallet: "argent",
-  chain: "starknet",
-  coin: "STRK",
+  wallet: "xaman",
+  chain: "xrpl",
+  coin: "XRP",
 }
 
 export default appConfig

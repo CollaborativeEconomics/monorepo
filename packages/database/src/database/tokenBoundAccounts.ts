@@ -7,7 +7,7 @@ interface TBAQuery extends ListQuery {
   id?: string
 }
 
-export async function getAccount(entity_type:string, entity_id:string, chain:string, network:string): Promise<TokenBoundAccount|null> {
+export async function getTokenBoundAccount(entity_type:string, entity_id:string, chain:string, network:string): Promise<TokenBoundAccount|null> {
   const where = {
     entity_type,
     entity_id,
@@ -18,7 +18,7 @@ export async function getAccount(entity_type:string, entity_id:string, chain:str
   return data
 }
 
-export async function getAccounts(query:TBAQuery) {
+export async function getTokenBoundAccounts(query:TBAQuery) {
   const where = {}
   const skip = 0
   const take = 100
@@ -40,7 +40,7 @@ export async function getAccounts(query:TBAQuery) {
   return data
 }
 
-export async function newAccount(data:Prisma.TokenBoundAccountCreateInput) {
+export async function newTokenBoundAccount(data:Prisma.TokenBoundAccountCreateInput) {
   const result = await prismaClient.tokenBoundAccount.create({data})
   return result
 }

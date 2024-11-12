@@ -1,13 +1,35 @@
 import appConfig from "@cfce/app-config"
-import type { Organization, User } from "@cfce/database"
-import NextAuth, { type NextAuthResult, type NextAuthConfig } from "next-auth"
+import { getOrganizationByEmail, getUserByEmail } from "@cfce/database"
+import NextAuth, { type AuthOptions } from "next-auth"
+//import type { NextAuthOptions } from "next-auth"
 import { getAuthProviders } from "../authConfig"
 import { registryApi } from "../registryApi"
 
 const providers = getAuthProviders(appConfig.auth)
 
-const authOptions: NextAuthConfig = {
+//console.log({ providers })
+
+/*
+export interface AuthOptions {
+  adapter?: Adapter;
+  callbacks?: Partial<CallbacksOptions>;
+  cookies?: Partial<CookiesOptions>;
+  debug?: boolean;
+  events?: Partial<EventCallbacks>;
+  jwt?: Partial<JWTOptions>;
+  logger?: Partial<LoggerInstance>;
+  pages?: Partial<PagesOptions>;
+  providers: Provider[];
+  secret?: string;
+  session?: Partial<SessionOptions>;
+  theme?: Theme;
+  useSecureCookies?: boolean;
+}
+*/
+
+const authOptions: AuthOptions = {
   // adapter: PrismaAdapter(prismaClient),
+  providers,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -16,7 +38,6 @@ const authOptions: NextAuthConfig = {
   // pages: {
   //   signIn: "/signin",
   // },
-  providers,
   callbacks: {
     async jwt(args) {
       const { token, user, account, profile, isNewUser, trigger, session } =
@@ -100,12 +121,10 @@ const authOptions: NextAuthConfig = {
       return session
     },
   },
-}
+} // satisfies NextAuthOptions
+// REF: https://next-auth.js.org/configuration/nextjs
 
-const nextAuth = NextAuth(authOptions)
-const { signIn, signOut } = nextAuth
-// \/ \/ \/  some weird TS bug: https://github.com/nextauthjs/next-auth/issues/10568 \/ \/ \/
-const auth: NextAuthResult["auth"] = nextAuth.auth
-const handlers: NextAuthResult["handlers"] = nextAuth.handlers
+const nextAuth: ReturnType<typeof NextAuth> = NextAuth(authOptions)
 
-export { authOptions, auth, handlers, signIn, signOut }
+export { authOptions }
+export default nextAuth

@@ -1,3 +1,3 @@
-import { GET, POST } from "@cfce/universe-api/auth/[...nextauth]"
+import nextAuth from "@cfce/universe-api/auth/[...nextauth]"
 
-export { GET, POST }
+export { nextAuth as GET, nextAuth as POST }

@@ -2,10 +2,7 @@ import React from 'react';
 
 import { getCoinRate } from '@cfce/blockchain-tools/server';
 import { getInitiativeById, getInitiatives } from '@cfce/database';
-import {
-  DonationForm,
-  NFTReceipt,
-} from '@cfce/universe-components/donationForm';
+import { DonationForm, NFTReceipt } from '@cfce/universe-components/donationForm';
 import { InitiativeCardCompact } from '@cfce/universe-components/initiative';
 import { OrganizationAvatar } from '@cfce/universe-components/organization';
 import { Separator } from '@cfce/universe-components/ui';
@@ -34,7 +31,9 @@ export default async function Initiative(props: {
   const initiatives = (await getInitiatives({ orgId: organization.id })) ?? [];
   const stories = initiative.stories;
   console.log('STORIES', stories.length);
-  const rate = await getCoinRate({ symbol: 'XLM', chain: 'stellar' });
+  // TODO: use default chain
+  const rate = await getCoinRate({ symbol: 'XDC', chain: 'xdc' });
+  // TODO: use carbon only if initiative has credits
   //const carbon = await getCarbon();
   let carbon = '0';
   if (initiative.credits.length > 0) {
@@ -42,7 +41,7 @@ export default async function Initiative(props: {
   }
   console.log('RATE', rate);
   console.log('CARBON', carbon);
-  console.log('INITIATIVE', initiative);
+  //console.log('INITIATIVE', initiative);
 
   return (
     <main className="w-full bg-gradient-to-t from-slate-200 dark:from-slate-950 mt-12">
