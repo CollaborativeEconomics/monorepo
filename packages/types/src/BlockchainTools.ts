@@ -62,7 +62,7 @@ export interface NetworkConfig {
   name: string
   slug: Network
   symbol: string
-  decimals: number
+  decimals: bigint
   gasprice: string
   explorer: string
   rpcUrls: {
@@ -72,7 +72,7 @@ export interface NetworkConfig {
   wssurl: string
   tokens?: Partial<Record<TokenTickerSymbol, TokenConfig>>
   networkPassphrase?: string
-  contracts?: Record<string,string>
+  contracts?: Record<string, string>
   wallet?: string
 }
 
@@ -104,7 +104,7 @@ interface TokenConfig {
   contract: string
   name: string
   symbol: string
-  decimals: number
+  decimals: bigint
   icon: string
 }
 

@@ -397,7 +397,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     address,
     amount,
     memo,
-  }: { address: string; amount: number; memo: string }) {
+  }: { address: string; amount: bigint; memo: string }) {
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
@@ -412,12 +412,11 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
     console.log("GAS", Number.parseInt(gasPrice), gasPrice)
     const gas = numHex(210000)
-    const wei = numHex(amount * 10 ** 18)
     const method = "eth_sendTransaction"
     const tx = {
       from: this.connectedWallet,
       to: address,
-      value: wei,
+      value: amount,
       gasPrice,
       gas,
       data: "",
@@ -467,7 +466,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     memo,
   }: {
     address: string
-    amount: number
+    amount: bigint
     token: TokenTickerSymbol
     contract: string
     memo: string
@@ -483,14 +482,14 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
     console.log("GAS", Number.parseInt(gasPrice), gasPrice)
     const gas = numHex(210000)
-    const wei = numHex(amount * 10 ** 6) // usdc and usdt only have 6 decs
+    // const wei = numHex(amount * 10 ** 6) // usdc and usdt only have 6 decs
     const method = "eth_sendTransaction"
     if (!this.web3) {
       console.error("Payment error: Error getting web3 instance")
       return { success: false, error: "Error getting web3 instance" }
     }
     const ctr = new this.web3.eth.Contract(erc20abi, contract)
-    const data = ctr.methods.transfer(address, wei).encodeABI()
+    const data = ctr.methods.transfer(address, amount).encodeABI()
     console.log("Data", data)
     //const count = await this.web3.eth.getTransactionCount(this.connectedWallet)
     //const nonce = this.web3.utils.toHex(count)

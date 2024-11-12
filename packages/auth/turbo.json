@@ -1,5 +1,12 @@
 {
   "extends": ["//"],
+  "globalEnv": [
+    "TURBO_ENV",
+    "GITHUB_ID",
+    "GITHUB_SECRET",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET"
+  ],
   "tasks": {
     "build": {
       "outputs": ["dist/**/*.js", "dist/**/*.d.ts", "dist/**/*.map"],

@@ -51,12 +51,6 @@ async function getUserByCredentials(
         ...userData,
         createTBA,
       })
-      // if (!result) {
-      // const useTBA = true
-      // const result = await createAnonymousUser(address, chain as Chain, network, useTBA)
-      // if (!result.id) {
-      //   return null
-      // }
       user = result.data
     }
     const info = {

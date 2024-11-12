@@ -9,16 +9,27 @@ export function ScrollBackground({ children }: ScrollBackgroundProps) {
   const [scrollY, setScrollY] = useState(0);
 
   const handleScroll = useCallback(() => {
-    requestAnimationFrame(() => {
+    const frameId = requestAnimationFrame(() => {
       setScrollY(window.scrollY);
     });
+    return frameId;
   }, []);
 
   useEffect(() => {
     setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    let frameId: number;
+
+    const scrollListener = () => {
+      frameId = handleScroll();
+    };
+
+    window.addEventListener('scroll', scrollListener, { passive: true });
+
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', scrollListener);
+      if (frameId) {
+        cancelAnimationFrame(frameId);
+      }
     };
   }, [handleScroll]);
 

@@ -16,7 +16,10 @@ export default class Web3Server extends ChainBaseClass {
   async getGasPrice(minter: string, contractId: string, data: string) {
     const gasPrice = await this.fetchLedger("eth_gasPrice", [])
     console.log("GAS", Number.parseInt(gasPrice, 16), gasPrice)
-    const checkGas = await this.fetchLedger("eth_estimateGas", [ { from: minter, to: contractId, data } ]) || '0x1e8480' // 2000000
+    const checkGas =
+      (await this.fetchLedger("eth_estimateGas", [
+        { from: minter, to: contractId, data },
+      ])) || "0x1e8480" // 2000000
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
     const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
     return { gasPrice, gasLimit }
@@ -87,10 +90,15 @@ export default class Web3Server extends ChainBaseClass {
     address,
     tokenId,
     contractId,
-    walletSeed
-  }: { address: string; tokenId: string; contractId: string; walletSeed: string }) {
-    console.log('Server minting NFT721 to', address, 'tokenID', tokenId)
-    console.log('Chain', this.chain)
+    walletSeed,
+  }: {
+    address: string
+    tokenId: string
+    contractId: string
+    walletSeed: string
+  }) {
+    console.log("Server minting NFT721 to", address, "tokenID", tokenId)
+    console.log("Chain", this.chain)
     if (!this.web3) {
       console.error("Web3 not available")
       return { success: false, error: "Web3 not available" }
@@ -247,12 +255,11 @@ export default class Web3Server extends ChainBaseClass {
     walletSeed,
   }: {
     address: string
-    amount: number
+    amount: bigint
     memo: string
     walletSeed: string
   }) {
     console.log("Sending payment...")
-    const value = this.toBaseUnit(amount)
     if (!this.web3 || !walletSeed) {
       console.error("Web3 or wallet not available")
       return { success: false, error: "Web3 or wallet not available" }
@@ -264,7 +271,7 @@ export default class Web3Server extends ChainBaseClass {
     const tx = {
       from: source, // minter wallet
       to: address, // receiver
-      value: value, // value in wei to send
+      value: amount, // value in wei to send
       data: memoHex, // memo initiative id
     }
     console.log("TX", tx)
@@ -314,7 +321,7 @@ export default class Web3Server extends ChainBaseClass {
   }
 
   async fetchLedger(method: string, params: unknown) {
-    console.log('FETCH', this.network.rpcUrls.main)
+    console.log("FETCH", this.network.rpcUrls.main)
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)
     const opt = {

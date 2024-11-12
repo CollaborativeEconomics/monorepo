@@ -18,12 +18,15 @@
     "@cfce/utils": "workspace:*",
     "next-auth": "5.0.0-beta.25",
     "server-only": "^0.0.1",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "react-dom": "^18.3.1",
+    "lucide-react": "0.447.0"
   },
   "peerDependencies": {
     "@cfce/app-config": "workspace:*"
   },
   "devDependencies": {
+    "@types/react-dom": "^18.3.1",
     "@cfce/types": "workspace:*",
     "@types/formidable": "^3.4.5",
     "@types/node": "22.5.5",

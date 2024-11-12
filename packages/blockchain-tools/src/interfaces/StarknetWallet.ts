@@ -23,7 +23,7 @@ import { Connector, connect, disconnect } from "starknetkit"
 import { formatEther, parseEther } from "viem"
 import ChainBaseClass from "../chains/ChainBaseClass"
 import chainConfiguration from "../chains/chainConfig"
-import { ERC20 } from "../contracts/starknet/Abi"
+import { ERC20 } from "../contracts/starknet/ERC20Abi"
 
 class StarknetWallet extends ChainBaseClass {
   provider: RpcProvider
@@ -88,7 +88,7 @@ class StarknetWallet extends ChainBaseClass {
     address,
     amount,
     memo,
-  }: { address: string; amount: number; memo: string }) {
+  }: { address: string; amount: bigint; memo: string }) {
     try {
       const starknet = await this.getWallet()
       if (!starknet?.wallet) {
@@ -252,6 +252,7 @@ class StarknetWallet extends ChainBaseClass {
         return { error: "Transaction not found" }
       }
 
+      // TODO: use real values
       const result = {
         id: txid,
         hash: txid,

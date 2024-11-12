@@ -63,7 +63,7 @@ export default class XummClient extends XrplCommon {
     address,
     amount,
     memo,
-  }: { address: string; amount: number; memo?: string }): Promise<{
+  }: { address: string; amount: bigint; memo?: string }): Promise<{
     success: boolean
     error?: string
     txid?: string
@@ -75,7 +75,7 @@ export default class XummClient extends XrplCommon {
       const request: XummJsonTransaction = {
         TransactionType: "Payment",
         Destination: address,
-        Amount: String(this.toBaseUnit(amount)), // one million drops, 1 XRP
+        Amount: String(amount), // one million drops, 1 XRP
       }
       if (memo) {
         request.DestinationTag = memo

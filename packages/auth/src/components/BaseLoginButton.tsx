@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from './Button';
-
 interface BaseLoginButtonProps {
   icon: string;
   name: string;

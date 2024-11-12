@@ -1,4 +1,3 @@
-export * from "./api"
 export { default as createStory } from "./createStory"
 export { default as localizedNumber } from "./localizedNumber"
 export * from "./mailgun"

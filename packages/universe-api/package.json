@@ -194,12 +194,12 @@
     "@types/react": "latest",
     "next": "^15.0.3",
     "next-auth": "5.0.0-beta.25",
-    "next-themes": "latest",
+    "next-themes": "^0.4.3",
     "typescript": "latest"
   },
   "peerDependencies": {
     "next": "^15.0.3",
-    "next-themes": "latest",
+    "next-themes": "^0.4.3",
     "react": "^18.3.1"
   }
 }

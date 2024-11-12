@@ -24,11 +24,11 @@ export function WalletLoginButton({
   const walletInterface =
     BlockchainManager[chain as keyof typeof BlockchainManager]?.client;
 
-  const handleLogin = useCallback(async () => {
-    if (!walletInterface) {
-      throw new Error(`No wallet interface found for chain: ${chain}`);
-    }
+  if (!walletInterface) {
+    throw new Error(`No wallet interface found for chain: ${chain}`);
+  }
 
+  const handleLogin = useCallback(async () => {
     const { network, walletAddress } = await walletInterface.connect();
 
     if (!walletAddress) {
@@ -40,7 +40,7 @@ export function WalletLoginButton({
       chainConfig,
       network,
     });
-  }, [method, chain, walletInterface, chainConfig]);
+  }, [method, walletInterface, chainConfig]);
 
   return (
     <BaseLoginButton

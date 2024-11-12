@@ -22,10 +22,11 @@ export default abstract class ChainBaseClass {
   public abstract getTransactionInfo(
     txId: string,
   ): Promise<Transaction | { error: string }>
+  // TODO: improve types
   public abstract fetchLedger(method: unknown, params: unknown): unknown
   public async sendPayment?(params: {
     address: string
-    amount: number
+    amount: bigint
     memo: string
     walletSeed?: string
   }): Promise<{
@@ -36,7 +37,7 @@ export default abstract class ChainBaseClass {
   }>
   public async sendToken?(params: {
     address: string
-    amount: number
+    amount: bigint
     token: TokenTickerSymbol
     memo: string
     walletSeed?: string
@@ -88,14 +89,14 @@ export default abstract class ChainBaseClass {
   }): Promise<{ success: boolean; offerId?: string; error?: string }>
 
   // utility functions
-  fromBaseUnit(amount: number): number {
-    const wei = 10 ** this.network.decimals
-    return amount / wei
+  fromBaseUnit(amount: bigint): number {
+    const wei = 10n ** this.network.decimals
+    return Number(amount / wei)
   }
 
-  toBaseUnit(amount: number): number {
-    const wei = 10 ** this.network.decimals
-    return amount * wei
+  toBaseUnit(amount: number): bigint {
+    const wei = 10n ** this.network.decimals
+    return BigInt(amount) * wei
   }
 
   toHex(str: string) {

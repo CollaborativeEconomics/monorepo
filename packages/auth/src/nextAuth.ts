@@ -44,26 +44,47 @@ const authOptions: NextAuthConfig = {
       }
       // Handle organization and role-based logic
       if (token?.email) {
-        // const org = await getOrganizationByEmail(token.email)
-        const { data: org } = await registryApi.get<Organization>(
-          `/organizations?email=${token.email}`,
-        )
-        token.orgId = org?.id || token.orgId || ""
-        token.orgName = org?.name || ""
-        if (!org) {
-          // const user = await getUserByEmail(token.email)
-          const { data: user } = await registryApi.get<User>(
-            `/users?email=${token.email}`,
-          )
-          if (user && user.type === 9) {
-            if (!token.orgId) {
-              token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
+        try {
+          // Fetch organization data
+          const { data: org } = await registryApi
+            .get<Organization>(`/organizations?email=${token.email}`)
+            .catch((error) => {
+              console.error("Failed to fetch organization:", error)
+              return { data: null }
+            })
+
+          token.orgId = org?.id || token.orgId || ""
+          token.orgName = org?.name || ""
+
+          if (!org) {
+            try {
+              // Fetch user data
+              const { data: user } = await registryApi
+                .get<User>(`/users?email=${token.email}`)
+                .catch((error) => {
+                  console.error("Failed to fetch user:", error)
+                  return { data: null }
+                })
+
+              if (user && user.type === 9) {
+                if (!token.orgId) {
+                  token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
+                }
+                token.orgName = "Admin"
+                token.userRole = "admin"
+              } else if (token.userRole !== "admin") {
+                token.orgName = "User"
+              }
+            } catch (error) {
+              console.error("Error in user data fetch:", error)
+              // Set default values if API call fails
+              token.orgName = "User"
             }
-            token.orgName = "Admin"
-            token.userRole = "admin"
-          } else if (token.userRole !== "admin") {
-            token.orgName = "User"
           }
+        } catch (error) {
+          console.error("Error in JWT callback:", error)
+          // Set default values if API calls fail
+          token.orgName = "User"
         }
       }
       return token

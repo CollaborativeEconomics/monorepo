@@ -16,7 +16,6 @@ import {
 
 export default async function Signin() {
   const session = await auth();
-  console.log('session', session);
 
   // @ts-ignore: module augmentation is hard, TODO: fix this
   const userId = session?.user?.id;
@@ -26,7 +25,6 @@ export default async function Signin() {
   }
 
   const chains = appConfig.chains;
-  console.log({ chains });
   const chainConfigs = getChainConfiguration();
 
   return (
