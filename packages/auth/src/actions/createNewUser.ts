@@ -1,20 +1,11 @@
 "use server"
-import { type Chain, type User, getUserByWallet, newUser } from "@cfce/database"
-// import { auth } from "@cfce/auth"
-// async function authenticate() {
-//   const session = await auth()
-//   if (!session) {
-//     throw new Error("Unauthorized")
-//   }
-//   return session
-// }
-
-export async function fetchUserByWallet(
-  walletAddress: string,
-): Promise<User | null> {
-  // await authenticate()
-  return await getUserByWallet(walletAddress)
-}
+import {
+  type Chain,
+  type User,
+  newTokenBoundAccount,
+  newUser,
+} from "@cfce/database"
+import { EntityType } from "@cfce/types"
 
 export default async function createNewUser(
   walletAddress: string,
@@ -36,7 +27,10 @@ export default async function createNewUser(
   })
   if (tba) {
     console.log("TBA will be created for user ", user)
-    const tba = await newTokenBoundAccount(EntityType.user, user.id)
+    const tba = await newTokenBoundAccount({
+      entity_type: EntityType.user,
+      entity_id: user.id,
+    })
     console.log("TBA created", tba)
   }
   return user

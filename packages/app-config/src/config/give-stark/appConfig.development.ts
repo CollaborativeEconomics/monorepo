@@ -24,7 +24,7 @@ const chains: AppConfig["chains"] = {
     ...appConfig.chains.starknet,
     network: "testnet",
   } as AppChainConfig,
-  xinfin: { ...appConfig.chains.xinfin, network: "testnet" } as AppChainConfig,
+  xdc: { ...appConfig.chains.xdc, network: "testnet" } as AppChainConfig,
 }
 
 const chainDefaults = {

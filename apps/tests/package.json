@@ -19,6 +19,7 @@
     "@cfce/universe-components": "workspace:*",
     "@cfce/universe-pages": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "@cfce/auth": "workspace:*",
     "@types/react-dom": "latest",
     "@vercel/blob": "0.24.1",
     "cookies-next": "4.2.1",

@@ -37,7 +37,7 @@ export default async function walletLogin(
   let user = await fetchUserByWallet(walletAddress)
 
   if (user === null) {
-    user = await createNewUser(walletAddress, chainConfig.name)
+    user = await createNewUser(walletAddress, chainConfig.name, network, true)
   }
 
   if (!user) {
