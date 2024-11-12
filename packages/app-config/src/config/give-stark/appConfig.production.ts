@@ -21,7 +21,7 @@ appConfig.chains = {
   starknet: {
     slug: "starknet",
     network: "mainnet",
-    contracts: {},
+    contracts: {receiptMintbotERC721: ''},
     enabledWallets: ["argent"],
     tokens: ["ETH", "STRK"],
   },

@@ -269,7 +269,7 @@ async mintNFT({
       return {
         success: true,
         txId: mintTx.transaction_hash,
-        tokenId: tokenId
+        tokenId: tokenId.toString()
       };
     }
     

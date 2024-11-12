@@ -235,20 +235,20 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Mint NFT on chains
-    const receiptConctractsByChain: Array<{
+    const receiptContractsByChain: Array<{
       chain: ChainSlugs
       contract: string
     }> = []
     for (const chainSlug of Object.keys(appConfig.chains) as ChainSlugs[]) {
       const chain = appConfig.chains[chainSlug]
       if (chain?.contracts.receiptMintbotERC721) {
-        receiptConctractsByChain.push({
+        receiptContractsByChain.push({
           chain: chainSlug as ChainSlugs,
           contract: chain.contracts.receiptMintbotERC721,
         })
       }
     }
-    if (receiptConctractsByChain.length === 0) {
+    if (receiptContractsByChain.length === 0) {
       console.error("No receipt contracts found")
       return { success: false, error: "No receipt contracts found" }
     }
@@ -257,8 +257,7 @@ export async function mintAndSaveReceiptNFT({
     const walletSecret = getWalletSecret(chain)
     console.log("Chain", chain)
     // Revert if error persist
-    for (const chainContract of receiptConctractsByChain) {
-      console.log("ChainContract", chainContract)
+    for (const chainContract of receiptContractsByChain) {
       const mintResponse = BlockchainManager[chainContract.chain]?.server?.mintNFT?.({
         contractId: chainContract.contract,
         address: donorWalletAddress,
