@@ -258,6 +258,7 @@ export async function mintAndSaveReceiptNFT({
     console.log("Chain", chain)
     // Revert if error persist
     for (const chainContract of receiptConctractsByChain) {
+      console.log("ChainContract", chainContract)
       const mintResponse = BlockchainManager[chainContract.chain]?.server?.mintNFT?.({
         contractId: chainContract.contract,
         address: donorWalletAddress,

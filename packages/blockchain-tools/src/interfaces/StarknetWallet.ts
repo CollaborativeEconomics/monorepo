@@ -1,6 +1,6 @@
 import type { ChainSlugs, Network } from "@cfce/types"
 import { connect, disconnect, type Connector, type StarknetWindowObject } from "starknetkit"
-import {Account, constants, Contract, num, Provider } from "starknet"
+import {Account, constants, Contract, num, Provider, RpcProvider } from "starknet"
 import type { GetTransactionReceiptResponse, Call, AccountInterface } from "starknet"
 import {
   executeCalls,
@@ -19,6 +19,7 @@ import {
 import ChainBaseClass from "../chains/ChainBaseClass"
 import { parseEther, formatEther } from "viem"
 import { ERC20 } from "../contracts/starknet/Abi"
+import { nftABI } from "../contracts/starknet/nftABI"
 
 class StarknetWallet extends ChainBaseClass {
   provider: Provider
@@ -229,26 +230,58 @@ async fetchLedger(method: unknown, params: unknown): Promise<unknown> {
   }
 }
 
-async mintNFT(params: {
-    address: string;
-    uri: string;
-    taxon?: number;
-    transfer?: boolean;
-    contractId: string;
-    walletSeed: string;
-  }) {
-    console.log(
-      'Minting NFT, wait...',
-      params.address,
-      params.uri,
-      params.taxon,
-      params.transfer,
-      params.contractId,
-      params.walletSeed
-    );
-
-    return { success: true };
+async mintNFT({
+  address,
+  uri,
+  contractId,
+  walletSeed
+}: {
+  address: string;
+  uri: string;
+  contractId: string;
+  walletSeed: string;
+}) {
+  console.log(this.chain, "server minting NFT to", address, uri);
+  
+  try {
+    const provider = new RpcProvider({
+      nodeUrl: process.env.STARKNET_RPC_URI || ''
+    });
+    
+    const minterAddress = process.env.STARKNET_MINTER_ADDRESS;
+    if (!minterAddress || !walletSeed) {
+      throw new Error("Minter address or wallet seed not available");
+    }
+    
+    const account = new Account(provider, minterAddress, walletSeed);
+    
+    const contract = new Contract(nftABI, contractId, provider);
+    contract.connect(account);
+    
+    // Generate unique token ID
+    const tokenId = Math.floor(Math.random() * 1e16);
+    
+    const mintTx = await contract.safe_mint(address, tokenId, uri);
+    const receipt = await provider.waitForTransaction(mintTx.transaction_hash);
+    console.log("Receipt", receipt)
+    
+    if (receipt.isSuccess()) {
+      return {
+        success: true,
+        txId: mintTx.transaction_hash,
+        tokenId: tokenId
+      };
+    }
+    
+    return { success: false, error: "Transaction failed" };
+  } catch (error) {
+    console.error("Mint error:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Unknown error during minting" 
+    };
   }
+}
 
   async getBalance() {
     if (!this.connectedWallet) {
@@ -264,3 +297,7 @@ async mintNFT(params: {
 }
 
 export default StarknetWallet
+
+function randomNumber(arg0: number) {
+  throw new Error("Function not implemented.")
+}

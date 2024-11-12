@@ -42,7 +42,7 @@ const getFallbackAddress = (chainName?: string): string => {
   const fallbackAddresses: Record<string, string> = {
     'Ethereum': '0x1234567890123456789012345678901234567890',
     'Polygon': '0x1234567890123456789012345678901234567890',
-    'Starknet': '0x05a12d15f93dcbddec0653fc77dd96713fb154667f2384a51d4c10405b251ccf',
+    'Starknet': '0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3',
   };
   
   return chainName ? fallbackAddresses[chainName] || '' : '';
