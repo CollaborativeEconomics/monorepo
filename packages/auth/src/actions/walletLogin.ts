@@ -1,7 +1,8 @@
 "use server"
+import type { Chain } from "@cfce/database"
 import type { AuthTypes, ChainConfig } from "@cfce/types"
 import { signIn } from "../nextAuth"
-import createNewUser from "./createNewUser"
+import { createAnonymousUser } from "./createNewUser"
 import fetchUserByWallet from "./fetchUserByWallet"
 
 export default async function walletLogin(
@@ -37,28 +38,31 @@ export default async function walletLogin(
   let user = await fetchUserByWallet(walletAddress)
 
   if (user === null) {
-    user = await createNewUser(walletAddress, chainConfig.name, network, true)
+    user = await createAnonymousUser({
+      walletAddress,
+      chain: chainConfig.name as Chain,
+      network,
+      tba: true,
+    })
   }
 
   if (!user) {
     throw new Error("User not found or created")
   }
 
-  console.log("wallet signin", method, {
-    callbackUrl: `/profile/${user.id}`,
-    address: walletAddress,
-    chainName,
-    chainId,
-    network,
-    currency,
-  })
-  await signIn(method, {
-    // redirect: false,
-    callbackUrl: `/profile/${user.id}`,
-    address: walletAddress,
-    chainName,
-    chainId,
-    network,
-    currency,
-  })
+  try {
+    await signIn(method, {
+      // redirect: false,
+      callbackUrl: `/profile/${user.id}`,
+      address: walletAddress,
+      chainName,
+      chainId,
+      network,
+      currency,
+    })
+  } catch (error) {
+    throw new Error(
+      `Failed to sign in: ${error instanceof Error ? error.message : "Unknown error"}`,
+    )
+  }
 }

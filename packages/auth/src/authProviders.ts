@@ -1,3 +1,4 @@
+import type { Prisma } from "@cfce/database"
 import type { Chain, User } from "@cfce/database/types"
 import type { AuthTypes } from "@cfce/types"
 import { registryApi } from "@cfce/utils"
@@ -15,14 +16,10 @@ interface Credentials {
   currency: string
 }
 
-async function getUserByCredentials({
-  id: userId,
-  address,
-  chain,
-  chainId,
-  network,
-  currency,
-}: Credentials) {
+async function getUserByCredentials(
+  { id: userId, address, chain, chainId, network, currency }: Credentials,
+  createTBA = false,
+) {
   try {
     // let user: User | null = await getUserByWallet(credentials?.address || "")
     const result = await registryApi.get<User>(`/users?wallet=${address}`)
@@ -30,8 +27,8 @@ async function getUserByCredentials({
     console.log("USER", user)
     if (!user) {
       const uuid = uuidv7()
-      const mail = `_${uuid.substr(0, 8)}@example.com`
-      const userData = {
+      const mail = `${userId}@cfce.io`
+      const userData: Prisma.UserCreateInput = {
         created: new Date(),
         api_key: uuid,
         name: "Anonymous",
@@ -50,7 +47,10 @@ async function getUserByCredentials({
           ],
         },
       }
-      const result = await registryApi.post<User>("/users", userData)
+      const result = await registryApi.post<User>("/users", {
+        ...userData,
+        createTBA,
+      })
       // if (!result) {
       // const useTBA = true
       // const result = await createAnonymousUser(address, chain as Chain, network, useTBA)
