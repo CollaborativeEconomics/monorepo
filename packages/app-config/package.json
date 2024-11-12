@@ -12,6 +12,6 @@
     "@cfce/types": "workspace:*",
     "@types/node": "22.5.5",
     "ts-node": "^10.9.2",
-    "typescript": "latest"
+    "typescript": "^5.6.2"
   }
 }

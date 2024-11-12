@@ -59,7 +59,7 @@
     "@types/luxon": "^3.4.2",
     "@types/react": "latest",
     "tsc-alias": "^1.8.8",
-    "typescript": "latest"
+    "typescript": "^5.6.2"
   },
   "peerDependencies": {
     "next": "^15.0.3",
