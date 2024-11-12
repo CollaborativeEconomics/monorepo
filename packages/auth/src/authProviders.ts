@@ -170,6 +170,6 @@ const authProviders: Record<AuthTypes, Provider> = {
 */
 }
 
-console.log("AUTH PROVIDERS", authProviders)
+console.log("Configured AUTH PROVIDERS:", Object.keys(authProviders))
 
 export default authProviders

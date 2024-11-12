@@ -36,6 +36,7 @@ export default function VideoBackground() {
   useEffect(() => {
     if (!mounted) return;
 
+    setIsLoading(true);
     const newVideo = videos.find(v => v.type === theme) || videos[1];
     setCurrentVideo(newVideo);
   }, [theme, mounted]);
@@ -71,8 +72,11 @@ export default function VideoBackground() {
           onError={handleVideoError}
           className={cn(
             'absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000',
-            currentVideo?.type === video.type ? 'opacity-100' : 'opacity-0',
-            isLoading && 'opacity-0',
+            isLoading
+              ? 'opacity-0'
+              : currentVideo?.type === video.type
+              ? 'opacity-100'
+              : 'opacity-0',
           )}
         />
       ))}
