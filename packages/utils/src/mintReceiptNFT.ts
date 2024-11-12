@@ -5,11 +5,13 @@ import { BlockchainManager } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
+  type Chain,
   getInitiativeById,
   getNFTbyTokenId,
   getOrganizationById,
   getUserByWallet,
   newNftData,
+  newUser,
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
@@ -93,7 +95,7 @@ export async function mintAndSaveReceiptNFT({
       return { success: false, error: "Invalid initiative ID" }
     }
 
-    if (!donorName || typeof donorName !== "string") {
+    if (typeof donorName !== "string") {
       return { success: false, error: "Invalid donor name" }
     }
 
@@ -132,10 +134,26 @@ export async function mintAndSaveReceiptNFT({
 
     console.log("Donor", donorWalletAddress)
     const user = await getUserByWallet(donorWalletAddress)
-    const userId = user?.id || ""
+    let userId = user?.id || ""
+    
     if (!userId) {
       console.log("ERROR", "User not found")
-      throw new Error("User not found")
+      console.log("Creating new user for wallet", donorWalletAddress)
+      const newUserData = {
+        name: donorName,
+        email: email || undefined,
+        wallets: {
+          create: [{
+            address: donorWalletAddress,
+            chain: chain.charAt(0).toUpperCase() + chain.slice(1) as Chain
+          }]
+        }
+      }
+      const createdUser = await newUser(newUserData)
+      if (!createdUser?.id) {
+        throw new Error("Failed to create user")
+      }
+      userId = createdUser.id
     }
 
     const initiative = await getInitiativeById(initiativeId)
@@ -237,6 +255,7 @@ export async function mintAndSaveReceiptNFT({
 
     let tokenId = ""
     const walletSecret = getWalletSecret(chain)
+    console.log("Chain", chain)
     // Revert if error persist
     for (const chainContract of receiptConctractsByChain) {
       const mintResponse = BlockchainManager[chainContract.chain]?.server?.mintNFT?.({
@@ -261,6 +280,8 @@ export async function mintAndSaveReceiptNFT({
     }
     const offerId = "" // no need for offers in soroban
     // #endregion
+
+    console.log("TOKEN ID", tokenId);
 
     // #region: Save data to DB
     const data = {
