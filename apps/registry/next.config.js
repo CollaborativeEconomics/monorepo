@@ -22,10 +22,10 @@ function webpack(config, { isServer }) {
 const nextConfig = {
   productionBrowserSourceMaps: true,
   // output: 'standalone',
+  outputFileTracingRoot: join(process.cwd(), '../../'),
   experimental: {
     // instrumentationHook: true,
     serverSourceMaps: true,
-    outputFileTracingRoot: join(process.cwd(), '../../'),
     // The below packages have barrel files that cause server/client mismatch errors
     optimizePackageImports: [
       '@cfce/universe-components',

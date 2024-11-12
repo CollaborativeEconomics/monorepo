@@ -1,4 +1,4 @@
-import type { AppConfig } from "@cfce/types"
+import type { AppConfig, ClientInterfaces } from "@cfce/types"
 
 const siteInfo: AppConfig["siteInfo"] = {
   title: "Name",
@@ -18,9 +18,9 @@ const apis: AppConfig["apis"] = {
     gateway: "https://ipfs.filebase.io/ipfs/",
     pinning: "https://api.filebase.io/v1/ipfs",
     buckets: {
-      nfts: "cfce-give-nfts",
-      avatars: "cfce-profiles",
-      media: "cfce-media",
+      nfts: "kuyawa-public", // TODO: revert back to cfce-give-nfts
+      avatars: "kuyawa-avatars", // cfce-profiles
+      media: "kuyawa-media", // cfce-media
     },
   },
 }

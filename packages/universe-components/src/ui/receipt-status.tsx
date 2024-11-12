@@ -29,6 +29,7 @@ interface WrapperProps {
 }
 
 function ReceiptBodyBuilder(status: string): React.JSX.Element {
+  console.log('STATUS',status)
   switch (status) {
     case 'Claim':
       return (
@@ -40,6 +41,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
         />
       );
     case 'Pending':
+    case 'READY':     // Why caps? Where is it being set?
       return (
         <ReceiptStatusBody
           className="bg-gray-400" //
@@ -59,6 +61,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
         />
       );
     case 'Minted':
+    case 'MINTED':
       return (
         <ReceiptStatusBody
           className="bg-green-400"
