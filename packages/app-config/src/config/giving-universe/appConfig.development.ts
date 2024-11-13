@@ -8,11 +8,14 @@ const appConfig: AppConfig = {
 // Override siteInfo
 appConfig.siteInfo = {
   ...appConfig.siteInfo,
-  title: "Tests",
-  description: "Tests",
-  logo: {
-    light: "/newui/logo.svg",
-    dark: "/newui/logoWhite.svg",
+  title: "Giving Universe (Development)",
+  description: "Make tax-deductible donations with crypto",
+}
+
+appConfig.apis = {
+  ...appConfig.apis,
+  registry: {
+    apiUrl: "https://registry.staging.cfce.io/api",
   },
 }
 
@@ -27,7 +30,9 @@ appConfig.chains = {
     },
     enabledWallets: ["metamask"],
     tokens: ["XDC"],
-  }
+  },
+  stellar: appConfig.chains.stellar,
+  xrpl: appConfig.chains.xrpl,
 }
 
 // Override auth
@@ -43,57 +48,3 @@ appConfig.chainDefaults = {
 
 export default appConfig
 
-
-
-/*
-import type {
-  AppChainConfig,
-  AppConfig,
-  AuthTypes,
-  ChainSlugs,
-} from "@cfce/types"
-import appConfig from "./appConfig.staging"
-
-const siteInfo = {
-  ...appConfig.siteInfo,
-  title: "Giving Universe (Development)",
-  description: "Make tax-deductible donations with crypto",
-}
-
-const apis = {
-  ...appConfig.apis,
-  registry: {
-    apiUrl: "https://registry.staging.cfce.io/api",
-  },
-}
-
-const chains = {
-  xdc: appConfig.chains.xdc,
-  stellar: appConfig.chains.stellar,
-  xrpl: appConfig.chains.xrpl,
-}
-
-//const chainDefaults = {
-//  chain: "xdc",
-//  coin: "XDC",
-//  network: "testnet",
-//  wallet: "metamask",
-//}
-
-const chainDefaults = {
-  ...appConfig.chainDefaults,
-  network: "testnet",
-}
-
-const auth = appConfig.auth as AuthTypes[]
-
-const appConfigStaging: AppConfig = {
-  apis,
-  auth,
-  chains,
-  chainDefaults,
-  siteInfo,
-}
-
-export default appConfigStaging
-*/

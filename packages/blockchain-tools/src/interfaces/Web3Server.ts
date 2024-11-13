@@ -8,6 +8,7 @@ import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
 
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 function getObjectValue(obj:any, prop:string) {
   return prop.split('.').reduce((r, val) => { return r ? r[val] : undefined; }, obj)
 }
@@ -77,6 +78,7 @@ export default class Web3Server extends ChainBaseClass {
       //console.log("LOGS.1", JSON.stringify(info?.logs[1].topics, null, 2))
       //tokenNum = ` #${Number.parseInt(Buffer.from(_get(info, "logs.0.topics.3", Buffer.alloc(0))).toString("hex"), 16)}` // Doesn't work as expected
       //const nftSeq = Number.parseInt((info?.logs[0]?.topics[3] || 0).toString(),16)
+      //const nftSex = info?.logs?.[0]?.topics?.[3]
       const nftSex = getObjectValue(info, 'logs.0.topics.3')
       const nftSeq = Number.parseInt(nftSex,16)
       console.log('SEQ', nftSeq, nftSex)

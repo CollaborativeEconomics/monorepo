@@ -18,9 +18,9 @@ const apis: AppConfig["apis"] = {
     gateway: "https://ipfs.filebase.io/ipfs/",
     pinning: "https://api.filebase.io/v1/ipfs",
     buckets: {
-      nfts: "kuyawa-public", // TODO: revert back to cfce-give-nfts
-      avatars: "kuyawa-avatars", // cfce-profiles
-      media: "kuyawa-media", // cfce-media
+      nfts: "cfce-give-nfts",
+      avatars: "cfce-profiles",
+      media: "cfce-media",
     },
   },
 }
