@@ -1,4 +1,4 @@
-const { withSentryConfig } = require('@sentry/nextjs');
+//const { withSentryConfig } = require('@sentry/nextjs');
 const { default: next } = require('next');
 const path = require('node:path');
 
@@ -48,10 +48,10 @@ const nextConfig = {
     ],
     domains: ['your-domain.com'], // Replace with your actual domain
   },
+  outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
-    instrumentationHook: true,
-    outputFileTracingRoot: path.join(process.cwd(), '../../'),
-    esmExternals: true,
+    //instrumentationHook: true,
+    //esmExternals: true,  //The "esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
     optimizePackageImports: [
       '@cfce/universe-components',
       '@cfce/blockchain-tools',
@@ -63,6 +63,7 @@ const nextConfig = {
   webpack: webpackConfig,
 };
 
+/*
 const sentryfulConfig = withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
@@ -106,6 +107,7 @@ const sentryfulConfig = withSentryConfig(nextConfig, {
 
   telemetry: false,
 });
+*/
 
 // TODO: sentry is timing out, so I disabled it for now
 // module.exports = sentryfulConfig;
