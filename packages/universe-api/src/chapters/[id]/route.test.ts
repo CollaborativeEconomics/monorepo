@@ -1,43 +1,27 @@
 /** @jest-environment node */
 
-import { type Artwork, getArtworkById } from "@cfce/database"
+import { type Chapter, getChapterById } from "@cfce/database"
 import { NextRequest } from "next/server"
-import { setDateToReturnMockDate } from "../../__mocks__/mockDates"
 import checkApiKey from "../../checkApiKey"
-import { DELETE, GET } from "./route"
+import { GET } from "./route"
+
 // Mock the dependencies
 jest.mock("@cfce/database")
 jest.mock("../../checkApiKey")
-setDateToReturnMockDate(new Date("2024-01-01"))
 
-const mockArtwork: Artwork = {
-  name: "Test Artwork",
-  artwork: "test-artwork",
+const mockChapter: Chapter = {
   id: "123",
+  name: "Test Chapter",
+  description: "Test Description",
+  location: "Test Location",
   created: new Date(),
   inactive: false,
-  tokenId: "123",
-  authorId: "123",
-  collectionId: "123",
-  categoryId: "123",
-  description: "Test Description",
-  image: "test-image",
-  metadata: "test-metadata",
-  media: "test-media",
-  beneficiaryId: "123",
-  royalties: 100,
-  tags: "test-tags",
-  forsale: true,
-  copies: 100,
-  sold: 0,
-  price: 100,
-  likes: 0,
-  views: 0,
+  slug: "test-chapter",
 }
 
-describe("Artwork API endpoints", () => {
-  const mockGetArtworkById = getArtworkById as jest.MockedFunction<
-    typeof getArtworkById
+describe("Chapter [id] API endpoints", () => {
+  const mockGetChapterById = getChapterById as jest.MockedFunction<
+    typeof getChapterById
   >
   const mockCheckApiKey = checkApiKey as jest.MockedFunction<typeof checkApiKey>
 
@@ -45,30 +29,33 @@ describe("Artwork API endpoints", () => {
     jest.clearAllMocks()
   })
 
-  describe("GET /api/artworks/[id]", () => {
+  describe("GET /api/chapters/[id]", () => {
     const createRequest = (id?: string, apiKey?: string) => {
-      const url = new URL(`http://localhost/api/artworks/${id || ""}`)
-      if (id) url.searchParams.set("id", id)
+      const url = new URL("http://localhost/api/chapters/123")
+      if (id) {
+        url.searchParams.set("id", id)
+      }
 
       return new NextRequest(url, {
         headers: apiKey ? new Headers({ "x-api-key": apiKey }) : new Headers(),
       })
     }
 
-    it("should return artwork when authorized and valid ID provided", async () => {
+    it("should return chapter when authorized", async () => {
       mockCheckApiKey.mockResolvedValue(true)
-      mockGetArtworkById.mockResolvedValue(mockArtwork)
+      mockGetChapterById.mockResolvedValue(mockChapter)
 
       const request = createRequest("123", "valid-api-key")
       const response = await GET(request)
       const data = await response.json()
 
+      const serializedChapter = JSON.parse(JSON.stringify(mockChapter))
       expect(response.status).toBe(200)
       expect(data).toEqual({
         success: true,
-        data: JSON.parse(JSON.stringify(mockArtwork)),
+        data: serializedChapter,
       })
-      expect(mockGetArtworkById).toHaveBeenCalledWith("123")
+      expect(mockGetChapterById).toHaveBeenCalledWith("123")
     })
 
     it("should return 403 when unauthorized", async () => {
@@ -81,12 +68,11 @@ describe("Artwork API endpoints", () => {
       expect(response.status).toBe(403)
       expect(data).toEqual({
         success: false,
-        error: "Not authorized",
       })
-      expect(mockGetArtworkById).not.toHaveBeenCalled()
+      expect(mockGetChapterById).not.toHaveBeenCalled()
     })
 
-    it("should return 400 when no ID provided", async () => {
+    it("should return 400 when id is missing", async () => {
       mockCheckApiKey.mockResolvedValue(true)
 
       const request = createRequest(undefined, "valid-api-key")
@@ -96,14 +82,14 @@ describe("Artwork API endpoints", () => {
       expect(response.status).toBe(400)
       expect(data).toEqual({
         success: false,
-        error: "Artwork ID required",
+        error: "Missing id",
       })
-      expect(mockGetArtworkById).not.toHaveBeenCalled()
+      expect(mockGetChapterById).not.toHaveBeenCalled()
     })
 
     it("should handle database errors", async () => {
       mockCheckApiKey.mockResolvedValue(true)
-      mockGetArtworkById.mockRejectedValue(new Error("Database error"))
+      mockGetChapterById.mockRejectedValue(new Error("Database error"))
 
       const request = createRequest("123", "valid-api-key")
       const response = await GET(request)
@@ -112,20 +98,6 @@ describe("Artwork API endpoints", () => {
       expect(response.status).toBe(400)
       expect(data).toEqual({
         success: false,
-        error: "Database error",
-      })
-    })
-  })
-
-  describe("DELETE /api/artworks/[id]", () => {
-    it("should return 405 Method Not Allowed", async () => {
-      const response = await DELETE()
-      const data = await response.json()
-
-      expect(response.status).toBe(405)
-      expect(data).toEqual({
-        success: false,
-        error: "HTTP method not accepted",
       })
     })
   })
