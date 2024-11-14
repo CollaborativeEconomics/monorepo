@@ -266,9 +266,14 @@ export async function mintAndSaveReceiptNFT({
         contractId: chainContract.contract,
         address: donorWalletAddress,
         uri: uriMeta,
+<<<<<<< HEAD
         walletSeed: walletSecret
       }
       const mintResponse = await BlockchainManager[chainContract.chain]?.server.mintNFT(args)
+=======
+        walletSeed: walletSecret,
+      })
+>>>>>>> main
       console.log("RESMINT", mintResponse)
       if (!mintResponse) {
         throw new Error('Failed to mint NFT');
@@ -311,10 +316,7 @@ export async function mintAndSaveReceiptNFT({
     if ("error" in mintResponse && typeof mintResponse.error === "string") {
       throw new Error(mintResponse.error)
     }
-    if (
-      "tokenId" in mintResponse &&
-      typeof mintResponse.tokenId === "string"
-    ) {
+    if ("tokenId" in mintResponse && typeof mintResponse.tokenId === "string") {
       tokenId = mintResponse?.tokenId
     }
     // #endregion
@@ -333,10 +335,10 @@ export async function mintAndSaveReceiptNFT({
       coinLabel: chain,
       coinValue: amountCUR,
       usdValue: amountUSD,
-      tokenId: `${receiptContract} #${tokenId}`,
+      tokenId: tokenId,
       status: DonationStatus.claimed,
     }
-
+    console.log('NFT', data)
     const saved = await newNftData(data)
 
     if (!saved) {

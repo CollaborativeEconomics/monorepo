@@ -138,7 +138,8 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       console.log('CONNECT', connected)
       const data = {
         address,
-        amount: chainInterface.toBaseUnit(amount),
+        amount: amount, // amount conversion should be done on the wallet side
+        //amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || '',
       }
       const result = await chainInterface.sendPayment(data);
@@ -167,7 +168,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
         throw new Error(`Payment error: ${paymentResult.error ?? 'unknown'}`);
       }
 
-      setButtonMessage('Minting NFT receipt...');
+      setButtonMessage('Minting NFT receipt, please wait...');
       const data = {
         donorName: name || 'Anonymous',
         email: emailReceipt ? email : undefined,
@@ -195,7 +196,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
 
       setButtonMessage('Thank you for your donation!');
       setDonationForm(draft => {
-        draft.paymentStatus = PAYMENT_STATUS.ready;
+        draft.paymentStatus = PAYMENT_STATUS.minted;
         draft.date = new Date();
       });
     } catch (error) {

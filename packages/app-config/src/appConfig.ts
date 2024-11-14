@@ -35,8 +35,23 @@ type AppId =
   | "giving-universe"
   | "partners"
   | "registry"
+<<<<<<< HEAD
   | "tests"
 const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
+=======
+  | "give-stark"
+const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
+  "give-stark": {
+    development: giveStarkDev,
+    production: giveStarkProd,
+    staging: giveStarkStaging,
+  },
+  "give-tron": {
+    development: giveTronDev,
+    production: giveTronProd,
+    staging: giveTronStaging,
+  },
+>>>>>>> main
   "give-credits": {
     development: giveCreditsDev,
     production: giveCreditsProd,
