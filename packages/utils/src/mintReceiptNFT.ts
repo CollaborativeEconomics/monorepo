@@ -3,7 +3,6 @@ import "server-only"
 import appConfig from "@cfce/app-config"
 import { BlockchainManager } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
-import { getWalletSecret } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,

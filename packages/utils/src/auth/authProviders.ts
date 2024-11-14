@@ -4,10 +4,11 @@ import { type Chain, type User, getUserByWallet } from "@cfce/database"
 import type { AuthTypes } from "@cfce/types"
 //import type { User } from "next-auth"
 import { createAnonymousUser } from "@cfce/utils"
+import type { RequestInternal } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
-import type { Provider } from "next-auth/providers/index"
+import type { CredentialInput, Provider } from "next-auth/providers/index"
 
 interface Credentials {
   id: string
@@ -61,14 +62,14 @@ const credentialsDefinition: Record<string, CredentialInput> = {
 }
 
 const authorizeChain = async (
-  credentials: Partial<Record<keyof Credentials, unknown>>,
+  credentials: Record<string, string> | undefined,
+  req: Pick<RequestInternal, "body" | "query" | "headers" | "method">
 ) => {
   if (!credentials) {
     return null
   }
   try {
-    // TODO: this hack shouldn't be needed
-    const user = await getUserByCredentials(credentials as Credentials)
+    const user = await getUserByCredentials(credentials as unknown as Credentials)
     return user
   } catch (ex) {
     console.error("ERROR:", ex)

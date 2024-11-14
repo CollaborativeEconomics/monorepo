@@ -1,5 +1,5 @@
 import appConfig from "@cfce/app-config"
-import { getOrganizationByEmail, getUserByEmail } from "@cfce/database"
+import { getOrganizationByEmail, getUserByEmail, type Organization, type User } from "@cfce/database"
 import NextAuth, { type AuthOptions } from "next-auth"
 //import type { NextAuthOptions } from "next-auth"
 import { getAuthProviders } from "../authConfig"
@@ -112,9 +112,11 @@ const authOptions: AuthOptions = {
       // @ts-ignore TODO: move this to state
       session.currency = (token?.currency as string) || ""
       // Update user information
-      session.user.name = (token?.name as string) || ""
-      session.user.email = (token?.email as string) || ""
-      session.user.image = (token?.picture as string) || ""
+      if (session.user) {
+        session.user.name = (token?.name as string) || ""
+        session.user.email = (token?.email as string) || ""
+        session.user.image = (token?.picture as string) || ""
+      }
       // Uncomment if needed:
       // session.decimals = (token?.decimals as string) || '';
       // session.wallet = (token?.wallet as string) || '';

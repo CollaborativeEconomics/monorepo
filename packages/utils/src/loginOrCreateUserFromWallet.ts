@@ -5,6 +5,7 @@ import { getDefaultStore } from "jotai"
 import { signIn } from "next-auth/react"
 import { createAnonymousUser, fetchUserByWallet } from "./server-actions/user"
 import { appSettingsAtom } from "./state"
+import { registryApi } from "./registryApi"
 
 export default async function loginOrCreateUserFromWallet({
   chain,
