@@ -4,7 +4,9 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "exports": {
     ".": {
@@ -177,10 +179,10 @@
     }
   },
   "dependencies": {
+    "@cfce/auth": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
-    "@cfce/auth": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@types/formidable": "^3.4.5",
     "@types/uuid": "^10.0.0",
@@ -191,10 +193,18 @@
   "devDependencies": {
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^16.0.1",
+    "@types/jest": "^29.0.0",
     "@types/react": "latest",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "next": "^15.0.3",
     "next-auth": "5.0.0-beta.25",
     "next-themes": "^0.4.3",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   },
   "peerDependencies": {
