@@ -64,7 +64,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
   const chainInterface = useMemo(
-    () => BlockchainManager[selectedChain]?.client,
+    () => BlockchainManager[selectedChain].client,
     [selectedChain],
   );
   const [buttonMessage, setButtonMessage] = useState(
