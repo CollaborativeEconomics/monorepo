@@ -1,11 +1,33 @@
+import type { Prisma } from "@cfce/database"
 import { expect, test } from "@playwright/test"
 
+const headers = {
+  "x-api-key": process.env.OFFICIAL_CFCE_API_KEY || "",
+}
+let orgId = ""
+let donationId = ""
+
+test.beforeAll(async ({ request, baseURL }) => {
+  const orgResponse = await request.get(`${baseURL}/organizations`, {
+    headers,
+  })
+  expect(orgResponse.status()).toBe(200)
+
+  const orgs = await orgResponse.json()
+  expect(orgs.data.length).toBeGreaterThan(0)
+  orgId = orgs.data[0].id
+  console.log("orgId", orgId)
+})
+test.afterAll(async ({ request, baseURL }) => {
+  // delete the organization
+  await request.delete(`${baseURL}/organizations/${orgId}`, {
+    headers,
+  })
+})
+
 test("GET /donations returns donations list", async ({ request, baseURL }) => {
-  console.log("OFFICIAL_CFCE_API_KEY", process.env.OFFICIAL_CFCE_API_KEY)
   const response = await request.get(`${baseURL}/donations`, {
-    headers: {
-      "x-api-key": process.env.OFFICIAL_CFCE_API_KEY || "",
-    },
+    headers,
   })
 
   expect(response.status()).toBe(201)
@@ -13,18 +35,40 @@ test("GET /donations returns donations list", async ({ request, baseURL }) => {
   expect(body.success).toBe(true)
 })
 
-test("POST /donations creates a new donation", async ({ request, baseURL }) => {
-  const response = await request.post(`${baseURL}/donations`, {
-    headers: {
-      "x-api-key": process.env.OFFICIAL_CFCE_API_KEY || "",
-    },
-    data: {
+test("Donation creation and deletion", async ({ request, baseURL }) => {
+  await test.step("Create a donation", async () => {
+    const data: Prisma.DonationCreateInput = {
       amount: 100,
-      currency: "USD",
-    },
+      organization: {
+        connect: {
+          id: orgId,
+        },
+      },
+    }
+    const response = await request.post(`${baseURL}/donations`, {
+      headers,
+      data,
+    })
+
+    expect(response.status()).toBe(200)
+    const body = await response.json()
+    expect(body.success).toBe(true)
+    donationId = body.data.id
+    console.log("donationId", donationId)
   })
 
-  expect(response.status()).toBe(200)
-  const body = await response.json()
-  expect(body.success).toBe(true)
+  await test.step("Delete the donation", async () => {
+    console.log("DELETE /donation", `${baseURL}/donations/${donationId}`)
+    const response = await request.delete(
+      `${baseURL}/donations/${donationId}`,
+      {
+        headers,
+      },
+    )
+    console.log("response", response)
+
+    expect(response.status()).toBe(200)
+    const body = await response.json()
+    expect(body.success).toBe(true)
+  })
 })

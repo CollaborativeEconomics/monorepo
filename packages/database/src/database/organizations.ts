@@ -1,6 +1,6 @@
 import "server-only"
-import type { Chain, Organization, Prisma } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
+import type { Chain, Organization, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
 
 interface OrganizationQuery extends ListQuery {
@@ -141,22 +141,22 @@ export async function getOrganizationById(
   id: string,
 ): Promise<Prisma.OrganizationGetPayload<{
   include: {
-    category: true,
-    wallets: true,
+    category: true
+    wallets: true
     initiative: {
-      include: { credits: true },
-    },
+      include: { credits: true }
+    }
     stories: {
       include: {
-        media: true,
-        organization: true,
+        media: true
+        organization: true
         initiative: {
           include: {
-            category: true,
-          },
-        },
-      },
-    },
+            category: true
+          }
+        }
+      }
+    }
   }
 }> | null> {
   const include = {
@@ -251,5 +251,10 @@ export async function newOrganization(
   data: Prisma.OrganizationCreateInput,
 ): Promise<Organization> {
   const result = await prismaClient.organization.create({ data })
+  return result
+}
+
+export async function deleteOrganization(id: string) {
+  const result = await prismaClient.organization.delete({ where: { id } })
   return result
 }

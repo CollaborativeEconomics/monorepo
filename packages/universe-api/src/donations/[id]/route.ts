@@ -1,4 +1,4 @@
-import { getDonations } from "@cfce/database"
+import { deleteDonation, getDonations } from "@cfce/database"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../../checkApiKey"
 
@@ -25,8 +25,21 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function DELETE() {
-  const message = "Invalid HTTP method, only GET accepted"
-  console.error(message)
-  return NextResponse.json({ success: false, error: message }, { status: 400 })
+export async function DELETE(req: NextRequest) {
+  const apiKey = req.headers.get("x-api-key")
+  const authorized = await checkApiKey(apiKey)
+
+  if (!authorized) {
+    return NextResponse.json({ success: false }, { status: 403 })
+  }
+
+  const id = req.nextUrl.pathname.split("/").pop()
+  console.log("DELETE donation", apiKey, authorized, id)
+  if (!id) {
+    return NextResponse.json({ success: false }, { status: 400 })
+  }
+
+  const result = await deleteDonation(id)
+
+  return NextResponse.json({ success: true, data: result }, { status: 200 })
 }
