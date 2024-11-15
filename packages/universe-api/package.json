@@ -105,6 +105,10 @@
       "import": "./dist/organizations/[id]/route.js",
       "types": "./dist/organizations/[id]/route.d.ts"
     },
+    "./ping": {
+      "import": "./dist/ping/route.js",
+      "types": "./dist/ping/route.d.ts"
+    },
     "./profile/[id]": {
       "import": "./dist/profile/[id]/route.js",
       "types": "./dist/profile/[id]/route.d.ts"
@@ -197,7 +201,9 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^16.0.1",
     "@types/jest": "^29.0.0",
+    "@types/node": "^22.9.0",
     "@types/react": "latest",
+    "decimal.js": "^10.4.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "next": "^15.0.3",
