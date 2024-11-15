@@ -1293,6 +1293,9 @@ importers:
 
   packages/api-tests:
     dependencies:
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       registry:
         specifier: workspace:*
         version: link:../../apps/registry

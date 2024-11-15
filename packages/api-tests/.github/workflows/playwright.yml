@@ -43,3 +43,4 @@ jobs:
         IPFS_API_KEY: ${{ secrets.IPFS_API_KEY }}
         IPFS_API_SECRET: ${{ secrets.IPFS_API_SECRET }}
         BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        OFFICIAL_CFCE_API_KEY: ${{ secrets.OFFICIAL_CFCE_API_KEY }}

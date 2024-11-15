@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
   try {
     const apiKey = req.headers.get("x-api-key")
     const authorized = await checkApiKey(apiKey)
+    console.log("authorized", authorized, apiKey)
 
     if (!authorized) {
       return NextResponse.json({ success: false }, { status: 403 })

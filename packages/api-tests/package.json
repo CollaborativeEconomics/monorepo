@@ -10,6 +10,7 @@
     "test:headed": "playwright test --headed"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "registry": "workspace:*"
   },
   "devDependencies": {
