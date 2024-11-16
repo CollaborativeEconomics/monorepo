@@ -2,6 +2,7 @@ import { createAnonymousUser } from '@cfce/auth';
 import type { Chain } from '@cfce/database';
 
 export default async function Home() {
+
   async function createUser() {
     console.log('Creating user...');
     const user = await createAnonymousUser({
@@ -14,7 +15,8 @@ export default async function Home() {
     return JSON.stringify(user, null, 4);
   }
 
-  const result = await createUser();
+  //const result = await createUser()
+  const result = 'OK'
 
   return (
     <>

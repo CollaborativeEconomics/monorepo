@@ -2,9 +2,9 @@ const path = require('node:path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
-    esmExternals: 'loose',
-    outputFileTracingRoot: path.join(process.cwd(), '../../'),
+    //esmExternals: 'loose',
     optimizePackageImports: [
       '@cfce/universe-components',
       '@cfce/blockchain-tools',

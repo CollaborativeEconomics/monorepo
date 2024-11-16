@@ -50,10 +50,8 @@ const nextConfig = {
   },
   outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
-    // instrumentationHook: true,
-    instrumentationHook: false,
-    outputFileTracingRoot: path.join(process.cwd(), '../../'),
-    esmExternals: true,
+    //instrumentationHook: false,
+    //esmExternals: true,
     optimizePackageImports: [
       '@cfce/universe-components',
       '@cfce/blockchain-tools',

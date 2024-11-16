@@ -6,13 +6,14 @@ import {
   InstructionPanes,
   VideoBackground,
 } from '@cfce/universe-components/home';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
   title: appConfig.siteInfo.title,
-  viewport: { initialScale: 1.0, width: 'device-width' },
 };
+
+export const viewport: Viewport = { initialScale: 1.0, width: 'device-width' };
 
 export default async function Handler(props: {
   searchParams?: Promise<{
