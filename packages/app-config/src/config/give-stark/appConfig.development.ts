@@ -6,10 +6,9 @@ import type {
 } from "@cfce/types"
 import appConfig from "./appConfig.staging"
 
+
 const siteInfo = {
   ...appConfig.siteInfo,
-  title: "Giving Universe (Development)",
-  description: "Make tax-deductible donations with crypto",
 }
 
 const apis = {
@@ -19,15 +18,8 @@ const apis = {
   },
 }
 
-const chains = {
-  xdc: appConfig.chains.xdc,
-  stellar: appConfig.chains.stellar,
-  xrpl: appConfig.chains.xrpl,
-}
-
 const chainDefaults = {
   ...appConfig.chainDefaults,
-  network: "testnet",
 }
 
 const auth = appConfig.auth as AuthTypes[]
@@ -35,7 +27,7 @@ const auth = appConfig.auth as AuthTypes[]
 const appConfigStaging: AppConfig = {
   apis,
   auth,
-  chains,
+  chains: appConfig.chains,
   chainDefaults,
   siteInfo,
 }

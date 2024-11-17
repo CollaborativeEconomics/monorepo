@@ -1,46 +1,10 @@
-// import type { AppConfig, AuthTypes } from "@cfce/types"
-// import appConfig from "./appConfig.production"
-
-// const siteInfo: AppConfig["siteInfo"] = {
-//   ...appConfig.siteInfo,
-//   title: "Giving Universe (Staging)",
-//   description: "Make tax-deductible donations with crypto",
-// }
-
-// const apis: AppConfig["apis"] = {
-//   ...appConfig.apis,
-//   registry: {
-//     apiUrl: "https://registry.staging.cfce.io/api",
-//   },
-// }
-
-// const chains: AppConfig["chains"] = {
-
-
-// const chainDefaults = {
-//   ...appConfig.chainDefaults,
-//   network: "testnet",
-// }
-
-// const auth = appConfig.auth as AuthTypes[]
-
-// const appConfigStaging: AppConfig = {
-//   apis,
-//   auth,
-//   chains,
-//   chainDefaults,
-//   siteInfo,
-// }
-
-// export default appConfigStaging
-
 import type { AppConfig, AuthTypes } from "@cfce/types"
 import appConfig from "./appConfig.production"
 
 const siteInfo: AppConfig["siteInfo"] = {
   ...appConfig.siteInfo,
-  title: "Giving Universe (Staging)",
-  description: "Make tax-deductible donations with crypto",
+  title: "Give Stark (Staging)",
+  description: "Make tax-deductible donations on Starknet",
 }
 
 const apis: AppConfig["apis"] = {
@@ -61,31 +25,14 @@ const chains: AppConfig["chains"] = {
     enabledWallets: ["metamask"],
     tokens: ["XDC"],
   },
-  stellar: {
-    slug: "stellar",
-    network: "testnet",
-    contracts: {},
-    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
-    enabledWallets: ["freighter"],
-    tokens: ["XLM", "USDC"],
-  },
-  xrpl: {
-    slug: "xrpl",
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
-    network: "testnet",
-    contracts: {},
-    enabledWallets: ["xaman"],
-    tokens: ["XRP"],
-    destinationTag: "77777777",
-  },
   starknet: {
     slug: "starknet",
-    network: "mainnet",
+    network: "testnet",
     contracts: {
-      receiptMintbotERC721: "0x045d8da8227be85fec28cd4ba98b33bb1fba0408e1d78947a2d628c34e06ed4c",
+      receiptMintbotERC721: "0x2e5b08fc000756e043f8701f73886f9f76497f996f9a94b657b6d2b59c57dad",
     },
     enabledWallets: ["argent"],
-    tokens: ["ETH", "STRK"],
+    tokens: ["STRK"],
   },
 }
 

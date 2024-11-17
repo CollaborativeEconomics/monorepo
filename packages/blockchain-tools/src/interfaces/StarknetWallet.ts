@@ -95,6 +95,75 @@ class StarknetWallet extends ChainBaseClass {
     }
   }
 
+  public async executeWithGas(address: string, amount: number) {
+    try {
+      if (!this.connector) {
+        ({connector: this.connector} = await this.getWallet());
+      }
+      
+      const account = await this.connector?.account();
+      if (!account) {
+        throw new Error("No account found");
+      }
+
+      const calls = this.prepareTransferCall(address, amount);
+      const result = await account.execute(calls);
+      const tx = result.transaction_hash;
+      
+      const txResult = await this.provider.waitForTransaction(tx);
+      
+      if (txResult.statusReceipt === "success") {
+        return {
+          success: true,
+          result: txResult,
+          txid: tx,
+          walletAddress: this.connectedWallet,
+        };
+      }
+
+      return {
+        success: false,
+        error: "Transaction failed",
+        result: txResult,
+        txid: tx,
+      };
+    } catch (gasErr) {
+      console.error("Error executing gas transaction", gasErr);
+      return {
+        success: false,
+        error: gasErr instanceof Error ? gasErr.message : "Failed to execute gas transaction",
+      };
+    }
+  }
+
+  private prepareTransferCall(address: string, amount: number): Call[] {
+    const smartContractAddress = "0x4ccddb06be7807276e88ebdd84319712aba3ba25c9e8cf3860b2891b07cd8b1";
+
+    // Convert the amount considering decimals
+    const amountWithDecimals = parseEther(amount.toString());
+    const amountBigInt = BigInt(amountWithDecimals);
+    
+    // Split into low and high bits for u256 representation
+    const low = amountBigInt & BigInt('0xffffffffffffffffffffffffffffffff');
+    const high = amountBigInt >> BigInt(128);
+    
+    return [{
+      entrypoint: 'approve',
+      contractAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+      calldata: [
+        smartContractAddress, 
+        low.toString(),  // low bits
+        high.toString()  // high bits
+      ],
+    },
+    {
+      entrypoint: 'donate',
+      contractAddress: smartContractAddress,
+      calldata: [low.toString(), high.toString()],
+    }
+  ];
+  }
+
   async sendPayment({
     address,
     amount,
@@ -112,9 +181,8 @@ class StarknetWallet extends ChainBaseClass {
       const account = await connector?.account()
       console.log("Account", account)
       console.log("Account connected", )
-      const contractId = "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"
-  
-      const weihex = `0x${amount.toString(16)}`;
+
+      const calls = this.prepareTransferCall(address, amount);
 
       const options: GaslessOptions = {
         baseUrl: SEPOLIA_BASE_URL,
@@ -125,22 +193,14 @@ class StarknetWallet extends ChainBaseClass {
       const gasTokenPrice = await fetchGasTokenPrices(options);
       console.log('GasTokenPrice', gasTokenPrice);
 
-      const calls: Call[] = [
-        {
-          entrypoint: 'transfer',
-          // entrypoint: 'donate',
-          contractAddress: contractId,
-          calldata: [address, weihex, '0x0'],
-          // calldata: [weihex],
-        },
-      ];
-
       // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
       let txid;
       try {
+        // First attempt: gasless transaction
         txid = await executeCalls(account, calls, {}, options);
       } catch (err) {
-        console.error("Error executing calls", err);
+        console.error("Error executing gasless calls", err);
+        throw new Error("Failed to execute gasless transaction");
       }
 
       console.log("TX", txid);
@@ -152,7 +212,7 @@ class StarknetWallet extends ChainBaseClass {
 
       const result = await this.provider.waitForTransaction(tx)
 
-      if (result.isSuccess()) {
+      if (result.statusReceipt === "success") {
         return {
           success: true,
           result,
@@ -244,9 +304,7 @@ async mintNFT({
   console.log(this.chain, "server minting NFT to", address, uri);
   
   try {
-    const provider = new RpcProvider({
-      nodeUrl: process.env.STARKNET_RPC_URI || ''
-    });
+    const provider = this.provider;
     
     const minterAddress = process.env.STARKNET_MINTER_ADDRESS;
     if (!minterAddress || !walletSeed) {
@@ -259,7 +317,7 @@ async mintNFT({
     contract.connect(account);
     
     // Generate unique token ID
-    const tokenId = Math.floor(Math.random() * 1e16);
+    const tokenId = await contract.get_current_token_id();
     
     const mintTx = await contract.safe_mint(address, tokenId, uri);
     const receipt = await provider.waitForTransaction(mintTx.transaction_hash);

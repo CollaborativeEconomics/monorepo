@@ -64,21 +64,27 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
   const chainInterface = useMemo(
-    () => BlockchainManager[selectedChain].client,
+    () => BlockchainManager[selectedChain]?.client,
     [selectedChain],
   );
   const [buttonMessage, setButtonMessage] = useState(
     'One wallet confirmation required',
   );
+  const [errorDialogState, setErrorDialogState] = useState(false);
 
   const handleError = useCallback((error: unknown) => {
-    if (error instanceof Error) {
-      setButtonMessage(error.message);
-      console.error(error);
-      return;
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    
+    const canRetryWithGas = errorMessage.includes('gasless') || 
+                           errorMessage.includes('insufficient funds') ||
+                           errorMessage.includes('rejected');
+
+    if (canRetryWithGas) {
+      setErrorDialogState(true);
     }
+    
+    setButtonMessage(errorMessage);
     console.error(error);
-    setButtonMessage('Unknown error');
   }, []);
 
   const destinationWalletAddress = useMemo(() => {
@@ -149,6 +155,65 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     [chainInterface, selectedChain],
   );
 
+  const sendPaymentWithGas = useCallback(
+    async (address: string, amount: number) => {
+      if (!chainInterface?.executeWithGas) {
+        throw new Error('Gas payments not supported');
+      }
+
+      const result = await chainInterface.executeWithGas(address, amount);
+      console.log('GAS PAYMENT RESULT', result);
+      return result;
+    },
+    [chainInterface],
+  );
+
+  const handleMinting = useCallback(async (paymentResult: { success: boolean; walletAddress?: string; txid?: string; error?: string }) => {
+    if (!paymentResult.success) {
+      throw new Error(paymentResult.error ?? 'Payment failed');
+    }
+
+    setButtonMessage('Minting NFT receipt, please wait...');
+    const data = {
+      donorName: name || 'Anonymous',
+      email: emailReceipt ? email : undefined,
+      organizationId: organization.id,
+      initiativeId: initiative.id,
+      transaction: {
+        date: new Date().toISOString(),
+        donorWalletAddress: paymentResult.walletAddress ?? '',
+        destinationWalletAddress,
+        amount,
+        txId: paymentResult.txid ?? '',
+        chain: selectedChain,
+        token: selectedToken,
+      }
+    };
+
+    const receiptResult = await mintAndSaveReceiptNFT(data);
+
+    if ('error' in receiptResult) {
+      throw new Error(receiptResult.error ?? 'Failed to process receipt');
+    }
+
+    setButtonMessage('Thank you for your donation!');
+    setDonationForm(draft => {
+      draft.paymentStatus = PAYMENT_STATUS.minted;
+      draft.date = new Date();
+    });
+  }, [
+    name,
+    emailReceipt,
+    email,
+    organization.id,
+    initiative.id,
+    destinationWalletAddress,
+    amount,
+    selectedChain,
+    selectedToken,
+    setDonationForm,
+  ]);
+
   const onSubmit = useCallback(async () => {
     try {
       validateForm({ email });
@@ -163,42 +228,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       setButtonMessage('Approving payment...');
 
       const paymentResult = await sendPayment(destinationWalletAddress, amount);
-
-      if (!paymentResult.success) {
-        throw new Error(`Payment error: ${paymentResult.error ?? 'unknown'}`);
-      }
-
-      setButtonMessage('Minting NFT receipt, please wait...');
-      const data = {
-        donorName: name || 'Anonymous',
-        email: emailReceipt ? email : undefined,
-        organizationId: organization.id,
-        initiativeId: initiative.id,
-        transaction: {
-          date: new Date().toISOString(),
-          donorWalletAddress: paymentResult.walletAddress ?? '',
-          destinationWalletAddress,
-          amount,
-          txId: paymentResult.txid ?? '',
-          chain: selectedChain,
-          token: selectedToken,
-        }
-      }
-      console.log('NFT', data)
-      await sleep(2000) // Wait for tx to confirm
-      console.log('SLEEP')
-      const receiptResult = await mintAndSaveReceiptNFT(data);
-      console.log('RESULT', receiptResult)
-
-      if ('error' in receiptResult) {
-        throw new Error(receiptResult.error ?? 'Failed to process receipt');
-      }
-
-      setButtonMessage('Thank you for your donation!');
-      setDonationForm(draft => {
-        draft.paymentStatus = PAYMENT_STATUS.minted;
-        draft.date = new Date();
-      });
+      await handleMinting(paymentResult);
     } catch (error) {
       handleError(error);
     } finally {
@@ -207,16 +237,10 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   }, [
     amount,
     email,
-    name,
-    emailReceipt,
     destinationWalletAddress,
-    organization,
-    selectedChain,
-    selectedToken,
     sendPayment,
     checkBalance,
-    initiative,
-    setDonationForm,
+    handleMinting,
     handleError,
   ]);
 
@@ -306,6 +330,45 @@ export default function DonationForm({ initiative }: DonationFormProps) {
             <DialogClose className="text-white-500 hover:underline">
               Close
             </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog 
+        open={errorDialogState} 
+        onOpenChange={setErrorDialogState}
+      >
+        <DialogContent className="p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold">
+              Gasless Transaction Failed
+            </DialogTitle>
+            <DialogDescription className="text-white-600">
+              Would you like to try again with a regular gas transaction?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex justify-between">
+            <Button
+              className='bg-lime-600 text-white text-lg hover:bg-green-600 hover:shadow-inner'
+              onClick={() => {
+                setErrorDialogState(false);
+                setTimeout(() => {
+                  setLoading(true);
+                  setButtonMessage('Approving gas payment...');
+                  sendPaymentWithGas(destinationWalletAddress, amount)
+                    .then(gasResult => handleMinting(gasResult))
+                    .catch(handleError)
+                    .finally(() => setLoading(false));
+                }, 0);
+              }}
+            >
+              Try With Gas
+            </Button>
+            <Button 
+              variant="ghost"
+              onClick={() => setErrorDialogState(false)}
+            >
+              Cancel
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

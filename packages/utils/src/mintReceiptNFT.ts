@@ -175,10 +175,11 @@ export async function mintAndSaveReceiptNFT({
     // #region: Calculate amounts and prepare metadata
     const amountCUR = (+amount).toFixed(4)
     const amountUSD = (+amount * rate).toFixed(4)
+    console.log("Image URI", initiative?.imageUri)
 
-    const uriImage =
-      initiative?.imageUri ||
-      "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
+    const uriImage = initiative?.imageUri 
+      ? initiative.imageUri.replace(/<[^>]*>/g, '').trim()
+      : "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
 
     const extraMetadata = await runHook(
       Triggers.addMetadataToNFTReceipt,
@@ -212,13 +213,13 @@ export async function mintAndSaveReceiptNFT({
     // #region: Prepare and upload metadata
     const metadata = {
       ...creditMeta,
-      ...(extraMetadata?.output ?? {}),
+      ...(extraMetadata?.output ? JSON.parse(JSON.stringify(extraMetadata.output)) : {}),
       mintedBy: "CFCE via GiveCredit",
       created: created,
       donorAddress: donorWalletAddress,
       organization: organizationName,
       initiative: initiativeName,
-      image: uriImage,
+      image: uriImage,  // Already sanitized above
       coinCode: token,
       coinIssuer: chain,
       coinValue: amountCUR,
@@ -228,8 +229,16 @@ export async function mintAndSaveReceiptNFT({
 
     console.log("META", metadata)
     const fileId = `meta-${txId}`
-    const bytes = Buffer.from(JSON.stringify(metadata, null, 2))
-    const cidMeta = await uploadDataToIPFS(fileId, bytes, "text/plain")
+    // More thorough sanitization of the entire metadata object
+    const metadataString = JSON.stringify(metadata, (key, value) => {
+      if (typeof value === 'string') {
+        return value.replace(/<[^>]*>/g, '').trim() // Remove any HTML tags and trim
+      }
+      return value;
+    }, 2)
+    console.log("META STRING", metadataString)
+    const bytes = Buffer.from(metadataString)
+    const cidMeta = await uploadDataToIPFS(fileId, bytes, "application/json")
     console.log("CID", cidMeta)
     if (!cidMeta || typeof cidMeta !== "string") {
       throw new Error("Error uploading metadata")
@@ -266,14 +275,8 @@ export async function mintAndSaveReceiptNFT({
         contractId: chainContract.contract,
         address: donorWalletAddress,
         uri: uriMeta,
-<<<<<<< HEAD
-        walletSeed: walletSecret
-      }
-      const mintResponse = await BlockchainManager[chainContract.chain]?.server.mintNFT(args)
-=======
         walletSeed: walletSecret,
       })
->>>>>>> main
       console.log("RESMINT", mintResponse)
       if (!mintResponse) {
         throw new Error('Failed to mint NFT');
