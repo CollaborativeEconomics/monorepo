@@ -88,7 +88,7 @@ class StarknetWallet extends ChainBaseClass {
     address,
     amount,
     memo,
-  }: { address: string; amount: bigint; memo: string }) {
+  }: { address: string; amount: number; memo: string }) {
     try {
       const starknet = await this.getWallet()
       if (!starknet?.wallet) {

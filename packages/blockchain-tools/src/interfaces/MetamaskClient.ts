@@ -397,7 +397,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     address,
     amount,
     memo,
-  }: { address: string; amount: bigint; memo: string }) {
+  }: { address: string; amount: number; memo: string }) {
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
@@ -411,12 +411,13 @@ export default class MetaMaskWallet extends ChainBaseClass {
       return { success: false, error: "Error getting gas price" }
     }
     console.log("GAS", Number.parseInt(gasPrice), gasPrice)
-    const gas = numHex(210000)
+    const gas = numHex(2100000)
+    const wei = numHex(amount * 10 ** this.network.decimals)
     const method = "eth_sendTransaction"
     const tx = {
       from: this.connectedWallet,
       to: address,
-      value: amount,
+      value: wei,
       gasPrice,
       gas,
       data: "",
@@ -466,7 +467,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     memo,
   }: {
     address: string
-    amount: bigint
+    amount: number
     token: TokenTickerSymbol
     contract: string
     memo: string

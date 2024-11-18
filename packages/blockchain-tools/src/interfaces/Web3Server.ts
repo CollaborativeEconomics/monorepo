@@ -2,10 +2,15 @@ import type { ChainSlugs, Network } from "@cfce/types"
 import _get from "lodash/get"
 import Web3 from "web3"
 import ChainBaseClass from "../chains/ChainBaseClass"
-import Abi721 from "../contracts/solidity/erc721/erc721-abi.json" // autoincrements tokenid
+import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
 import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // must pass tokenid
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function getObjectValue(obj:any, prop:string) {
+  return prop.split('.').reduce((r, val) => { return r ? r[val] : undefined; }, obj)
+}
 
 export default class Web3Server extends ChainBaseClass {
   constructor(slug: ChainSlugs, network: Network) {
@@ -25,13 +30,15 @@ export default class Web3Server extends ChainBaseClass {
     return { gasPrice, gasLimit }
   }
 
+  // Autoincrementing NFT
   async mintNFT({
     uri,
     address,
     contractId,
     walletSeed,
   }: { uri: string; address: string; contractId: string; walletSeed: string }) {
-    console.log(this.chain, "server minting NFT to", address, uri)
+    console.log('CHAIN', this.chain)
+    console.log("Server minting NFT to", address, uri)
     if (!this.web3) {
       console.error("Web3 not available")
       return { success: false, error: "Web3 not available" }
@@ -42,12 +49,12 @@ export default class Web3Server extends ChainBaseClass {
     }
     const acct = this.web3.eth.accounts.privateKeyToAccount(walletSeed)
     const minter = acct.address
-    const instance = new this.web3.eth.Contract(Abi721, contractId)
+    const instance = new this.web3.eth.Contract(Abi721inc, contractId)
     const noncex = await this.web3.eth.getTransactionCount(minter, "latest")
     const nonce = Number(noncex)
     console.log("MINTER", minter)
     console.log("NONCE", nonce)
-    const data = instance.methods.safeMint(address, uri).encodeABI()
+    const data = instance.methods.mint(address, uri).encodeABI()
     console.log("DATA", data)
     const gas = await this.getGasPrice(minter, contractId, data)
 
@@ -65,18 +72,25 @@ export default class Web3Server extends ChainBaseClass {
     const sign = await this.web3.eth.accounts.signTransaction(tx, walletSeed)
     const info = await this.web3.eth.sendSignedTransaction(sign.rawTransaction)
     console.log("INFO", info)
-    const hasLogs = info.logs.length > 0
     let tokenNum = ""
-    if (hasLogs) {
+    //const hasLogs = info.logs.length > 0
+    if(info.logs?.length > 0) {
       console.log("LOGS.0", JSON.stringify(info?.logs[0].topics, null, 2))
-      console.log("LOGS.1", JSON.stringify(info?.logs[1].topics, null, 2))
-      tokenNum = ` #${Number.parseInt(Buffer.from(_get(info, "logs.0.topics.3", Buffer.alloc(0))).toString("hex"), 16)}`
+      const nftSex = getObjectValue(info, 'logs.0.topics.3')
+      const nftSeq = Number.parseInt(nftSex,16)
+      console.log('SEQ', nftSeq, nftSex)
+      tokenNum = ` #${nftSeq}`
+    } else {
+      const supply = await instance.methods.totalSupply.call({from:minter}) // last minted is total nfts
+      console.log('SUPPLY', supply)
+      const nftSeq = Number.parseInt(supply.toString(),10) - 1
+      tokenNum = ` #${nftSeq}`
     }
-    if (info.status === 1) {
+    if (info.status === 1n) {
       const tokenId = contractId + tokenNum
       const result = {
         success: true,
-        txId: Buffer.from(info?.transactionHash).toString("hex"),
+        txId: info?.transactionHash.toString(),
         tokenId,
       }
       console.log("RESULT", result)
@@ -255,7 +269,7 @@ export default class Web3Server extends ChainBaseClass {
     walletSeed,
   }: {
     address: string
-    amount: bigint
+    amount: number
     memo: string
     walletSeed: string
   }) {
@@ -307,16 +321,15 @@ export default class Web3Server extends ChainBaseClass {
       return { error: "Transaction not found" }
     }
 
-    const result = txInfo.result
     return {
-      id: result.hash,
-      hash: result.hash,
-      from: result.from,
-      to: result.to,
-      value: result.value,
-      fee: (BigInt(result.gas) * BigInt(result.gasPrice)).toString(),
-      timestamp: "", // Ethereum transactions do not directly provide a timestamp
-      blockNumber: Number.parseInt(result.blockNumber, 16),
+      id: txInfo.hash,
+      hash: txInfo.hash,
+      from: txInfo.from,
+      to: txInfo.to,
+      value: txInfo.value,
+      fee: (BigInt(txInfo.gas) * BigInt(txInfo.gasPrice)).toString(),
+      blockNumber: Number.parseInt(txInfo.blockNumber, 16),
+      timestamp: "" // Ethereum transactions do not directly provide a timestamp
     }
   }
 

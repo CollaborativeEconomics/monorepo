@@ -121,7 +121,7 @@ chainConfiguration.arbitrum.networks.mainnet = {
   name: "Arbitrum Mainnet",
   slug: "mainnet",
   symbol: "ARB",
-  decimals: 18n,
+  decimals: 18, // decimals shouldn't be a bigint, will never exceed 18
   gasprice: "250000000",
   explorer: "https://arbiscan.io",
   rpcUrls: {
@@ -134,7 +134,7 @@ chainConfiguration.arbitrum.networks.testnet = {
   name: "Arbitrum Testnet",
   slug: "testnet",
   symbol: "ARB",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://sepolia.arbiscan.io",
   rpcUrls: {
@@ -147,7 +147,7 @@ chainConfiguration.avalanche.networks.mainnet = {
   name: "Avalanche Mainnet",
   slug: "mainnet",
   symbol: "AVAX",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://snowtrace.io",
   rpcUrls: {
@@ -160,7 +160,7 @@ chainConfiguration.avalanche.networks.testnet = {
   name: "Avalanche Testnet",
   slug: "testnet",
   symbol: "AVAX",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://testnet.snowtrace.io",
   rpcUrls: {
@@ -173,7 +173,7 @@ chainConfiguration.base.networks.mainnet = {
   name: "Base Mainnet",
   slug: "mainnet",
   symbol: "BASE",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://basescan.org",
   rpcUrls: {
@@ -186,7 +186,7 @@ chainConfiguration.base.networks.testnet = {
   name: "Base Testnet",
   slug: "testnet",
   symbol: "BASE",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://testnet.basescan.org",
   rpcUrls: {
@@ -199,7 +199,7 @@ chainConfiguration.binance.networks.mainnet = {
   name: "Binance Mainnet",
   slug: "mainnet",
   symbol: "BNB",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "9000000000",
   explorer: "https://bscscan.com",
   rpcUrls: {
@@ -212,7 +212,7 @@ chainConfiguration.binance.networks.testnet = {
   name: "Binance Testnet",
   slug: "testnet",
   symbol: "BNB",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "9000000000",
   explorer: "https://testnet.bscscan.com",
   rpcUrls: {
@@ -225,7 +225,7 @@ chainConfiguration.celo.networks.mainnet = {
   name: "Celo Mainnet",
   slug: "mainnet",
   symbol: "CELO",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "10000000000",
   explorer: "https://explorer.celo.org",
   rpcUrls: {
@@ -238,7 +238,7 @@ chainConfiguration.celo.networks.testnet = {
   name: "Celo Testnet",
   slug: "testnet",
   symbol: "CELO",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "10000000000",
   explorer: "https://alfajores-blockscout.celo-testnet.org",
   rpcUrls: {
@@ -251,7 +251,7 @@ chainConfiguration.eos.networks.mainnet = {
   name: "EOS Mainnet",
   slug: "mainnet",
   symbol: "EOS",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://explorer.eos.io",
   rpcUrls: {
@@ -264,7 +264,7 @@ chainConfiguration.eos.networks.testnet = {
   name: "EOS Testnet Goerli",
   slug: "testnet",
   symbol: "EOS",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://explorer.testnet.eos.io",
   rpcUrls: {
@@ -277,7 +277,7 @@ chainConfiguration.ethereum.networks.mainnet = {
   name: "Ethereum Mainnet",
   slug: "mainnet",
   symbol: "ETH",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://etherscan.io",
   rpcUrls: {
@@ -290,7 +290,7 @@ chainConfiguration.ethereum.networks.testnet = {
   name: "Ethereum Testnet",
   slug: "testnet",
   symbol: "ETH",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://goerli.etherscan.io",
   rpcUrls: {
@@ -303,7 +303,7 @@ chainConfiguration.filecoin.networks.mainnet = {
   name: "Filecoin Mainnet",
   slug: "mainnet",
   symbol: "FIL",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://filscan.io",
   rpcUrls: {
@@ -316,7 +316,7 @@ chainConfiguration.filecoin.networks.testnet = {
   name: "Filecoin Testnet",
   slug: "testnet",
   symbol: "FIL",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://calibration.filscan.io",
   rpcUrls: {
@@ -329,7 +329,7 @@ chainConfiguration.flare.networks.mainnet = {
   name: "Flare Mainnet",
   slug: "mainnet",
   symbol: "FLR",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "25000000000",
   explorer: "https://flare-explorer.flare.network",
   rpcUrls: {
@@ -342,7 +342,7 @@ chainConfiguration.flare.networks.testnet = {
   name: "Flare Testnet",
   slug: "testnet",
   symbol: "FLR",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "25000000000",
   explorer: "https://coston-explorer.flare.network",
   rpcUrls: {
@@ -355,7 +355,7 @@ chainConfiguration.optimism.networks.mainnet = {
   name: "Optimism Mainnet",
   slug: "mainnet",
   symbol: "OP",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://optimistic.etherscan.io",
   rpcUrls: {
@@ -368,7 +368,7 @@ chainConfiguration.optimism.networks.testnet = {
   name: "Optimism Testnet",
   slug: "testnet",
   symbol: "OP",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://goerli-optimism.etherscan.io",
   rpcUrls: {
@@ -381,7 +381,7 @@ chainConfiguration.polygon.networks.mainnet = {
   name: "Polygon Mainnet",
   slug: "mainnet",
   symbol: "MATIC",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "20000000000",
   explorer: "https://polygonscan.com",
   rpcUrls: {
@@ -394,7 +394,7 @@ chainConfiguration.polygon.networks.testnet = {
   name: "Polygon Testnet",
   slug: "testnet",
   symbol: "MATIC",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "20000000000",
   explorer: "https://mumbai.polygonscan.com",
   rpcUrls: {
@@ -407,7 +407,7 @@ chainConfiguration.starknet.networks.mainnet = {
   name: "Starknet Mainnet",
   slug: "mainnet",
   symbol: "STRK",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://starkscan.co",
   rpcUrls: {
@@ -420,7 +420,7 @@ chainConfiguration.starknet.networks.mainnet = {
         "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
       name: "Tether USD",
       symbol: "USDT",
-      decimals: 6n,
+      decimals: 6,
       icon: "icons/usdt.webp",
     },
     USDC: {
@@ -428,7 +428,7 @@ chainConfiguration.starknet.networks.mainnet = {
         "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
       name: "USD Coin",
       symbol: "USDC",
-      decimals: 6n,
+      decimals: 6,
       icon: "icons/usdc.webp",
     },
   },
@@ -438,7 +438,7 @@ chainConfiguration.starknet.networks.testnet = {
   name: "Starknet Sepolia",
   slug: "testnet",
   symbol: "STRK",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://sepolia.starkscan.co/",
   rpcUrls: {
@@ -450,14 +450,14 @@ chainConfiguration.starknet.networks.testnet = {
       contract: "",
       name: "Tether",
       symbol: "USDT",
-      decimals: 6n,
+      decimals: 6,
       icon: "icons/usdt.webp",
     },
     USDC: {
       contract: "",
       name: "USDC",
       symbol: "USDC",
-      decimals: 6n,
+      decimals: 6,
       icon: "icons/usdc.webp",
     },
   },
@@ -467,7 +467,7 @@ chainConfiguration.stellar.networks.mainnet = {
   name: "Stellar Mainnet",
   slug: "mainnet",
   symbol: "XLM",
-  decimals: 6n,
+  decimals: 6,
   gasprice: "250000000",
   explorer: "https://stellarchain.io",
   rpcUrls: {
@@ -483,7 +483,7 @@ chainConfiguration.stellar.networks.mainnet = {
       contract: "CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75",
       name: "USDC",
       symbol: "USDC",
-      decimals: 6n,
+      decimals: 6,
       icon: "icons/usdc.webp",
     },
   },
@@ -493,7 +493,7 @@ chainConfiguration.stellar.networks.testnet = {
   name: "Stellar Testnet",
   slug: "testnet",
   symbol: "XLM",
-  decimals: 6n,
+  decimals: 6,
   gasprice: "250000000",
   explorer: "https://stellarchain.io",
   rpcUrls: {
@@ -507,7 +507,7 @@ chainConfiguration.stellar.networks.testnet = {
       contract: "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
       name: "USDC",
       symbol: "USDC",
-      decimals: 6n,
+      decimals: 6,
       icon: "icons/usdc.webp",
     },
   },
@@ -521,7 +521,7 @@ chainConfiguration.stellar.networks.futurenet = {
   name: "Stellar Futurenet",
   slug: "futurenet",
   symbol: "XLM",
-  decimals: 6n,
+  decimals: 6,
   gasprice: "250000000",
   explorer: "https://stellarchain.io",
   rpcUrls: {
@@ -536,7 +536,7 @@ chainConfiguration.tron.networks.mainnet = {
   name: "Tron Mainnet",
   slug: "mainnet",
   symbol: "TRX",
-  decimals: 6n, // TODO: verify
+  decimals: 6, // TODO: verify
   gasprice: "250000000", // TODO: verify
   explorer: "https://tronscan.io",
   rpcUrls: {
@@ -549,7 +549,7 @@ chainConfiguration.tron.networks.testnet = {
   name: "Tron Shasta Testnet",
   slug: "testnet",
   symbol: "TRX",
-  decimals: 6n,
+  decimals: 6,
   gasprice: "250000000",
   explorer: "https://shasta.tronscan.io",
   rpcUrls: {
@@ -562,7 +562,7 @@ chainConfiguration.xdc.networks.mainnet = {
   name: "XDC Mainnet",
   slug: "mainnet",
   symbol: "XDC",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "12500000000",
   explorer: "https://xdcscan.com",
   rpcUrls: {
@@ -583,7 +583,7 @@ chainConfiguration.xdc.networks.testnet = {
   name: "XDC Testnet",
   slug: "testnet",
   symbol: "XDC",
-  decimals: 18n,
+  decimals: 18,
   gasprice: "12500000000",
   explorer: "https://testnet.xdcscan.com",
   rpcUrls: {
@@ -604,7 +604,7 @@ chainConfiguration.xrpl.networks.mainnet = {
   name: "XRP Mainnet",
   slug: "mainnet",
   symbol: "XRP",
-  decimals: 6n,
+  decimals: 6,
   gasprice: "250000000",
   explorer: "https://xrpscan.com",
   rpcUrls: {
@@ -617,7 +617,7 @@ chainConfiguration.xrpl.networks.testnet = {
   name: "XRP Testnet",
   slug: "testnet",
   symbol: "XRP",
-  decimals: 6n,
+  decimals: 6,
   gasprice: "250000000",
   explorer: "https://testnet.xrpl.org",
   rpcUrls: {

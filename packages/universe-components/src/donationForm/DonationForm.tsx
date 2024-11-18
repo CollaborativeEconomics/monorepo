@@ -2,7 +2,7 @@
 import appConfig from '@cfce/app-config';
 import { BlockchainManager } from '@cfce/blockchain-tools';
 import type { Prisma } from '@cfce/database';
-import { TokenTickerSymbol } from '@cfce/types';
+import type { TokenTickerSymbol } from '@cfce/types';
 import { mintAndSaveReceiptNFT } from '@cfce/utils';
 import {
   PAYMENT_STATUS,
@@ -112,7 +112,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   useEffect(() => {
     registryApi
       .get<{ coin: TokenTickerSymbol; rate: number }>(
-        `rates?coin=${selectedToken}&chain=${selectedChain}`,
+        `/rates?coin=${selectedToken}&chain=${selectedChain}`,
       )
       .then(response => {
         if (response.success) {
@@ -135,7 +135,8 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       console.log('CONNECT', connected);
       const data = {
         address,
-        amount: chainInterface.toBaseUnit(amount),
+        amount,
+        //amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || '',
       };
       const result = await chainInterface.sendPayment(data);

@@ -63,7 +63,7 @@ export default class XummClient extends XrplCommon {
     address,
     amount,
     memo,
-  }: { address: string; amount: bigint; memo?: string }): Promise<{
+  }: { address: string; amount: number; memo?: string }): Promise<{
     success: boolean
     error?: string
     txid?: string

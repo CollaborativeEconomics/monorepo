@@ -26,7 +26,7 @@ export default abstract class ChainBaseClass {
   public abstract fetchLedger(method: unknown, params: unknown): unknown
   public async sendPayment?(params: {
     address: string
-    amount: bigint
+    amount: number
     memo: string
     walletSeed?: string
   }): Promise<{
@@ -37,7 +37,7 @@ export default abstract class ChainBaseClass {
   }>
   public async sendToken?(params: {
     address: string
-    amount: bigint
+    amount: number
     token: TokenTickerSymbol
     memo: string
     walletSeed?: string
@@ -90,13 +90,13 @@ export default abstract class ChainBaseClass {
 
   // utility functions
   fromBaseUnit(amount: bigint): number {
-    const wei = 10n ** this.network.decimals
-    return Number(amount / wei)
+    const wei = 10 ** this.network.decimals
+    return Number(amount) / wei
   }
 
   toBaseUnit(amount: number): bigint {
-    const wei = 10n ** this.network.decimals
-    return BigInt(amount) * wei
+    const wei = 10 ** this.network.decimals
+    return BigInt(amount * wei)
   }
 
   toHex(str: string) {
