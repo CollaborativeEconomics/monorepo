@@ -16,7 +16,6 @@ test("Setup (create organization)", async ({ request, baseURL }) => {
       headers,
     },
   )
-  console.log("response", response)
   if (response.status() !== 200) {
     return
   }
@@ -42,7 +41,6 @@ test("POST /donations", async ({ request, baseURL }) => {
     headers,
     data,
   })
-  console.log("response", response, data)
   expect(response.status()).toBe(200)
   const body = await response.json()
   expect(body.success).toBe(true)

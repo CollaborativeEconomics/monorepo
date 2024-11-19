@@ -21,7 +21,6 @@ test("Setup (delete test data)", async ({ baseURL, request }) => {
       headers,
     },
   )
-  console.log("response", response)
   if (response.status() !== 200) {
     return
   }
