@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
     const result = await getDonations(query)
     return NextResponse.json({ success: true, data: result }, { status: 201 })
   } catch (error) {
-    console.error({ error })
     return NextResponse.json({ success: false }, { status: 400 })
   }
 }
@@ -26,7 +25,6 @@ export async function POST(req: NextRequest) {
   try {
     const apiKey = req.headers.get("x-api-key")
     const authorized = await checkApiKey(apiKey)
-    console.log("authorized", authorized, apiKey)
 
     if (!authorized) {
       return NextResponse.json({ success: false }, { status: 403 })
@@ -36,7 +34,6 @@ export async function POST(req: NextRequest) {
     const result = await newDonation(record)
     return NextResponse.json({ success: true, data: result }, { status: 200 })
   } catch (error) {
-    console.error("ERROR:", error)
     return NextResponse.json(
       {
         success: false,
@@ -49,6 +46,5 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE() {
   const message = "Invalid HTTP method, only GET and POST accepted"
-  console.error(message)
   return NextResponse.json({ success: false, error: message }, { status: 400 })
 }

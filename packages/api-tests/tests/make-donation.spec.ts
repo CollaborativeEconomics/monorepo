@@ -16,7 +16,6 @@ test.beforeAll(async ({ request, baseURL }) => {
   const orgs = await orgResponse.json()
   expect(orgs.data.length).toBeGreaterThan(0)
   orgId = orgs.data[0].id
-  console.log("orgId", orgId)
 })
 test.afterAll(async ({ request, baseURL }) => {
   // delete the organization
@@ -54,18 +53,15 @@ test("Donation creation and deletion", async ({ request, baseURL }) => {
     const body = await response.json()
     expect(body.success).toBe(true)
     donationId = body.data.id
-    console.log("donationId", donationId)
   })
 
   await test.step("Delete the donation", async () => {
-    console.log("DELETE /donation", `${baseURL}/donations/${donationId}`)
     const response = await request.delete(
       `${baseURL}/donations/${donationId}`,
       {
         headers,
       },
     )
-    console.log("response", response)
 
     expect(response.status()).toBe(200)
     const body = await response.json()

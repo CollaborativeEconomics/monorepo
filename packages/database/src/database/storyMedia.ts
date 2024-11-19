@@ -39,7 +39,6 @@ export async function getStoryMedia(
   if (query?.id) {
     filter.where.storyId = query.id
   }
-  console.log("FILTER", filter)
   const result = await prismaClient.storyMedia.findMany(filter)
   return result
 }
@@ -59,7 +58,6 @@ interface StoryMediaData {
 }
 
 export async function addStoryMedia(id: string, images: StoryMediaData) {
-  console.log("SPIX", id, images)
   if (images?.media?.length < 1) {
     return null
   }
@@ -71,7 +69,6 @@ export async function addStoryMedia(id: string, images: StoryMediaData) {
 }
 
 export async function deleteStoryMedia(id: string) {
-  console.log("DELETE STORY MEDIA", id)
   const result = await prismaClient.storyMedia.delete({ where: { id } })
   return result
 }

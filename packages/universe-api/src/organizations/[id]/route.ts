@@ -7,8 +7,6 @@ import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../../checkApiKey"
 
 export async function GET(req: NextRequest) {
-  console.log("query", req.url)
-
   try {
     const apiKey = req.headers.get("x-api-key")
     const authorized = await checkApiKey(apiKey)
@@ -30,7 +28,6 @@ export async function GET(req: NextRequest) {
     const result = await getOrganizationById(id)
     return NextResponse.json({ success: true, data: result }, { status: 200 }) // Status code 200 for successful GET request
   } catch (error) {
-    console.error(error)
     return NextResponse.json(
       {
         success: false,

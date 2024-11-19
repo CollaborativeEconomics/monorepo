@@ -45,13 +45,11 @@ export async function getOrganizations(
 
   if (query?.featured) {
     const record = await getFeaturedOrganization()
-    console.log("Featured", record?.name)
     return record ? [record] : null
   }
 
   if (query?.email) {
     const record = await getOrganizationByEmail(query.email)
-    console.log("Org", record?.email, record?.name)
     return record ? [record] : null
   }
 

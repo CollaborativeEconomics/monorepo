@@ -88,7 +88,6 @@ export async function getStoryById(
 }
 
 export async function addStory(data: Story): Promise<Story> {
-  console.log("DATA", data)
   const result = await prismaClient.story.create({ data })
   return result
 }
@@ -106,7 +105,6 @@ export async function updateStory(
   data: Partial<Story>,
 ): Promise<Story> {
   const result = await prismaClient.story.update({ where: { id }, data })
-  console.log("UPDATE", result)
   return result
 }
 

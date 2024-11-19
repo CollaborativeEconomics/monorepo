@@ -20,7 +20,6 @@ export async function GET(req: NextRequest) {
       { status: 201 },
     )
   } catch (error) {
-    console.error({ error })
     return NextResponse.json({ success: false }, { status: 400 })
   }
 }
@@ -34,7 +33,6 @@ export async function DELETE(req: NextRequest) {
   }
 
   const id = req.nextUrl.pathname.split("/").pop()
-  console.log("DELETE donation", apiKey, authorized, id)
   if (!id) {
     return NextResponse.json({ success: false }, { status: 400 })
   }
