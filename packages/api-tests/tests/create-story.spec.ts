@@ -1,6 +1,5 @@
 import type { Prisma } from "@cfce/database"
-import { expect, request, test } from "@playwright/test"
-// make it serial
+import { expect, test } from "@playwright/test"
 
 test.describe.configure({ mode: "serial" })
 
@@ -22,6 +21,10 @@ test("Setup (delete test data)", async ({ baseURL, request }) => {
       headers,
     },
   )
+  console.log("response", response)
+  if (response.status() !== 200) {
+    return
+  }
   const orgBody = await response.json()
   if (!orgBody?.data?.length) {
     // no test data, we can start fresh

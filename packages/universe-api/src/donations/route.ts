@@ -31,9 +31,11 @@ export async function POST(req: NextRequest) {
     }
 
     const record = await req.json()
+    console.log("record", record)
     const result = await newDonation(record)
     return NextResponse.json({ success: true, data: result }, { status: 200 })
   } catch (error) {
+    console.error("POST donations error", error)
     return NextResponse.json(
       {
         success: false,
