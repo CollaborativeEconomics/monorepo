@@ -254,6 +254,14 @@ export async function newOrganization(
   return result
 }
 
+export async function updateOrganization(
+  id: string,
+  data: Prisma.OrganizationUpdateInput,
+) {
+  const result = await prismaClient.organization.update({ where: { id }, data })
+  return result
+}
+
 export async function deleteOrganization(id: string) {
   const result = await prismaClient.organization.delete({ where: { id } })
   return result

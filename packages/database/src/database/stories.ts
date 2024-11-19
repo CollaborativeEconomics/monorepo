@@ -1,5 +1,5 @@
-import type { Prisma, Story } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
+import type { Prisma, Story } from "@prisma/client"
 import { prismaClient } from ".."
 
 interface StoryQuery extends ListQuery {
@@ -107,5 +107,10 @@ export async function updateStory(
 ): Promise<Story> {
   const result = await prismaClient.story.update({ where: { id }, data })
   console.log("UPDATE", result)
+  return result
+}
+
+export async function deleteStory(id: string): Promise<Story> {
+  const result = await prismaClient.story.delete({ where: { id } })
   return result
 }
