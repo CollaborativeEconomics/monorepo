@@ -20,6 +20,7 @@ import type {
   NFTDataWithRelations as Receipts,
   StoryWithRelations as Stories
 } from '@cfce/database';
+import { imageUrl } from '@cfce/utils';
 //import { setUser } from '@cfce/database';
 
 
@@ -96,7 +97,7 @@ export default async function Profile({userId,userData}:{userId:string, userData
             <div className="flex flex-row flex-start items-center rounded-full">
               <Image
                 className="mr-8 rounded-full"
-                src={user?.image || nopic}
+                src={imageUrl(user?.image) || nopic}
                 width={100}
                 height={100}
                 alt="Avatar"
@@ -208,7 +209,7 @@ export default async function Profile({userId,userData}:{userId:string, userData
                     {org?.image && (
                       <Image
                         className="rounded-full mr-1"
-                        src={org.image}
+                        src={imageUrl(org.image)}
                         width={64}
                         height={64}
                         alt="Organization"
@@ -236,7 +237,7 @@ export default async function Profile({userId,userData}:{userId:string, userData
                   <Image
                     key={badge.id}
                     className="mr-1"
-                    src={badge.image}
+                    src={imageUrl(badge.image)}
                     width={72}
                     height={72}
                     alt="Badge"
