@@ -62,7 +62,7 @@ export interface NetworkConfig {
   name: string
   slug: Network
   symbol: string
-  decimals: bigint
+  decimals: number
   gasprice: string
   explorer: string
   rpcUrls: {
@@ -104,7 +104,7 @@ interface TokenConfig {
   contract: string
   name: string
   symbol: string
-  decimals: bigint
+  decimals: number
   icon: string
 }
 

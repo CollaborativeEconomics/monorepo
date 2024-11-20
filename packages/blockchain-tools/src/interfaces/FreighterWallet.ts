@@ -55,18 +55,18 @@ class FreighterWallet extends ChainBaseClass {
     address,
     amount,
     memo,
-  }: { address: string; amount: bigint; memo: string }) {
+  }: { address: string; amount: number; memo: string }) {
     try {
       console.log("From", this.connectedWallet || "???")
       console.log("Paying", amount, "XLM to", address, "Memo", memo || "[no]")
       const act = await this.horizon.loadAccount(this.connectedWallet)
       //const fee = 5000
       const fee = await this.horizon.fetchBaseFee() // 100
-      const xlm = this.fromBaseUnit(amount).toString()
+      // const xlm = this.fromBaseUnit(amount).toString()
       const data = {
         destination: address,
         //amount: `${amount}`,
-        amount: xlm, // Stellar sends XLM as whole, not stroops
+        amount: amount.toString(), // Stellar sends XLM as whole, not stroops
         asset: StellarSDK.Asset.native(),
       }
       const opr = StellarSDK.Operation.payment(data)

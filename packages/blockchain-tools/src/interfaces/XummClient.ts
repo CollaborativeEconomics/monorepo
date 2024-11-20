@@ -63,7 +63,7 @@ export default class XummClient extends XrplCommon {
     address,
     amount,
     memo,
-  }: { address: string; amount: bigint; memo?: string }): Promise<{
+  }: { address: string; amount: number; memo?: string }): Promise<{
     success: boolean
     error?: string
     txid?: string
@@ -71,11 +71,12 @@ export default class XummClient extends XrplCommon {
   }> {
     console.log("XRP Sending payment...", address, amount, memo)
     const wallet = this.getWallet()
+    const amountDrops = this.toBaseUnit(amount)
     try {
       const request: XummJsonTransaction = {
         TransactionType: "Payment",
         Destination: address,
-        Amount: String(amount), // one million drops, 1 XRP
+        Amount: String(amountDrops), // one million drops, 1 XRP
       }
       if (memo) {
         request.DestinationTag = memo

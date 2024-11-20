@@ -1,4 +1,4 @@
-import type { AppConfig } from "@cfce/types"
+import type { AppConfig, ClientInterfaces } from "@cfce/types"
 
 const siteInfo: AppConfig["siteInfo"] = {
   title: "Name",

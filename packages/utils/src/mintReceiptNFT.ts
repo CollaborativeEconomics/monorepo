@@ -311,10 +311,10 @@ export async function mintAndSaveReceiptNFT({
       coinLabel: chain,
       coinValue: amountCUR,
       usdValue: amountUSD,
-      tokenId: `${receiptContract} #${tokenId}`,
+      tokenId: tokenId,
       status: DonationStatus.claimed,
     }
-
+    console.log('NFT', data)
     const saved = await newNftData(data)
 
     if (!saved) {

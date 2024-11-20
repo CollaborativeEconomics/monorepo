@@ -88,7 +88,7 @@ class StarknetWallet extends ChainBaseClass {
     address,
     amount,
     memo,
-  }: { address: string; amount: bigint; memo: string }) {
+  }: { address: string; amount: number; memo: string }) {
     try {
       const starknet = await this.getWallet()
       if (!starknet?.wallet) {
@@ -173,7 +173,9 @@ class StarknetWallet extends ChainBaseClass {
 
       // Gasless Transaction
 
-      const weihex = `0x${amount.toString(16)}`
+      const amountWei = this.toBaseUnit(amount)
+
+      const weihex = `0x${amountWei.toString(16)}`
 
       const options: GaslessOptions = {
         baseUrl: SEPOLIA_BASE_URL,
@@ -182,7 +184,9 @@ class StarknetWallet extends ChainBaseClass {
       }
 
       if (!options.apiPublicKey || !options.apiKey) {
-        throw new Error("AVNU API keys are not defined in environment variables")
+        throw new Error(
+          "AVNU API keys are not defined in environment variables",
+        )
       }
 
       const gasTokenPrice = await fetchGasTokenPrices(options)
