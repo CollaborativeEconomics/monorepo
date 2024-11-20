@@ -159,7 +159,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
         throw new Error(`Payment error: ${paymentResult.error ?? 'unknown'}`);
       }
 
-      setButtonMessage('Minting NFT receipt...');
+      setButtonMessage('Minting NFT receipt, please wait...');
       const data = {
         donorName: name || 'Anonymous',
         email: emailReceipt ? email : undefined,
@@ -187,7 +187,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
 
       setButtonMessage('Thank you for your donation!');
       setDonationForm(draft => {
-        draft.paymentStatus = PAYMENT_STATUS.ready;
+        draft.paymentStatus = PAYMENT_STATUS.minted;
         draft.date = new Date();
       });
     } catch (error) {

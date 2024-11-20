@@ -2,21 +2,16 @@ import { createAnonymousUser } from '@cfce/auth';
 import type { Chain } from '@cfce/database';
 
 export default async function Home() {
-
-  async function createUser() {
-    console.log('Creating user...');
-    const user = await createAnonymousUser({
-      walletAddress: '0x1234567891',
-      chain: 'Tron' as Chain,
-      network: 'testnet',
-      tba: true,
-    });
-    console.log('User', user);
-    return JSON.stringify(user, null, 4);
+  /*
+  async function createUser(){
+    console.log('Creating user...')
+    const user = await createAnonymousUser('0x1234567891', 'Tron' as Chain, 'testnet', true) // No TBA for now
+    console.log('User', user)
+    return JSON.stringify(user,null,4)
   }
-
-  //const result = await createUser()
-  const result = 'OK'
+  const result = await createUser()
+*/
+  const result = 'OK';
 
   return (
     <>

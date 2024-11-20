@@ -4,7 +4,7 @@ const path = require('node:path');
 const nextConfig = {
   outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
-    //esmExternals: 'loose',
+    //esmExternals: 'loose', //The "esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
     optimizePackageImports: [
       '@cfce/universe-components',
       '@cfce/blockchain-tools',

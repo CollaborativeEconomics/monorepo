@@ -1,9 +1,13 @@
-const { withSentryConfig } = require('@sentry/nextjs');
+//const { withSentryConfig } = require('@sentry/nextjs');
 const { default: next } = require('next');
 const path = require('node:path');
 
 const webpackConfig = (config, { isServer }) => {
-  if (!isServer) {
+  if (isServer) {
+    config.ignoreWarnings = [
+      { module: /opentelemetry/ }, // remove annoying warnings in terminal - ref: https://github.com/open-telemetry/opentelemetry-js/issues/4173
+    ];
+  } else {
     config.externals = config.externals || [];
     config.externals.push(({ context, request }, callback) => {
       if (/^node:/.test(request)) {
@@ -50,8 +54,7 @@ const nextConfig = {
   },
   outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
-    //instrumentationHook: false,
-    //esmExternals: true,
+    //esmExternals: true,  //The "esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
     optimizePackageImports: [
       '@cfce/universe-components',
       '@cfce/blockchain-tools',
@@ -63,10 +66,11 @@ const nextConfig = {
   webpack: webpackConfig,
 };
 
-// const sentryfulConfig = withSentryConfig(nextConfig, {
-//   // For all available options, see:
-//   // https://github.com/getsentry/sentry-webpack-plugin#options
-//   unstable_sentryWebpackPluginOptions: webpackConfig,
+/*
+const sentryfulConfig = withSentryConfig(nextConfig, {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
+  unstable_sentryWebpackPluginOptions: webpackConfig,
 
 //   org: 'center-for-collaborative-econ',
 //   project: 'giving-universe',
@@ -104,8 +108,9 @@ const nextConfig = {
 //   // https://vercel.com/docs/cron-jobs
 //   automaticVercelMonitors: true,
 
-//   telemetry: false,
-// });
+  telemetry: false,
+});
+*/
 
 // TODO: sentry is timing out, so I disabled it for now
 // module.exports = sentryfulConfig;

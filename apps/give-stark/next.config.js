@@ -48,8 +48,8 @@ const nextConfig = {
   },
   outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
-    //instrumentationHook: false,
-    //esmExternals: true,
+    //instrumentationHook: true,
+    //esmExternals: true,  //The "esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
     optimizePackageImports: [
       '@cfce/universe-components',
       '@cfce/blockchain-tools',

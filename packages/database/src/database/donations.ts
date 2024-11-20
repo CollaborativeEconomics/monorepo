@@ -1,7 +1,7 @@
 import "server-only"
+import type { ListQuery } from "@cfce/types"
 import type { Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "@cfce/types"
 
 interface DonationQuery extends ListQuery {
   id?: string

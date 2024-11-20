@@ -2,14 +2,16 @@ import type { ChainSlugs, Network } from "@cfce/types"
 import _get from "lodash/get"
 import Web3 from "web3"
 import ChainBaseClass from "../chains/ChainBaseClass"
-import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
 import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // must pass tokenid
+import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function getObjectValue(obj:any, prop:string) {
-  return prop.split('.').reduce((r, val) => { return r ? r[val] : undefined; }, obj)
+function getObjectValue(obj: any, prop: string) {
+  return prop.split(".").reduce((r, val) => {
+    return r ? r[val] : undefined
+  }, obj)
 }
 
 export default class Web3Server extends ChainBaseClass {
@@ -37,7 +39,7 @@ export default class Web3Server extends ChainBaseClass {
     contractId,
     walletSeed,
   }: { uri: string; address: string; contractId: string; walletSeed: string }) {
-    console.log('CHAIN', this.chain)
+    console.log("CHAIN", this.chain)
     console.log("Server minting NFT to", address, uri)
     if (!this.web3) {
       console.error("Web3 not available")
@@ -74,16 +76,16 @@ export default class Web3Server extends ChainBaseClass {
     console.log("INFO", info)
     let tokenNum = ""
     //const hasLogs = info.logs.length > 0
-    if(info.logs?.length > 0) {
+    if (info.logs?.length > 0) {
       console.log("LOGS.0", JSON.stringify(info?.logs[0].topics, null, 2))
-      const nftSex = getObjectValue(info, 'logs.0.topics.3')
-      const nftSeq = Number.parseInt(nftSex,16)
-      console.log('SEQ', nftSeq, nftSex)
+      const nftSex = getObjectValue(info, "logs.0.topics.3")
+      const nftSeq = Number.parseInt(nftSex, 16)
+      console.log("SEQ", nftSeq, nftSex)
       tokenNum = ` #${nftSeq}`
     } else {
-      const supply = await instance.methods.totalSupply.call({from:minter}) // last minted is total nfts
-      console.log('SUPPLY', supply)
-      const nftSeq = Number.parseInt(supply.toString(),10) - 1
+      const supply = await instance.methods.totalSupply.call({ from: minter }) // last minted is total nfts
+      console.log("SUPPLY", supply)
+      const nftSeq = Number.parseInt(supply.toString(), 10) - 1
       tokenNum = ` #${nftSeq}`
     }
     if (info.status === 1n) {
@@ -164,8 +166,8 @@ export default class Web3Server extends ChainBaseClass {
       //const tokenId = `${contractId}#${tokenNum}`
       const result = {
         success: true,
-        //txId: Buffer.from(info?.transactionHash).toString("hex"),
-        txId: info?.transactionHash,
+        txId: Buffer.from(info?.transactionHash).toString("hex"),
+        //txId: info?.transactionHash,
         tokenId,
       }
       console.log("RESULT", result)
@@ -316,6 +318,7 @@ export default class Web3Server extends ChainBaseClass {
   // }
   async getTransactionInfo(txId: string) {
     const txInfo = await this.fetchLedger("eth_getTransactionByHash", [txId])
+    console.log("TX", txInfo)
 
     if (!txInfo || txInfo.error) {
       return { error: "Transaction not found" }
@@ -329,7 +332,7 @@ export default class Web3Server extends ChainBaseClass {
       value: txInfo.value,
       fee: (BigInt(txInfo.gas) * BigInt(txInfo.gasPrice)).toString(),
       blockNumber: Number.parseInt(txInfo.blockNumber, 16),
-      timestamp: "" // Ethereum transactions do not directly provide a timestamp
+      timestamp: "", // Ethereum transactions do not directly provide a timestamp
     }
   }
 

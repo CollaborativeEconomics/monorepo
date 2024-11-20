@@ -1,5 +1,6 @@
 export { default as createStory } from "./createStory"
 export { default as localizedNumber } from "./localizedNumber"
+export { default as imageUrl } from "./imageUrl"
 export * from "./mailgun"
 export * from "./state"
 export * from "./mintReceiptNFT"
