@@ -19,7 +19,6 @@ import {
 import { uploadFile } from '@cfce/utils';
 import { imageUrl } from '@cfce/utils';
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
-import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 //import { setUser } from '@cfce/database';

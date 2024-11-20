@@ -121,7 +121,7 @@ chainConfiguration.arbitrum.networks.mainnet = {
   name: "Arbitrum Mainnet",
   slug: "mainnet",
   symbol: "ARB",
-  decimals: 18, // decimals shouldn't be a bigint, will never exceed 18
+  decimals: 18,
   gasprice: "250000000",
   explorer: "https://arbiscan.io",
   rpcUrls: {
