@@ -58,4 +58,3 @@ appConfig.chainDefaults = {
 }
 
 export default appConfig
-

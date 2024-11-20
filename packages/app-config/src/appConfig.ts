@@ -36,6 +36,7 @@ type AppId =
   | "partners"
   | "registry"
   | "tests"
+
 const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
   "give-credits": {
     development: giveCreditsDev,
