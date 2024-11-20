@@ -238,6 +238,7 @@ export async function mintAndSaveReceiptNFT({
     }, 2)
     console.log("META STRING", metadataString)
     const bytes = Buffer.from(metadataString)
+    console.log("BYTES", bytes)
     const cidMeta = await uploadDataToIPFS(fileId, bytes, "application/json")
     console.log("CID", cidMeta)
     if (!cidMeta || typeof cidMeta !== "string") {

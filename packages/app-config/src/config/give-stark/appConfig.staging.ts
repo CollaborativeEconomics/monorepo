@@ -29,7 +29,7 @@ const chains: AppConfig["chains"] = {
     slug: "starknet",
     network: "testnet",
     contracts: {
-      receiptMintbotERC721: "0x2e5b08fc000756e043f8701f73886f9f76497f996f9a94b657b6d2b59c57dad",
+      receiptMintbotERC721: "0x55e3f6e2abe8443047ec5f70875791a2463c8137c07001c3f279d4f0e0cb62f",
     },
     enabledWallets: ["argent"],
     tokens: ["STRK"],

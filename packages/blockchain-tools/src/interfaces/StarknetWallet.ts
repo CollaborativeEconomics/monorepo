@@ -310,6 +310,8 @@ async mintNFT({
     if (!minterAddress || !walletSeed) {
       throw new Error("Minter address or wallet seed not available");
     }
+
+   
     
     const account = new Account(provider, minterAddress, walletSeed);
     
@@ -317,17 +319,21 @@ async mintNFT({
     contract.connect(account);
     
     // Generate unique token ID
-    const tokenId = await contract.get_current_token_id();
-    
-    const mintTx = await contract.safe_mint(address, tokenId, uri);
+    // const tokenId = 1;
+    const mintTx = await contract.mint(address, uri);
+    // console.log("MINT TX", mintTx);
     const receipt = await provider.waitForTransaction(mintTx.transaction_hash);
-    console.log("Receipt", receipt)
+    const events = contract.parseEvents(receipt);
+    
+    // Find the Transfer event from the NFT contract
+    const transferEvent = events[0]['openzeppelin_token::erc721::erc721::ERC721Component::Transfer'];
+    const tokenId = Number(transferEvent.token_id).toString();
     
     if (receipt.isSuccess()) {
       return {
         success: true,
         txId: mintTx.transaction_hash,
-        tokenId: tokenId.toString()
+        tokenId: tokenId
       };
     }
     
@@ -355,7 +361,3 @@ async mintNFT({
 }
 
 export default StarknetWallet
-
-function randomNumber(arg0: number) {
-  throw new Error("Function not implemented.")
-}
