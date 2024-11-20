@@ -54,6 +54,10 @@
     "./donationForm": {
       "import": "./dist/donationForm/index.js",
       "types": "./dist/donationForm/index.d.ts"
+    },
+    "./profile": {
+      "import": "./dist/profile/index.js",
+      "types": "./dist/profile/index.d.ts"
     }
   },
   "devDependencies": {

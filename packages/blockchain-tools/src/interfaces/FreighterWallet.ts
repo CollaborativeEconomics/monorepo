@@ -62,7 +62,8 @@ class FreighterWallet extends ChainBaseClass {
       const act = await this.horizon.loadAccount(this.connectedWallet)
       //const fee = 5000
       const fee = await this.horizon.fetchBaseFee() // 100
-      const xlm = this.fromBaseUnit(amount).toString()
+      //const xlm = this.fromBaseUnit(amount).toString()
+      const xlm = amount.toString()
       const data = {
         destination: address,
         //amount: `${amount}`,

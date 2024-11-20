@@ -248,14 +248,9 @@ export async function mintAndSaveReceiptNFT({
         contractId: chainContract.contract,
         address: donorWalletAddress,
         uri: uriMeta,
-<<<<<<< HEAD
         walletSeed: walletSecret
       }
       const mintResponse = await BlockchainManager[chainContract.chain]?.server.mintNFT(args)
-=======
-        walletSeed: walletSecret,
-      })
->>>>>>> main
       console.log("RESMINT", mintResponse)
       if (!mintResponse) {
         throw new Error("Error minting NFT")

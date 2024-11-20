@@ -7,6 +7,7 @@ import type {
 } from "./BlockchainTools"
 
 type ContractType = "receiptMintbotERC721" | "credits"
+
 export interface AppChainConfig {
   slug: ChainSlugs
   network: string
