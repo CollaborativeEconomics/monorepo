@@ -10,10 +10,10 @@ appConfig.siteInfo = {
   ...appConfig.siteInfo,
   title: "Give Stark",
   description: "Make tax-deductible donations on Starknet",
-  // logo: {
-  //   light: "/newui/logo.svg",
-  //   dark: "/newui/logoWhite.svg",
-  // },
+  logo: {
+    light: "/newui/logo.png",
+    dark: "/newui/logo.svg",
+  },
 }
 
 // Override chains
