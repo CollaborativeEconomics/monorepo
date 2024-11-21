@@ -52,22 +52,40 @@ class StarknetWallet extends ChainBaseClass {
   }
 
   async getWallet() {
-    const {wallet, connector} = await connect({
+    const { wallet, connector } = await connect({
       modalMode: "alwaysAsk"
-    })
+    });
 
-    const account = await connector?.account()
-
-    this.connectedWallet = account.address
-    this.account = account
-
-    if (!wallet) {
-      throw new Error("Wallet not found")
+    const account = await connector?.account();
+    
+    // Check if wallet is connected to Sepolia
+    const currentChain = await wallet?.provider?.getChainId();
+    const sepoliaChainId = constants.StarknetChainId.SN_SEPOLIA; // Starknet Sepolia Chain ID
+    
+    if (currentChain !== sepoliaChainId) {
+      try {
+        await wallet?.request({
+          type: 'wallet_switchStarknetChain',
+          params: {
+            chainId: constants.StarknetChainId.SN_SEPOLIA,
+          },
+        });
+      } catch (error) {
+        console.error('Failed to switch network:', error);
+        throw new Error('Please switch to Starknet Sepolia network in your wallet');
+      }
     }
 
-    this.wallet = wallet
-    this.connector = connector
-    return {wallet, connector}
+    this.connectedWallet = account.address;
+    this.account = account;
+
+    if (!wallet) {
+      throw new Error("Wallet not found");
+    }
+
+    this.wallet = wallet;
+    this.connector = connector;
+    return { wallet, connector };
   }
 
   async connect() {
