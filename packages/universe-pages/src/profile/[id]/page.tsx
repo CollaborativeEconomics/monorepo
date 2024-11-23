@@ -61,11 +61,12 @@ export default async function Profile({
     return <NotFound />;
   }
   const userData = await fetchUserData(userId);
-  const nopic = '/media/nopic.png';
+  const plainData = JSON.parse(JSON.stringify(userData))
+  //const nopic = '/media/nopic.png';
 
   return (
     <main className="container min-h-screen flex flex-col items-stretch py-24 mt-24">
-      <ProfileForm userId={userId} userData={userData} />
+      <ProfileForm userId={userId} userData={plainData} />
     </main>
   )
 }

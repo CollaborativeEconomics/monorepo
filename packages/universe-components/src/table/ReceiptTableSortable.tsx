@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/ui/table';
+import { imageUrl } from '@cfce/utils';
 
 interface ReceiptTableSortableProps {
   receipts: NFTDataWithRelations[];
@@ -125,7 +126,7 @@ export default function ReceiptTableSortable({
                     <TableCell key={cell.id}>
                       {cell?.column?.id === 'imageUri' ? (
                         <Image
-                          src={cell?.getValue() as string}
+                          src={imageUrl(cell?.getValue() as string)}
                           width={64}
                           height={64}
                           alt="NFT"

@@ -2,6 +2,7 @@
 
 import { signOutAction } from '../actions';
 import { Button } from './Button';
+import { redirect } from 'next/navigation'
 // note sure why all this csrf stuff was needed? \/\/\/
 // Note: Logout works with a direct link to NextAuth's unbranded /api/auth/signout
 // however signOut does not appear to work consistently (e.g. doesn't clear session) and may cause redirect loops
@@ -39,5 +40,11 @@ import { Button } from './Button';
 // }
 
 export function LogoutButton() {
-  return <Button onClick={signOutAction}>Log Out</Button>;
+  function goHome(){
+    console.log('SIGNOUT')
+    signOutAction()
+    window.location.href = '/';
+    //redirect('/')
+  }
+  return <Button onClick={goHome}>Log Out</Button>;
 }

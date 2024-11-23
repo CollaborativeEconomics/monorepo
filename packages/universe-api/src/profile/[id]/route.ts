@@ -41,7 +41,7 @@ export async function POST(
   const id = (await context?.params)?.id || ""
   try {
     const body = await request.json()
-    console.log("USER", body)
+    console.log("POST USER", body)
     const res = await setUser(id, body)
     console.log("UPDATED", res)
     return Response.json(res)

@@ -2,6 +2,8 @@ import type { Prisma } from "@cfce/database"
 import type { Chain, User } from "@cfce/database/types"
 import type { AuthTypes } from "@cfce/types"
 import { registryApi } from "@cfce/utils"
+import fetchUserByWallet from "./actions/fetchUserByWallet"
+import { createNewUser } from "./actions/createNewUser"
 //import type { User } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
@@ -16,6 +18,67 @@ interface Credentials {
   currency: string
 }
 
+
+async function getUserByCredentials(
+  { id: userId, address, chain, chainId, network, currency }: Credentials,
+  createTBA = false,
+) {
+  try {
+    let user: User | null = await fetchUserByWallet(address || "")
+    // const result = await registryApi.get<User>(`/users?wallet=${address}`)
+    // let user = result.data
+    //console.log("USER BY CREDS", user)
+    if (!user) {
+      const uuid = uuidv7()
+      const mail = `${userId}@cfce.io`
+      const userData: Prisma.UserCreateInput = {
+        created: new Date(),
+        api_key: uuid,
+        name: "Anonymous",
+        description: "",
+        email: mail,
+        emailVerified: false,
+        image: "",
+        inactive: false,
+        wallet: address || "",
+        wallets: {
+          create: [
+            {
+              chain: chain as Chain,
+              address: address || "",
+            },
+          ],
+        },
+      }
+      user = await createNewUser(userData, createTBA)
+      // const result = await registryApi.post<User>("/users", {
+      //   ...userData,
+      //   createTBA,
+      // })
+      // user = result.data
+      //console.log("USER RESULT", user)
+    }
+    const info = {
+      id: user?.id,
+      name: user?.name || "Anonymous",
+      email: user?.email || "test@example.com",
+      image: user?.image || "/media/nopic.png",
+      address: address || "",
+      chain: chain,
+      network: network || "",
+      currency: currency || "",
+    }
+    //console.log("USER INFO", info)
+    return info
+  } catch (ex) {
+    console.error(ex)
+    return null
+  }
+}
+
+
+
+/*
 async function getUserByCredentials(
   { id: userId, address, chain, chainId, network, currency }: Credentials,
   createTBA = false,
@@ -23,8 +86,12 @@ async function getUserByCredentials(
   try {
     // let user: User | null = await getUserByWallet(credentials?.address || "")
     const result = await registryApi.get<User>(`/users?wallet=${address}`)
+    console.log("USER BY CREDS", result)
+    if(result?.error){
+      console.error('ERROR GETTING USER BY WALLET', address, result.error)
+      return null
+    }
     let user = result.data
-    console.log("USER", user)
     if (!user) {
       const uuid = uuidv7()
       const mail = `${userId}@cfce.io`
@@ -51,6 +118,7 @@ async function getUserByCredentials(
         ...userData,
         createTBA,
       })
+      console.log("USER RESULT", result)
       user = result.data
     }
     const info = {
@@ -59,16 +127,18 @@ async function getUserByCredentials(
       email: user?.email || "test@example.com",
       image: user?.image || "/media/nopic.png",
       address: address || "",
-      chain: chain,
-      network: network || "",
+      chain: chain || "",
+      network: network || "testnet",
       currency: currency || "",
     }
+    console.log("USER INFO", info)
     return info
   } catch (ex) {
     console.error(ex)
     return null
   }
 }
+*/
 
 const credentialsDefinition = {
   id: { label: "id", type: "text" },
@@ -82,12 +152,13 @@ const credentialsDefinition = {
 const authorizeChain = async (
   credentials: Partial<Record<keyof Credentials, unknown>>,
 ) => {
-  console.log("Credentials", credentials)
+  //console.log("Credentials", credentials)
   if (!credentials) {
     return null
   }
   try {
     const user = await getUserByCredentials(credentials as Credentials)
+    //console.log("User by credentials", user)
     return user
   } catch (ex) {
     console.error("ERROR:", ex)

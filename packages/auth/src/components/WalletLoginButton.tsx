@@ -34,7 +34,7 @@ export function WalletLoginButton({
     if (!walletAddress) {
       throw new Error(`No wallet address found: ${walletAddress}`);
     }
-
+    //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
     await walletLogin(method, {
       walletAddress,
       chainConfig,
