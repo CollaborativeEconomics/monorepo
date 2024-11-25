@@ -4,6 +4,7 @@ import Web3 from "web3"
 import ChainBaseClass from "../chains/ChainBaseClass"
 import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // must pass tokenid
 import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
+import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
 

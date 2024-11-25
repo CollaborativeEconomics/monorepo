@@ -1,5 +1,5 @@
-import { createAnonymousUser } from '@cfce/auth';
-import type { Chain } from '@cfce/database';
+// import { createAnonymousUser } from '@cfce/auth';
+// import type { Chain } from '@cfce/database';
 
 export default async function Home() {
   /*

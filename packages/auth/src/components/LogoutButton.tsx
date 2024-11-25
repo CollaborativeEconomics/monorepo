@@ -1,5 +1,6 @@
 // 'use client';
 
+import { redirect } from 'next/navigation'
 import { signOutAction } from '../actions';
 import { Button } from './Button';
 // note sure why all this csrf stuff was needed? \/\/\/
@@ -39,5 +40,11 @@ import { Button } from './Button';
 // }
 
 export function LogoutButton() {
-  return <Button onClick={signOutAction}>Log Out</Button>;
+  function goHome(){
+    console.log('SIGNOUT')
+    signOutAction()
+    window.location.href = '/';
+    //redirect('/')
+  }
+  return <Button onClick={goHome}>Log Out</Button>;
 }

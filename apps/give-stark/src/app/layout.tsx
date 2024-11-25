@@ -3,6 +3,7 @@ import '~/styles/globals.css';
 import appConfig from '@cfce/app-config';
 import { Footer, Header } from '@cfce/universe-components/navigation';
 import type { Metadata, Viewport } from 'next';
+import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
@@ -36,9 +37,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          {children}
-          <Footer />
+          <SessionProvider>
+            <Header />
+            {children}
+            <Footer />
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

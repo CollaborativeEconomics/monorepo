@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 import '~/styles/globals.css';
@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   title: 'Partners Portal',
   description: 'CFCE Partners Portal',
 };
+
+export const viewport: Viewport = { initialScale: 1.0, width: 'device-width' };
 
 const inter = Inter({ subsets: ['latin'] });
 

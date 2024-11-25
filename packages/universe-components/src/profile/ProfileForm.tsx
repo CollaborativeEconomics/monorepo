@@ -1,10 +1,12 @@
 'use client';
 import { LogoutButton } from '@cfce/auth';
+import { chainConfig } from '@cfce/blockchain-tools';
 import type {
   Prisma,
   NFTDataWithRelations as Receipts,
   StoryWithRelations as Stories,
 } from '@cfce/database';
+import type { ChainSlugs } from '@cfce/types';
 import { StoryCardCompactVert } from '@cfce/universe-components/story';
 import {
   DonationsTableSortable,
@@ -17,11 +19,13 @@ import {
   TabsTrigger,
 } from '@cfce/universe-components/ui';
 import { uploadFile } from '@cfce/utils';
+import { imageUrl } from '@cfce/utils';
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 //import { setUser } from '@cfce/database';
 
+// TODO: move to database package?
 type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
 type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>;
 //type Receipts = Prisma.NFTDataGetPayload<{ include: { organization: true; initiative: true; user: true } }>
@@ -93,18 +97,11 @@ export default async function Profile({
       <div className="flex flex-col lg:flex-row justify-between">
         {/* Avatar */}
         <div className="border rounded-md p-8 w-full lg:w-2/4 bg-card">
-          <form
-            action={formData => handleSaveProfile(formData, userId)}
-            method="post"
-            encType="multipart/form-data"
-          >
-            {/*
-          <form method="post" encType="multipart/form-data">
-          */}
+          <form action={formData => handleSaveProfile(formData, userId)}>
             <div className="flex flex-row flex-start items-center rounded-full">
               <Image
                 className="mr-8 rounded-full"
-                src={user?.image || nopic}
+                src={imageUrl(user?.image) || nopic}
                 width={100}
                 height={100}
                 alt="Avatar"
@@ -163,9 +160,8 @@ export default async function Profile({
                     >
                       <Image
                         src={
-                          // chainConfig[item.chain.toLowerCase() as ChainSlugs]
-                          //   ?.icon
-                          ''
+                          chainConfig[item.chain.toLowerCase() as ChainSlugs]
+                            ?.icon
                         }
                         width={48}
                         height={48}
@@ -184,6 +180,7 @@ export default async function Profile({
             <>
               <p>No wallets</p>
               <button type="button">Connect Wallet</button>
+              <LogoutButton />
             </>
           )}
         </div>
@@ -210,7 +207,7 @@ export default async function Profile({
                     {org?.image && (
                       <Image
                         className="rounded-full mr-1"
-                        src={org.image}
+                        src={imageUrl(org.image)}
                         width={64}
                         height={64}
                         alt="Organization"
@@ -238,7 +235,7 @@ export default async function Profile({
                   <Image
                     key={badge.id}
                     className="mr-1"
-                    src={badge.image}
+                    src={imageUrl(badge.image)}
                     width={72}
                     height={72}
                     alt="Badge"

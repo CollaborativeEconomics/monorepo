@@ -5,7 +5,7 @@ import NextAuth, { type NextAuthResult, type NextAuthConfig } from "next-auth"
 import { getAuthProviders } from "./authConfig"
 
 const providers = getAuthProviders(appConfig.auth)
-console.log("AUTH PROVIDERS", providers, appConfig.auth)
+//console.log("AUTH PROVIDERS", providers, appConfig.auth)
 
 const authOptions: NextAuthConfig = {
   // adapter: PrismaAdapter(prismaClient),
@@ -20,21 +20,25 @@ const authOptions: NextAuthConfig = {
   // },
   callbacks: {
     async jwt(args) {
+      //console.log('AUTH JWT ARGS', args)
       const { token, user, account, profile, isNewUser, trigger, session } =
         args
       // Handle account-related information
       if (account) {
-        token.userId = account?.providerAccountId || ""
+        //console.log('AUTH ACCT', account)
+        token.authId = account?.providerAccountId || ""
+        token.userId = user?.id || ""
         // @ts-ignore TODO: move this to state
         token.address = user?.address || ""
-        token.chain = account?.provider || ""
+        //token.chain = account?.provider || ""
         // @ts-ignore TODO: move this to state
-        token.network = user?.network || ""
+        token.network = user?.network || "testnet"
         // @ts-ignore TODO: move this to state
         token.currency = user?.currency || ""
       }
       // Handle session updates
       if (trigger === "update" && session) {
+        //console.log('AUTH UPDATE', session)
         token.name = session?.name || ""
         token.email = session?.email || ""
         token.picture = session?.image || "/media/nopic.png"
@@ -44,6 +48,7 @@ const authOptions: NextAuthConfig = {
       }
       // Handle organization and role-based logic
       if (token?.email) {
+        //console.log('AUTH MAIL', token.email)
         try {
           // Fetch organization data
           const { data: org } = await registryApi
@@ -57,6 +62,7 @@ const authOptions: NextAuthConfig = {
           token.orgName = org?.name || ""
 
           if (!org) {
+            //console.log('AUTH NO-ORG')
             try {
               // Fetch user data
               const { data: user } = await registryApi
@@ -67,6 +73,7 @@ const authOptions: NextAuthConfig = {
                 })
 
               if (user && user.type === 9) {
+                //console.log('AUTH ADMIN')
                 if (!token.orgId) {
                   token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
                 }
@@ -90,7 +97,9 @@ const authOptions: NextAuthConfig = {
       return token
     },
     async session(args) {
+      //console.log('AUTH SESSION ARGS', args)
       const { session, token, user, trigger, newSession } = args
+      //session.authId = token.authId
       // Handle organization and admin-related updates
       if (trigger === "update" && newSession?.orgId) {
         // @ts-ignore TODO: move this to state

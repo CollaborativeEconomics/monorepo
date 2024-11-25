@@ -36,8 +36,9 @@ export default async function walletLogin(
   const chainId = chainNetwork.id
   const currency = chainNetwork.symbol
   let user = await fetchUserByWallet(walletAddress)
-
+  console.log("WALLET USER", user)
   if (user === null) {
+    console.log("ANONYMOUS USER...")
     user = await createAnonymousUser({
       walletAddress,
       chain: chainConfig.name as Chain,

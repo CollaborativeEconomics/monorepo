@@ -187,6 +187,7 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
+    "@cfce/auth": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@types/formidable": "^3.4.5",
     "@types/uuid": "^10.0.0",

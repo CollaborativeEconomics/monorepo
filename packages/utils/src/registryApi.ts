@@ -11,7 +11,8 @@ export class RegistryApi {
     // Use window.location.origin in the browser, fallback to "/" for SSR
     this.baseUrl =
       typeof window !== "undefined" ? `${window.location.origin}/api` : "/api"
-
+    //this.baseUrl = appConfig.apis.registry.apiUrl
+    //console.log('BASE URL', this.baseUrl)
     if (!this.baseUrl) {
       throw new Error("Registry API URL is not set")
     }

@@ -91,12 +91,12 @@ export default abstract class ChainBaseClass {
   // utility functions
   fromBaseUnit(amount: bigint): number {
     const wei = 10 ** this.network.decimals
-    return Number(amount / BigInt(wei))
+    return Number(amount) / wei
   }
 
   toBaseUnit(amount: number): bigint {
     const wei = 10 ** this.network.decimals
-    return BigInt(amount) * BigInt(wei)
+    return BigInt(amount * wei)
   }
 
   toHex(str: string) {

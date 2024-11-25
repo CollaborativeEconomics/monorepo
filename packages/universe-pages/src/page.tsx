@@ -6,13 +6,14 @@ import {
   InstructionPanes,
   VideoBackground,
 } from '@cfce/universe-components/home';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
   title: appConfig.siteInfo.title,
-  viewport: { initialScale: 1.0, width: 'device-width' },
 };
+
+export const viewport: Viewport = { initialScale: 1.0, width: 'device-width' };
 
 export default async function Handler(props: {
   searchParams?: Promise<{
@@ -23,6 +24,8 @@ export default async function Handler(props: {
 }) {
   // const { query, category, location } = await props.searchParams;
   const initiatives = (await getInitiatives({})) || [];
+  const plain = JSON.parse(JSON.stringify(initiatives)); // Only plain objects can be passed to Client Components
+  //console.log('JSON', JSON.stringify(plain,null,2))
   return (
     <>
       <div className="w-full top-0">
@@ -37,7 +40,7 @@ export default async function Handler(props: {
             story of real world impact.
           </p>
         </div>
-        <ImpactCarousel initiatives={initiatives} />
+        <ImpactCarousel initiatives={plain} />
         <ActionBar />
         <InstructionPanes />
         <VideoBackground />

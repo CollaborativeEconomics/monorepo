@@ -5,7 +5,9 @@ export default async function fetchUserByWallet(
   walletAddress: string,
 ): Promise<User | null> {
   try {
-    return await getUserByWallet(walletAddress)
+    const user = await getUserByWallet(walletAddress)
+    //console.log('USER BY WALLET', user)
+    return user
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error")
   }
