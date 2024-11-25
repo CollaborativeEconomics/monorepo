@@ -1,18 +1,12 @@
 import type { AppConfig, AuthTypes } from "@cfce/types"
-import appConfigBase from "../appConfigBase"
+import appConfig from "./appConfig.staging"
 
-const appConfig: AppConfig = {
-  ...appConfigBase,
-}
-
-// Override siteInfo
-appConfig.siteInfo = {
+const siteInfo: AppConfig["siteInfo"] = {
   ...appConfig.siteInfo,
   title: "Giving Universe (Development)",
-  description: "Make tax-deductible donations with crypto",
 }
 
-appConfig.apis = {
+const apis: AppConfig["apis"] = {
   ...appConfig.apis,
   registry: {
     apiUrl: "https://registry.staging.cfce.io/api",
@@ -30,31 +24,52 @@ appConfig.apis = {
   },
 }
 
-// Override chains
-appConfig.chains = {
+const chains: AppConfig["chains"] = {
   xdc: {
     slug: "xdc",
     network: "testnet",
     contracts: {
-      //receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
       receiptMintbotERC721: "0xfeceaea75565961b805e2dbe58e00488f5bc1495",
     },
+    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
     enabledWallets: ["metamask"],
     tokens: ["XDC"],
   },
-  stellar: appConfig.chains.stellar,
-  xrpl: appConfig.chains.xrpl,
+  stellar: {
+    slug: "stellar",
+    network: "testnet",
+    contracts: {},
+    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
+    enabledWallets: ["freighter"],
+    tokens: ["XLM", "USDC"],
+  },
+  xrpl: {
+    slug: "xrpl",
+    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
+    network: "testnet",
+    contracts: {},
+    enabledWallets: ["xaman"],
+    tokens: ["XRP"],
+    destinationTag: "77777777",
+  },
 }
 
-// Override auth
-appConfig.auth = ["metamask" as AuthTypes]
-
-// Override chainDefaults
-appConfig.chainDefaults = {
+const chainDefaults: AppConfig["chainDefaults"] = {
   network: "testnet",
   wallet: "metamask",
   chain: "xdc",
   coin: "XDC",
 }
 
-export default appConfig
+const auth = appConfig.auth as AuthTypes[]
+
+const appConfigDevelopment: AppConfig = {
+  apis,
+  auth,
+  chains,
+  chainDefaults,
+  siteInfo,
+}
+
+export default appConfigDevelopment
+

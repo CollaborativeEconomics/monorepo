@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { LogoutButton } from '@cfce/auth';
 import {
   type NFTData,
   type Prisma,
@@ -10,8 +11,8 @@ import {
   getUserById,
   setUser,
 } from '@cfce/database';
-import NotFound from '../../not-found';
 import { ProfileForm } from '@cfce/universe-components/profile';
+import NotFound from '../../not-found';
 
 type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>
 type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>
@@ -60,11 +61,12 @@ export default async function Profile({
     return <NotFound />;
   }
   const userData = await fetchUserData(userId);
-  const nopic = '/media/nopic.png';
+  const plainData = JSON.parse(JSON.stringify(userData))
+  //const nopic = '/media/nopic.png';
 
   return (
     <main className="container min-h-screen flex flex-col items-stretch py-24 mt-24">
-      <ProfileForm userId={userId} userData={userData} />
+      <ProfileForm userId={userId} userData={plainData} />
     </main>
   )
 }

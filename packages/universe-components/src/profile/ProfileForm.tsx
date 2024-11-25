@@ -1,7 +1,10 @@
-'use client'
-import Image from 'next/image';
-import { redirect } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+'use client';
+import { LogoutButton } from '@cfce/auth';
+import type {
+  Prisma,
+  NFTDataWithRelations as Receipts,
+  StoryWithRelations as Stories,
+} from '@cfce/database';
 import { StoryCardCompactVert } from '@cfce/universe-components/story';
 import {
   DonationsTableSortable,
@@ -13,31 +16,34 @@ import {
   TabsList,
   TabsTrigger,
 } from '@cfce/universe-components/ui';
+import { chainConfig } from "@cfce/blockchain-tools";
+import type { ChainSlugs } from '@cfce/types';
 import { uploadFile } from '@cfce/utils';
-import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
-import type { 
-  Prisma,
-  NFTDataWithRelations as Receipts,
-  StoryWithRelations as Stories
-} from '@cfce/database';
 import { imageUrl } from '@cfce/utils';
+import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
+import Image from 'next/image';
+import { redirect } from 'next/navigation';
 //import { setUser } from '@cfce/database';
 
-
-type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>
-type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>
+// TODO: move to database package?
+type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
+type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>;
 //type Receipts = Prisma.NFTDataGetPayload<{ include: { organization: true; initiative: true; user: true } }>
-type DonationsByUser = Prisma.DonationGetPayload<{include: { organization: true; initiative: true }}>
-type FavoriteOrganizations = Prisma.DonationGetPayload<{ include: { organization: true } }>
+type DonationsByUser = Prisma.DonationGetPayload<{
+  include: { organization: true; initiative: true };
+}>;
+type FavoriteOrganizations = Prisma.DonationGetPayload<{
+  include: { organization: true };
+}>;
 //type Stories = Prisma.StoryGetPayload<{ include: { organization: true } }>
 
 interface UserData {
-  user: UserRecord
-  receipts: Receipts[]
-  donations: DonationsByUser[]
-  favoriteOrganizations: FavoriteOrganizations[]
-  badges: UserBadges[]
-  stories: Stories[]
+  user: UserRecord;
+  receipts: Receipts[];
+  donations: DonationsByUser[];
+  favoriteOrganizations: FavoriteOrganizations[];
+  badges: UserBadges[];
+  stories: Stories[];
 }
 
 // Server Action to handle form submission
@@ -46,10 +52,10 @@ async function handleSaveProfile(formData: FormData, userId: string) {
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
 
-  console.log(name, email)
-  console.log({file})
+  console.log(name, email);
+  console.log({ file });
   //let image = (formData.get('currentImage') as string) ?? '';
-/*
+  /*
   if (file) {
     const fileUploadResponse = await uploadFile({
       file,
@@ -71,29 +77,29 @@ async function handleSaveProfile(formData: FormData, userId: string) {
   redirect('/profile');
 }
 
-
-export default async function Profile({userId,userData}:{userId:string, userData:UserData}){
-  const user = userData.user
-  const receipts = userData.receipts
-  const donations = userData.donations
-  const favoriteOrganizations = userData.favoriteOrganizations
-  const badges = userData.badges
-  const stories = userData.stories
-  const nopic = '/media/nopic.png'
+export default async function Profile({
+  userId,
+  userData,
+}: {
+  userId: string;
+  userData: UserData;
+}) {
+  console.log('User ID', userId)
+  //console.log('User DATA', userData)
+  const user = userData.user;
+  const receipts = userData.receipts;
+  const donations = userData.donations;
+  const favoriteOrganizations = userData.favoriteOrganizations;
+  const badges = userData.badges;
+  const stories = userData.stories;
+  const nopic = '/media/nopic.png';
 
   return (
     <>
       <div className="flex flex-col lg:flex-row justify-between">
         {/* Avatar */}
         <div className="border rounded-md p-8 w-full lg:w-2/4 bg-card">
-          <form
-            action={formData => handleSaveProfile(formData, userId)}
-            method="post"
-            encType="multipart/form-data"
-          >
-          {/*
-          <form method="post" encType="multipart/form-data">
-          */}
+          <form action={formData => handleSaveProfile(formData, userId)}>
             <div className="flex flex-row flex-start items-center rounded-full">
               <Image
                 className="mr-8 rounded-full"
@@ -155,11 +161,7 @@ export default async function Profile({userId,userData}:{userId:string, userData
                       className="inline-block border rounded-full p-1 mx-1"
                     >
                       <Image
-                        src={
-                          // chainConfig[item.chain.toLowerCase() as ChainSlugs]
-                          //   ?.icon
-                          ''
-                        }
+                        src={chainConfig[item.chain.toLowerCase() as ChainSlugs]?.icon}
                         width={48}
                         height={48}
                         alt="Chain"
@@ -171,18 +173,13 @@ export default async function Profile({userId,userData}:{userId:string, userData
                   <Plus size={48} className="text-gray-400" />
                 </span>
               </div>
-              <button
-                type="button"
-                className="block w-2/3 mt-4 mx-auto py-1 px-8 bg-red-400 text-white rounded-full"
-                onClick={() => signOut({ callbackUrl: '/' })}
-              >
-                Log Out
-              </button>
+              <LogoutButton />
             </>
           ) : (
             <>
               <p>No wallets</p>
               <button type="button">Connect Wallet</button>
+              <LogoutButton />
             </>
           )}
         </div>
@@ -301,5 +298,5 @@ export default async function Profile({userId,userData}:{userId:string, userData
         </div>
       </div>
     </>
-  )
+  );
 }

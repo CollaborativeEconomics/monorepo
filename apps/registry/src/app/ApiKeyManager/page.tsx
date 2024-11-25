@@ -1,13 +1,12 @@
+import { auth } from '@cfce/auth';
 import { getUserByEmail } from '@cfce/database';
-import { authOptions } from '@cfce/utils';
-import { getServerSession } from 'next-auth/next';
 import LoginButton from '../../components/LoginButton';
 import { generateApiKey } from './actions';
 
 const APIKeyManager = async () => null;
 
 // const APIKeyManager = async () => {
-//   const session = await getServerSession(authOptions);
+//   const session = await auth();
 
 //   const userData = await getUserByEmail(session?.user?.email ?? '');
 //   const apiKey = userData?.api_key;

@@ -1,4 +1,4 @@
-import { SessionProvider } from '@cfce/universe-components/client/auth';
+import { SessionProvider } from 'next-auth/react';
 
 export default function RootLayout({
   // Layouts must accept a children prop.
@@ -9,9 +9,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <SessionProvider>
-        <body>{children}</body>
-      </SessionProvider>
+      <body>
+        <SessionProvider>
+          <main className="flex-1">{children}</main>
+        </SessionProvider>
+      </body>
     </html>
   );
 }

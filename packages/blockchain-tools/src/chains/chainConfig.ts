@@ -458,14 +458,14 @@ chainConfiguration.starknet.networks.mainnet = {
 }
 chainConfiguration.starknet.networks.testnet = {
   id: 0,
-  name: "Starknet Testnet",
+  name: "Starknet Sepolia",
   slug: "testnet",
   symbol: "STRK",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://testnet.starkscan.co",
+  explorer: "https://sepolia.starkscan.co/",
   rpcUrls: {
-    main: "https://starknet-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+    main: "https://starknet-sepolia.public.blastapi.io",
   },
   tokens: {
     USDT: {
@@ -537,7 +537,7 @@ chainConfiguration.stellar.networks.testnet = {
   },
   contracts: {
     credits: "CAIRWEYKTLVRQBXQGYNLDUAKWIUV4NO6WPTCMVHH2BOMUUUBTXRJF43R",
-    NFToken: "CCUOIXOK4BIV2O7ANQ2JKUCMQS7JUQW3XISWNZTEQUIUGPHX7I5KV5UD"
+    NFToken: "CCUOIXOK4BIV2O7ANQ2JKUCMQS7JUQW3XISWNZTEQUIUGPHX7I5KV5UD",
   },
   wallet: "",
   wssurl: "",
@@ -598,11 +598,11 @@ chainConfiguration.xdc.networks.mainnet = {
     main: "https://rpc.xdcrpc.com",
   },
   contracts: {
-    tba6551RegistryAddress : '0x000000006551c19487814612e58fe06813775758',
-    tba6551ImplementationAddress : '0x41c8f39463a868d3a88af00cd0fe7102f30e44ec',
-    tba721TokenContract: '0x0',
-    nft721TokenContract: '0x0',
-    nft1155TokenContract: '0x0',
+    tba6551RegistryAddress: "0x000000006551c19487814612e58fe06813775758",
+    tba6551ImplementationAddress: "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",
+    tba721TokenContract: "0x0",
+    nft721TokenContract: "0x0",
+    nft1155TokenContract: "0x0",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
@@ -619,11 +619,11 @@ chainConfiguration.xdc.networks.testnet = {
     main: "https://erpc.apothem.network",
   },
   contracts: {
-    tba6551RegistryAddress : '0x000000006551c19487814612e58fe06813775758',
-    tba6551ImplementationAddress : '0x41c8f39463a868d3a88af00cd0fe7102f30e44ec',
-    tba721TokenContract: '0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7',
-    nft721TokenContract: '0xa3a3d70Ec57bC30472CD687F3D530b3431292989',
-    nft1155TokenContract: '0xc917ff4128525a65639d18f1d240a788081f022d',
+    tba6551RegistryAddress: "0x000000006551c19487814612e58fe06813775758",
+    tba6551ImplementationAddress: "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",
+    tba721TokenContract: "0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7",
+    nft721TokenContract: "0xa3a3d70Ec57bC30472CD687F3D530b3431292989",
+    nft1155TokenContract: "0xc917ff4128525a65639d18f1d240a788081f022d",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",

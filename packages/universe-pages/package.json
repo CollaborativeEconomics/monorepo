@@ -63,6 +63,7 @@
     "@cfce/universe-components": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "@cfce/auth": "workspace:*",
     "@vercel/blob": "0.24.1",
     "jotai": "^2.9.1",
     "lucide-react": "0.447.0",
@@ -73,15 +74,15 @@
     "@cfce/typescript-config": "workspace:*",
     "@types/react": "latest",
     "@types/uuid": "^10.0.0",
-    "next": "^15.0.1",
-    "next-auth": "^4.24.8",
-    "next-themes": "^0.3.0",
-    "typescript": "latest"
+    "next": "^15.0.3",
+    "next-auth": "5.0.0-beta.25",
+    "next-themes": "^0.4.3",
+    "typescript": "^5.6.2"
   },
   "peerDependencies": {
     "@cfce/app-config": "workspace:*",
-    "next": "^15.0.1",
-    "next-themes": "latest",
+    "next": "^15.0.3",
+    "next-themes": "^0.4.3",
     "react": "^18.3.1"
   }
 }

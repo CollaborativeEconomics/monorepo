@@ -19,10 +19,12 @@ const apis = {
   },
 }
 
-const chains = {
-  xdc: appConfig.chains.xdc,
-  stellar: appConfig.chains.stellar,
-  xrpl: appConfig.chains.xrpl,
+const chains: AppConfig["chains"] = {
+  starknet: {
+    ...appConfig.chains.starknet,
+    network: "testnet",
+  } as AppChainConfig,
+  xdc: { ...appConfig.chains.xdc, network: "testnet" } as AppChainConfig,
 }
 
 const chainDefaults = {

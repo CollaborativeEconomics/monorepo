@@ -1,7 +1,7 @@
 import "server-only"
+import type { ListQuery } from "@cfce/types"
 import type { Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "@cfce/types"
 
 interface DonationQuery extends ListQuery {
   id?: string
@@ -32,9 +32,9 @@ export async function getDonations(query: DonationQuery) {
   if (query?.favs) {
     const userId = query.favs
     filter.distinct = ["organizationId"]
-    //filter.select = {
-    //  organization: true,
-    //}
+    // filter.select = {
+    //   organization: true,
+    // }
     filter.where = {
       userId: userId,
     }
@@ -43,9 +43,9 @@ export async function getDonations(query: DonationQuery) {
   if (query?.badges) {
     const userId = query.badges
     filter.distinct = ["categoryId"]
-    //filter.select = {
-    //  category: true,
-    //}
+    // filter.select = {
+    //   category: true,
+    // }
     filter.where = {
       userId: userId,
     }
