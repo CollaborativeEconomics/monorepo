@@ -1,12 +1,10 @@
 'use client';
 import { LogoutButton } from '@cfce/auth';
-import { chainConfig } from '@cfce/blockchain-tools';
 import type {
   Prisma,
   NFTDataWithRelations as Receipts,
   StoryWithRelations as Stories,
 } from '@cfce/database';
-import type { ChainSlugs } from '@cfce/types';
 import { StoryCardCompactVert } from '@cfce/universe-components/story';
 import {
   DonationsTableSortable,
@@ -18,6 +16,8 @@ import {
   TabsList,
   TabsTrigger,
 } from '@cfce/universe-components/ui';
+import { chainConfig } from "@cfce/blockchain-tools";
+import type { ChainSlugs } from '@cfce/types';
 import { uploadFile } from '@cfce/utils';
 import { imageUrl } from '@cfce/utils';
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
@@ -84,6 +84,8 @@ export default async function Profile({
   userId: string;
   userData: UserData;
 }) {
+  console.log('User ID', userId)
+  //console.log('User DATA', userData)
   const user = userData.user;
   const receipts = userData.receipts;
   const donations = userData.donations;
@@ -159,10 +161,7 @@ export default async function Profile({
                       className="inline-block border rounded-full p-1 mx-1"
                     >
                       <Image
-                        src={
-                          chainConfig[item.chain.toLowerCase() as ChainSlugs]
-                            ?.icon
-                        }
+                        src={chainConfig[item.chain.toLowerCase() as ChainSlugs]?.icon}
                         width={48}
                         height={48}
                         alt="Chain"

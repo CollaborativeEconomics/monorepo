@@ -174,10 +174,6 @@ class StarknetWallet extends ChainBaseClass {
       // Gasless Transaction
 
       const amountWei = this.toBaseUnit(amount)
-<<<<<<< HEAD
-
-=======
->>>>>>> dev
       const weihex = `0x${amountWei.toString(16)}`
 
       const options: GaslessOptions = {

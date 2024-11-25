@@ -71,12 +71,11 @@ export default class XummClient extends XrplCommon {
   }> {
     console.log("XRP Sending payment...", address, amount, memo)
     const wallet = this.getWallet()
-    const amountDrops = this.toBaseUnit(amount)
     try {
       const request: XummJsonTransaction = {
         TransactionType: "Payment",
         Destination: address,
-        Amount: String(amountDrops), // one million drops, 1 XRP
+        Amount: String(this.toBaseUnit(amount)), // one million drops, 1 XRP
       }
       if (memo) {
         request.DestinationTag = memo

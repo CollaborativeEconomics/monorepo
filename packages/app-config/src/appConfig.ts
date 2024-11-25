@@ -22,10 +22,10 @@ import partnersDev from "./config/partners/appConfig.development"
 import partnersProd from "./config/partners/appConfig.production"
 import partnersStaging from "./config/partners/appConfig.staging"
 
-import testsStaging from "./config/partners/appConfig.staging"
 // tests
 import testsDev from "./config/tests/appConfig.development"
 import testsProd from "./config/tests/appConfig.production"
+import testsStaging from "./config/partners/appConfig.staging"
 
 type Environment = "development" | "production" | "staging"
 type AppId =

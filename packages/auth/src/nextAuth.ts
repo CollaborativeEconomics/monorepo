@@ -21,8 +21,7 @@ const authOptions: NextAuthConfig = {
   callbacks: {
     async jwt(args) {
       //console.log('AUTH JWT ARGS', args)
-      const { token, user, account, profile, isNewUser, trigger, session } =
-        args
+      const { token, user, account, profile, isNewUser, trigger, session } = args
       // Handle account-related information
       if (account) {
         //console.log('AUTH ACCT', account)

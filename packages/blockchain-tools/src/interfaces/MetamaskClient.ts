@@ -33,7 +33,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
   }
 
   async connect() {
-    // console.log("Wallet starting...", this.network)
+    console.log("Wallet starting...", this.network)
     //console.log('window.ethereum')
     try {
       this.metamask = window.ethereum
@@ -417,7 +417,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     const tx = {
       from: this.connectedWallet,
       to: address,
-      value: amount,
+      value: wei,
       gasPrice,
       gas,
       data: "",
@@ -467,7 +467,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     memo,
   }: {
     address: string
-    amount: bigint
+    amount: number
     token: TokenTickerSymbol
     contract: string
     memo: string
@@ -483,14 +483,14 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
     console.log("GAS", Number.parseInt(gasPrice), gasPrice)
     const gas = numHex(210000)
-    // const wei = numHex(amount * 10 ** 6) // usdc and usdt only have 6 decs
+    const wei = numHex(amount * 10 ** 6) // usdc and usdt only have 6 decs
     const method = "eth_sendTransaction"
     if (!this.web3) {
       console.error("Payment error: Error getting web3 instance")
       return { success: false, error: "Error getting web3 instance" }
     }
     const ctr = new this.web3.eth.Contract(erc20abi, contract)
-    const data = ctr.methods.transfer(address, amount).encodeABI()
+    const data = ctr.methods.transfer(address, wei).encodeABI()
     console.log("Data", data)
     //const count = await this.web3.eth.getTransactionCount(this.connectedWallet)
     //const nonce = this.web3.utils.toHex(count)

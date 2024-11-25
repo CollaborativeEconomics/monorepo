@@ -37,7 +37,7 @@ export default abstract class ChainBaseClass {
   }>
   public async sendToken?(params: {
     address: string
-    amount: bigint
+    amount: number
     token: TokenTickerSymbol
     memo: string
     walletSeed?: string
