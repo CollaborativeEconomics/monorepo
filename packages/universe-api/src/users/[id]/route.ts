@@ -4,15 +4,15 @@ import checkApiKey from "../../checkApiKey"
 
 export async function GET(req: NextRequest) {
   try {
-    const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey)
+    //const apiKey = req.headers.get("x-api-key")
+    //const authorized = await checkApiKey(apiKey)
 
-    if (!authorized) {
-      return NextResponse.json(
-        { success: false, error: "Not authorized" },
-        { status: 403 },
-      )
-    }
+    //if (!authorized) {
+    //  return NextResponse.json(
+    //    { success: false, error: "Not authorized" },
+    //    { status: 403 },
+    //  )
+    //}
 
     const { searchParams } = new URL(req.url)
     const id = searchParams.get("id")
@@ -48,15 +48,15 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey)
+    //const apiKey = req.headers.get("x-api-key")
+    //const authorized = await checkApiKey(apiKey)
 
-    if (!authorized) {
-      return NextResponse.json(
-        { success: false, error: "Not authorized" },
-        { status: 403 },
-      )
-    }
+    //if (!authorized) {
+    //  return NextResponse.json(
+    //    { success: false, error: "Not authorized" },
+    //    { status: 403 },
+    //  )
+    //}
 
     const { searchParams } = new URL(req.url)
     const id = searchParams.get("id")

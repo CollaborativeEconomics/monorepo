@@ -38,6 +38,7 @@ appConfig.chains = {
 
 // Override auth
 appConfig.auth = ["argent" as AuthTypes]
+appConfig.auth = ["argent" as AuthTypes]
 
 // Override chainDefaults
 appConfig.chainDefaults = {

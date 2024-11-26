@@ -1,17 +1,18 @@
-import type { Chain } from '@cfce/database'
-import { createAnonymousUser } from '@cfce/utils'
+// import { createAnonymousUser } from '@cfce/auth';
+// import type { Chain } from '@cfce/database';
 
 export default async function Home() {
-
+  /*
   async function createUser(){
     console.log('Creating user...')
     const user = await createAnonymousUser('0x1234567891', 'Tron' as Chain, 'testnet', true) // No TBA for now
     console.log('User', user)
     return JSON.stringify(user,null,4)
   }
-  
   const result = await createUser()
-  
+*/
+  const result = 'OK';
+
   return (
     <>
       <div className="w-full top-0">
@@ -23,4 +24,3 @@ export default async function Home() {
     </>
   );
 }
-

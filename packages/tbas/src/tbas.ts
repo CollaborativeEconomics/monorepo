@@ -215,7 +215,7 @@ export async function getTBAccount(tokenContract:string, tokenId:string, chainId
     BigInt(chainId),
     tokenContract as Address,
     BigInt(tokenId)
-  ])
+  ]) || ''
   console.log('TBA', address)
   return address
 }
@@ -228,7 +228,7 @@ export async function newTBAccount(entity_type:string, entity_id:string){
     const tokenId = resMint.tokenId
     console.log('TokenID', tokenId)
     // create token bound account for user in xdc
-    const account_address = await getTBAccount(tokenContract, tokenId, chainId) // prefetch account address
+    const account_address:string = await getTBAccount(tokenContract, tokenId, chainId) // prefetch account address
     console.log('ACCT', account_address)
     const resTBA = await createTBAccount(tokenContract, tokenId, chainId, true)
     console.log('TBA', resTBA)

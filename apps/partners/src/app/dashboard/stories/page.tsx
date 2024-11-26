@@ -1,6 +1,6 @@
+import { auth } from '@cfce/auth';
 // /app/dashboard/page.tsx
 import { getCategories, getOrganizationById, getStories } from '@cfce/database';
-import { auth } from '@cfce/utils';
 import Story from '~/components/story';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';

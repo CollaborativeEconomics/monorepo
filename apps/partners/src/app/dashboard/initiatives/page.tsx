@@ -1,5 +1,5 @@
+import { auth } from '@cfce/auth';
 import { type Initiative, getOrganizationById } from '@cfce/database';
-import { auth } from '@cfce/utils';
 import InitiativeCard from '~/components/InitiativeCard';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';

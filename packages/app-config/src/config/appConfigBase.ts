@@ -30,7 +30,7 @@ const chains: AppConfig["chains"] = {}
 const auth: AppConfig["auth"] = []
 
 const chainDefaults: AppConfig["chainDefaults"] = {
-  network: "testnet",
+  network: "mainnet",
   wallet: "metamask",
   chain: "xdc",
   coin: "XDC",

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { auth } from "@cfce/utils"
+import { auth } from "@cfce/auth"
 
 // More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
 export default auth((req) => {

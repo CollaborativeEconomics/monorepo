@@ -2,6 +2,7 @@
 import appConfig from '@cfce/app-config';
 import { BlockchainManager } from '@cfce/blockchain-tools';
 import type { Prisma } from '@cfce/database';
+import type { TokenTickerSymbol } from '@cfce/types';
 import { mintAndSaveReceiptNFT } from '@cfce/utils';
 import {
   PAYMENT_STATUS,
@@ -9,7 +10,7 @@ import {
   amountUSDAtom,
   chainAtom,
   donationFormAtom,
-  fetchApi,
+  registryApi,
 } from '@cfce/utils';
 import { useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -38,18 +39,19 @@ interface DonationFormProps {
 }
 
 // Add this function above the DonationForm component
+// @deprecated TODO: remove this
 const getFallbackAddress = (chainName?: string): string => {
   const fallbackAddresses: Record<string, string> = {
-    'Ethereum': '0x1234567890123456789012345678901234567890',
-    'Polygon': '0x1234567890123456789012345678901234567890',
-    'Starknet': '0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3',
+    Ethereum: '0x1234567890123456789012345678901234567890',
+    Polygon: '0x1234567890123456789012345678901234567890',
+    Starknet:
+      '0x05a12d15f93dcbddec0653fc77dd96713fb154667f2384a51d4c10405b251ccf',
   };
-  
+
   return chainName ? fallbackAddresses[chainName] || '' : '';
 };
-
-function sleep(ms:number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export default function DonationForm({ initiative }: DonationFormProps) {
@@ -58,7 +60,8 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   const [loading, setLoading] = useState(false);
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false);
   const [chainState, setChainState] = useAtom(chainAtom);
-  const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState;
+  const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
+    chainState;
   const [donationForm, setDonationForm] = useAtom(donationFormAtom);
   const { emailReceipt, name, email, amount } = donationForm;
   const usdAmount = useAtomValue(amountUSDAtom);
@@ -88,7 +91,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   }, []);
 
   const destinationWalletAddress = useMemo(() => {
-    const chainName = chainInterface?.chain.name;    
+    const chainName = chainInterface?.chain.name;
 
     const initiativeWallet = initiative?.wallets?.find(
       w => w.chain === chainName,
@@ -116,15 +119,20 @@ export default function DonationForm({ initiative }: DonationFormProps) {
   }, [organization, initiative, chainInterface, handleError]);
 
   useEffect(() => {
-    fetchApi(`rates?coin=${selectedToken}&chain=${selectedChain}`).then(
-      ({ rate }: { rate: number }) => {
-        if (rate) {
-          setChainState(draft => {
-            draft.exchangeRate = rate;
-          });
+    registryApi
+      .get<{ coin: TokenTickerSymbol; rate: number }>(
+        `/rates?coin=${selectedToken}&chain=${selectedChain}`,
+      )
+      .then(response => {
+        if (response.success) {
+          const { rate } = response.data;
+          if (rate) {
+            setChainState(draft => {
+              draft.exchangeRate = rate;
+            });
+          }
         }
-      },
-    );
+      });
   }, [selectedToken, selectedChain, setChainState]);
 
   const checkBalance = useCallback(async () => {
@@ -140,16 +148,16 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       if (!chainInterface?.sendPayment) {
         throw new Error('No chain interface');
       }
-      const connected = await chainInterface.connect()
-      console.log('CONNECT', connected)
+      const connected = await chainInterface.connect();
+      console.log('CONNECT', connected);
       const data = {
         address,
-        amount: amount, // amount conversion should be done on the wallet side
+        amount,
         //amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || '',
-      }
+      };
       const result = await chainInterface.sendPayment(data);
-      console.log('PAYMENT RESULT', result)
+      console.log('PAYMENT RESULT', result);
       return result;
     },
     [chainInterface, selectedChain],
@@ -173,24 +181,27 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       throw new Error(paymentResult.error ?? 'Payment failed');
     }
 
-    setButtonMessage('Minting NFT receipt, please wait...');
-    const data = {
-      donorName: name || 'Anonymous',
-      email: emailReceipt ? email : undefined,
-      organizationId: organization.id,
-      initiativeId: initiative.id,
-      transaction: {
-        date: new Date().toISOString(),
-        donorWalletAddress: paymentResult.walletAddress ?? '',
-        destinationWalletAddress,
-        amount,
-        txId: paymentResult.txid ?? '',
-        chain: selectedChain,
-        token: selectedToken,
-      }
-    };
-
-    const receiptResult = await mintAndSaveReceiptNFT(data);
+      setButtonMessage('Minting NFT receipt, please wait...');
+      const data = {
+        donorName: name || 'Anonymous',
+        email: emailReceipt ? email : undefined,
+        organizationId: organization.id,
+        initiativeId: initiative.id,
+        transaction: {
+          date: new Date().toISOString(),
+          donorWalletAddress: paymentResult.walletAddress ?? '',
+          destinationWalletAddress,
+          amount,
+          txId: paymentResult.txid ?? '',
+          chain: selectedChain,
+          token: selectedToken,
+        },
+      };
+      console.log('NFT', data);
+      await sleep(2000); // Wait for tx to confirm
+      console.log('SLEEP');
+      const receiptResult = await mintAndSaveReceiptNFT(data);
+      console.log('RESULT', receiptResult);
 
     if ('error' in receiptResult) {
       throw new Error(receiptResult.error ?? 'Failed to process receipt');

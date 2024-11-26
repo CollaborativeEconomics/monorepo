@@ -15,6 +15,13 @@ const apis: AppConfig["apis"] = {
 }
 
 const chains: AppConfig["chains"] = {
+  starknet: {
+    slug: "starknet",
+    network: "testnet",
+    contracts: {},
+    enabledWallets: ["argent"],
+    tokens: ["ETH", "STRK"],
+  },
   xdc: {
     slug: "xdc",
     network: "testnet",

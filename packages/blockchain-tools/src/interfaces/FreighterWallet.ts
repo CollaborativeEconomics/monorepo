@@ -21,7 +21,7 @@ class FreighterWallet extends ChainBaseClass {
     super(slug, network)
     this.horizon = new StellarSDK.Horizon.Server(this.network.rpcUrls.main)
     //console.log("FREIGHT INIT")
-    //console.log("RPC", this.network) 
+    //console.log("RPC", this.network)
   }
 
   async init() {
@@ -57,12 +57,12 @@ class FreighterWallet extends ChainBaseClass {
     memo,
   }: { address: string; amount: number; memo: string }) {
     try {
-      console.log("From", this.connectedWallet || '???')
-      console.log("Paying", amount, "XLM to", address, "Memo", memo || '[no]')
+      console.log("From", this.connectedWallet || "???")
+      console.log("Paying", amount, "XLM to", address, "Memo", memo || "[no]")
       const act = await this.horizon.loadAccount(this.connectedWallet)
       //const fee = 5000
       const fee = await this.horizon.fetchBaseFee() // 100
-      const xlm = this.fromBaseUnit(amount).toString()
+      const xlm = amount.toString()
       const data = {
         destination: address,
         //amount: `${amount}`,

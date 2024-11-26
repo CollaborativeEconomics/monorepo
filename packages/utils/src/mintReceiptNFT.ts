@@ -53,7 +53,7 @@ export async function mintAndSaveReceiptNFT({
       amount,
       date,
     } = transaction
-    console.log('MINT', chain)
+    console.log("MINT", chain)
     const rate = await getCoinRate({ chain, symbol: token })
 
     // #region: Input validation
@@ -207,7 +207,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     const currentChain = appConfig.chains[chain]
-    if(!currentChain) throw new Error("Chain not found")
+    if (!currentChain) throw new Error("Chain not found")
     const network = currentChain.network
 
     // #region: Prepare and upload metadata
@@ -224,7 +224,7 @@ export async function mintAndSaveReceiptNFT({
       coinIssuer: chain,
       coinValue: amountCUR,
       usdValue: amountUSD,
-      network
+      network,
     }
 
     console.log("META", metadata)
@@ -248,8 +248,7 @@ export async function mintAndSaveReceiptNFT({
     console.log("META URI", uriMeta)
     // #endregion
 
-
-/*
+    /*
     // #region: Mint NFT on chains
     const receiptContractsByChain: Array<{
       chain: ChainSlugs
@@ -310,7 +309,7 @@ export async function mintAndSaveReceiptNFT({
       contractId: receiptContract,
       address: donorWalletAddress,
       uri: uriMeta,
-      walletSeed: walletSecret
+      walletSeed: walletSecret,
     }
     const mintResponse = await BlockchainManager[chain]?.server.mintNFT(args)
     console.log("RESMINT", mintResponse)
@@ -380,7 +379,7 @@ export async function mintAndSaveReceiptNFT({
       success: true,
       image: uriImage,
       metadata: uriMeta,
-      tokenId: tokenId
+      tokenId: tokenId,
     }
     console.log("RESULT", result)
     return result

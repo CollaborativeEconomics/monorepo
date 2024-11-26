@@ -3,7 +3,7 @@
   "version": "1.2.5",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "start": "next start",
     "build": "next build",
     "buildEmails": "mjml ./email_templates/receipt.mjml -o ./email_templates/receipt.html",
@@ -40,9 +40,9 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@rive-app/react-canvas": "^4.8.3",
-    "@sentry/nextjs": "^8.32.0",
+    "@sentry/nextjs": "^8.38.0",
     "@stellar/freighter-api": "3.0.0",
-    "@stellar/stellar-sdk": "^12.1.0",
+    "@stellar/stellar-sdk": "^12.3.0",
     "@tanstack/react-table": "^8.13.2",
     "@types/react-dom": "latest",
     "@vercel/blob": "0.24.1",
@@ -80,7 +80,7 @@
     "web3": "^4.6.0"
   },
   "devDependencies": {
-    "@types/node": "22.5.5",
+    "@types/node": "^22.5.5",
     "@types/node-fetch": "^2.6.2",
     "@types/react": "latest",
     "@types/react-dom": "latest",

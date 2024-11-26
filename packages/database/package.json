@@ -2,8 +2,10 @@
   "name": "@cfce/database",
   "version": "0.0.1",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./types": "./dist/types.d.ts"
+  },
   "scripts": {
     "db:generate": "prisma generate",
     "db:push": "prisma db push --skip-generate",
@@ -18,15 +20,15 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
-    "@prisma/client": "^5.19.1",
+    "@prisma/client": "^5.22.0",
     "@vercel/postgres": "0.10.0",
-    "prisma": "^5.19.1",
+    "prisma": "^5.22.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@cfce/types": "workspace:*",
     "@types/formidable": "^3.4.5",
-    "@types/node": "^20.14.9",
+    "@types/node": "^22.5.5",
     "dotenv": "^16.4.5",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",

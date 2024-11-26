@@ -1,4 +1,4 @@
-import { auth } from '@cfce/utils';
+import { auth } from '@cfce/auth';
 import startCase from 'lodash/startCase';
 import React from 'react';
 import AuthHeader from '~/components/auth-header';

@@ -1,5 +1,5 @@
+import { auth } from '@cfce/auth';
 import { getUserByEmail } from '@cfce/database';
-import { auth } from '@cfce/utils';
 import LoginButton from '../../components/LoginButton';
 import { generateApiKey } from './actions';
 

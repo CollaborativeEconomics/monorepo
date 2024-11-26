@@ -1,5 +1,5 @@
+import { auth } from '@cfce/auth';
 import { getDonations } from '@cfce/database';
-import { auth } from '@cfce/utils';
 import styles from '~/styles/dashboard.module.css';
 import DonationsTable from './DonationsTable';
 

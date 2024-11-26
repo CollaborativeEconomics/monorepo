@@ -50,6 +50,10 @@
     "./donationForm": {
       "import": "./dist/donationForm/index.js",
       "types": "./dist/donationForm/index.d.ts"
+    },
+    "./profile": {
+      "import": "./dist/profile/index.js",
+      "types": "./dist/profile/index.d.ts"
     }
   },
   "devDependencies": {
@@ -59,18 +63,18 @@
     "@types/luxon": "^3.4.2",
     "@types/react": "latest",
     "tsc-alias": "^1.8.8",
-    "typescript": "latest"
+    "typescript": "^5.6.2"
   },
   "peerDependencies": {
-    "next": "^15.0.1",
-    "next-themes": "^0.3.0"
+    "next": "^15.0.3",
+    "next-themes": "^0.4.3"
   },
   "dependencies": {
     "@cfce/app-config": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
-    "next-auth": "^4.24.8",
+    "@cfce/auth": "workspace:*",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -87,7 +91,7 @@
     "@radix-ui/react-tabs": "^1.0.4",
     "@rive-app/react-canvas": "^4.8.3",
     "@stellar/freighter-api": "3.0.0",
-    "@stellar/stellar-sdk": "^12.1.0",
+    "@stellar/stellar-sdk": "^12.3.0",
     "@tanstack/react-table": "^8.13.2",
     "class-variance-authority": "^0.7.0",
     "clipboard-copy": "^4.0.1",
