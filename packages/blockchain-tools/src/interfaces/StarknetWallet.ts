@@ -4,17 +4,9 @@ import {Account, constants, Contract, num, Provider, RpcProvider } from "starkne
 import type { GetTransactionReceiptResponse, Call, AccountInterface } from "starknet"
 import {
   executeCalls,
-  fetchAccountCompatibility,
-  fetchAccountsRewards,
   fetchGasTokenPrices,
-  type GaslessCompatibility,
   type GaslessOptions,
-  type GasTokenPrice,
-  type PaymasterReward,
   SEPOLIA_BASE_URL,
-  type ExecuteCallsOptions,
-  fetchGaslessStatus,
-  type DeploymentData,
 } from '@avnu/gasless-sdk'
 import ChainBaseClass from "../chains/ChainBaseClass"
 import { parseEther, formatEther } from "viem"
@@ -35,6 +27,18 @@ class StarknetWallet extends ChainBaseClass {
     this.provider = new Provider({
       nodeUrl: process.env.STARKNET_RPC_URI
     })
+
+    // Check for existing connection
+    connect({ modalMode: "neverAsk" }).then(({ wallet, connector }) => {
+      if (wallet?.isConnected) {
+        this.wallet = wallet;
+        this.connector = connector;
+        connector?.account().then(account => {
+          this.account = account;
+          this.connectedWallet = account.address;
+        });
+      }
+    });
 
     this.contract = new Contract(ERC20, "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d", this.provider)
     console.log("STARKNET INIT")
