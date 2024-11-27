@@ -125,8 +125,8 @@ model Credit {
   filled       Boolean    @default(false)
   current      Decimal?   @default(0) @db.Decimal(12, 2)
   goal         Decimal?   @default(0) @db.Decimal(12, 2)
-  initiative   Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
-  provider     Provider   @relation(fields: [providerId], references: [id])
+  initiative   Initiative @relation(fields: [initiativeId], references: [id])
+  provider     Provider   @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   @@map("credits")
 }
@@ -160,8 +160,8 @@ model Donation {
   chain          Chain?
   storyId        String?      @db.Uuid
   category       Category?    @relation(fields: [categoryId], references: [id])
-  initiative     Initiative?  @relation(fields: [initiativeId], references: [id], onDelete: SetNull)
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  initiative     Initiative?  @relation(fields: [initiativeId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
   impactlinks    ImpactLink[]
 
   @@map("donations")
