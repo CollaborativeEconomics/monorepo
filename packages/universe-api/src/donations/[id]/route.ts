@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const apiKey = req.headers.get("x-api-key")
-  const authorized = await checkApiKey(apiKey)
+  const authorized = await checkApiKey(apiKey, undefined, true)
 
   if (!authorized) {
     return NextResponse.json({ success: false }, { status: 403 })

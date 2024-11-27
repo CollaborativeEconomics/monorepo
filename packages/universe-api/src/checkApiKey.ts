@@ -1,10 +1,12 @@
 import { prismaClient } from "@cfce/database"
+import { UserType } from "@cfce/types"
 
 const officialApiKey = process.env.OFFICIAL_CFCE_API_KEY
 
 const checkApiKey = async (
   apiKey: string | null,
   id?: string,
+  adminOnly?: boolean,
 ): Promise<boolean> => {
   if (!apiKey) {
     return false
@@ -17,6 +19,10 @@ const checkApiKey = async (
   const user = await prismaClient.user.findUnique({
     where: { api_key: apiKey },
   })
+
+  if (adminOnly && user?.type !== UserType.admin) {
+    return false
+  }
 
   // If the API key is not enabled or there's no user, return unauthorized
   if (!user?.api_key_enabled) {
