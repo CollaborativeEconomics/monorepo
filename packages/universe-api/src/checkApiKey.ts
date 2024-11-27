@@ -5,8 +5,17 @@ const officialApiKey = process.env.OFFICIAL_CFCE_API_KEY
 
 const checkApiKey = async (
   apiKey: string | null,
-  id?: string,
-  adminOnly?: boolean,
+  {
+    userId,
+    orgId,
+    adminOnly,
+    devOnly,
+  }: {
+    userId?: string
+    orgId?: string
+    adminOnly?: boolean
+    devOnly?: boolean
+  },
 ): Promise<boolean> => {
   if (!apiKey) {
     return false
@@ -14,6 +23,10 @@ const checkApiKey = async (
 
   if (apiKey === officialApiKey) {
     return true
+  }
+
+  if (devOnly && process.env.NEXT_PUBLIC_APP_ENV !== "development") {
+    return false
   }
 
   const user = await prismaClient.user.findUnique({
@@ -31,8 +44,8 @@ const checkApiKey = async (
 
   // TODO: this is all broken because there's no user/organization relationship
   // If an ID is provided, check if it matches the user's ID or organization ID
-  // if (id) {
-  //   const isUserIdMatch = id === user.id
+  // if (userId) {
+  //   const isUserIdMatch = userId === user.id
   //   const organization = await prismaClient.organization.findFirst({
   //     where: {
   //       userId: user.email,

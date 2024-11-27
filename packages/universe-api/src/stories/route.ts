@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const orgId = searchParams.get("orgId")
     const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey, orgId ?? undefined)
+    const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!authorized) {
       return NextResponse.json(
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   try {
     const apiKey = req.headers.get("x-api-key")
     const orgId = req.nextUrl.searchParams.get("orgId")
-    const authorized = await checkApiKey(apiKey, orgId ?? undefined)
+    const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!authorized) {
       return NextResponse.json(
