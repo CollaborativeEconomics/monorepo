@@ -1,0 +1,33 @@
+{
+  "name": "give-cast",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "deploy": "vercel",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@cfce/database": "workspace:*",
+    "form-data": "^4.0.0",
+    "frog": "latest",
+    "hono": "^4",
+    "mailgun.js": "^10.2.1",
+    "next": "^14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "viem": "^2.17.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^9.7.0",
+    "typescript": "^5",
+    "vercel": "^32.3.0"
+  }
+}
