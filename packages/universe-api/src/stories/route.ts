@@ -20,7 +20,7 @@ export const config = {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
+    const orgId = searchParams.get("orgId") ?? undefined
     const apiKey = req.headers.get("x-api-key")
     const authorized = await checkApiKey(apiKey, { orgId })
 
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const apiKey = req.headers.get("x-api-key")
-    const orgId = req.nextUrl.searchParams.get("orgId")
+    const orgId = req.nextUrl.searchParams.get("orgId") ?? undefined
     const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!authorized) {

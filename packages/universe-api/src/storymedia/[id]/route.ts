@@ -5,7 +5,7 @@ import checkApiKey from "../../checkApiKey"
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
+    const orgId = searchParams.get("orgId") ?? undefined
     const id = searchParams.get("id")
 
     if (!id) {

@@ -15,8 +15,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false }, { status: 403 })
     }
 
-    const { searchParams } = new URL(req.url)
-    const id = searchParams.get("id")
+    const id = req.nextUrl.pathname.split("/").pop()
 
     if (!id) {
       return NextResponse.json(
@@ -59,7 +58,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const apiKey = req.headers.get("x-api-key")
-  const authorized = await checkApiKey(apiKey, undefined, true)
+  const authorized = await checkApiKey(apiKey, { devOnly: true })
 
   if (!authorized) {
     return NextResponse.json({ success: false }, { status: 403 })

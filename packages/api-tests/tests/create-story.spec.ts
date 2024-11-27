@@ -77,6 +77,17 @@ test("POST organization/[id]", async ({ request, baseURL }) => {
   expect(body.success).toBe(true)
   expect(body.data.name).toBe(updatedData.name)
 })
+test("GET organization/[id]", async ({ request, baseURL }) => {
+  const response = await request.get(
+    `${baseURL}/organizations/${organizationId}`,
+    {
+      headers,
+    },
+  )
+  expect(response.status()).toBe(200)
+  const body = await response.json()
+  expect(body.success).toBe(true)
+})
 //#endregion
 
 //#region Initiative
@@ -118,6 +129,15 @@ test("POST initiative/[id]", async ({ request, baseURL }) => {
   const body = await response.json()
   expect(body.success).toBe(true)
   expect(body.data.title).toBe(updatedData.title)
+})
+
+test("GET initiative/[id]", async ({ request, baseURL }) => {
+  const response = await request.get(`${baseURL}/initiatives/${initiativeId}`, {
+    headers,
+  })
+  expect(response.status()).toBe(200)
+  const body = await response.json()
+  expect(body.success).toBe(true)
 })
 //#endregion
 

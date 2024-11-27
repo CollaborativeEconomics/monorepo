@@ -5,7 +5,7 @@ import checkApiKey from "../../checkApiKey"
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
+    const orgId = searchParams.get("orgId") ?? undefined
     const id = searchParams.get("id")
 
     const apiKey = req.headers.get("x-api-key")
@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
+    const orgId = searchParams.get("orgId") ?? undefined
     const id = req.nextUrl.pathname.split("/").pop()
 
     const apiKey = req.headers.get("x-api-key")

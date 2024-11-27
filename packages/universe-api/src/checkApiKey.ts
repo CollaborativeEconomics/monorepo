@@ -5,18 +5,25 @@ const officialApiKey = process.env.OFFICIAL_CFCE_API_KEY
 
 const checkApiKey = async (
   apiKey: string | null,
-  {
-    userId,
-    orgId,
-    adminOnly,
-    devOnly,
-  }: {
+  options?: {
     userId?: string
     orgId?: string
     adminOnly?: boolean
     devOnly?: boolean
   },
 ): Promise<boolean> => {
+  const { userId, orgId, adminOnly, devOnly } = options || {}
+
+  console.log({
+    apiKey,
+    userId,
+    orgId,
+    adminOnly,
+    devOnly,
+    officialApiKey,
+    dev: process.env.NEXT_PUBLIC_APP_ENV,
+  })
+
   if (!apiKey) {
     return false
   }
