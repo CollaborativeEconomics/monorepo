@@ -14,16 +14,6 @@ const checkApiKey = async (
 ): Promise<boolean> => {
   const { userId, orgId, adminOnly, devOnly } = options || {}
 
-  console.log({
-    apiKey,
-    userId,
-    orgId,
-    adminOnly,
-    devOnly,
-    officialApiKey,
-    dev: process.env.NEXT_PUBLIC_APP_ENV,
-  })
-
   if (!apiKey) {
     return false
   }
