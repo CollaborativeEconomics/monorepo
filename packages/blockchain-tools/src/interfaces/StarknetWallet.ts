@@ -28,18 +28,6 @@ class StarknetWallet extends ChainBaseClass {
       nodeUrl: process.env.STARKNET_RPC_URI
     })
 
-    // Check for existing connection
-    connect({ modalMode: "neverAsk" }).then(({ wallet, connector }) => {
-      if (wallet?.isConnected) {
-        this.wallet = wallet;
-        this.connector = connector;
-        connector?.account().then(account => {
-          this.account = account;
-          this.connectedWallet = account.address;
-        });
-      }
-    });
-
     this.contract = new Contract(ERC20, "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d", this.provider)
     console.log("STARKNET INIT")
     console.log("RPC provider", this.provider)
@@ -96,13 +84,14 @@ class StarknetWallet extends ChainBaseClass {
     try {
       console.log("CONNECT...")
 
-      let wallet = this.wallet
+      const { wallet, connector } = await connect({ modalMode: "neverAsk" });
 
-      if (!wallet) {
-        ({wallet} = await this.getWallet())
-      }
-      
       if (wallet?.isConnected) {
+        this.wallet = wallet;
+        this.connector = connector;
+        const account = await connector?.account();
+        this.account = account;
+        this.connectedWallet = account.address;
         
         return {
           success: true,
@@ -110,6 +99,7 @@ class StarknetWallet extends ChainBaseClass {
           network: this.network.slug,
         }
       }
+      
       throw new Error("Failed to connect wallet")
     } catch (ex) {
       console.error(ex)

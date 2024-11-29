@@ -33,6 +33,7 @@ export default async function getCoinRate({
       symbol,
       blockchain: chain,
     })
+    console.log("RESPONSE", response)
     const rate = response.object?.data?.price
     if (!rate || typeof rate !== "number") {
       console.log('No price quote found in response')

@@ -18,6 +18,7 @@ import { Triggers, runHook } from "@cfce/registry-hooks"
 import { ChainSlugs, DonationStatus, TokenTickerSymbol } from "@cfce/types"
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
+import { registryApi } from "./registryApi"
 
 interface MintAndSaveReceiptNFTParams {
   transaction: {
@@ -54,13 +55,25 @@ export async function mintAndSaveReceiptNFT({
       date,
     } = transaction
     console.log("MINT", chain)
-    const rate = await getCoinRate({ chain, symbol: token })
+    console.log("Chain", chain)
+    console.log("Token", token)
+    const rate = await getCoinRate({ symbol: token, chain })
+
+    // const response = await registryApi.get<{ coin: TokenTickerSymbol; rate: number }>(
+    //   `/rates?coin=${token}&chain=${chain}`,
+    // )
+    // console.log("RESPONSE", response)
+
+    // if (!response.success) {
+    //   return { success: false, error: "Error fetching rate" }
+    // }
+    
+    // const rate = response.data?.rate
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {
       return { success: false, error: "Invalid transaction ID" }
     }
-
     if (!chain || !Object.values(ChainSlugs).includes(chain)) {
       return { success: false, error: "Invalid chain" }
     }
@@ -110,7 +123,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Check for existing receipt
-    const existingReceipt = await getNFTbyTokenId(txId)
+    const existingReceipt = await getNFTbyTokenId(txId, chain)
     if (existingReceipt) {
       return { success: false, error: "Receipt already exists" }
     }

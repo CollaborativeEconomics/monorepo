@@ -14,7 +14,7 @@ const siteInfo = {
 const apis = {
   ...appConfig.apis,
   registry: {
-    apiUrl: "https://registry.staging.cfce.io/api",
+    apiUrl: "http://localhost:3000/api",
   },
 }
 
