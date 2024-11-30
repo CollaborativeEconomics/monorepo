@@ -6,6 +6,9 @@ const checkApiKey = async (
   apiKey: string | null,
   id?: string,
 ): Promise<boolean> => {
+
+  console.log('APIKEY', apiKey)
+
   if (!apiKey) {
     return false
   }

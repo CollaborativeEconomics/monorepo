@@ -5,7 +5,7 @@ const chainConfiguration: Chains = {
   arbitrum: {
     slug: "arbitrum",
     name: "Arbitrum",
-    symbol: "ARB",
+    symbol: "ETH",
     icon: "/icons/arb.webp",
     networks: {},
   },
@@ -153,7 +153,7 @@ chainConfiguration.avalanche.networks.mainnet = {
   gasprice: "250000000",
   explorer: "https://snowtrace.io",
   rpcUrls: {
-    main: "https://ethereum.publicnode.com",
+    main: "https://avalanche-mainnet.infura.io",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
@@ -167,7 +167,8 @@ chainConfiguration.avalanche.networks.testnet = {
   gasprice: "250000000",
   explorer: "https://testnet.snowtrace.io",
   rpcUrls: {
-    main: "https://ethereum-goerli.publicnode.com",
+    main: "https://api.avax-test.network/ext/bc/C/rpc",
+    //main: "https://ethereum-goerli.publicnode.com",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
@@ -193,9 +194,9 @@ chainConfiguration.base.networks.testnet = {
   symbol: "BASE",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://testnet.basescan.org",
+  explorer: "https://sepolia.basescan.org",
   rpcUrls: {
-    main: "https://testnet.base.org",
+    main: "https://sepolia.base.org",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
@@ -248,8 +249,8 @@ chainConfiguration.celo.networks.testnet = {
   slug: "testnet",
   symbol: "CELO",
   decimals: 18,
-  gasprice: "10000000000",
-  explorer: "https://alfajores-blockscout.celo-testnet.org",
+  gasprice: "27500000000",
+  explorer: "https://celo-alfajores.blockscout.com",
   rpcUrls: {
     main: "https://alfajores-forno.celo-testnet.org",
   },
@@ -355,15 +356,16 @@ chainConfiguration.flare.networks.mainnet = {
   wssurl: "",
 }
 chainConfiguration.flare.networks.testnet = {
-  id: 16,
+  id: 114,
   name: "Flare Testnet",
   slug: "testnet",
   symbol: "FLR",
   decimals: 18,
   gasprice: "25000000000",
-  explorer: "https://coston-explorer.flare.network",
+  explorer: "https://coston2-explorer.flare.network",
   rpcUrls: {
-    main: "https://coston-api.flare.network/ext/bc/C/rpc",
+    main: "https://coston2-api.flare.network/ext/C/rpc",
+    //main: "https://coston2-api.flare.network/ext/bc/C/rpc",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",

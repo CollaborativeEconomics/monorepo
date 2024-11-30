@@ -13,6 +13,10 @@ function getObjectValue(obj:any, prop:string) {
   return prop.split('.').reduce((r, val) => { return r ? r[val] : undefined; }, obj)
 }
 
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export default class Web3Server extends ChainBaseClass {
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
@@ -54,7 +58,12 @@ export default class Web3Server extends ChainBaseClass {
     console.log("NONCE", nonce)
     const data = instance.methods.mint(address, uri).encodeABI()
     console.log("DATA", data)
-    const gas = await this.getGasPrice(minter, contractId, data)
+    let gas = await this.getGasPrice(minter, contractId, data)
+    // FIX: getGasPrice in XDC is not returning updated prices
+    if(this.chain.slug==='xdc'){
+      gas = {gasPrice:'0x21c2ac6a00', gasLimit:'0xf4240'}  // 145000000000 - 1000000
+    }
+    console.log("GAS", gas)
 
     const tx = {
       from: minter, // minter wallet
@@ -63,7 +72,7 @@ export default class Web3Server extends ChainBaseClass {
       data: data, // encoded method and params
       gas: gas.gasLimit,
       gasPrice: gas.gasPrice,
-      nonce,
+      //nonce, // let the chain use the latest
     }
     console.log("TX", tx)
 
@@ -131,8 +140,9 @@ export default class Web3Server extends ChainBaseClass {
     console.log("NONCE", nonce)
     const data = instance.methods.safeMint(address, tokenId).encodeABI()
     console.log("DATA", data)
-    const gas = await this.getGasPrice(minter, contractId, data)
-    //gas.gasLimit = '0x1e8480' // 2,000,000 wei
+    //const gas = await this.getGasPrice(minter, contractId, data)
+    // FIX: getGasPrice is not returning updated prices
+    const gas = {gasPrice:'0x21c2ac6a00', gasLimit:'0xf4240'}  // 145000000000 - 1000000
     console.log("GAS", gas)
 
     const tx = {
@@ -142,7 +152,7 @@ export default class Web3Server extends ChainBaseClass {
       data: data, // encoded method and params
       gas: gas.gasLimit,
       gasPrice: gas.gasPrice,
-      nonce,
+      //nonce, // let the chain use the latest
     }
     console.log("TX", tx)
 
@@ -315,24 +325,33 @@ export default class Web3Server extends ChainBaseClass {
   //   }
   //   return result
   // }
-  async getTransactionInfo(txId: string) {
-    const txInfo = await this.fetchLedger("eth_getTransactionByHash", [txId])
-    console.log('TX', txInfo)
-
-    if (!txInfo || txInfo.error) {
-      return { error: "Transaction not found" }
+  async getTransactionInfo(txId: string, wait?:boolean) {
+    const secs = [2,2,3,3,4,4,5,5,6,6]
+    let count = 0
+    if(!wait){ count = 9 }
+    while(count<10){
+      count += 1
+      console.log('WAIT', count, '-', secs[count], 'secs')
+      await sleep(secs[count]*1000)
+      const txInfo = await this.fetchLedger("eth_getTransactionByHash", [txId])
+      console.log('TXINFO', txInfo)
+      if (!txInfo || txInfo.error) {
+        return { error: "Transaction not found" }
+      }
+      if(txInfo?.hash){
+        return {
+          id: txInfo.hash,
+          hash: txInfo.hash,
+          from: txInfo.from,
+          to: txInfo.to,
+          value: txInfo.value,
+          fee: (BigInt(txInfo.gas) * BigInt(txInfo.gasPrice)).toString(),
+          blockNumber: Number.parseInt(txInfo.blockNumber, 16),
+          timestamp: "" // Ethereum transactions do not directly provide a timestamp
+        }
+      }
     }
-
-    return {
-      id: txInfo.hash,
-      hash: txInfo.hash,
-      from: txInfo.from,
-      to: txInfo.to,
-      value: txInfo.value,
-      fee: (BigInt(txInfo.gas) * BigInt(txInfo.gasPrice)).toString(),
-      blockNumber: Number.parseInt(txInfo.blockNumber, 16),
-      timestamp: "" // Ethereum transactions do not directly provide a timestamp
-    }
+    return { error: "Transaction not found" }
   }
 
   async fetchLedger(method: string, params: unknown) {

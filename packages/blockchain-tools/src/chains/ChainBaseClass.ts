@@ -20,7 +20,7 @@ export default abstract class ChainBaseClass {
 
   // isometric functions, must be defined on all subclasses
   public abstract getTransactionInfo(
-    txId: string,
+    txId: string
   ): Promise<Transaction | { error: string }>
   // TODO: improve types
   public abstract fetchLedger(method: unknown, params: unknown): unknown
