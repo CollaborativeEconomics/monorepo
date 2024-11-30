@@ -5,7 +5,7 @@ import checkApiKey from "../../checkApiKey"
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
+    const orgId = searchParams.get("orgId") ?? undefined
     const id = searchParams.get("id")
 
     if (!id) {
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     }
 
     const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey, orgId ?? undefined)
+    const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!authorized) {
       return NextResponse.json({ success: false }, { status: 403 })

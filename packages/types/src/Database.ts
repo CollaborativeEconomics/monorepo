@@ -4,6 +4,13 @@ export interface ListQuery {
   order?: string
 }
 
+export const UserType = {
+  admin: 9,
+  orgAdmin: 1,
+  // ???: 5, we think this isn't used anymore
+  user: 0,
+} as const
+
 export const DonationStatus = {
   pending: 0,
   claimed: 1,
