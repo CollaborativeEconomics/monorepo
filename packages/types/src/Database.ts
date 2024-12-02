@@ -44,7 +44,7 @@ export type ContractType = {
   "721": "721",
   "1155": "1155",
   "Credits": "Credits",
-  "CreditaHash": "CreditaHash",
+  "CreditsHash": "CreditsHash",
   "Factory": "Factory",
   "NFTReceipt": "NFTReceipt",
   "NFTReceiptHash": "NFTReceiptHash",

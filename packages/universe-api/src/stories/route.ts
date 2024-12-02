@@ -42,7 +42,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId") ?? undefined
+    //const orgId = searchParams.get("orgId") ?? undefined
+    const orgId = req.nextUrl.searchParams.get("orgId") ?? undefined
     const apiKey = req.headers.get("x-api-key")
     const authorized = await checkApiKey(apiKey, { orgId })
 
