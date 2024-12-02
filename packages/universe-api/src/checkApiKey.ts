@@ -12,7 +12,6 @@ const checkApiKey = async (
     devOnly?: boolean
   },
 ): Promise<boolean> => {
-
   const { userId, orgId, adminOnly, devOnly } = options || {}
 
   if (!apiKey) {
@@ -42,8 +41,8 @@ const checkApiKey = async (
 
   // TODO: this is all broken because there's no user/organization relationship
   // If an ID is provided, check if it matches the user's ID or organization ID
-  // if (id) {
-  //   const isUserIdMatch = id === user.id
+  // if (userId) {
+  //   const isUserIdMatch = userId === user.id
   //   const organization = await prismaClient.organization.findFirst({
   //     where: {
   //       userId: user.email,

@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
     const result = await getDonations(query)
     return NextResponse.json({ success: true, data: result }, { status: 201 })
   } catch (error) {
-    console.error({ error })
     return NextResponse.json({ success: false }, { status: 400 })
   }
 }
@@ -32,10 +31,11 @@ export async function POST(req: NextRequest) {
     }
 
     const record = await req.json()
+    console.log("record", record)
     const result = await newDonation(record)
     return NextResponse.json({ success: true, data: result }, { status: 200 })
   } catch (error) {
-    console.error("ERROR:", error)
+    console.error("POST donations error", error)
     return NextResponse.json(
       {
         success: false,
@@ -48,6 +48,5 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE() {
   const message = "Invalid HTTP method, only GET and POST accepted"
-  console.error(message)
   return NextResponse.json({ success: false, error: message }, { status: 400 })
 }
