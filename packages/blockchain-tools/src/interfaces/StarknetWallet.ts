@@ -12,6 +12,7 @@ import ChainBaseClass from "../chains/ChainBaseClass"
 import { parseEther, formatEther } from "viem"
 import { ERC20 } from "../contracts/starknet/Abi"
 import { nftABI } from "../contracts/starknet/nftABI"
+import appConfig from "@cfce/app-config"
 
 class StarknetWallet extends ChainBaseClass {
   provider: Provider
@@ -45,26 +46,33 @@ class StarknetWallet extends ChainBaseClass {
 
   async getWallet() {
     const { wallet, connector } = await connect({
-      modalMode: "alwaysAsk"
+      modalMode: "canAsk"
     });
 
     const account = await connector?.account();
     
-    // Check if wallet is connected to Sepolia
+    // Get current chain from wallet
     const currentChain = await wallet?.provider?.getChainId();
-    const sepoliaChainId = constants.StarknetChainId.SN_SEPOLIA; // Starknet Sepolia Chain ID
+
+    const envChain = appConfig.chains.starknet?.network
     
-    if (currentChain !== sepoliaChainId) {
+    // Determine target network based on environment
+    const targetChainId = envChain === "mainnet" 
+      ? constants.StarknetChainId.SN_MAIN    // Mainnet for production
+      : constants.StarknetChainId.SN_SEPOLIA; // Sepolia for development
+    
+    // Switch network if needed
+    if (currentChain !== targetChainId) {
       try {
         await wallet?.request({
           type: 'wallet_switchStarknetChain',
           params: {
-            chainId: constants.StarknetChainId.SN_SEPOLIA,
+            chainId: targetChainId,
           },
         });
       } catch (error) {
         console.error('Failed to switch network:', error);
-        throw new Error('Please switch to Starknet Sepolia network in your wallet');
+        throw new Error(`Please switch to ${envChain === "mainnet" ? 'Mainnet' : 'Sepolia'} network in your wallet`);
       }
     }
 
@@ -84,15 +92,13 @@ class StarknetWallet extends ChainBaseClass {
     try {
       console.log("CONNECT...")
 
-      const { wallet, connector } = await connect({ modalMode: "neverAsk" });
+      let wallet = this.wallet
+
+      if (!wallet) {
+        ({wallet} = await this.getWallet())
+      }
 
       if (wallet?.isConnected) {
-        this.wallet = wallet;
-        this.connector = connector;
-        const account = await connector?.account();
-        this.account = account;
-        this.connectedWallet = account.address;
-        
         return {
           success: true,
           walletAddress: this.connectedWallet,
