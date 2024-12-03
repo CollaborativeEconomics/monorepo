@@ -4,11 +4,29 @@ import type { Provider } from "next-auth/providers/index"
 import authProviders from "./authProviders"
 
 const authConfig: AuthConfig = {
+  argent: {
+    authProvider: authProviders.argent,
+    icon: walletConfig.argent.icon,
+    name: "Argent",
+    slug: "argent",
+  },
+  crossmark: {
+    authProvider: authProviders.crossmark,
+    icon: walletConfig.crossmark.icon,
+    name: "Crossmark",
+    slug: "crossmark",
+  },
   freighter: {
     authProvider: authProviders.freighter,
     icon: walletConfig.freighter.icon,
     name: "Freighter",
     slug: "freighter",
+  },
+  gemwallet: {
+    authProvider: authProviders.gemwallet,
+    icon: walletConfig.gemwallet.icon,
+    name: "Gem Wallet",
+    slug: "gemwallet",
   },
   metamask: {
     authProvider: authProviders.metamask,
@@ -27,12 +45,6 @@ const authConfig: AuthConfig = {
     icon: walletConfig.xaman.icon,
     name: "Xaman",
     slug: "xaman",
-  },
-  argent: {
-    authProvider: authProviders.argent,
-    icon: walletConfig.argent.icon,
-    name: "Argent",
-    slug: "argent",
   },
   github: {
     authProvider: authProviders.github,

@@ -9,6 +9,9 @@ import StarknetWallet from "../interfaces/StarknetWallet"
 import StellarServer from "../interfaces/StellarServer"
 import Web3Server from "../interfaces/Web3Server"
 import XrplServer from "../interfaces/XrplServer"
+import XrplClient from "../interfaces/XrplClient"
+import CrossmarkWallet from "../interfaces/CrossmarkWallet"
+import GemWallet from "../interfaces/GemWallet"
 import XummClient from "../interfaces/XummClient"
 import _SacrificialInterface from "../interfaces/_SacrificialInterface"
 import type ChainBaseClass from "./ChainBaseClass"
@@ -84,8 +87,10 @@ const BlockchainManager = {
     server: new Web3Server("xdc", getNetwork("xdc")),
   },
   xrpl: {
+    //client: new CrossmarkWallet("xrpl", getNetwork("xrpl")),
+    //client: new GemWallet("xrpl", getNetwork("xrpl")),
     client: new XummClient("xrpl", getNetwork("xrpl")),
-    server: new XrplServer("xrpl", getNetwork("xrpl")),
+    server: new XrplServer("xrpl", getNetwork("xrpl"), 77777777), // NFT TAG SHOULD BE MOVED TO MINT_NFT METHOD
   },
 } satisfies Record<ChainSlugs, ChainClasses>
 

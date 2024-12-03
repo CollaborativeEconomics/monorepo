@@ -655,8 +655,8 @@ chainConfiguration.xrpl.networks.testnet = {
   rpcUrls: {
     main: "https://s.altnet.rippletest.net:51234",
   },
-  wallet: "",
-  wssurl: "",
+  wallet: "r3qr25QnANd8RRT9NYtgUrrty3yTfpGx9c",
+  wssurl: "wss://s.altnet.rippletest.net:51233",
 }
 
 export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
