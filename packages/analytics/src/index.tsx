@@ -1,6 +1,9 @@
 'use client';
 import posthog from 'posthog-js';
-import { PostHogProvider as PostHogProviderBase } from 'posthog-js/react';
+import {
+  PostHogProvider as PostHogProviderBase,
+  usePostHog,
+} from 'posthog-js/react';
 import React, { useEffect } from 'react';
 
 export function initializeAnalytics() {
@@ -17,4 +20,4 @@ export function PostHogProvider({ children }: React.PropsWithChildren) {
   return <PostHogProviderBase client={posthog}>{children}</PostHogProviderBase>;
 }
 
-export * from 'posthog-js/react';
+export { usePostHog };

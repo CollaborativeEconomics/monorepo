@@ -2,10 +2,10 @@
   "name": "@cfce/analytics",
   "version": "0.1.0",
   "private": true,
-  "main": "./dist/index.js",
+  "main": "./dist/index.jsx",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "lint": "eslint .",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
