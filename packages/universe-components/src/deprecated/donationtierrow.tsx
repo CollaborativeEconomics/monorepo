@@ -45,8 +45,9 @@ const DonationTierRow = ({
   //console.log('XLM/TON', amountPerTon)
   const offsetVal = amountPerTon > 0 ? (value / amountPerTon).toFixed(2) : 0;
   const [offset, setOffset] = useState(offsetVal);
+  // biome-ignore lint/suspicious/noExplicitAny: any
   function updateOffset(event: any) {
-    const value = parseInt(event.target.value) || 0;
+    const value = Number.parseInt(event.target.value, 10) || 0;
     const final = amountPerTon > 0 ? (value / amountPerTon).toFixed(2) : 0;
     setOffset(final);
   }

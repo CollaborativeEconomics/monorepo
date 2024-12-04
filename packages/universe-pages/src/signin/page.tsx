@@ -1,11 +1,9 @@
 import React from 'react';
 
 import appConfig from '@cfce/app-config';
+import { AuthButton, auth } from '@cfce/auth';
 import { getChainConfiguration } from '@cfce/blockchain-tools';
 import type { ChainSlugs } from '@cfce/types';
-import { AuthButton } from '@cfce/universe-components/client/auth';
-import { authOptions } from '@cfce/utils';
-import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
 import {
@@ -17,7 +15,10 @@ import {
 } from '@cfce/universe-components/ui';
 
 export default async function Signin() {
-  const session = await getServerSession(authOptions);
+  //console.log('SIGN IN...')
+  const session = await auth();
+  //console.log('SESSION', session)
+
   // @ts-ignore: module augmentation is hard, TODO: fix this
   const userId = session?.user?.id;
 
@@ -36,23 +37,18 @@ export default async function Signin() {
             Sign in
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="flex flex-col">
           {Object.entries(chains).map(([slug, { enabledWallets }], i) => {
             const chainConfig = chainConfigs[slug as ChainSlugs];
             return (
-              <div key={`auth-button-${slug}`}>
+              <div key={`auth-button-${slug} w-full flex`}>
                 {i > 0 && <Separator className="my-4" />}
                 {enabledWallets.map(wallet => (
                   <AuthButton
+                    className="w-full"
                     key={wallet}
                     method={wallet}
                     chain={slug as ChainSlugs}
-                    config={{
-                      name: wallet,
-                      icon: chainConfig.icon,
-                      slug: wallet,
-                    }}
-                    className="mb-2"
                   />
                 ))}
               </div>

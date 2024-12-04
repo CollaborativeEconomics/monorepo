@@ -1,6 +1,5 @@
-'use client';
+import { auth } from '@cfce/auth';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
@@ -28,8 +27,9 @@ import {
   SheetTrigger,
 } from '~/ui/sheet';
 
-export default function NavMenu() {
-  const { data: session, status } = useSession();
+export default async function NavMenu() {
+  const session = await auth();
+  const status = session?.user ? 'authenticated' : 'unauthenticated';
   //console.log('Header Session', session, status)
   const avatar = session?.user?.image || '/media/nopic.png';
   // @ts-ignore - module augmentation is hard

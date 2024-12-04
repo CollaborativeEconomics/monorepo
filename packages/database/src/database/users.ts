@@ -62,17 +62,18 @@ export async function getUserByWallet(walletAddress: string) {
 
 export async function newUser(data: Prisma.UserCreateArgs["data"]) {
   const user = await prismaClient.user.create({ data })
-  console.log("NEW", user)
+  console.log("NEW USER", user)
   return user
 }
 
 export async function setUser(id: string, data: Partial<User>) {
   const user = await prismaClient.user.update({ where: { id }, data })
-  console.log("SET", user)
+  console.log("SET USER", user)
   return user
 }
 
 export async function getUserById(id: string) {
+  console.log("GET USER BY ID", id)
   const include = {
     artworks: {
       include: { author: true },
@@ -81,7 +82,7 @@ export async function getUserById(id: string) {
     wallets: true,
   }
   const user = await prismaClient.user.findUnique({ where: { id }, include })
-  console.log("GET", user)
+  console.log("USER", user)
   return user
 }
 

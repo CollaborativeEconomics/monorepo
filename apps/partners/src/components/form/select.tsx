@@ -9,14 +9,16 @@ interface Option {
 interface SelectProps {
   id?: string;
   label?: string;
+  name?: string;
   selected?: string;
   options?: Option[];
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn;
 }
 
 const Select = ({
   id,
   label,
+  name,
   options,
   register,
   selected,
@@ -24,7 +26,7 @@ const Select = ({
 }: SelectProps & HTMLProps<HTMLSelectElement>) => (
   <label className="my-4">
     <span className="text-slate-300 text-sm text-left uppercase">{label}</span>
-    <select id={id} {...rest} {...register}>
+    <select id={id} {...rest} {...register} name={name}>
       {options ? (
         options.map(item => {
           if (item.id === selected) {

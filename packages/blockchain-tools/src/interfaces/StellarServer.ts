@@ -33,7 +33,8 @@ export default class StellarServer extends ChainBaseClass {
     transfer?: boolean
     walletSeed: string
   }) {
-    console.log(this.chain, "minting NFT to", address, uri)
+    console.log(this.chain.name, "minting NFT to", address, uri, "in", this.network.slug)
+    console.log("CTR", contractId, this.network.rpcUrls.main)
     const contract = new Contract721({
       contractId,
       rpcUrl: this.network.rpcUrls.main,
@@ -41,7 +42,7 @@ export default class StellarServer extends ChainBaseClass {
     })
     //console.log('CTR', contract.spec)
     // const info = await contract.mint({ to: address })
-    const response = contract.submit({
+    const response = await contract.submit({
       network: this.network,
       secret: walletSeed,
       contractId,
@@ -65,8 +66,8 @@ export default class StellarServer extends ChainBaseClass {
           console.log("Waiting for transaction confirmation...")
           // See if the transaction is complete
           result = await this.sorobanServer.getTransaction(response.hash)
-          // Wait one second
-          await new Promise((resolve) => setTimeout(resolve, 1000))
+          // Wait two seconds
+          await new Promise((resolve) => setTimeout(resolve, 2000))
         }
         //console.log(`getTransaction response: ${JSON.stringify(result)}`);
         console.log("Status:", result.status)
@@ -120,8 +121,7 @@ export default class StellarServer extends ChainBaseClass {
 
   async fetchLedger(query: string) {
     try {
-      //let url = this.soroban + query
-      const url = this.chain.networks.horizon.rpcUrls.main + query
+      const url = `${this.network.rpcUrls.main}/${query}`
       console.log("FETCH", url)
       const options = {
         method: "GET",

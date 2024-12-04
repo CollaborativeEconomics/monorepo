@@ -1,0 +1,25 @@
+{
+  "extends": ["//"],
+  "globalEnv": [
+    "TURBO_ENV",
+    "GITHUB_ID",
+    "GITHUB_SECRET",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET"
+  ],
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**/*.js", "dist/**/*.d.ts", "dist/**/*.map"],
+      "env": [
+        "POSTGRES_PRISMA_URL",
+        "IPFS_API_KEY",
+        "IPFS_API_SECRET",
+        "BLOB_READ_WRITE_TOKEN",
+        "XINFIN_MINTER_SECRET",
+        "XINFIN_NETWORK",
+        "TURBO_ENV"
+      ],
+      "dependsOn": ["^build"]
+    }
+  }
+}

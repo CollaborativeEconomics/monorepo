@@ -1,26 +1,24 @@
-'use client';
-
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { auth, githubLogin, signIn, signOutAction } from '@cfce/auth';
 import React from 'react';
 
-export default function LoginButton() {
-  const { data: session } = useSession();
+export default async function LoginButton() {
+  const session = await auth();
   if (session) {
     return (
       <>
         Signed in as {session.user?.email} <br />
-        <button onClick={() => signOut()} type="button">
-          Sign out
-        </button>
+        <form action={signOutAction}>
+          <button type="submit">Sign out</button>
+        </form>
       </>
     );
   }
   return (
     <>
       Not signed in <br />
-      <button onClick={() => signIn()} type="button">
-        Sign in
-      </button>
+      <form action={githubLogin}>
+        <button type="submit">Sign in</button>
+      </form>
     </>
   );
 }

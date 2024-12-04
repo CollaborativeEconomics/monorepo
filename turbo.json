@@ -4,10 +4,13 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build", "install"],
-      "inputs": ["$TURBO_DEFAULT", ".env*"]
+      "outputs": ["dist/**", ".next/**"]
     },
     "db:generate": {
       "dependsOn": ["^db:generate"]
+    },
+    "e2e:test": {
+      "dependsOn": ["^build"]
     },
     "install": {
       "dependsOn": ["^install"]
@@ -23,5 +26,8 @@
     "//#format-and-lint:fix": {
       "cache": false
     }
+  },
+  "remoteCache": {
+    "enabled": false
   }
 }

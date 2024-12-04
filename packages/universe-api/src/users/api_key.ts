@@ -1,12 +1,11 @@
+import { auth } from "@cfce/auth"
 import { setUser } from "@cfce/database"
-import { authOptions } from "@cfce/utils"
-import { getServerSession } from "next-auth"
 import { type NextRequest, NextResponse } from "next/server"
 import { v4 as uuidv4 } from "uuid"
 
-export async function PUT(req: NextRequest) {
+export async function PUT(req: NextRequest, res: NextResponse) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
     if (!session || !session.user) {
       return NextResponse.json(

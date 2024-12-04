@@ -10,15 +10,16 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "rm -rf dist && tsc && cp -r ./src/assets ./dist/assets"
+    "build": "rm -rf dist && tsc"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
+    "@cfce/app-config": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/ipfs": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
-    "@next-auth/prisma-adapter": "^1.0.7",
+    "@cfce/tbas": "workspace:*",
     "@tanstack/react-query": "^5.51.21",
     "@vercel/blob": "0.24.1",
     "form-data": "^4.0.0",
@@ -28,7 +29,7 @@
     "jotai-immer": "^0.4.1",
     "luxon": "^3.4.4",
     "mailgun.js": "10.2.3",
-    "next-auth": "^4.24.8",
+    "next-auth": "5.0.0-beta.25",
     "server-only": "^0.0.1",
     "ts-node": "^10.9.2",
     "uuid": "^10.0.0"
@@ -40,13 +41,13 @@
     "@cfce/types": "workspace:*",
     "@smithy/types": "^3.4.0",
     "@types/formidable": "^3.4.5",
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.13",
     "@types/luxon": "^3.4.2",
-    "@types/node": "22.5.5",
+    "@types/node": "^22.9.0",
     "@types/uuid": "^10.0.0",
-    "aws-sdk-client-mock": "^4.0.0",
+    "aws-sdk-client-mock": "^4.0.1",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.2",
-    "typescript": "latest"
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.2"
   }
 }

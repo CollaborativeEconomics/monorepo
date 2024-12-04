@@ -9,10 +9,9 @@
     "build": "rm -rf dist && tsc",
     "copy-declarations": "mkdir -p dist/declarations && cp -r src/declarations/* dist/declarations/"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^20.14.9",
-    "next-auth": "^4.24.8",
-    "typescript": "latest"
+    "@types/node": "^22.9.0",
+    "next-auth": "5.0.0-beta.25",
+    "typescript": "^5.6.2"
   }
 }

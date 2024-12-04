@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import type { PropsWithChildren } from 'react';
 
 interface PageProps {
@@ -8,8 +8,9 @@ interface PageProps {
 
 export const metadata: Metadata = {
   title: 'Give Credit',
-  viewport: { initialScale: 1.0, width: 'device-width' },
 };
+
+export const viewport: Viewport = { initialScale: 1.0, width: 'device-width' };
 
 function Page({ title, className, children }: PropsWithChildren<PageProps>) {
   return (

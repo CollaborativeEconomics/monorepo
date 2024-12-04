@@ -22,15 +22,27 @@ import partnersDev from "./config/partners/appConfig.development"
 import partnersProd from "./config/partners/appConfig.production"
 import partnersStaging from "./config/partners/appConfig.staging"
 
+// tests
+import testsDev from "./config/tests/appConfig.development"
+import testsProd from "./config/tests/appConfig.production"
+import testsStaging from "./config/partners/appConfig.staging"
+
 type Environment = "development" | "production" | "staging"
 type AppId =
   | "give-credits"
-  | "giving-universe"
+  | "give-stark"
   | "give-tron"
+  | "giving-universe"
   | "partners"
   | "registry"
-  | "give-stark"
+  | "tests"
+
 const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
+  "give-credits": {
+    development: giveCreditsDev,
+    production: giveCreditsProd,
+    staging: giveCreditsStaging,
+  },
   "give-stark": {
     development: giveStarkDev,
     production: giveStarkProd,
@@ -40,11 +52,6 @@ const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
     development: giveTronDev,
     production: giveTronProd,
     staging: giveTronStaging,
-  },
-  "give-credits": {
-    development: giveCreditsDev,
-    production: giveCreditsProd,
-    staging: giveCreditsStaging,
   },
   "giving-universe": {
     development: givingUniverseDev,
@@ -61,6 +68,11 @@ const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
     development: giveCreditsDev,
     production: giveCreditsProd,
     staging: giveCreditsStaging,
+  },
+  tests: {
+    development: testsDev,
+    production: testsProd,
+    staging: testsStaging,
   },
 }
 

@@ -6,6 +6,7 @@ import React from 'react';
 import OrganizationAvatar from '~/organization/OrganizationAvatar';
 import { Card, CardContent } from '~/ui/card';
 import { DateDisplay } from '~/ui/date-posted';
+import { imageUrl } from '@cfce/utils';
 
 const IPFSURL = appConfig.apis.ipfs.gateway;
 
@@ -32,7 +33,7 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
         <Link href={`/stories/${story.id}`}>
           <Image
             className="object-cover"
-            src={image}
+            src={imageUrl(image)}
             alt="IMG BG"
             style={{ objectFit: 'cover' }}
             fill
@@ -44,7 +45,7 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
           <OrganizationAvatar
             className="flex-wrap"
             name={organization?.name}
-            image={organization?.image ?? undefined} // child component handles fallback
+            image={imageUrl(organization?.image)}
           />
           <p className="text-sm font-semibold truncate">
             in{' '}
@@ -55,7 +56,7 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
             </span>
           </p>
         </div>
-        <DateDisplay timestamp={story.created.getTime()} className="pl-6" />
+        <DateDisplay timestamp={new Date(story.created).getTime()} className="pl-6" />
         <div className="pl-6 line-clamp-2 text-left">{story.description}</div>
       </CardContent>
     </Card>

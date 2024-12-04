@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3'
+import appConfig from "@cfce/app-config"
 
 // Uploads buffer data to AWS IPFS pinning service
 // Can be a file or text as metadata
@@ -8,12 +9,12 @@ import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s
 // Mime type is required text/plain image/jpeg image/png
 export default async function uploadDataToIPFS(fileId: string, bytes: Uint8Array, mimeType: string): Promise<string> {
   // Filebase IPFS Config
-  const region = process.env.IPFS_DEFAULT_REGION
-  const bucket = process.env.IPFS_DEFAULT_BUCKET
-  const point = process.env.IPFS_API_ENDPOINT
+  const region = appConfig.apis.ipfs.region
+  const bucket = appConfig.apis.ipfs.buckets.nfts
+  const point = appConfig.apis.ipfs.endpoint
   const apikey = process.env.IPFS_API_KEY
   const secret = process.env.IPFS_API_SECRET
-  // const gateway = process.env.IPFS_GATEWAY_URL
+  // const gateway = appConfig.apis.ipfs.gateway
   if (!apikey || !secret) {
     throw ('IPFS API Key or Secret not found')
   }

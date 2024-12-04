@@ -24,11 +24,11 @@ describe("BlockchainManager", () => {
   //   expect(instance).toBeDefined()
   //   expect(instance.config).toBeDefined()
   // })
-  it("should correctly connect and store the XinFin chain", () => {
-    const xinfin = BlockchainManager.xinfin
-    expect(xinfin).toBeDefined()
-    expect(MetaMaskWallet).toHaveBeenCalledWith("xinfin", expect.anything())
-    expect(Web3Server).toHaveBeenCalledWith("xinfin", expect.anything())
+  it("should correctly connect and store the XDC chain", () => {
+    const xdc = BlockchainManager.xdc
+    expect(xdc).toBeDefined()
+    expect(MetaMaskWallet).toHaveBeenCalledWith("xdc", expect.anything())
+    expect(Web3Server).toHaveBeenCalledWith("xdc", expect.anything())
   })
 
   it("should correctly connect and store the Stellar chain", () => {
@@ -44,7 +44,7 @@ describe("BlockchainManager", () => {
   })
 
   it("should have chain properties accessible via static getters", () => {
-    expect(BlockchainManager.xinfin).toBeDefined()
+    expect(BlockchainManager.xdc).toBeDefined()
     expect(BlockchainManager.stellar).toBeDefined()
   })
 })

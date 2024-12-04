@@ -1,6 +1,8 @@
 import React, { type PropsWithChildren, type HTMLAttributes } from 'react';
 
 interface ButtonBlueProps extends HTMLAttributes<HTMLButtonElement> {
+  id?: string;
+  type?: "button" | "submit" | "reset" | undefined;
   text: string;
   disabled?: boolean;
 }

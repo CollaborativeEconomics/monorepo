@@ -10,11 +10,10 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@types/bun": "^1.0.8",
     "@types/lodash": "^4.17.0",
     "@types/luxon": "^3.4.2",
     "msw": "^2.2.7",
-    "typescript": "^5.4.2"
+    "typescript": "^5.6.2"
   },
   "dependencies": {
     "@cfce/app-config": "workspace:*",

@@ -7,12 +7,9 @@ export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
   try {
-    console.log("get")
-
     const headersList = await headers()
     const apiKey = headersList.get("x-api-key")
     const authorized = await checkApiKey(apiKey)
-
     if (!authorized) {
       return NextResponse.json({ success: false }, { status: 403 })
     }

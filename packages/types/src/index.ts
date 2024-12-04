@@ -1,4 +1,3 @@
-import NextAuth, { type DefaultSession, type DefaultUser } from "next-auth"
 export * from "./AppConfig"
 export * from "./BlockchainTools"
 export * from "./Auth"

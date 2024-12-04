@@ -160,3 +160,16 @@ export async function newInitiative(data: Prisma.InitiativeCreateInput) {
   const result = await prismaClient.initiative.create({ data })
   return result
 }
+
+export async function updateInitiative(
+  id: string,
+  data: Prisma.InitiativeUpdateInput,
+) {
+  const result = await prismaClient.initiative.update({ where: { id }, data })
+  return result
+}
+
+export async function deleteInitiative(id: string) {
+  const result = await prismaClient.initiative.delete({ where: { id } })
+  return result
+}

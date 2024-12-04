@@ -1,6 +1,5 @@
 import { Inter } from 'next/font/google';
 import styles from 'styles/dashboard.module.css';
-import SessionProvider from '~/components/SessionProvider';
 import Dashboard from '~/components/dashboard';
 import Sidebar from '~/components/sidebar';
 

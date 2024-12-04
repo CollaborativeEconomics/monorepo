@@ -29,8 +29,10 @@ interface WrapperProps {
 }
 
 function ReceiptBodyBuilder(status: string): React.JSX.Element {
-  switch (status) {
-    case 'Claim':
+  console.log('STATUS',status)
+  const statusUp = status.toUpperCase()
+  switch (statusUp) {
+    case 'CLAIM':
       return (
         <ReceiptStatusBody
           className="bg-blue-500"
@@ -39,7 +41,8 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           subtext="Thank you for your donation"
         />
       );
-    case 'Pending':
+    case 'PENDING':
+    case 'READY':
       return (
         <ReceiptStatusBody
           className="bg-gray-400" //
@@ -48,7 +51,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           subtext="Complete the donation to claim NFT"
         />
       );
-    case 'Minting':
+    case 'MINTING':
       return (
         <ReceiptStatusBody
           className="bg-blue-500"
@@ -58,7 +61,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           iconWrapperClassName="animate-spin"
         />
       );
-    case 'Minted':
+    case 'MINTED':
       return (
         <ReceiptStatusBody
           className="bg-green-400"
@@ -67,7 +70,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           subtext="NFT has been sent to your wallet"
         />
       );
-    case 'Rejected':
+    case 'REJECTED':
       return (
         <ReceiptStatusBody
           className="bg-gray-400" //

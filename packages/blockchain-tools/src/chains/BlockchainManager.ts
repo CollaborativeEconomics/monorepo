@@ -5,6 +5,7 @@ import { get as _get } from "lodash"
 import type { Interface } from "../interfaces"
 import FreighterWallet from "../interfaces/FreighterWallet"
 import MetaMaskWallet from "../interfaces/MetamaskClient"
+import StarknetWallet from "../interfaces/StarknetWallet"
 import StellarServer from "../interfaces/StellarServer"
 import Web3Server from "../interfaces/Web3Server"
 import XrplServer from "../interfaces/XrplServer"
@@ -66,8 +67,8 @@ const BlockchainManager = {
     server: new Web3Server("polygon", getNetwork("polygon")),
   },
   starknet: {
-    client: new MetaMaskWallet("starknet", getNetwork("starknet")),
-    server: new Web3Server("starknet", getNetwork("starknet")),
+    client: new StarknetWallet("starknet", getNetwork("starknet")),
+    server: new StarknetWallet("starknet", getNetwork("starknet")),
   },
   stellar: {
     client: new FreighterWallet("stellar", getNetwork("stellar")),
@@ -78,9 +79,9 @@ const BlockchainManager = {
     client: new MetaMaskWallet("tron", getNetwork("tron")),
     server: new Web3Server("tron", getNetwork("tron")),
   },
-  xinfin: {
-    client: new MetaMaskWallet("xinfin", getNetwork("xinfin")),
-    server: new Web3Server("xinfin", getNetwork("xinfin")),
+  xdc: {
+    client: new MetaMaskWallet("xdc", getNetwork("xdc")),
+    server: new Web3Server("xdc", getNetwork("xdc")),
   },
   xrpl: {
     client: new XummClient("xrpl", getNetwork("xrpl")),

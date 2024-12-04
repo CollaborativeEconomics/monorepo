@@ -1,0 +1,7 @@
+{
+  "extends": ["//"],
+  "globalEnv": [
+    "TURBO_ENV",
+    "XDC_WALLET_SECRET"
+  ]
+}

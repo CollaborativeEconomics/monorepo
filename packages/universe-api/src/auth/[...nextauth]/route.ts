@@ -1,5 +1,5 @@
-import { nextAuth } from "@cfce/utils"
+import { handlers } from "@cfce/auth"
 
 export const dynamic = "force-dynamic"
 
-export default nextAuth
+export const { GET, POST } = handlers
