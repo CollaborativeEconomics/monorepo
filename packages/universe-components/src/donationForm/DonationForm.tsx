@@ -1,4 +1,5 @@
 'use client';
+import { usePostHog } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
 import { BlockchainManager } from '@cfce/blockchain-tools';
 import type { Prisma } from '@cfce/database';
@@ -53,6 +54,7 @@ function sleep(ms: number) {
 }
 
 export default function DonationForm({ initiative }: DonationFormProps) {
+  const posthog = usePostHog();
   const contractId = initiative.contractcredit; // needed for CC contract
   const organization = initiative.organization;
   const [loading, setLoading] = useState(false);
@@ -159,6 +161,16 @@ export default function DonationForm({ initiative }: DonationFormProps) {
         throw new Error(`Payment error: ${paymentResult.error ?? 'unknown'}`);
       }
 
+      if (posthog.__loaded) {
+        posthog.capture('user_donated', {
+          amount,
+          organization: organization.slug,
+          initiative: initiative.slug,
+          token: selectedToken,
+          chain: selectedChain,
+        });
+      }
+
       setButtonMessage('Minting NFT receipt, please wait...');
       const data = {
         donorName: name || 'Anonymous',
@@ -208,6 +220,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     initiative,
     setDonationForm,
     handleError,
+    posthog,
   ]);
 
   function validateForm({ email }: { email: string }) {

@@ -59,6 +59,7 @@
   "devDependencies": {
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
+    "@cfce/analytics": "workspace:*",
     "@types/lodash": "^4.17.0",
     "@types/luxon": "^3.4.2",
     "@types/react": "latest",
