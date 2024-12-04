@@ -10,7 +10,7 @@
     "copy-declarations": "mkdir -p dist/declarations && cp -r src/declarations/* dist/declarations/"
   },
   "devDependencies": {
-    "@types/node": "^22.5.5",
+    "@types/node": "^22.9.0",
     "next-auth": "5.0.0-beta.25",
     "typescript": "^5.6.2"
   }

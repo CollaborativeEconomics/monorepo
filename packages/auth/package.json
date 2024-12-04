@@ -23,14 +23,15 @@
     "lucide-react": "0.447.0"
   },
   "peerDependencies": {
-    "next": "^15.0.3",
     "@cfce/app-config": "workspace:*"
   },
   "devDependencies": {
     "@types/react-dom": "*",
     "@cfce/types": "workspace:*",
     "@types/formidable": "^3.4.5",
-    "@types/node": "^22.5.5",
+    "@types/node": "^22.9.0",
+    "next": "^15.0.3",
+    "@cfce/app-config": "workspace:*",
     "@types/uuid": "^10.0.0",
     "typescript": "^5.6.2",
     "@types/react": "latest"

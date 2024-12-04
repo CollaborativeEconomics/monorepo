@@ -1,4 +1,8 @@
-import { addStoryMedia, getStoryMedia } from "@cfce/database"
+import {
+  addStoryMedia,
+  deleteStoryMediaByStoryId,
+  getStoryMedia,
+} from "@cfce/database"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
 
@@ -43,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     if (!storyId) {
       return NextResponse.json(
-        { success: false, error: "Story media ID required" },
+        { success: false, error: "Story ID required" },
         { status: 400 },
       )
     }
@@ -62,9 +66,24 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function DELETE() {
-  return NextResponse.json(
-    { success: false, error: "Method not allowed" },
-    { status: 405 },
-  ) // Status code 405 for Method Not Allowed
+export async function DELETE(req: NextRequest) {
+  const apiKey = req.headers.get("x-api-key")
+  const authorized = await checkApiKey(apiKey, { devOnly: true })
+
+  if (!authorized) {
+    return NextResponse.json({ success: false }, { status: 403 })
+  }
+
+  const { searchParams } = new URL(req.url)
+  const storyId = searchParams.get("id")?.toString()
+
+  if (!storyId) {
+    return NextResponse.json(
+      { success: false, error: "Story ID required" },
+      { status: 400 },
+    )
+  }
+
+  const result = await deleteStoryMediaByStoryId(storyId)
+  return NextResponse.json({ success: true, data: result }, { status: 200 })
 }
