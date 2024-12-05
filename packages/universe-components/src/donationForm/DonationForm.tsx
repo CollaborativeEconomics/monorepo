@@ -39,8 +39,6 @@ interface DonationFormProps {
   rate: number
 }
 
-
-
 interface DonationData {
   organizationId: string
   initiativeId?: string
@@ -344,14 +342,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         connect: { id: categoryId }
       },
       userId,
-      sender,
-      chainName,
       network, 
-      currency,
-      coinValue: coinAmount, 
-      usdValue: usdAmount, 
+      chain:    chainName as Chain,
+      wallet:   sender,
+      amount:   coinValue,
+      usdvalue: usdValue,
+      asset:    currency,
+      paytype:  'crypto',
+      status:   1
     }
-
     console.log('DONATION', donation)
     //const ApiKey = process.env.CFCE_REGISTRY_API_KEY || ''
     //const donationResp = await fetch('/api/donations', {method:'post', headers: {'x-api-key': ApiKey }, body:JSON.stringify(donation)})
