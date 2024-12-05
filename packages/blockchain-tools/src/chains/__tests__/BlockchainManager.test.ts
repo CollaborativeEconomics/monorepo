@@ -4,7 +4,6 @@ import {
   StellarServer,
   Web3Server,
   XrplServer,
-  XrplClient,
   XummClient,
 } from "../../interfaces"
 import BlockchainManager from "../BlockchainManager"
@@ -15,7 +14,6 @@ jest.mock("../../interfaces", () => ({
   StellarServer: jest.fn(),
   Web3Server: jest.fn(),
   XrplServer: jest.fn(),
-  XrplClient: jest.fn(),
   XummClient: jest.fn(),
 }))
 

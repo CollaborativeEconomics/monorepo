@@ -39,6 +39,8 @@ interface DonationFormProps {
   rate: number
 }
 
+
+
 interface DonationData {
   organizationId: string
   initiativeId?: string
@@ -330,20 +332,26 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   //async function saveDonation({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData){
   const saveDonation = useCallback(async ({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData) => {
+
     const donation = {
-      organizationId,
-      initiativeId,
-      categoryId,
+      organization: {
+        connect: { id: organizationId}
+      }, 
+      initiative: {
+        connect: { id: initiativeId },
+      }, 
+      category: {
+        connect: { id: categoryId }
+      },
       userId,
+      sender,
+      chainName,
       network, 
-      chain:    chainName as Chain,
-      wallet:   sender,
-      amount:   coinValue,
-      usdvalue: usdValue,
-      asset:    currency,
-      paytype:  'crypto',
-      status:   1
+      currency,
+      coinValue: coinAmount, 
+      usdValue: usdAmount, 
     }
+
     console.log('DONATION', donation)
     //const ApiKey = process.env.CFCE_REGISTRY_API_KEY || ''
     //const donationResp = await fetch('/api/donations', {method:'post', headers: {'x-api-key': ApiKey }, body:JSON.stringify(donation)})
