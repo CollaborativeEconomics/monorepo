@@ -2,10 +2,7 @@ import { getTokenBoundAccounts } from "@cfce/database"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../../checkApiKey"
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function GET(req: NextRequest) {
   try {
     const apiKey = req.headers.get("x-api-key")
     const authorized = await checkApiKey(apiKey)
@@ -14,14 +11,16 @@ export async function GET(
       return NextResponse.json({ success: false }, { status: 403 })
     }
 
-    if (!params.id) {
+    const id = req.nextUrl.pathname.split("/").pop()
+
+    if (!id) {
       return NextResponse.json(
         { success: false, error: "Missing id" },
         { status: 400 },
       )
     }
 
-    const accounts = await getTokenBoundAccounts({ id: params.id })
+    const accounts = await getTokenBoundAccounts({ id })
     const account = accounts[0] // Since we're querying by ID, we expect at most one result
 
     if (!account) {

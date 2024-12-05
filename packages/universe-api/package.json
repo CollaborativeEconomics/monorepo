@@ -151,6 +151,14 @@
       "import": "./dist/storymedia/[id]/route.js",
       "types": "./dist/storymedia/[id]/route.d.ts"
     },
+    "./tokenboundaccounts": {
+      "import": "./dist/tokenboundaccounts/route.js",
+      "types": "./dist/tokenboundaccounts/route.d.ts"
+    },
+    "./tokenboundaccounts/[id]": {
+      "import": "./dist/tokenboundaccounts/[id]/route.js",
+      "types": "./dist/tokenboundaccounts/[id]/route.d.ts"
+    },
     "./upload": {
       "import": "./dist/upload/route.js",
       "types": "./dist/upload/route.d.ts"
