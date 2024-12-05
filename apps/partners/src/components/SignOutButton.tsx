@@ -6,8 +6,14 @@ interface SignOutButtonProps {
 }
 
 export default function SignOutButton({ className }: SignOutButtonProps) {
+  async function onSignout(){
+    console.log('SIGNOUT')
+    await signOutAction()
+    window.location.href='/'
+  }
+
   return (
-    <form action={signOutAction}>
+    <form action={onSignout}>
       <button type="submit" className={className}>
         Sign out
       </button>
