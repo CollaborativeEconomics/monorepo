@@ -344,12 +344,14 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         connect: { id: categoryId }
       },
       userId,
-      sender,
-      chainName,
       network, 
-      currency,
-      coinValue: coinAmount, 
-      usdValue: usdAmount, 
+      chain:    chainName as Chain,
+      wallet:   sender,
+      amount:   coinValue,
+      usdvalue: usdValue,
+      asset:    currency,
+      paytype:  'crypto',
+      status:   1
     }
 
     console.log('DONATION', donation)
