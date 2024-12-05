@@ -48,8 +48,8 @@ Run `pnpm match-versions` to make sure all the versions are synced (especially i
 ## Adding a chain
 
 1. Add the chain to `packages/database/src/prisma/schema.prisma` chain enum
-1. Add the chain to `packages/types/src/BlockchainTools.ts` (Chain, TokenTickerSymbol if relevant, ChainNames, and ChainSlugs)
-1. Add the chain to `packages/blockchain-tools/src/chains/chainConfig.ts` (entry + at least one network)
+2. Add the chain to `packages/types/src/BlockchainTools.ts` (Chain, TokenTickerSymbol if relevant, ChainNames, and ChainSlugs)
+3. Add the chain to `packages/blockchain-tools/src/chains/chainConfig.ts` (entry + at least one network)
 
 ## Using the blockchain tools
 

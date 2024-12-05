@@ -36,6 +36,7 @@ export function DonationAmountInput({
               });
             }}
           />
+          {/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
           <label>{selectedToken}</label>
         </div>
       </div>

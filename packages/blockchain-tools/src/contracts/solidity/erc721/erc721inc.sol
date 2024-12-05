@@ -17,7 +17,7 @@ contract NFToken is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable, 
     {}
 
     function _baseURI() internal pure override returns (string memory) {
-        return "https://cfce.io";
+        return "";
     }
 
     function mint(address to, string memory uri) public onlyOwner {
