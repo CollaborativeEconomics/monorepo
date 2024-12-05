@@ -1,6 +1,6 @@
 import type { ChainSlugs, Network } from "@cfce/types"
 import { connect, disconnect, type Connector, type StarknetWindowObject } from "starknetkit"
-import {Account, constants, Contract, num, Provider, RpcProvider } from "starknet"
+import {Account, constants, Contract, num, Provider, RpcProvider, TransactionFinalityStatus } from "starknet"
 import type { GetTransactionReceiptResponse, Call, AccountInterface } from "starknet"
 import {
   executeCalls,
@@ -46,7 +46,7 @@ class StarknetWallet extends ChainBaseClass {
 
   async getWallet() {
     const { wallet, connector } = await connect({
-      modalMode: "canAsk"
+      modalMode: "alwaysAsk"
     });
 
     const account = await connector?.account();
@@ -128,7 +128,9 @@ class StarknetWallet extends ChainBaseClass {
       const result = await account.execute(calls);
       const tx = result.transaction_hash;
       
-      const txResult = await this.provider.waitForTransaction(tx);
+      const txResult = await this.provider.waitForTransaction(tx, {
+        successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
+      });
       
       if (txResult.statusReceipt === "success") {
         return {
@@ -155,7 +157,9 @@ class StarknetWallet extends ChainBaseClass {
   }
 
   private prepareTransferCall(address: string, amount: number): Call[] {
-    const smartContractAddress = "0x4ccddb06be7807276e88ebdd84319712aba3ba25c9e8cf3860b2891b07cd8b1";
+    const envChain = appConfig.chains.starknet?.network
+    const smartContractAddress = envChain === "mainnet" 
+      ? "0x1a35e6a801710eddfa9071eb27e4fc702c81b1b609efb34d46d419035275a38" : "0x4ccddb06be7807276e88ebdd84319712aba3ba25c9e8cf3860b2891b07cd8b1"
 
     // Convert the amount considering decimals
     const amountWithDecimals = parseEther(amount.toString());
@@ -228,7 +232,9 @@ class StarknetWallet extends ChainBaseClass {
         throw new Error("Transaction hash not found")
       }
 
-      const result = await this.provider.waitForTransaction(tx)
+      const result = await this.provider.waitForTransaction(tx, {
+        successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
+      })
 
       if (result.statusReceipt === "success") {
         return {
@@ -254,12 +260,12 @@ class StarknetWallet extends ChainBaseClass {
     }
   }
 
-  
-
   async getTransactionInfo(txid: string) {
     try {
       console.log("Get tx info by txid", txid)
-      const txInfo = await this.provider.waitForTransaction(txid)
+      const txInfo = await this.provider.waitForTransaction(txid, {
+        successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
+      })
       const txReceipt: GetTransactionReceiptResponse = await this.provider.getTransactionReceipt(txid)
 
       if (!txInfo || !txReceipt) {
@@ -329,8 +335,6 @@ async mintNFT({
       throw new Error("Minter address or wallet seed not available");
     }
 
-   
-    
     const account = new Account(provider, minterAddress, walletSeed);
     
     const contract = new Contract(nftABI, contractId, provider);
@@ -340,7 +344,9 @@ async mintNFT({
     // const tokenId = 1;
     const mintTx = await contract.mint(address, uri);
     // console.log("MINT TX", mintTx);
-    const receipt = await provider.waitForTransaction(mintTx.transaction_hash);
+    const receipt = await provider.waitForTransaction(mintTx.transaction_hash, {
+      successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
+    });
     const events = contract.parseEvents(receipt);
     
     // Find the Transfer event from the NFT contract
@@ -365,7 +371,7 @@ async mintNFT({
   }
 }
 
-  async getBalance() {
+async getBalance() {
     if (!this.connectedWallet) {
       await this.getWallet();
     }

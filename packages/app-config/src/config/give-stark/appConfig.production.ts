@@ -21,7 +21,10 @@ appConfig.chains = {
   starknet: {
     slug: "starknet",
     network: "mainnet",
-    contracts: {},
+    contracts: {
+      receiptMintbotERC721:"",
+      credits: "0x1a35e6a801710eddfa9071eb27e4fc702c81b1b609efb34d46d419035275a38"
+    },
     enabledWallets: ["argent"],
     tokens: ["ETH", "STRK"],
   },
@@ -29,7 +32,7 @@ appConfig.chains = {
     slug: "xdc",
     network: "mainnet",
     contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
+      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab"
     },
     enabledWallets: [],
     tokens: [],
