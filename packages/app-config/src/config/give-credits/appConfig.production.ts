@@ -13,6 +13,7 @@ appConfig.siteInfo = {
   options: {
     ...appConfig.siteInfo.options,
     showCarbonCreditDisplay: true,
+    featuredInitiative: "30c0636f-b0f1-40d5-bb9c-a531dc4d69e2",
   },
 }
 
@@ -32,7 +33,8 @@ appConfig.chains = {
     network: "mainnet",
     contracts: {
       credits: "CAIRWEYKTLVRQBXQGYNLDUAKWIUV4NO6WPTCMVHH2BOMUUUBTXRJF43R",
-      receiptMintbotERC721: "CCUOIXOK4BIV2O7ANQ2JKUCMQS7JUQW3XISWNZTEQUIUGPHX7I5KV5UD",
+      receiptMintbotERC721:
+        "CCUOIXOK4BIV2O7ANQ2JKUCMQS7JUQW3XISWNZTEQUIUGPHX7I5KV5UD",
       //receiptMintbotERC721: "CCYC5GDX24OYLYE26NGCBHRCBJESATEYJBANOOBVJZLSCZVFTS6GQ77T",
       //receiptMintbotERC721: "CDCTS77MPY6GXTGMFFIOWINMPBX4G7DELFEV34KTX5N2DZH43TGHMNU3",
     },

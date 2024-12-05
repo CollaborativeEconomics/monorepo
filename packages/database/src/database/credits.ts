@@ -1,11 +1,11 @@
 import "server-only"
+import type { ListQuery } from "@cfce/types"
 import type { Credit, Prisma } from "@prisma/client"
 import { prismaClient } from "../index"
-import type { ListQuery } from "@cfce/types"
 
 interface CreditsQuery extends ListQuery {
   providerId?: string
-  initiativeid?: string
+  initiativeId?: string
 }
 
 export async function getCredits(query: CreditsQuery) {

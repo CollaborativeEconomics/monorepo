@@ -14,19 +14,33 @@ const layers = [
 
 const ParallaxHero: React.FC = () => {
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [windowHeight, setWindowHeight] = useState(0);
 
   useEffect(() => {
+    // Set initial window height
+    setWindowHeight(window.innerHeight);
+
     const handleScroll = () => {
       setScrollOffset(window.pageYOffset);
     };
+
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {layers.map((layer, index) => {
-        const initialOffset = index * 0.05 * window.outerHeight;
+        const initialOffset = index * 0.05 * windowHeight;
         const speed = -index * 0.05;
         const blurMultiplier = index * 0.001;
         const offset = scrollOffset * speed + initialOffset;

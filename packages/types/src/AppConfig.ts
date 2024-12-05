@@ -28,6 +28,7 @@ export interface AppConfig {
     }
     options: {
       showCarbonCreditDisplay: boolean
+      featuredInitiative?: string
     }
   }
   apis: {
