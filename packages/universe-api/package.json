@@ -103,6 +103,10 @@
       "import": "./dist/organizations/[id]/route.js",
       "types": "./dist/organizations/[id]/route.d.ts"
     },
+    "./ping": {
+      "import": "./dist/ping/route.js",
+      "types": "./dist/ping/route.d.ts"
+    },
     "./profile/[id]": {
       "import": "./dist/profile/[id]/route.js",
       "types": "./dist/profile/[id]/route.d.ts"
@@ -177,7 +181,7 @@
     }
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.7.2",
+    "@cfce/auth": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
@@ -193,10 +197,13 @@
     "@cfce/types": "workspace:*",
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
+    "@types/node": "^22.9.0",
     "@types/react": "latest",
+    "decimal.js": "^10.4.3",
     "next": "^15.0.3",
     "next-auth": "5.0.0-beta.25",
     "next-themes": "^0.4.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   },
   "peerDependencies": {

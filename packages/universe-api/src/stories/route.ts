@@ -1,4 +1,10 @@
-import { type Prisma, type Story, addStory, getStories } from "@cfce/database"
+import {
+  type Prisma,
+  type Story,
+  addStory,
+  getStories,
+  newStory,
+} from "@cfce/database"
 import { createStory } from "@cfce/utils"
 import { File } from "formidable"
 import { type NextRequest, NextResponse } from "next/server"
@@ -14,9 +20,9 @@ export const config = {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
+    const orgId = searchParams.get("orgId") ?? undefined
     const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey, orgId ?? undefined)
+    const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!authorized) {
       return NextResponse.json(
@@ -41,10 +47,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
     const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey, orgId ?? undefined)
+    const orgId = req.nextUrl.searchParams.get("orgId") ?? undefined
+    const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!authorized) {
       return NextResponse.json(
@@ -53,57 +58,19 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const formData = await req.formData()
-    const story: Record<string, string> = {}
-    const files: File[] = []
+    const { organizationId, initiativeId, categoryId, ...story } =
+      await req.json()
 
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        // @ts-ignore
-        files.push(value)
-      } else {
-        story[key] = value.toString()
-      }
-    }
+    // Legacy fields, remove them later
+    // Modern could should use standard prisma connect syntax
+    const storyToCreate: Prisma.StoryCreateInput = { ...story }
+    if (organizationId)
+      storyToCreate.organization = { connect: { id: organizationId } }
+    if (initiativeId)
+      storyToCreate.initiative = { connect: { id: initiativeId } }
+    if (categoryId) storyToCreate.category = { connect: { id: categoryId } }
 
-    const flattenedTypedStory = Object.keys(story).reduce(
-      (acc, key) => {
-        const value = story[key]
-        switch (key) {
-          case "amount":
-            acc[key] = Number(value)
-            break
-          case "inactive":
-            acc[key] = value === "true" || value === "1"
-            break
-          case "created":
-            acc[key] = new Date(value)
-            break
-          default:
-            // @ts-ignore
-            acc[key] = value
-        }
-        return acc
-      },
-      {} as Partial<Story>,
-    )
-
-    const images = files.slice(0, 5)
-    if (!orgId || !story.initiativeId) {
-      return NextResponse.json(
-        { success: false, error: "Missing orgId or initiativeId fields" },
-        { status: 400 },
-      )
-    }
-    const result = await createStory({
-      story: flattenedTypedStory as Omit<
-        Prisma.StoryCreateInput,
-        "organization" | "initiative"
-      >,
-      organizationId: orgId,
-      initiativeId: story.initiativeId,
-      images,
-    })
+    const result = await newStory(storyToCreate)
     return NextResponse.json({ success: true, data: result }, { status: 201 }) // Status code 201 for successful POST request
   } catch (error) {
     console.error({ error })

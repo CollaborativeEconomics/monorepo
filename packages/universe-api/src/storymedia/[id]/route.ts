@@ -1,11 +1,11 @@
-import { getStoryMediaById } from "@cfce/database"
+import { deleteStoryMedia, getStoryMediaById } from "@cfce/database"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../../checkApiKey"
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
+    const orgId = searchParams.get("orgId") ?? undefined
     const id = searchParams.get("id")
 
     if (!id) {
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     }
 
     const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey, orgId ?? undefined)
+    const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!authorized) {
       return NextResponse.json({ success: false }, { status: 403 })
@@ -36,9 +36,18 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function DELETE() {
-  return NextResponse.json(
-    { success: false, error: "Method not allowed" },
-    { status: 405 },
-  ) // Status code 405 for Method Not Allowed
+export async function DELETE(req: NextRequest) {
+  const apiKey = req.headers.get("x-api-key")
+  const authorized = await checkApiKey(apiKey, { devOnly: true })
+
+  if (!authorized) {
+    return NextResponse.json({ success: false }, { status: 403 })
+  }
+
+  const id = req.nextUrl.pathname.split("/").pop()
+  if (!id) {
+    return NextResponse.json({ success: false }, { status: 400 })
+  }
+  await deleteStoryMedia(id)
+  return NextResponse.json({ success: true }, { status: 200 })
 }

@@ -1,11 +1,11 @@
-import { getStoryById, updateStory } from "@cfce/database"
+import { deleteStory, getStoryById, updateStory } from "@cfce/database"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../../checkApiKey"
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
+    const orgId = searchParams.get("orgId") ?? undefined
     const id = searchParams.get("id")
 
     const apiKey = req.headers.get("x-api-key")
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    const authorized = await checkApiKey(apiKey, orgId ?? undefined)
+    const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!authorized) {
       return NextResponse.json({ success: false }, { status: 403 })
@@ -40,11 +40,11 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const orgId = searchParams.get("orgId")
-    const id = searchParams.get("id")
+    const orgId = searchParams.get("orgId") ?? undefined
+    const id = req.nextUrl.pathname.split("/").pop()
 
     const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey, orgId ?? undefined)
+    const authorized = await checkApiKey(apiKey, { orgId })
 
     if (!id) {
       return NextResponse.json(
@@ -83,9 +83,21 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function DELETE() {
-  return NextResponse.json(
-    { success: false, error: "Method not allowed" },
-    { status: 405 },
-  ) // Status code 405 for Method Not Allowed
+export async function DELETE(req: NextRequest) {
+  const apiKey = req.headers.get("x-api-key")
+  const authorized = await checkApiKey(apiKey, { devOnly: true })
+
+  if (!authorized) {
+    return NextResponse.json({ success: false }, { status: 403 })
+  }
+
+  const id = req.nextUrl.pathname.split("/").pop()
+  if (!id) {
+    return NextResponse.json(
+      { success: false, error: "Story ID required" },
+      { status: 400 },
+    )
+  }
+  const result = await deleteStory(id)
+  return NextResponse.json({ success: true, data: result }, { status: 200 })
 }

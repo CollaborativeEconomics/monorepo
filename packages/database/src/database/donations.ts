@@ -135,6 +135,10 @@ export async function getDonationById(
 
 export async function newDonation(data: Prisma.DonationCreateInput) {
   const rec = await prismaClient.donation.create({ data })
-  console.log("NEW DONATION", rec)
+  return rec
+}
+
+export async function deleteDonation(id: string) {
+  const rec = await prismaClient.donation.delete({ where: { id } })
   return rec
 }

@@ -4,6 +4,13 @@ export interface ListQuery {
   order?: string
 }
 
+export const UserType = {
+  admin: 9,
+  orgAdmin: 1,
+  // ???: 5, we think this isn't used anymore
+  user: 0,
+} as const
+
 export const DonationStatus = {
   pending: 0,
   claimed: 1,
@@ -34,15 +41,14 @@ export const EntityType = {
 
 // Used in contracts model
 export type ContractType = {
-  "721": "721",
-  "1155": "1155",
-  "Credits": "Credits",
-  "CreditaHash": "CreditaHash",
-  "Factory": "Factory",
-  "NFTReceipt": "NFTReceipt",
-  "NFTReceiptHash": "NFTReceiptHash",
-  "TBAImplementation": "TBAImplementation",
-  "TBARegistry": "TBARegistry",
-  "V2E": "V2E",
+  "721": "721"
+  "1155": "1155"
+  Credits: "Credits"
+  CreditaHash: "CreditaHash"
+  Factory: "Factory"
+  NFTReceipt: "NFTReceipt"
+  NFTReceiptHash: "NFTReceiptHash"
+  TBAImplementation: "TBAImplementation"
+  TBARegistry: "TBARegistry"
+  V2E: "V2E"
 }
-
