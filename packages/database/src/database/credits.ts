@@ -17,8 +17,8 @@ export async function getCredits(query: CreditsQuery) {
 
   if (query?.providerId) {
     where = { providerId: query.providerId }
-  } else if (query?.initiativeid) {
-    where = { initiativeId: query.initiativeid }
+  } else if (query?.initiativeId) {
+    where = { initiativeId: query.initiativeId }
   }
 
   const filter = { where, skip, take, orderBy }

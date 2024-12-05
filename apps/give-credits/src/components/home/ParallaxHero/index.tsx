@@ -21,7 +21,7 @@ const ParallaxHero: React.FC = () => {
     setWindowHeight(window.innerHeight);
 
     const handleScroll = () => {
-      setScrollOffset(window.pageYOffset);
+      setScrollOffset(window.scrollY);
     };
 
     const handleResize = () => {

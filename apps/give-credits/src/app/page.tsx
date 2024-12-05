@@ -35,6 +35,8 @@ export default async function Home() {
     Math.floor((Number(credit?.current) / Number(credit?.goal)) * 100) || 0;
   const percent = (current * 100) / goal;
 
+  console.log(credit, tonx, perc, current, percent);
+
   const date = new Date().toLocaleDateString(undefined, {
     month: 'long',
     day: 'numeric',
