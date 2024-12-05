@@ -330,10 +330,17 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   //async function saveDonation({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData){
   const saveDonation = useCallback(async ({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData) => {
+
     const donation = {
-      organizationId,
-      initiativeId,
-      categoryId,
+      organization: {
+        connect: { id: organizationId}
+      }, 
+      initiative: {
+        connect: { id: initiativeId },
+      }, 
+      category: {
+        connect: { id: categoryId }
+      },
       userId,
       network, 
       chain:    chainName as Chain,

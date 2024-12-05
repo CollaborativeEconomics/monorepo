@@ -22,8 +22,10 @@ export default abstract class ChainBaseClass {
   public abstract getTransactionInfo(
     txId: string
   ): Promise<Transaction | { error: string }>
+  
   // TODO: improve types
   public abstract fetchLedger(method: unknown, params: unknown): unknown
+  
   public async sendPayment?(params: {
     address: string
     amount: number
@@ -35,6 +37,7 @@ export default abstract class ChainBaseClass {
     txid?: string
     walletAddress?: string
   }>
+  
   public async sendToken?(params: {
     address: string
     amount: number
@@ -56,6 +59,7 @@ export default abstract class ChainBaseClass {
 
   // server functions, only defined on server subclasses
   public web3?: Web3
+  
   public async mintNFT?(params: {
     address: string
     uri: string
@@ -69,6 +73,7 @@ export default abstract class ChainBaseClass {
     tokenId?: string
     error?: string
   }>
+  
   public async mintNFT1155?(params: {
     address: string
     tokenId: string
@@ -81,6 +86,7 @@ export default abstract class ChainBaseClass {
     tokenId?: string
     error?: string
   }>
+  
   // XRPL only?
   public async createSellOffer?(params: {
     tokenId: string
@@ -95,8 +101,10 @@ export default abstract class ChainBaseClass {
   }
 
   toBaseUnit(amount: number): bigint {
-    const wei = 10 ** this.network.decimals
-    return BigInt(amount * wei)
+    console.log('DECS', this.network.decimals)
+    const wei = Math.floor(amount * 10 ** this.network.decimals)
+    console.log('WEI', wei)
+    return BigInt(wei)
   }
 
   toHex(str: string) {

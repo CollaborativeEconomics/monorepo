@@ -105,10 +105,12 @@ const chains: AppConfig["chains"] = {
   },
   xrpl: {
     slug: "xrpl",
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
+    wallet: "r3qr25QnANd8RRT9NYtgUrrty3yTfpGx9c",
     network: "testnet",
-    contracts: {},
-    enabledWallets: ["xaman"],
+    contracts: {
+      receiptMintbotERC721: "0xNotNeeded",
+    },
+    enabledWallets: ["crossmark", "gemwallet", "xaman"],
     tokens: ["XRP"],
     destinationTag: "77777777",
   },

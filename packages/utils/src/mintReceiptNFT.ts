@@ -271,6 +271,8 @@ export async function mintAndSaveReceiptNFT({
     // #region: Mint NFT on current chain only
     const receiptContract = currentChain.contracts.receiptMintbotERC721
     console.log("CTR", receiptContract)
+
+    // WARN: XRPL doesn't use contracts
     if (!receiptContract) {
       console.error("No receipt contracts found")
       return { success: false, error: "No receipt contract found" }
