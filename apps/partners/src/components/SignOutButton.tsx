@@ -1,3 +1,4 @@
+"use client"
 import { signOutAction } from '@cfce/auth';
 import React from 'react';
 

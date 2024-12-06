@@ -62,7 +62,9 @@ const SidebarContent = ({
           { href: '/dashboard/donations', label: 'Donations' },
           { href: '/dashboard/initiatives', label: 'Initiatives' },
           { href: '/dashboard/stories', label: 'Stories' },
+          { href: '/dashboard/events', label: 'Events' },
           { href: '/dashboard/wallets', label: 'Wallets' },
+          { href: '/dashboard/contracts', label: 'Contracts' },
         ].map(item => (
           <li key={item.href} className="hover:bg-gray-700">
             <Link href={item.href} className="block px-4 py-2">
@@ -106,6 +108,7 @@ const SidebarContent = ({
 const Sidebar = async () => {
   const session = await auth();
   const organizations = await getOrganizations({});
+  const orgsPlain = JSON.parse(JSON.stringify(organizations))
 
   let currentOrg = null;
   if (session?.orgId) {
@@ -124,7 +127,7 @@ const Sidebar = async () => {
           <SidebarContent
             session={session}
             currentOrg={currentOrg}
-            organizations={organizations}
+            organizations={orgsPlain}
           />
         </SheetContent>
       </Sheet>
@@ -133,7 +136,7 @@ const Sidebar = async () => {
         <SidebarContent
           session={session}
           currentOrg={currentOrg}
-          organizations={organizations}
+          organizations={orgsPlain}
         />
       </div>
     </>
