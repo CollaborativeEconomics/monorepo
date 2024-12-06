@@ -19,10 +19,9 @@ class FreighterWallet extends ChainBaseClass {
 
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
-    this.horizon = new StellarSDK.Horizon.Server(
-      this.network.rpcUrls.main || "",
-    )
-    console.log("FREIGHT INIT")
+    this.horizon = new StellarSDK.Horizon.Server(this.network.rpcUrls.main)
+    //console.log("FREIGHT INIT")
+    //console.log("RPC", this.network)
   }
 
   async init() {
@@ -58,20 +57,26 @@ class FreighterWallet extends ChainBaseClass {
     memo,
   }: { address: string; amount: number; memo: string }) {
     try {
-      console.log("From", this.connectedWallet)
-      console.log("Paying", amount, "XLM to", address, "Memo", memo)
+      console.log("From", this.connectedWallet || "???")
+      console.log("Paying", amount, "XLM to", address, "Memo", memo || "[no]")
       const act = await this.horizon.loadAccount(this.connectedWallet)
+      //const fee = 5000
       const fee = await this.horizon.fetchBaseFee() // 100
-      const opr = StellarSDK.Operation.payment({
+      const xlm = amount.toString()
+      const data = {
         destination: address,
-        amount: `${amount}`,
+        //amount: `${amount}`,
+        amount: xlm, // Stellar sends XLM as whole, not stroops
         asset: StellarSDK.Asset.native(),
-      })
+      }
+      const opr = StellarSDK.Operation.payment(data)
       const opt = {
         fee: `${fee}`,
         network: this.network.rpcUrls.main,
         networkPassphrase: this.network.networkPassphrase,
       }
+      console.log("OPR:", data)
+      console.log("OPT:", opt)
       const txn = new StellarSDK.TransactionBuilder(act, opt)
         //.setNetworkPassphrase(this.network.networkPassphrase)
         .addOperation(opr)

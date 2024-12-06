@@ -66,6 +66,14 @@ export async function createInitiative(
       return { success: false, error: "Unknown error" }
     }
 
+    // TODO: create TBA 6551 for initiative
+    // 1. mint 1155 NFT using REGISTRY_NFT_COPY env var
+    // get tokenId
+    // chainId = 51 // xdc testnet
+    // 2. create TBA for that NFT
+    // const tab = await createAccount(REGISTRY_NFT_COPY, tokenId, chainId, waitForReceipt=false)
+
+
     return { success: true, data: result }
   } catch (ex) {
     console.error(ex)

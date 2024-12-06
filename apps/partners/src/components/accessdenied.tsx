@@ -1,4 +1,4 @@
-import { signIn } from 'next-auth/react';
+import { signIn } from '@cfce/auth';
 import Link from 'next/link';
 import Main from '~/components/main';
 import Title from '~/components/title';

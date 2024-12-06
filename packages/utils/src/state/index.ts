@@ -13,7 +13,7 @@ const chainAtom = atomWithImmer<{
   selectedChain: appConfig.chainDefaults.chain,
   selectedWallet: appConfig.chainDefaults.wallet,
   selectedToken: appConfig.chainDefaults.coin,
-  exchangeRate: 0,
+  exchangeRate: 0.0,
 })
 
 export const PAYMENT_STATUS = {
@@ -36,11 +36,11 @@ interface DonationFormState {
 }
 
 const donationFormAtom = atomWithImmer<DonationFormState>({
-  amount: 0,
+  amount: 1,
   name: "",
   email: "",
   emailReceipt: false,
-  showUsd: false,
+  showUsd: true,
   date: new Date(),
   txId: "",
   paymentStatus: PAYMENT_STATUS.ready,

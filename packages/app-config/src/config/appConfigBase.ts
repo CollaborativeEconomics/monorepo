@@ -1,4 +1,4 @@
-import type { AppConfig } from "@cfce/types"
+import type { AppConfig, ClientInterfaces } from "@cfce/types"
 
 const siteInfo: AppConfig["siteInfo"] = {
   title: "Name",
@@ -31,9 +31,9 @@ const auth: AppConfig["auth"] = []
 
 const chainDefaults: AppConfig["chainDefaults"] = {
   network: "mainnet",
-  wallet: "xaman",
-  chain: "xrpl",
-  coin: "XRP",
+  wallet: "metamask",
+  chain: "xdc",
+  coin: "XDC",
 }
 
 const appConfig: AppConfig = {

@@ -1,13 +1,12 @@
+import { auth } from '@cfce/auth';
 import { type Initiative, getOrganizationById } from '@cfce/database';
-import { authOptions } from '@cfce/utils';
-import { getServerSession } from 'next-auth';
 import InitiativeCard from '~/components/InitiativeCard';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
 import InitiativeForm from './InitiativeForm';
 
 export default async function Page() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const orgId = session?.orgId || '';
 
   const organization = await getOrganizationById(orgId);

@@ -18,8 +18,8 @@ appConfig.siteInfo = {
 
 // Override chains
 appConfig.chains = {
-  xinfin: {
-    slug: "xinfin",
+  xdc: {
+    slug: "xdc",
     network: "mainnet",
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
@@ -38,15 +38,15 @@ appConfig.chains = {
     slug: "xrpl",
     network: "mainnet",
     contracts: {},
-    enabledWallets: ["xaman"],
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
+    enabledWallets: ["crossmark", "gemwallet", "xaman"],
+    wallet: "r3qr25QnANd8RRT9NYtgUrrty3yTfpGx9c",
     tokens: ["XRP"],
     destinationTag: "77777777",
   },
 }
 
 // Override auth
-appConfig.auth = ["freighter" as AuthTypes]
+appConfig.auth = ["freighter", "metamask", "xaman"]
 
 // Override chainDefaults
 appConfig.chainDefaults = {

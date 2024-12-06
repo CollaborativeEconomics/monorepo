@@ -21,8 +21,8 @@ appConfig.auth = ["google" as AuthTypes]
 // Override chainDefaults
 appConfig.chainDefaults = {
   network: "mainnet",
-  wallet: "freighter",
-  chain: "xinfin",
+  wallet: "metamask",
+  chain: "xdc",
   coin: "XDC",
 }
 

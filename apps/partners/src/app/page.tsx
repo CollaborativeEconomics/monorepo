@@ -1,6 +1,5 @@
-import { authOptions } from '@cfce/utils';
+import { auth } from '@cfce/auth';
 import startCase from 'lodash/startCase';
-import { getServerSession } from 'next-auth/next';
 import React from 'react';
 import AuthHeader from '~/components/auth-header';
 import Footer from '~/components/footer';
@@ -9,7 +8,7 @@ import Main from '~/components/main';
 import Title from '~/components/title';
 
 export default async function HomePage() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const name = session?.user?.name ?? '';
   const orgId = session?.orgId ?? '';
   const isLogged = !!name;

@@ -15,8 +15,8 @@ const apis: AppConfig["apis"] = {
 }
 
 const chains: AppConfig["chains"] = {
-  xinfin: {
-    slug: "xinfin",
+  xdc: {
+    slug: "xdc",
     network: "testnet",
     contracts: {
       receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
@@ -38,7 +38,7 @@ const chains: AppConfig["chains"] = {
     wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
     network: "testnet",
     contracts: {},
-    enabledWallets: ["xaman"],
+    enabledWallets: ["xaman", "gemwallet", "crossmark"],
     tokens: ["XRP"],
     destinationTag: "77777777",
   },

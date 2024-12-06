@@ -1,3 +1,3 @@
-import handler from "@cfce/universe-api/auth/[...nextauth]"
+import { GET, POST } from "@cfce/universe-api/auth/[...nextauth]"
 
-export { handler as GET, handler as POST }
+export { GET, POST }

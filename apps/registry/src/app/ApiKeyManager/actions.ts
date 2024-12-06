@@ -1,12 +1,11 @@
 "use server"
 
+import { auth } from "@cfce/auth"
 import { prismaClient } from "@cfce/database"
-import { authOptions } from "@cfce/utils"
-import { getServerSession } from "next-auth/next"
 import { revalidatePath } from "next/cache"
 
 export async function generateApiKey() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   const userEmail = session?.user?.email
 
   if (!userEmail) {

@@ -32,9 +32,9 @@ const nextConfig = {
       },
     ],
   },
+  outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
     // instrumentationHook: true,
-    outputFileTracingRoot: path.join(process.cwd(), '../../'),
     // The below packages have barrel files that cause server/client mismatch errors
     optimizePackageImports: [
       '@cfce/universe-components',

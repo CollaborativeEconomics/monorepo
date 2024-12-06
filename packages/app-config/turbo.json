@@ -1,8 +1,8 @@
 {
   "extends": ["//"],
   "globalEnv": [
-    "XINFIN_MINTER_SECRET",
-    "XINFIN_NETWORK",
+    "XDC_MINTER_SECRET",
+    "XDC_NETWORK",
     "TURBO_ENV",
     "NEXT_PUBLIC_APP_ID",
     "NEXT_PUBLIC_APP_ENV"

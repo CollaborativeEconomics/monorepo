@@ -5,9 +5,12 @@ import { get as _get } from "lodash"
 import type { Interface } from "../interfaces"
 import FreighterWallet from "../interfaces/FreighterWallet"
 import MetaMaskWallet from "../interfaces/MetamaskClient"
+import StarknetWallet from "../interfaces/StarknetWallet"
 import StellarServer from "../interfaces/StellarServer"
 import Web3Server from "../interfaces/Web3Server"
 import XrplServer from "../interfaces/XrplServer"
+import CrossmarkWallet from "../interfaces/CrossmarkWallet"
+import GemWallet from "../interfaces/GemWallet"
 import XummClient from "../interfaces/XummClient"
 import _SacrificialInterface from "../interfaces/_SacrificialInterface"
 import type ChainBaseClass from "./ChainBaseClass"
@@ -66,8 +69,8 @@ const BlockchainManager = {
     server: new Web3Server("polygon", getNetwork("polygon")),
   },
   starknet: {
-    client: new MetaMaskWallet("starknet", getNetwork("starknet")),
-    server: new Web3Server("starknet", getNetwork("starknet")),
+    client: new StarknetWallet("starknet", getNetwork("starknet")),
+    server: new StarknetWallet("starknet", getNetwork("starknet")),
   },
   stellar: {
     client: new FreighterWallet("stellar", getNetwork("stellar")),
@@ -78,13 +81,15 @@ const BlockchainManager = {
     client: new MetaMaskWallet("tron", getNetwork("tron")),
     server: new Web3Server("tron", getNetwork("tron")),
   },
-  xinfin: {
-    client: new MetaMaskWallet("xinfin", getNetwork("xinfin")),
-    server: new Web3Server("xinfin", getNetwork("xinfin")),
+  xdc: {
+    client: new MetaMaskWallet("xdc", getNetwork("xdc")),
+    server: new Web3Server("xdc", getNetwork("xdc")),
   },
   xrpl: {
+    //client: new CrossmarkWallet("xrpl", getNetwork("xrpl")),
+    //client: new GemWallet("xrpl", getNetwork("xrpl")),
     client: new XummClient("xrpl", getNetwork("xrpl")),
-    server: new XrplServer("xrpl", getNetwork("xrpl")),
+    server: new XrplServer("xrpl", getNetwork("xrpl"), 77777777), // NFT TAG SHOULD BE MOVED TO MINT_NFT METHOD
   },
 } satisfies Record<ChainSlugs, ChainClasses>
 

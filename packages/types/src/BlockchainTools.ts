@@ -33,7 +33,7 @@ export const ChainSlugs = [
   "starknet",
   "stellar",
   "tron",
-  "xinfin",
+  "xdc",
   "xrpl",
 ] as const
 export type ChainSlugs = (typeof ChainSlugs)[number]
@@ -72,6 +72,8 @@ export interface NetworkConfig {
   wssurl: string
   tokens?: Partial<Record<TokenTickerSymbol, TokenConfig>>
   networkPassphrase?: string
+  contracts?: Record<string, string>
+  wallet?: string
 }
 
 export const TokenTickerSymbol = [
@@ -115,13 +117,15 @@ export interface ChainConfig {
 }
 
 export type Interfaces =
+  | "argent"
+  | "crossmark"
   | "freighter"
+  | "gemwallet"
   | "metamask"
+  | "stellar"
+  | "web3"
   | "xaman"
   | "xrpl"
-  | "web3"
-  | "stellar"
-  | "argent"
 
 export type ClientInterfaces = Exclude<Interfaces, "web3" | "xrpl" | "stellar">
 

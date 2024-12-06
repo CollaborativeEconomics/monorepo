@@ -4,7 +4,8 @@ import type { UseFormRegisterReturn } from 'react-hook-form';
 interface TextInputProps {
   label?: string;
   className?: string;
-  register: UseFormRegisterReturn;
+  name?: string;
+  register?: UseFormRegisterReturn;
 }
 
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
@@ -13,6 +14,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       label,
       register,
       className,
+      name,
       ...props
     }: TextInputProps & HTMLProps<HTMLInputElement>,
     ref,
@@ -21,7 +23,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       <span className="text-slate-300 text-sm uppercase text-left">
         {label}
       </span>
-      <input {...props} {...register} ref={ref} />
+      <input {...props} {...register} ref={ref} name={name} />
     </label>
   ),
 );

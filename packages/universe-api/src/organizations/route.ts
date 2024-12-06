@@ -1,10 +1,13 @@
 import { getOrganizations, newOrganization } from "@cfce/database"
+import { headers } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
 
 export async function GET(req: NextRequest) {
   try {
-    const apiKey = req.headers.get("x-api-key")
+    //const apiKey = req.headers.get('x-api-key')
+    const apiKey = (await headers()).get("x-api-key")
+
     const authorized = await checkApiKey(apiKey)
 
     if (!authorized) {
@@ -31,8 +34,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey)
-
+    const authorized = await checkApiKey(apiKey, { devOnly: true })
     if (!authorized) {
       return NextResponse.json({ success: false }, { status: 403 })
     }
