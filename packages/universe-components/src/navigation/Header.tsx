@@ -1,22 +1,22 @@
+'use client';
 import Link from 'next/link';
 import React from 'react';
-import { ScrollBackground } from '~/components/ScrollBackground';
 import Logo from '~/home/Logo';
 import NavigationMenu from './NavigationMenu';
+import ScrollingHeaderBackground from './ScrollingHeaderBackground';
 
 export default function Header() {
   return (
-    <ScrollBackground>
-      <header className="w-full py-10 pb-7.5 fixed top-0 z-50">
-        <div className="flex justify-between container">
-          <Link href="/">
-            <Logo />
-          </Link>
-          <div className="flex flex-row items-center">
-            <NavigationMenu />
-          </div>
+    <header className="w-full py-10 pb-7.5 fixed top-0 z-50 relative">
+      <ScrollingHeaderBackground />
+      <div className="flex justify-between container relative">
+        <Link href="/">
+          <Logo />
+        </Link>
+        <div className="flex flex-row items-center">
+          <NavigationMenu />
         </div>
-      </header>
-    </ScrollBackground>
+      </div>
+    </header>
   );
 }

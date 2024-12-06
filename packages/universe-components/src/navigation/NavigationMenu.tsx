@@ -40,39 +40,42 @@ export default async function NavMenu() {
       <div className="flex-row gap-3 items-center hidden md:flex">
         <NavigationMenu>
           <NavigationMenuList>
-            {/* <NavigationMenuItem>
-              <NavigationMenuTrigger>Partners</NavigationMenuTrigger>
+            {/* 
+              <NavigationMenuItem>
               <NavigationMenuContent>
-                <ul className="grid gap-3 p-4 md:w-[400px] xl:w-[500px] xl:grid-cols-[.75fr_1fr]">
-                  <ListItem href="/docs/installation" title="Sign In">
-                    Access the partner portal
-                  </ListItem>
-                  <ListItem
-                    href="/docs"
-                    title="Pricing"
-                    className="bg-primary text-primary-foreground"
-                  >
-                    View our pricing plans
-                  </ListItem>
-                </ul>
+              <NavigationMenuTrigger>Partners</NavigationMenuTrigger>
+              <ul className="grid gap-3 p-4 md:w-[400px] xl:w-[500px] xl:grid-cols-[.75fr_1fr]">
+              <ListItem href="/docs/installation" title="Sign In">
+              Access the partner portal
+              </ListItem>
+              <ListItem
+              href="/docs"
+              title="Pricing"
+              className="bg-primary text-primary-foreground"
+              >
+              View our pricing plans
+              </ListItem>
+              </ul>
               </NavigationMenuContent>
-            </NavigationMenuItem> */}
+              </NavigationMenuItem> */}
             <NavigationMenuItem>
-              {status === 'authenticated' ? (
-                <NavigationMenuLink
-                  className={navigationMenuTriggerStyle({ type: 'avatar' })}
-                  href={userurl}
-                >
-                  <Image src={avatar} fill alt="Avatar" className="rounded" />
-                </NavigationMenuLink>
-              ) : (
-                <NavigationMenuLink
-                  className={navigationMenuTriggerStyle()}
-                  href="/signin"
-                >
-                  Sign In
-                </NavigationMenuLink>
-              )}
+              <NavigationMenuContent>
+                {status === 'authenticated' ? (
+                  <NavigationMenuLink
+                    className={navigationMenuTriggerStyle({ type: 'avatar' })}
+                    href={userurl}
+                  >
+                    <Image src={avatar} fill alt="Avatar" className="rounded" />
+                  </NavigationMenuLink>
+                ) : (
+                  <NavigationMenuLink
+                    className={navigationMenuTriggerStyle()}
+                    href="/signin"
+                  >
+                    Sign In
+                  </NavigationMenuLink>
+                )}
+              </NavigationMenuContent>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
