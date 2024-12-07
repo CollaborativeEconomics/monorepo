@@ -42,7 +42,7 @@
     "@types/bun": "^1.1.9",
     "@types/jest": "^29.5.13",
     "@types/node": "^22.5.5",
-    "@types/react": "latest",
+    "@types/react": "^19.0.1",
     "autoprefixer": "^10.4.20",
     "aws-sdk-client-mock": "^4.0.1",
     "aws-sdk-mock": "^5.9.0",

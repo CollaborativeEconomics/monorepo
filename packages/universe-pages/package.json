@@ -72,7 +72,7 @@
   "devDependencies": {
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
-    "@types/react": "latest",
+    "@types/react": "^19.0.1",
     "@types/uuid": "^10.0.0",
     "next": "^15.0.3",
     "next-auth": "5.0.0-beta.25",

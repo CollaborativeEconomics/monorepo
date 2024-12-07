@@ -1,64 +1,53 @@
+'use client';
+
+import type { Contract, Event } from '@cfce/database';
+import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
+import { BrowserQRCodeReader } from '@zxing/library';
+import clipboard from 'clipboardy';
+import { LucideClipboardPaste, LucideQrCode } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import Image from 'next/image';
-import Script from 'next/script';
-import Title from 'components/title';
-import ButtonBlue from 'components/buttonblue';
-import { getEventById } from 'utils/registry';
-import { cleanAddress } from 'utils/address';
 import styles from 'styles/dashboard.module.css';
-import { BrowserQRCodeReader } from '@zxing/library';
-import TextInput from 'components/form/textinput';
-import { Connector, useConnect, useAccount, useWriteContract } from 'wagmi';
-import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
-//import { arbitrumSepolia } from 'wagmi/chains';
-import { config } from 'chains/config';
-import { NFTAbi } from 'chains/contracts/volunteers/abis';
-import { getContract } from 'utils/registry';
-import { LucideClipboardPaste, LucideQrCode } from 'lucide-react';
-import clipboard from 'clipboardy';
-import * as wagmiChains from 'wagmi/chains'
+import { useAccount, useWriteContract } from 'wagmi';
+import * as wagmiChains from 'wagmi/chains';
+import ButtonBlue from '~/components/buttonblue';
+import TextInput from '~/components/form/textinput';
+import Title from '~/components/title';
+import { NFTAbi } from '~/utils/NFTAbi';
+import { cleanAddress } from '~/utils/address';
+import { config } from '~/utils/wagmiConfig';
 
-const arbitrumSepolia = wagmiChains['arbitrumSepolia']
+const arbitrumSepolia = wagmiChains.arbitrumSepolia;
 
-export async function getServerSideProps(context) {
-  const id = context.query.id;
-  const event = await getEventById(id);
-  console.log('EVENT', event);
-  const redirect = {
-    redirect: { destination: '/dashboard/events', permanent: false },
-  };
-  if (!event) {
-    return redirect;
-  }
-  const resNFT = await getContract(id, 'arbitrum', 'testnet', '1155');
-  const contractNFT = !resNFT.error && resNFT.length > 0 ? resNFT[0] : null;
-  console.log('NFT', contractNFT);
-  if (!contractNFT) {
-    return redirect;
-  }
-  return { props: { id, event, contractNFT } };
+interface ReportClientProps {
+  id: string;
+  event: Event;
+  contractNFT: Contract;
 }
 
-export default function Page({ id, event, contractNFT }) {
-  console.log('EVENT ID', id);
-  const qrReader = useRef<BrowserQRCodeReader>(null);
-  const [device, setDevice] = useState(null);
+export default function ReportClient({
+  id,
+  event,
+  contractNFT,
+}: ReportClientProps) {
+  const qrReader = useRef<BrowserQRCodeReader | null>(null);
+  const [device, setDevice] = useState<string | null>(null);
   const [message, setMessage] = useState(
     'Scan the QR-CODE to report work delivered',
   );
   const [scanStatus, setScanStatus] = useState<'ready' | 'scanning'>('ready');
+
   const { register, watch, setValue } = useForm({
     defaultValues: { address: '', units: '' },
   });
+
   const [address, units] = watch(['address', 'units']);
-  const payrate = event?.payrate || 1;
+  const payrate = Number(event?.payrate) || 1;
   const unitlabel = event?.unitlabel || '';
   const [amount, setAmount] = useState(payrate);
+
   const { writeContractAsync } = useWriteContract({ config });
   const account = useAccount();
-  // TODO: move to config file
-  const currentChain = arbitrumSepolia;
 
   // Initialize QR reader
   useEffect(() => {
@@ -68,33 +57,36 @@ export default function Page({ id, event, contractNFT }) {
     qrReader.current = new BrowserQRCodeReader();
     qrReader.current
       .getVideoInputDevices()
-      .then(videoInputDevices => {
-        setDevice(videoInputDevices[0].deviceId);
+      .then((videoInputDevices: MediaDeviceInfo[]) => {
+        setDevice(videoInputDevices[0]?.deviceId || null);
       })
-      .catch(err => {
+      .catch((err: Error) => {
         console.error(err);
       });
     console.log('QRCode reader initialized');
   }, []);
 
-  function beginDecode() {
+  const beginDecode = useCallback(() => {
+    if (!qrReader.current || !device) return;
+
     qrReader.current.decodeFromInputVideoDeviceContinuously(
       device,
       'qrcode',
       (result, error) => {
         if (error) {
-          setMessage(error instanceof Error ? error.message : 'Unknown error');
+          setMessage(error.message || 'Unknown error');
           return;
         }
-        console.log('Result', result);
+        if (!result) return;
+
         const address = result.getText();
         setMessage(`Wallet ${address}`);
         setValue('address', address);
         setScanStatus('ready');
-        qrReader.current.stopContinuousDecode();
+        qrReader.current?.stopContinuousDecode();
       },
     );
-  }
+  }, [device, setValue]);
 
   async function onScan() {
     console.log('Scanning device', device);
@@ -108,14 +100,14 @@ export default function Page({ id, event, contractNFT }) {
     setScanStatus('ready');
     setMessage('Ready to scan');
     try {
-      qrReader.current.reset();
+      qrReader.current?.reset();
     } catch (ex) {
       console.error(ex);
     }
   }
 
   async function onMint() {
-    const nft: `0x${string}` = contractNFT.contract_address;
+    const nft = contractNFT.contract_address as `0x${string}`;
     console.log('units', units);
 
     if (!account.isConnected) {
@@ -123,8 +115,9 @@ export default function Page({ id, event, contractNFT }) {
       setMessage('Please connect Metamask wallet');
       return;
     }
-    if (account.chainId !== currentChain.id) {
-      await switchChain(config, { chainId: currentChain.id });
+
+    if (account.chainId !== arbitrumSepolia.id) {
+      await switchChain(config, { chainId: arbitrumSepolia.id });
     }
 
     setMessage('Minting reward NFT, please wait...');
@@ -149,7 +142,7 @@ export default function Page({ id, event, contractNFT }) {
         abi: NFTAbi,
         functionName: 'mint',
         args: [cleanedAddress as `0x${string}`, BigInt(2), BigInt(units)],
-        chain: currentChain,
+        chain: arbitrumSepolia,
         account: account.address,
       });
 
@@ -163,12 +156,16 @@ export default function Page({ id, event, contractNFT }) {
       setMessage('Reward NFT minted successfully');
     } catch (error) {
       console.error('Reward error:', error);
-      setMessage(`Reward error - ${error.message}`);
+      setMessage(
+        `Reward error - ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+      );
     }
   }
 
-  function recalc(evt) {
-    const value = evt.target.value || 1;
+  function recalc(evt: React.ChangeEvent<HTMLInputElement>) {
+    const value = Number(evt.target.value) || 1;
     console.log('CALC', value);
     const total = value * payrate;
     setAmount(total);
@@ -185,7 +182,12 @@ export default function Page({ id, event, contractNFT }) {
               <LucideQrCode className="text-white" size={60} />
             </div>
           )}
-          <video id="qrcode" className="w-full h-full object-cover" />
+          <video
+            id="qrcode"
+            className="w-full h-full object-cover"
+            aria-label="QR code scanner"
+            muted // ignores biome need for captions
+          />
         </div>
         <div className="w-full mb-2 flex flex-row justify-between">
           <ButtonBlue
@@ -214,7 +216,7 @@ export default function Page({ id, event, contractNFT }) {
             register={register('units')}
             type="number"
             pattern="\d*"
-            onChange={evt => recalc(evt)}
+            onChange={recalc}
           />
           <div className="text-center">
             <p>Estimated reward based on units delivered</p>

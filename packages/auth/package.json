@@ -27,12 +27,12 @@
     "@cfce/app-config": "workspace:*"
   },
   "devDependencies": {
-    "@types/react-dom": "*",
+    "@types/react-dom": "^19.0.1",
     "@cfce/types": "workspace:*",
     "@types/formidable": "^3.4.5",
     "@types/node": "^22.5.5",
     "@types/uuid": "^10.0.0",
     "typescript": "^5.6.2",
-    "@types/react": "latest"
+    "@types/react": "^19.0.1"
   }
 }
