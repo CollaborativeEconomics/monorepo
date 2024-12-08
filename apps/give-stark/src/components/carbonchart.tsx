@@ -63,6 +63,8 @@ const style = {
 function CarbonChart({ title, goal=100, value=0, max100=true }: ChartType) {
   console.log('CHART', goal, value)
   const max = (max100 ? 100 : goal)
+// @typescript-eslint/no-explicit-any
+  const data: any = {};
   const pct:any = {
     10: { ...style.ton, ...style.p10 },
     20: { ...style.ton, ...style.p20 },
@@ -80,6 +82,7 @@ function CarbonChart({ title, goal=100, value=0, max100=true }: ChartType) {
   const ext = mod ? 1 : 0
   const fix = mod.toFixed(1)
   const dec = Number(fix) * max
+  // typescript-eslint/no-explicit-any
   const prt:any = pct[dec]
   const rst = max - int - ext
   console.log('Tons', num, mod, dec, rst)
