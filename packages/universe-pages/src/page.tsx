@@ -23,8 +23,9 @@ export default async function Handler(props: {
   }>;
 }) {
   // const { query, category, location } = await props.searchParams;
-  const initiatives = (await getInitiatives({})) || [];
-  const plain = JSON.parse(JSON.stringify(initiatives)); // Only plain objects can be passed to Client Components
+  const data = (await getInitiatives({})) || [];
+  const list = data.filter(it => !it.inactive); // remove inactive initiatives
+  const plain = JSON.parse(JSON.stringify(list)); // Only plain objects can be passed to Client Components
   //console.log('JSON', JSON.stringify(plain,null,2))
   return (
     <>

@@ -19,6 +19,7 @@ import {
 import { chainConfig } from "@cfce/blockchain-tools";
 import type { ChainSlugs } from '@cfce/types';
 import { uploadFile } from '@cfce/utils';
+import { v7 as uuidv7 } from "uuid";
 import { imageUrl } from '@cfce/utils';
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
 import Image from 'next/image';
@@ -29,12 +30,8 @@ import { redirect } from 'next/navigation';
 type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
 type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>;
 //type Receipts = Prisma.NFTDataGetPayload<{ include: { organization: true; initiative: true; user: true } }>
-type DonationsByUser = Prisma.DonationGetPayload<{
-  include: { organization: true; initiative: true };
-}>;
-type FavoriteOrganizations = Prisma.DonationGetPayload<{
-  include: { organization: true };
-}>;
+type DonationsByUser = Prisma.DonationGetPayload<{ include: { organization: true; initiative: true } }>;
+type FavoriteOrganizations = Prisma.DonationGetPayload<{ include: { organization: true } }>;
 //type Stories = Prisma.StoryGetPayload<{ include: { organization: true } }>
 
 interface UserData {
@@ -46,38 +43,7 @@ interface UserData {
   stories: Stories[];
 }
 
-// Server Action to handle form submission
-async function handleSaveProfile(formData: FormData, userId: string) {
-  const file = formData.get('file') as File | null;
-  const name = formData.get('name') as string;
-  const email = formData.get('email') as string;
-
-  console.log(name, email);
-  console.log({ file });
-  //let image = (formData.get('currentImage') as string) ?? '';
-  /*
-  if (file) {
-    const fileUploadResponse = await uploadFile({
-      file,
-      name,
-      folder: 'avatars',
-    });
-    if (fileUploadResponse.success) {
-      image = fileUploadResponse.result?.url ?? '';
-    }
-  }
-  const updatePayload = { name, email, image };
-  const updateData = await setUser(userId, updatePayload);
-
-  if (!updateData) {
-    throw new Error('Error updating user data');
-  }
-*/
-
-  redirect('/profile');
-}
-
-export default async function Profile({
+export default function Profile({
   userId,
   userData,
 }: {
@@ -94,6 +60,51 @@ export default async function Profile({
   const stories = userData.stories;
   const nopic = '/media/nopic.png';
 
+  async function saveImage(file: File) {
+    console.log('IMAGE', file)
+    //if(file){ return {error:'no image provided'} }
+    const name = uuidv7()
+    const body = new FormData()
+    body.append('name', name)
+    body.append('folder', 'avatars')
+    body.append('file', file)
+    const resp = await fetch('/api/upload', { method: 'POST', body })
+    const result = await resp.json()
+    return result
+  }
+
+  // Action to handle form submission
+  async function handleSaveProfile(formData: FormData, userId: string) {
+    const file = formData.get('file') as File | null;
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+
+    console.log(name, email);
+    console.log({ file });
+    let image = (formData.get('currentImage') as string) ?? '';
+    if (file) {
+      //const fileUploadResponse = await uploadFile({ file, name, folder: 'avatars' });
+      const fileUploadResponse = await saveImage(file);
+      if (fileUploadResponse.success) {
+        image = fileUploadResponse.url ?? '';
+      }
+    }
+    //const updatePayload = { name, email, image };
+    //const updateData = await setUser(userId, updatePayload);
+
+    //if (!updateData) {
+    //  throw new Error('Error updating user data');
+    //}
+
+    const data = { name, email, image }
+    console.log('USER', data)
+    const res = await fetch(`/api/profile/${userId}`,{method:'post', body:JSON.stringify(data)})
+    const inf = await res.json()
+    console.log('INF', inf)
+    //redirect(`/profile/${userId}`);
+  }
+
+
   return (
     <>
       <div className="flex flex-col lg:flex-row justify-between">
@@ -101,14 +112,16 @@ export default async function Profile({
         <div className="border rounded-md p-8 w-full lg:w-2/4 bg-card">
           <form action={formData => handleSaveProfile(formData, userId)}>
             <div className="flex flex-row flex-start items-center rounded-full">
-              <Image
-                className="mr-8 rounded-full"
-                src={imageUrl(user?.image) || nopic}
-                width={100}
-                height={100}
-                alt="Avatar"
-              />
-              <input type="file" name="file" className="mr-4" />
+              <div className="flex flex-col flex-start items-center rounded-full">
+                <Image
+                  className="mr-8 rounded-full"
+                  src={imageUrl(user?.image) || nopic}
+                  width={100}
+                  height={100}
+                  alt="Avatar"
+                />
+                <input type="file" name="file" className="mt-4 mr-4 w-[130px] text-wrap"/>
+              </div>
               <div className="flex flex-col flex-start items-start w-full rounded-full">
                 <input
                   type="text"

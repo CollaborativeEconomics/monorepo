@@ -7,10 +7,25 @@ interface WalletConfig {
 }
 
 export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
+  argent: {
+    icon: "/icons/argent.webp",
+    slug: "argent",
+    name: "Argent",
+  },
+  crossmark: {
+    icon: "/icons/crossmark.webp",
+    slug: "crossmark",
+    name: "Crossmark",
+  },
   freighter: {
     icon: "/icons/freighter.webp",
     slug: "freighter",
     name: "Freighter",
+  },
+  gemwallet: {
+    icon: "/icons/gem.webp",
+    slug: "gemwallet",
+    name: "Gem Wallet",
   },
   metamask: {
     icon: "/icons/metamask.webp",
@@ -21,11 +36,6 @@ export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
     icon: "/icons/xaman.webp",
     slug: "xaman",
     name: "Xaman",
-  },
-  argent: {
-    icon: "/icons/argent.webp",
-    slug: "argent",
-    name: "Argent",
   },
 }
 

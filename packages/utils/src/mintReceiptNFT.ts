@@ -136,7 +136,7 @@ export async function mintAndSaveReceiptNFT({
       return { success: false, error: "No chain tool found for chain" }
     }
 
-    const txInfo = await chainTool.getTransactionInfo(txId)
+    const txInfo = await chainTool.getTransactionInfo(txId, true) // wait for receipt
     if ("error" in txInfo) {
       console.log("ERROR", "Transaction not found")
       throw new Error(`Transaction not found: ${txInfo.error}`)
@@ -311,6 +311,8 @@ export async function mintAndSaveReceiptNFT({
     // #region: Mint NFT on current chain only
     const receiptContract = currentChain.contracts.receiptMintbotERC721
     console.log("CTR", receiptContract)
+
+    // WARN: XRPL doesn't use contracts
     if (!receiptContract) {
       console.error("No receipt contracts found")
       return { success: false, error: "No receipt contract found" }
