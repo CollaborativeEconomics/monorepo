@@ -10,8 +10,8 @@ import {
 } from '@avnu/gasless-sdk'
 import ChainBaseClass from "../chains/ChainBaseClass"
 import { parseEther, formatEther } from "viem"
-import { ERC20 } from "../contracts/starknet/Abi"
-import { nftABI } from "../contracts/starknet/nftABI"
+import { ERC20 } from "../contracts/starknet/ERC20Abi"
+import { ERC721ABI } from "../contracts/starknet/ERC721Abi"
 import appConfig from "@cfce/app-config"
 
 class StarknetWallet extends ChainBaseClass {
@@ -113,7 +113,7 @@ class StarknetWallet extends ChainBaseClass {
     }
   }
 
-  public async executeWithGas(address: string, amount: number) {
+  public async sendPaymentWithGas(address: string, amount: number) {
     try {
       if (!this.connector) {
         ({connector: this.connector} = await this.getWallet());
@@ -337,7 +337,7 @@ async mintNFT({
 
     const account = new Account(provider, minterAddress, walletSeed);
     
-    const contract = new Contract(nftABI, contractId, provider);
+    const contract = new Contract(ERC721ABI, contractId, provider);
     contract.connect(account);
     
     // Generate unique token ID

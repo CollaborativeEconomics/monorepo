@@ -38,21 +38,6 @@ interface DonationFormProps {
   }>;
 }
 
-const starknetAddress: string = appConfig.chains.starknet?.network === "mainnet" 
-  ? "0x05a12d15f93dcbddec0653fc77dd96713fb154667f2384a51d4c10405b251ccf"
-  : "0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3";
-
-// Add this function above the DonationForm component
-// @deprecated TODO: remove this
-const getFallbackAddress = (chainName?: string): string => {
-  const fallbackAddresses: Record<string, string> = {
-    Ethereum: '0x1234567890123456789012345678901234567890',
-    Polygon: '0x1234567890123456789012345678901234567890',
-    Starknet: starknetAddress,
-  };
-
-  return chainName ? fallbackAddresses[chainName] || '' : '';
-};
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -112,7 +97,8 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     }
 
     // Use fallback address if both initiative and organization wallets are not found
-    const fallbackAddress = getFallbackAddress(chainName);
+    // There will be no fallback address for production, hence the error will be thrown
+    const fallbackAddress = appConfig.chainDefaults?.defaultAddress;
     if (fallbackAddress) {
       return fallbackAddress;
     }
@@ -168,11 +154,11 @@ export default function DonationForm({ initiative }: DonationFormProps) {
 
   const sendPaymentWithGas = useCallback(
     async (address: string, amount: number) => {
-      if (!chainInterface?.executeWithGas) {
+      if (!chainInterface?.sendPaymentWithGas) {
         throw new Error('Gas payments not supported');
       }
 
-      const result = await chainInterface.executeWithGas(address, amount);
+      const result = await chainInterface.sendPaymentWithGas(address, amount);
       console.log('GAS PAYMENT RESULT', result);
       return result;
     },

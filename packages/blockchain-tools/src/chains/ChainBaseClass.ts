@@ -117,7 +117,7 @@ export default abstract class ChainBaseClass {
     return Buffer.from(hex.substr(2), "hex").toString(encoding)
   }
 
-  executeWithGas?(address: string, amount: number): Promise<{
+  sendPaymentWithGas?(address: string, amount: number): Promise<{
     success: boolean;
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     result?: any;

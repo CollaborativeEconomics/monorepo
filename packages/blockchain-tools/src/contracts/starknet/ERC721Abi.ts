@@ -1,4 +1,4 @@
-export const nftABI = [
+export const ERC721ABI = [
   {
     "name": "UpgradeableImpl",
     "type": "impl",

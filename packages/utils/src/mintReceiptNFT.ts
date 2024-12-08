@@ -191,7 +191,7 @@ export async function mintAndSaveReceiptNFT({
     console.log("Image URI", initiative?.imageUri)
 
     const uriImage = initiative?.imageUri 
-      ? initiative.imageUri.replace(/<[^>]*>/g, '').trim()
+      ? initiative.imageUri
       : "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
 
     const extraMetadata = await runHook(
@@ -245,7 +245,7 @@ export async function mintAndSaveReceiptNFT({
     // More thorough sanitization of the entire metadata object
     const metadataString = JSON.stringify(metadata, (key, value) => {
       if (typeof value === 'string') {
-        return value.replace(/<[^>]*>/g, '').trim() // Remove any HTML tags and trim
+        return value // Remove any HTML tags and trim
       }
       return value;
     }, 2)

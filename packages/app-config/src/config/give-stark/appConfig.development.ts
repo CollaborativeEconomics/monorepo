@@ -1,5 +1,4 @@
 import type {
-  AppChainConfig,
   AppConfig,
   AuthTypes,
   ChainSlugs,

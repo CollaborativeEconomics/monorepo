@@ -181,7 +181,6 @@
     }
   },
   "dependencies": {
-    "@cfce/auth": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
@@ -194,7 +193,6 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@cfce/types": "workspace:*",
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
     "@types/node": "^22.9.0",
