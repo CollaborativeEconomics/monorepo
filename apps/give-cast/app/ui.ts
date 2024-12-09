@@ -1,4 +1,4 @@
-import { createSystem } from 'frog/ui';
+import { createSystem } from "frog/ui"
 
 export const {
   Box,
@@ -13,26 +13,19 @@ export const {
   VStack,
   vars,
 } = createSystem({
-  colors: {
-    nipple: '#F098C6',
-    diarrhea: '#655C31',
-    jaundice: '#FEDB1D',
-    banality: '#F9E1A3',
-    death: '#000000',
-    angel: '#FFFFFF',
-  },
+  colors: {},
   fonts: {
     default: [
       {
-        name: 'Poppins',
-        source: 'google',
+        name: "Poppins",
+        source: "google",
         weight: 900,
       },
       {
-        name: 'Poppins',
-        source: 'google',
+        name: "Poppins",
+        source: "google",
         weight: 400,
       },
     ],
   },
-});
+})
