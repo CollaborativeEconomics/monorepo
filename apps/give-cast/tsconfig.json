@@ -1,4 +1,5 @@
 {
+  "extends": "@cfce/typescript-config/nextjs.json",
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -12,6 +13,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "outDir": "dist",
     "plugins": [
       {
         "name": "next"
