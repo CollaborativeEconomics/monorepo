@@ -10,5 +10,10 @@
     "IPFS_DEFAULT_BUCKET",
     "BLOB_READ_WRITE_TOKEN",
     "TURBO_ENV"
-  ]
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"]
+    }
+  }
 }

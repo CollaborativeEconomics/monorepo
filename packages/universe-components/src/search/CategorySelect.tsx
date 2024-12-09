@@ -1,18 +1,18 @@
 'use client';
-import { cn } from '@/shadCnUtil';
 import type { Category } from '@cfce/database';
 import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Button } from '../ui/button';
+import { cn } from '~/shadCnUtil';
+import { Button } from '~/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+} from '~/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '~/ui/popover';
 
 /*
 const categories = [
@@ -57,12 +57,14 @@ export default function CategorySelect(props: CategorySelectProps) {
     async function loadCategories() {
       const res = await fetch(`/api/categories?distinct=${distinct}`);
       let list = await res.json();
-      list = list.map((category: Category) => ({
-        value: category.slug,
-        label: category.title,
-      }));
       console.log('CATS', list);
-      setCategories(list);
+      if (list.success) {
+        list = list.map((category: Category) => ({
+          value: category.slug,
+          label: category.title,
+        }));
+        setCategories(list);
+      }
     }
     loadCategories();
   }, []);

@@ -1,10 +1,13 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      NEXT_PUBLIC_GOOGLE_CLIENT_ID: string; // this is the line you want
-      NODE_ENV: 'development' | 'production';
-      PORT?: string;
-      PWD: string;
+      IPFS_API_KEY: string
+      IPFS_API_SECRET: string
+      NEXT_PUBLIC_IPFS_GATEWAY_URL: string
+      NEXT_PUBLIC_GOOGLE_CLIENT_ID: string
+      NODE_ENV: "development" | "production"
+      PORT?: string
+      PWD: string
     }
   }
 }

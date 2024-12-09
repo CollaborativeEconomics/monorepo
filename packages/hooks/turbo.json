@@ -1,0 +1,4 @@
+{
+  "extends": ["//"],
+  "globalEnv": ["CFCE_REGISTRY_API_KEY"]
+}

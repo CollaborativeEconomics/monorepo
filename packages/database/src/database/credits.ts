@@ -1,6 +1,7 @@
+import "server-only"
 import type { Credit, Prisma } from "@prisma/client"
-import type { ListQuery } from "../types"
 import { prismaClient } from "../index"
+import type { ListQuery } from "@cfce/types"
 
 interface CreditsQuery extends ListQuery {
   providerId?: string

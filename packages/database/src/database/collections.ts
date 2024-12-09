@@ -1,6 +1,7 @@
+import "server-only"
 import type { Collection } from "@prisma/client"
 import { prismaClient } from "../index"
-import type { ListQuery } from "../types"
+import type { ListQuery } from "@cfce/types"
 
 interface CollectionQuery extends ListQuery {
   userId?: string

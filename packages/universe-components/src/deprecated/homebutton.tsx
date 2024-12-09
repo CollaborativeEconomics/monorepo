@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router'
-import React from 'react'
-import Button from './deprecated/button'
+import { useRouter } from 'next/router';
+import React from 'react';
+import Button from './button';
 
 // @deprecated
 const HomeButton = () => {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <Button
       text="Home"
@@ -12,7 +12,7 @@ const HomeButton = () => {
       icon="home"
       onClick={() => router.push('/')}
     />
-  )
-}
+  );
+};
 
-export default HomeButton
+export default HomeButton;

@@ -1,14 +1,32 @@
+import appConfig from '@cfce/app-config';
+import { getInitiatives } from '@cfce/database';
+import {
+  ActionBar,
+  ImpactCarousel,
+  InstructionPanes,
+  VideoBackground,
+} from '@cfce/universe-components/home';
+import type { Metadata, Viewport } from 'next';
 import React from 'react';
-import {getInitiatives} from '@cfce/database';
+
+export const metadata: Metadata = {
+  title: appConfig.siteInfo.title,
+};
+
+export const viewport: Viewport = { initialScale: 1.0, width: 'device-width' };
 
 export default async function Handler(props: {
-  searchParams?: { query?: string; category?: string; location?: string };
+  searchParams?: Promise<{
+    query?: string;
+    category?: string;
+    location?: string;
+  }>;
 }) {
-  const query = props?.searchParams?.query || '';
-  const category = props?.searchParams?.category || '';
-  const location = props?.searchParams?.location || '';
-  const initiatives = (await getInitiatives({})) || [];
-  console.log('SEARCH', query, category, location);
+  // const { query, category, location } = await props.searchParams;
+  const data = (await getInitiatives({})) || [];
+  const list = data.filter(it => !it.inactive); // remove inactive initiatives
+  const plain = JSON.parse(JSON.stringify(list)); // Only plain objects can be passed to Client Components
+  //console.log('JSON', JSON.stringify(plain,null,2))
   return (
     <>
       <div className="w-full top-0">
@@ -23,7 +41,7 @@ export default async function Handler(props: {
             story of real world impact.
           </p>
         </div>
-        <ImpactCarousel initiatives={initiatives} />
+        <ImpactCarousel initiatives={plain} />
         <ActionBar />
         <InstructionPanes />
         <VideoBackground />

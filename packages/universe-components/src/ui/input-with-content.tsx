@@ -1,16 +1,16 @@
-import { cn } from '@/shadCnUtil';
+'use client';
 import React from 'react';
+import { cn } from '~/shadCnUtil';
 import type { InputProps } from './input';
 
 export interface InputWithContentProps extends InputProps {
   text: string;
-  divRef: React.RefObject<HTMLDivElement>;
 }
 
 const InputWithContent = React.forwardRef<
   HTMLInputElement,
   InputWithContentProps
->(({ className, id, type, text, divRef, ...props }, ref) => {
+>(({ className, id, type, text, ...props }, ref) => {
   return (
     <div className="flex flex-row text-lg w-full rounded-full bg-white ring-offset-background focus-within:ring-1 dark:bg-slate-500 border ring-slate-300 border-slate-300 dark:border-none overflow-visible">
       <input

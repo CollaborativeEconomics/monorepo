@@ -1,3 +1,4 @@
+import "server-only"
 import type { Setting } from "@prisma/client"
 import { prismaClient } from ".."
 

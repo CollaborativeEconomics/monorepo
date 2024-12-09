@@ -1,10 +1,11 @@
 'use client';
+import appConfig from '@cfce/app-config';
 import React from 'react';
 interface Props {
   images?: string[];
 }
 
-const IPFSURL = process.env.IPFS_GATEWAY_URL;
+const IPFSURL = appConfig.apis.ipfs.gateway;
 
 export default function Gallery(props: Props) {
   let image = props.images?.[0] ?? '/nopic.png';

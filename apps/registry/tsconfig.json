@@ -1,29 +1,37 @@
 {
+  "extends": "@cfce/typescript-config/nextjs.json",
+  "strictNullChecks": true,
+  "declaration": false,
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "ESNext",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
+    "outDir": "dist",
+    "rootDirs": [
+      "src",
+      "."
+    ],
     "paths": {
-      "@/lib/*": ["lib/*"]
+      "~/*": [
+        "./src/*"
+      ]
     }
+    // "module": "NodeNext",
+    // "moduleResolution": "NodeNext"
+    ,
+    "esModuleInterop": true
   },
   "include": [
+    "src",
     "next-env.d.ts",
+    "next-auth.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../../packages/blockchain-tools/src/mintStoryNFT.ts"
+    "public",
+    ".next/types/**/*.ts",
+    "next.config.mjs"
   ],
-  "exclude": ["node_modules", "work"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "work"
+  ]
 }

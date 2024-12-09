@@ -2,17 +2,17 @@
 import React, { useState, useEffect } from 'react';
 // import { Check, ChevronsUpDown } from 'lucide-react';
 
-import { cn } from '@/shadCnUtil';
 import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
-import { Button } from '../ui/button';
+import { cn } from '~/shadCnUtil';
+import { Button } from '~/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+} from '~/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '~/ui/popover';
 
 interface LocationSelectProps {
   onChange?: (location: string) => void;
@@ -28,8 +28,10 @@ export default function LocationSelect(props: LocationSelectProps) {
     async function loadLocations() {
       const res = await fetch('/api/locations');
       const list = await res.json();
-      setLocations(list);
       console.log('LOCS', list);
+      if (list.success) {
+        setLocations(list);
+      }
     }
     loadLocations();
   }, []);

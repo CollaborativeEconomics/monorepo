@@ -1,5 +1,6 @@
+import "server-only"
+import type { ListQuery } from "@cfce/types"
 import { type Session, prismaClient } from ".."
-import type { ListQuery } from "types"
 
 interface SessionQuery extends ListQuery {
   token?: string

@@ -1,6 +1,7 @@
-import type { Donation, Prisma } from "@prisma/client"
+import "server-only"
+import type { ListQuery } from "@cfce/types"
+import type { Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "../types"
 
 interface DonationQuery extends ListQuery {
   id?: string
@@ -8,6 +9,7 @@ interface DonationQuery extends ListQuery {
   chapterid?: string
   initid?: string
   userId?: string
+  storyId?: string
   wallet?: string
   from?: string
   to?: string
@@ -23,10 +25,6 @@ export async function getDonations(query: DonationQuery) {
   const filter: Prisma.DonationFindManyArgs = {
     skip: 0,
     take: 100,
-    include: {
-      organization: true,
-      initiative: true,
-    },
     orderBy: { created: "desc" },
   }
   filter.where = {}
@@ -34,9 +32,9 @@ export async function getDonations(query: DonationQuery) {
   if (query?.favs) {
     const userId = query.favs
     filter.distinct = ["organizationId"]
-    filter.select = {
-      organization: true,
-    }
+    // filter.select = {
+    //   organization: true,
+    // }
     filter.where = {
       userId: userId,
     }
@@ -45,9 +43,9 @@ export async function getDonations(query: DonationQuery) {
   if (query?.badges) {
     const userId = query.badges
     filter.distinct = ["categoryId"]
-    filter.select = {
-      category: true,
-    }
+    // filter.select = {
+    //   category: true,
+    // }
     filter.where = {
       userId: userId,
     }
@@ -67,6 +65,10 @@ export async function getDonations(query: DonationQuery) {
 
   if (query?.userId) {
     filter.where.userId = query.userId
+  }
+
+  if (query?.storyId) {
+    filter.where.storyId = query.storyId
   }
 
   if (query?.wallet) {
@@ -108,18 +110,35 @@ export async function getDonations(query: DonationQuery) {
     filter.skip = start
     filter.take = size
   }
-  const data = await prismaClient.donation.findMany(filter)
+  const data = await prismaClient.donation.findMany({
+    ...filter,
+    include: {
+      category: true,
+      organization: true,
+      initiative: true,
+    },
+  })
 
   return data
 }
 
-export async function getDonationById(id: string) {
-  const data = await prismaClient.donation.findUnique({ where: { id } })
+export async function getDonationById(
+  id: string,
+  include: Prisma.DonationInclude = {},
+) {
+  const data = await prismaClient.donation.findUnique({
+    where: { id },
+    include,
+  })
   return data
 }
 
-export async function newDonation(data: Donation) {
+export async function newDonation(data: Prisma.DonationCreateInput) {
   const rec = await prismaClient.donation.create({ data })
-  console.log("NEW DONATION", rec)
+  return rec
+}
+
+export async function deleteDonation(id: string) {
+  const rec = await prismaClient.donation.delete({ where: { id } })
   return rec
 }

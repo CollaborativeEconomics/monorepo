@@ -1,177 +1,96 @@
+import appConfig from "@cfce/app-config"
+import type { ChainSlugs, Network } from "@cfce/types"
 import { keys as _keys } from "lodash"
-import {
-  FreighterWallet,
-  MetaMaskWallet,
-  StellarServer,
-  Web3Server,
-  XrplServer,
-  XummClient,
-} from "../interfaces"
-import type { ChainSlugs, Network } from "./chainConfig"
+import { get as _get } from "lodash"
+import type { Interface } from "../interfaces"
+import FreighterWallet from "../interfaces/FreighterWallet"
+import MetaMaskWallet from "../interfaces/MetamaskClient"
+import StarknetWallet from "../interfaces/StarknetWallet"
+import StellarServer from "../interfaces/StellarServer"
+import Web3Server from "../interfaces/Web3Server"
+import XrplServer from "../interfaces/XrplServer"
+import CrossmarkWallet from "../interfaces/CrossmarkWallet"
+import GemWallet from "../interfaces/GemWallet"
+import XummClient from "../interfaces/XummClient"
+import _SacrificialInterface from "../interfaces/_SacrificialInterface"
+import type ChainBaseClass from "./ChainBaseClass"
 
-interface ManagerChainConfig {
-  network: Network
-  wallets: string[]
-  coins: string[]
-  contracts: Record<string, string>
+type ChainClasses<ClientClass = Interface, ServerClass = Interface> = {
+  client: ChainBaseClass
+  server: ChainBaseClass
 }
 
-type ManagerConfigChains = Partial<Record<ChainSlugs, ManagerChainConfig>>
+const getNetwork = (slug: ChainSlugs): Network =>
+  appConfig.chains[slug]?.network ?? appConfig.chainDefaults.network
 
-interface ManagerConfig extends ManagerConfigChains {
-  defaults: {
-    network: Network
-    wallet: string
-    chain: string
-    coin: string
-  }
-}
+const BlockchainManager = {
+  arbitrum: {
+    client: new MetaMaskWallet("arbitrum", getNetwork("arbitrum")),
+    server: new Web3Server("arbitrum", getNetwork("arbitrum")),
+  },
+  avalanche: {
+    client: new MetaMaskWallet("avalanche", getNetwork("avalanche")),
+    server: new Web3Server("avalanche", getNetwork("avalanche")),
+  },
+  base: {
+    client: new MetaMaskWallet("base", getNetwork("base")),
+    server: new Web3Server("base", getNetwork("base")),
+  },
+  binance: {
+    client: new MetaMaskWallet("binance", getNetwork("binance")),
+    server: new Web3Server("binance", getNetwork("binance")),
+  },
+  celo: {
+    client: new MetaMaskWallet("celo", getNetwork("celo")),
+    server: new Web3Server("celo", getNetwork("celo")),
+  },
+  eos: {
+    client: new MetaMaskWallet("eos", getNetwork("eos")),
+    server: new Web3Server("eos", getNetwork("eos")),
+  },
+  ethereum: {
+    client: new MetaMaskWallet("ethereum", getNetwork("ethereum")),
+    server: new Web3Server("ethereum", getNetwork("ethereum")),
+  },
+  filecoin: {
+    client: new MetaMaskWallet("filecoin", getNetwork("filecoin")),
+    server: new Web3Server("filecoin", getNetwork("filecoin")),
+  },
+  flare: {
+    client: new MetaMaskWallet("flare", getNetwork("flare")),
+    server: new Web3Server("flare", getNetwork("flare")),
+  },
+  optimism: {
+    client: new MetaMaskWallet("optimism", getNetwork("optimism")),
+    server: new Web3Server("optimism", getNetwork("optimism")),
+  },
+  polygon: {
+    client: new MetaMaskWallet("polygon", getNetwork("polygon")),
+    server: new Web3Server("polygon", getNetwork("polygon")),
+  },
+  starknet: {
+    client: new StarknetWallet("starknet", getNetwork("starknet")),
+    server: new StarknetWallet("starknet", getNetwork("starknet")),
+  },
+  stellar: {
+    client: new FreighterWallet("stellar", getNetwork("stellar")),
+    server: new StellarServer("stellar", getNetwork("stellar")),
+  },
+  tron: {
+    // TODO: Add Tron wallet and server support
+    client: new MetaMaskWallet("tron", getNetwork("tron")),
+    server: new Web3Server("tron", getNetwork("tron")),
+  },
+  xdc: {
+    client: new MetaMaskWallet("xdc", getNetwork("xdc")),
+    server: new Web3Server("xdc", getNetwork("xdc")),
+  },
+  xrpl: {
+    //client: new CrossmarkWallet("xrpl", getNetwork("xrpl")),
+    //client: new GemWallet("xrpl", getNetwork("xrpl")),
+    client: new XummClient("xrpl", getNetwork("xrpl")),
+    server: new XrplServer("xrpl", getNetwork("xrpl"), 77777777), // NFT TAG SHOULD BE MOVED TO MINT_NFT METHOD
+  },
+} satisfies Record<ChainSlugs, ChainClasses>
 
-type ChainClasses<ClientClass, ServerClass> = {
-  client: ClientClass
-  server: ServerClass
-}
-
-export default class BlockchainManager {
-  private static instance: BlockchainManager
-
-  public config?: ManagerConfig
-
-  public arbitrum?: ChainClasses<MetaMaskWallet, Web3Server>
-  public avalanche?: ChainClasses<MetaMaskWallet, Web3Server>
-  public base?: ChainClasses<MetaMaskWallet, Web3Server>
-  public binance?: ChainClasses<MetaMaskWallet, Web3Server>
-  public celo?: ChainClasses<MetaMaskWallet, Web3Server>
-  public eos?: ChainClasses<MetaMaskWallet, Web3Server>
-  public ethereum?: ChainClasses<MetaMaskWallet, Web3Server>
-  public filecoin?: ChainClasses<MetaMaskWallet, Web3Server>
-  public flare?: ChainClasses<MetaMaskWallet, Web3Server>
-  public optimism?: ChainClasses<MetaMaskWallet, Web3Server>
-  public polygon?: ChainClasses<MetaMaskWallet, Web3Server>
-  public starknet?: ChainClasses<MetaMaskWallet, Web3Server>
-  public stellar?: ChainClasses<FreighterWallet, StellarServer>
-  public xinfin?: ChainClasses<MetaMaskWallet, Web3Server>
-  public xrpl?: ChainClasses<XummClient, XrplServer>
-
-  private constructor(config: ManagerConfig) {
-    this.config = config || {}
-    this.initialize()
-  }
-
-  connectChain<Client, Server>(
-    chain: ChainSlugs,
-    ClientInterface: any, //hard to infer the type
-    ServerInterface: any, //hard to infer the type
-  ): ChainClasses<Client, Server> | undefined {
-    if (!this.config) {
-      throw new Error("Config not provided")
-    }
-    const chainConfig = this.config[chain]
-    if (!chainConfig) {
-      return
-    }
-    return {
-      server: new ServerInterface(
-        chain,
-        chainConfig.network || this.config.defaults.network,
-      ),
-      client: new ClientInterface(
-        chain,
-        chainConfig.network || this.config.defaults.network,
-      ),
-    }
-  }
-
-  initialize() {
-    if (!this.config) {
-      throw new Error("Config not provided")
-    }
-    this.arbitrum = this.connectChain<MetaMaskWallet, Web3Server>(
-      "arbitrum",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.avalanche = this.connectChain<MetaMaskWallet, Web3Server>(
-      "avalanche",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.base = this.connectChain<MetaMaskWallet, Web3Server>(
-      "base",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.binance = this.connectChain<MetaMaskWallet, Web3Server>(
-      "binance",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.celo = this.connectChain<MetaMaskWallet, Web3Server>(
-      "celo",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.eos = this.connectChain<MetaMaskWallet, Web3Server>(
-      "eos",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.ethereum = this.connectChain<MetaMaskWallet, Web3Server>(
-      "ethereum",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.filecoin = this.connectChain<MetaMaskWallet, Web3Server>(
-      "filecoin",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.flare = this.connectChain<MetaMaskWallet, Web3Server>(
-      "flare",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.optimism = this.connectChain<MetaMaskWallet, Web3Server>(
-      "optimism",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.polygon = this.connectChain<MetaMaskWallet, Web3Server>(
-      "polygon",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    // this.starknet = this.connectChain<, Web3Server?>("starknet", ArgentWallet, Web3Server?)
-    this.stellar = this.connectChain<FreighterWallet, StellarServer>(
-      "stellar",
-      FreighterWallet,
-      StellarServer,
-    )
-    this.xinfin = this.connectChain<MetaMaskWallet, Web3Server>(
-      "xinfin",
-      MetaMaskWallet,
-      Web3Server,
-    )
-    this.xrpl = this.connectChain<XummClient, XrplServer>(
-      "xrpl",
-      XummClient,
-      XrplServer,
-    )
-  }
-
-  public static initialize(config: ManagerConfig): BlockchainManager {
-    if (!BlockchainManager.instance) {
-      BlockchainManager.instance = new BlockchainManager(config)
-    }
-    return BlockchainManager.instance
-  }
-
-  public static getInstance(): BlockchainManager {
-    if (!BlockchainManager.instance) {
-      throw new Error(
-        "BlockchainManager is not initialized. Call initialize() first.",
-      )
-    }
-    return BlockchainManager.instance
-  }
-}
+export default BlockchainManager

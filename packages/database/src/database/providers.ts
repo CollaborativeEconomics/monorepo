@@ -1,6 +1,7 @@
+import "server-only"
 import type { Provider } from "@prisma/client"
+import type { ListQuery } from "@cfce/types"
 import { prismaClient } from ".."
-import type { ListQuery } from "types"
 
 interface ProviderQuery extends ListQuery {
   category?: string

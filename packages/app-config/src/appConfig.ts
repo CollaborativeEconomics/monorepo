@@ -1,97 +1,109 @@
-import { existsSync } from "node:fs"
-import { resolve } from "node:path"
-import type {
-  ChainSlugs,
-  Interfaces,
-  Network,
-  TokenTickerSymbol,
-} from "@cfce/blockchain-tools"
-import { register } from "ts-node"
+import type { AppConfig } from "@cfce/types"
+// base/default
+import base from "./config/appConfigBase"
+// give-credits
+import giveCreditsDev from "./config/give-credits/appConfig.development"
+import giveCreditsProd from "./config/give-credits/appConfig.production"
+import giveCreditsStaging from "./config/give-credits/appConfig.staging"
+// give-stark
+import giveStarkDev from "./config/give-stark/appConfig.development"
+import giveStarkProd from "./config/give-stark/appConfig.production"
+import giveStarkStaging from "./config/give-stark/appConfig.staging"
+// Give tron
+import giveTronDev from "./config/give-tron/appConfig.development"
+import giveTronProd from "./config/give-tron/appConfig.production"
+import giveTronStaging from "./config/give-tron/appConfig.staging"
+// Giving universe
+import givingUniverseDev from "./config/giving-universe/appConfig.development"
+import givingUniverseProd from "./config/giving-universe/appConfig.production"
+import givingUniverseStaging from "./config/giving-universe/appConfig.staging"
+// partners
+import partnersDev from "./config/partners/appConfig.development"
+import partnersProd from "./config/partners/appConfig.production"
+import partnersStaging from "./config/partners/appConfig.staging"
 
-type Envs = "development" | "staging" | "production"
+// tests
+import testsDev from "./config/tests/appConfig.development"
+import testsProd from "./config/tests/appConfig.production"
+import testsStaging from "./config/partners/appConfig.staging"
 
-const configPaths: Record<Envs, string> = {
-  development: "appConfig.dev.ts",
-  staging: "appConfig.staging.ts",
-  production: "appConfig.ts",
-}
+type Environment = "development" | "production" | "staging"
+type AppId =
+  | "give-credits"
+  | "give-stark"
+  | "give-tron"
+  | "giving-universe"
+  | "partners"
+  | "registry"
+  | "tests"
 
-export interface Config {
-  siteInfo: {
-    title: string
-    description: string
-  }
-  apis: {
-    registry: {
-      apiUrl: string
-    }
-    ipfs: {
-      endpoint: string
-      region: string
-      gateway: string
-      pinning: string
-      buckets: {
-        nfts: string
-        avatars: string
-        media: string
-      }
-    }
-  }
-  auth: string[]
-  chains: Partial<
-    Record<
-      ChainSlugs,
-      {
-        network: Network
-        contracts: Partial<
-          Record<"CCreceiptMintbotERC721" | "receiptMintbotERC721", string>
-        >
-        wallets: Interfaces[]
-        coins: TokenTickerSymbol[]
-      }
-    >
-  >
-  chainDefaults: {
-    network: Network
-    wallet: Interfaces
-    chain: ChainSlugs
-    coin: TokenTickerSymbol
-  }
-}
-
-// Register ts-node to handle TypeScript files
-register({
-  transpileOnly: true,
-  compilerOptions: {
-    module: "commonjs",
+const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
+  "give-credits": {
+    development: giveCreditsDev,
+    production: giveCreditsProd,
+    staging: giveCreditsStaging,
   },
-})
-
-let appConfigs: Record<Envs, Config> | null = null
-
-// Load the configuration for each environemnt
-// ie appConfig.dev.ts, appConfig.staging.ts, appConfig.ts
-function loadConfig(): Record<Envs, Config> {
-  if (appConfigs) {
-    return appConfigs
-  }
-  const rootDir = process.cwd()
-  const configs = {} as Record<Envs, Config>
-  for (const env of Object.keys(configPaths)) {
-    const configPath = resolve(rootDir, configPaths[env as Envs]) // app/appConfig.dev.ts
-    if (existsSync(configPath)) {
-      const { config } = require(configPath) // `ts-node` will handle the TypeScript file
-      configs[env as Envs] = config as Config
-    }
-    throw new Error(`Configuration file not found at ${configPath}`)
-  }
-  return configs as Record<Envs, Config>
+  "give-stark": {
+    development: giveStarkDev,
+    production: giveStarkProd,
+    staging: giveStarkStaging,
+  },
+  "give-tron": {
+    development: giveTronDev,
+    production: giveTronProd,
+    staging: giveTronStaging,
+  },
+  "giving-universe": {
+    development: givingUniverseDev,
+    production: givingUniverseProd,
+    staging: givingUniverseStaging,
+  },
+  partners: {
+    development: partnersDev,
+    production: partnersProd,
+    staging: partnersStaging,
+  },
+  registry: {
+    // TODO: add registry app config
+    development: giveCreditsDev,
+    production: giveCreditsProd,
+    staging: giveCreditsStaging,
+  },
+  tests: {
+    development: testsDev,
+    production: testsProd,
+    staging: testsStaging,
+  },
 }
 
-appConfigs = loadConfig()
+const appId = process.env.NEXT_PUBLIC_APP_ID as AppId | undefined
+const env = process.env.NEXT_PUBLIC_APP_ENV as Environment | undefined
 
-const environment: Envs = (process.env.APP_ENV || "staging") as Envs
+const getAppConfig = (): AppConfig => {
+  if (!appId) {
+    console.warn("NEXT_PUBLIC_APP_ID not defined")
+    return base
+  }
 
-const appConfig = appConfigs[environment]
+  if (!appConfigs[appId]) {
+    console.warn(`App config not found for appId ${appId}`)
+    return base
+  }
 
-export default appConfig as Config
+  if (!env) {
+    console.warn("NEXT_PUBLIC_APP_ENV not defined")
+    return base
+  }
+
+  const envConfig = appConfigs[appId][env]
+  if (!envConfig) {
+    console.warn(`App config not found for appId ${appId} and env ${env}`)
+    return base
+  }
+
+  return envConfig
+}
+
+const appConfig = getAppConfig()
+
+export default appConfig

@@ -9,17 +9,22 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.608.0",
-    "@vercel/blob": "^0.23.4",
-    "formidable": "^3.5.1"
+    "@aws-sdk/client-s3": "^3.654.0",
+    "@cfce/app-config": "workspace:*",
+    "@vercel/blob": "0.24.1",
+    "formidable": "^3.5.1",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@smithy/types": "^3.4.0",
     "@types/formidable": "^3.4.5",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.9",
-    "aws-sdk-client-mock": "^4.0.0",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.9.0",
+    "aws-sdk-client-mock": "^4.0.1",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.2",
-    "typescript": "latest"
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-esm-transformer": "^1.0.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.2"
   }
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { cn } from '@/shadCnUtil';
 import type { LucideIcon } from 'lucide-react';
+import { cn } from '~/shadCnUtil';
 
 export interface ListObjectProps extends React.HTMLAttributes<HTMLLIElement> {
   Icon: LucideIcon;

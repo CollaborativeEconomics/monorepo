@@ -2,10 +2,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader } from '../ui/card';
-import { OrgStats } from '../ui/org-stats';
-import { Separator } from '../ui/separator';
+import { Button } from '~/ui/button';
+import { Card, CardContent, CardHeader } from '~/ui/card';
+import { OrgStats } from '~/ui/org-stats';
+import { Separator } from '~/ui/separator';
 
 const dummyImgSrc: string =
   'https://partners.cfce.io/_next/image?url=https%3A%2F%2Fipfs.filebase.io%2Fipfs%2FQmcS3rZdEzNkYxSd79AJVgjkDpK7sBd1ej99i4sBXD1mkQ&w=256&q=75';

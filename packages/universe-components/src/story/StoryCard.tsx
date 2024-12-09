@@ -1,10 +1,10 @@
 import type { StoryWithRelations } from '@cfce/database';
 import Link from 'next/link';
 import React from 'react';
-import OrganizationAvatar from '../organization/OrganizationAvatar';
-import { Card, CardContent, CardHeader } from '../ui/card';
-import DateDisplay from '../ui/date-posted';
-import Gallery from '../ui/gallery';
+import OrganizationAvatar from '~/organization/OrganizationAvatar';
+import { Card, CardContent, CardHeader } from '~/ui/card';
+import DateDisplay from '~/ui/date-posted';
+import Gallery from '~/ui/gallery';
 
 interface StoryCardProps {
   story: StoryWithRelations;
@@ -18,7 +18,9 @@ export default function StoryCard(props: StoryCardProps) {
   const organization = story.organization;
   const initiative = story.initiative;
   const media = story.media.map(it => it.media); // flatten list
-  media.unshift(story.image); // main image to the top
+  if (story.image) {
+    media.unshift(story.image); // main image to the top
+  }
 
   return (
     <Card className="flex flex-col overflow-hidden">

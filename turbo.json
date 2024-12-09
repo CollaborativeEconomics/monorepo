@@ -1,22 +1,33 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalEnv": ["POSTGRES_PRISMA_URL"],
   "tasks": {
     "build": {
-      "env": ["MOBULA_API_KEY"]
-    }
-  },
-  "pipeline": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "dependsOn": ["^build", "install"],
+      "outputs": ["dist/**", ".next/**"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
+    "db:generate": {
+      "dependsOn": ["^db:generate"]
+    },
+    "e2e:test": {
+      "dependsOn": ["^build"]
+    },
+    "install": {
+      "dependsOn": ["^install"]
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "//#format-and-lint": {},
+    "//#format-and-lint:fix": {
+      "cache": false
     }
+  },
+  "remoteCache": {
+    "enabled": false
   }
 }

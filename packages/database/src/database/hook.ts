@@ -1,3 +1,4 @@
+import "server-only"
 import type { Hook } from "@prisma/client"
 import { prismaClient } from "../index"
 

@@ -1,12 +1,10 @@
 {
   "extends": "@cfce/typescript-config/base.json",
   "compilerOptions": {
-    "baseUrl": "./src",
     "rootDir": "./src",
+    "baseUrl": "./src",
     "outDir": "./dist",
-    "sourceMap": true,
-    "declaration": true,
-    "strict": true
+    "sourceMap": true
   },
   "include": ["src", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]

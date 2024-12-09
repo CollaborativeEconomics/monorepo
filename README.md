@@ -1,81 +1,56 @@
-# Turborepo starter
+# CFCE Monorepo
 
-This is an official starter Turborepo.
+This is the CFCE Monorepo.
 
 ## Using this example
+ 
+ - Run `nvm use`, or use node 18+
+ - Set up turbo`npm i -g turbo`
+ - Set up pnpm `npm i -g pnpm` then `npx corepack up`
+ - Copy the `.env.example` files to `.env.local` for each app
+ - Run `pnpm install` from the root to install all packages
+ - Run `turbo build` to build all apps and packages
 
-Run the following command:
+## Troubleshooting
+### Types not updating
+Try restarting the typescript server: `cmd + shift + p`, then type `restart Typescript server`
 
-```sh
-npx create-turbo@latest
-```
+### Clearing cache and stuff
+Run `pnpm delete-node-modules` to delete all the node modules in the monorepo, then run `pnpm install`
+Run `pnpm update-dependencies` to update all the dependencies in the monorepo
+Run `pnpm match-versions` to make sure all the versions are synced (especially important for typescript and jotai)
 
-## What's inside?
 
-This Turborepo includes the following packages/apps:
+ You can run `turbo watch build` to automatically build packages as you change and update them so the changes appear immediately as you're developing.
 
-### Apps and Packages
+## Apps
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+ - giving-universe: base app to copy from. Enables all chains and features.
+ - registry: holds API access to the database.
+ - partners: Partner portal for organization management.
+ - give-credits: Reskin of giving-universe with custom carbon credit features
+
+## Packages
+
 - `@cfce/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `@cfce/blockchain-tools`: Tools for interacting with various blockchain networks
+- `@cfce/ipfs`: IPFS uploads and interface
+- `@cfce/utils`: Composite functions that bring together multiple tools
+- `@cfce/app-config`: Static configuration for each app (see app-config/src/config/*)
+- `@cfce/database`: CRUD operations, Prisma definition, and types for DB interaction
+- `@cfce/registry-hooks`: Hook/action functions for interacting with the registry and automating tasks
+- `@cfce/tbas`: ERC-6551 Token Bound Accounts utility lib
+- `@cfce/types`: Shared type definitions
+- `@cfce/universe-api`: The registry API
+- `@cfce/universe-components`: Reusable components
+- `@cfce/universe-pages`: Page components (depends on universe-components)
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## Adding a chain
 
-### Utilities
+1. Add the chain to `packages/database/src/prisma/schema.prisma` chain enum
+1. Add the chain to `packages/types/src/BlockchainTools.ts` (Chain, TokenTickerSymbol if relevant, ChainNames, and ChainSlugs)
+1. Add the chain to `packages/blockchain-tools/src/chains/chainConfig.ts` (entry + at least one network)
 
-This Turborepo has some additional tools already setup for you:
+## Using the blockchain tools
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+For server-side blockchain interactions that require a wallet secret, use `${CHAIN_NAME}_WALLET_SECRET` from the .env.local file (e.g. `STELLAR_WALLET_SECRET` or `XRPL_WALLET_SECRET`).

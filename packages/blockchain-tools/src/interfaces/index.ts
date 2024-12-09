@@ -1,21 +1,18 @@
-import FreighterWallet from "./FreighterClient"
+import FreighterWallet from "./FreighterWallet"
 import MetaMaskWallet from "./MetamaskClient"
 import StellarServer from "./StellarServer"
 import Web3Server from "./Web3Server"
 import XrplServer from "./XrplServer"
+import CrossmarkWallet from "./CrossmarkWallet"
+import GemWallet from "./GemWallet"
 import XummClient from "./XummClient"
-
-export type Interfaces =
-  | "freighter"
-  | "metamask"
-  | "xumm"
-  | "xrpl"
-  | "web3"
-  | "stellar"
-  | "argent"
+import _SacrificialInterface from "./_SacrificialInterface"
+import { getWalletConfiguration, walletConfig } from "./walletConfig"
 
 export type Interface =
+  | CrossmarkWallet
   | FreighterWallet
+  | GemWallet
   | MetaMaskWallet
   | XummClient
   | XrplServer
@@ -23,10 +20,15 @@ export type Interface =
   | Web3Server
 
 export {
+  _SacrificialInterface,
+  CrossmarkWallet,
   FreighterWallet,
+  GemWallet,
   MetaMaskWallet,
   XummClient,
   XrplServer,
   StellarServer,
   Web3Server,
+  getWalletConfiguration,
+  walletConfig,
 }

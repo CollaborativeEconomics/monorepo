@@ -1,0 +1,30 @@
+{
+  "name": "@cfce/tbas",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@cfce/app-config": "workspace:*",
+    "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/database": "workspace:*",
+    "@cfce/types": "workspace:*",
+    "server-only": "^0.0.1",
+    "viem": "^2.21.40"
+  },
+  "devDependencies": {
+    "@smithy/types": "^3.4.0",
+    "@types/formidable": "^3.4.5",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.9.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-esm-transformer": "^1.0.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.2"
+  }
+}

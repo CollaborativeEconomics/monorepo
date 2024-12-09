@@ -1,20 +1,14 @@
 {
   "extends": "@cfce/typescript-config/react-library.json",
   "compilerOptions": {
-    "outDir": "dist",
     "rootDir": "src",
-    "jsx": "react", // Choose "react", "react-jsx", or "react-jsxdev" based on your React version and preference,
-    "baseUrl": ".",
+    "baseUrl": "src",
+    "outDir": "dist",
+    "sourceMap": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "~/*": ["./*"]
     }
   },
-  "include": [
-    "src",
-    "**/*.ts",
-    "**/*.tsx",
-    "src/tailwind.config.ts",
-    "src/types/next-auth.d.ts"
-  ],
+  "include": ["src", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]
 }

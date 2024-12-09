@@ -1,11 +1,11 @@
+import type { ListQuery } from "@cfce/types"
 import type { Prisma, Story } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "types"
 
 interface StoryQuery extends ListQuery {
   orgId?: string
   initId?: string
-  recent?: string
+  recent?: number
 }
 
 export type StoryWithRelations = Prisma.StoryGetPayload<{
@@ -34,7 +34,7 @@ export async function getStories(
   const orderBy = { created: "desc" } as Prisma.StoryOrderByWithRelationInput
 
   if (query?.recent) {
-    const qty = Number.parseInt(query.recent) || 10
+    const qty = query.recent || 10
     const result = await prismaClient.story.findMany({
       include,
       take: qty,
@@ -88,27 +88,14 @@ export async function getStoryById(
 }
 
 export async function addStory(data: Story): Promise<Story> {
-  console.log("DATA", data)
   const result = await prismaClient.story.create({ data })
   return result
 }
 
-export async function newStory({
-  organizationId,
-  initiativeId,
-  ...story
-}: Omit<Story, "tokenId" | "created" | "categoryId">): Promise<Story> {
+export async function newStory(story: Prisma.StoryCreateInput): Promise<Story> {
   // Create the story DB entry with the data
   const dbStory = await prismaClient.story.create({
-    data: {
-      ...story,
-      organization: {
-        connect: { id: organizationId },
-      },
-      initiative: {
-        connect: { id: initiativeId },
-      },
-    },
+    data: story,
   })
   return dbStory
 }
@@ -118,6 +105,10 @@ export async function updateStory(
   data: Partial<Story>,
 ): Promise<Story> {
   const result = await prismaClient.story.update({ where: { id }, data })
-  console.log("UPDATE", result)
+  return result
+}
+
+export async function deleteStory(id: string): Promise<Story> {
+  const result = await prismaClient.story.delete({ where: { id } })
   return result
 }

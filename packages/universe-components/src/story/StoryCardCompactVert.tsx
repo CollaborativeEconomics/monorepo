@@ -1,12 +1,14 @@
+import appConfig from '@cfce/app-config';
 import type { StoryWithRelations } from '@cfce/database';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import OrganizationAvatar from '../organization/OrganizationAvatar';
-import { Card, CardContent } from '../ui/card';
-import { DateDisplay } from '../ui/date-posted';
+import OrganizationAvatar from '~/organization/OrganizationAvatar';
+import { Card, CardContent } from '~/ui/card';
+import { DateDisplay } from '~/ui/date-posted';
+import { imageUrl } from '@cfce/utils';
 
-const IPFSURL = process.env.IPFS_GATEWAY_URL;
+const IPFSURL = appConfig.apis.ipfs.gateway;
 
 interface StoryCardCompactVertProps {
   story: StoryWithRelations;
@@ -19,10 +21,11 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
   }
   const organization = story.organization;
   const initiative = story.initiative;
-  const image =
-    (story.image.startsWith('ipfs:')
+  const image = story.image
+    ? story.image.startsWith('ipfs:')
       ? IPFSURL + story.image.substr(5)
-      : story.image) ?? '/nopic.png';
+      : story.image
+    : '/nopic.png';
 
   return (
     <Card className="flex flex-col overflow-hidden h-auto mx-2">
@@ -30,7 +33,7 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
         <Link href={`/stories/${story.id}`}>
           <Image
             className="object-cover"
-            src={image}
+            src={imageUrl(image)}
             alt="IMG BG"
             style={{ objectFit: 'cover' }}
             fill
@@ -42,7 +45,7 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
           <OrganizationAvatar
             className="flex-wrap"
             name={organization?.name}
-            image={organization?.image ?? undefined} // child component handles fallback
+            image={imageUrl(organization?.image)}
           />
           <p className="text-sm font-semibold truncate">
             in{' '}
@@ -53,7 +56,7 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
             </span>
           </p>
         </div>
-        <DateDisplay timestamp={story.created.getTime()} className="pl-6" />
+        <DateDisplay timestamp={new Date(story.created).getTime()} className="pl-6" />
         <div className="pl-6 line-clamp-2 text-left">{story.description}</div>
       </CardContent>
     </Card>

@@ -1,6 +1,7 @@
+import "server-only"
+import type { ListQuery } from "@cfce/types"
 import type { Chain, Organization, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "types"
 
 interface OrganizationQuery extends ListQuery {
   category?: string
@@ -44,13 +45,11 @@ export async function getOrganizations(
 
   if (query?.featured) {
     const record = await getFeaturedOrganization()
-    console.log("Featured", record?.name)
     return record ? [record] : null
   }
 
   if (query?.email) {
     const record = await getOrganizationByEmail(query.email)
-    console.log("Org", record?.email, record?.name)
     return record ? [record] : null
   }
 
@@ -139,7 +138,24 @@ export async function getOrganizations(
 export async function getOrganizationById(
   id: string,
 ): Promise<Prisma.OrganizationGetPayload<{
-  include: { initiative: true }
+  include: {
+    category: true
+    wallets: true
+    initiative: {
+      include: { credits: true }
+    }
+    stories: {
+      include: {
+        media: true
+        organization: true
+        initiative: {
+          include: {
+            category: true
+          }
+        }
+      }
+    }
+  }
 }> | null> {
   const include = {
     category: true,
@@ -230,8 +246,21 @@ export async function getFeaturedOrganization(): Promise<Prisma.OrganizationGetP
 }
 
 export async function newOrganization(
-  data: Organization,
+  data: Prisma.OrganizationCreateInput,
 ): Promise<Organization> {
   const result = await prismaClient.organization.create({ data })
+  return result
+}
+
+export async function updateOrganization(
+  id: string,
+  data: Prisma.OrganizationUpdateInput,
+) {
+  const result = await prismaClient.organization.update({ where: { id }, data })
+  return result
+}
+
+export async function deleteOrganization(id: string) {
+  const result = await prismaClient.organization.delete({ where: { id } })
   return result
 }

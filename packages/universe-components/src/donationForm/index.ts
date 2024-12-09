@@ -1,4 +1,4 @@
-import DonationView from "./DonationView"
 import DonationForm from "./DonationForm"
+import NFTReceipt from "./NFTReceipt"
 
-export { DonationForm, DonationView }
+export { DonationForm, NFTReceipt }

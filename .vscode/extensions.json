@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "Gruntfuggly.todo-tree",
     "biomejs.biome",
     "YoavBls.pretty-ts-errors",
     "christian-kohler.path-intellisense",

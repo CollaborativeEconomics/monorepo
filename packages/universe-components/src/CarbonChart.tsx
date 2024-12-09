@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface ChartType {
+  title?: string;
   goal?: number;
   value: number;
   max100?: boolean;
@@ -85,7 +86,7 @@ const style = {
   },
 } as const;
 
-function CarbonChart({ goal = 100, value, max100 = true }: ChartType) {
+function CarbonChart({ title, goal = 100, value, max100 = true }: ChartType) {
   console.log('CHART', goal, value);
   const max = max100 ? 100 : goal;
   const pct: Record<number, Record<string, string>> = {
@@ -118,6 +119,7 @@ function CarbonChart({ goal = 100, value, max100 = true }: ChartType) {
 
   return (
     <>
+      <div className="text-center mb-4">{title}</div>
       <div className="max-w-[480px]">
         {offs.map(i => {
           return (
@@ -128,7 +130,7 @@ function CarbonChart({ goal = 100, value, max100 = true }: ChartType) {
             />
           );
         })}
-        {dec > 0 ? <div style={prt} /> : <></>}
+        {dec > 0 ? <div style={prt} /> : null}
         {tons.map(i => {
           return (
             <div

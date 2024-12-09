@@ -1,3 +1,4 @@
+import "server-only"
 import formData from "form-data"
 // @ts-ignore tracking issue here: https://github.com/mailgun/mailgun.js/issues/415
 import Mailgun from "mailgun.js"

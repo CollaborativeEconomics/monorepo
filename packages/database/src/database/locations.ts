@@ -1,3 +1,4 @@
+import "server-only"
 import { prismaClient } from ".."
 
 export async function getLocations(): Promise<Array<string>> {

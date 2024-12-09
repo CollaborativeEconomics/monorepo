@@ -1,24 +1,23 @@
-import restoreContract from '@/contracts/credits/server/restore';
-import { ReceiptStatus } from '@/types/common';
-import getRates from '@/utils/rates';
+import React from 'react';
+
+import appConfig from '@cfce/app-config';
+import { getCoinRate } from '@cfce/blockchain-tools/server';
+import { getInitiativeById, getInitiatives } from '@cfce/database';
 import {
-  getInitiativeById,
-  getInitiativesByOrganization,
-} from '@/utils/registry';
-import DonationView from '@cfce/universe-components/DonationView';
-import InitiativeCardCompact from '@cfce/universe-components/InitiativeCardCompact';
-import NotFound from '@cfce/universe-components/NotFound';
-import OrganizationAvatar from '@cfce/universe-components/OrganizationAvatar';
-import StoryCard from '@cfce/universe-components/StoryCard';
-import { Separator } from '@cfce/universe-components/ui/separator';
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import { Document } from '@contentful/rich-text-types';
+  DonationForm,
+  NFTReceipt,
+} from '@cfce/universe-components/donationForm';
+import { InitiativeCardCompact } from '@cfce/universe-components/initiative';
+import { OrganizationAvatar } from '@cfce/universe-components/organization';
+import { Separator } from '@cfce/universe-components/ui';
 import Image from 'next/image';
 import Link from 'next/link';
-import { createContext, useState } from 'react';
+import NotFound from '../../not-found';
 
-export default async function Handler(props: any) {
-  const params = props.params;
+export default async function Initiative(props: {
+  params: Promise<{ id: string }>;
+}) {
+  const params = await props.params;
   const initiative = (await getInitiativeById(params?.id)) || null;
   //console.log('INIT', initiative)
   if (!initiative) {
@@ -33,35 +32,24 @@ export default async function Handler(props: any) {
   //});
 
   const organization = initiative.organization;
-  const initiatives = await getInitiativesByOrganization(organization.id);
+  const initiatives = (await getInitiatives({ orgId: organization.id })) ?? [];
   const stories = initiative.stories;
   console.log('STORIES', stories.length);
-  const rate = await getRates('XLM');
+  // TODO: use default chain
+  const { chainDefaults } = appConfig;
+  const rate = await getCoinRate({
+    symbol: chainDefaults.coin,
+    chain: chainDefaults.chain,
+  });
+  // TODO: use carbon only if initiative has credits
   //const carbon = await getCarbon();
   let carbon = '0';
   if (initiative.credits.length > 0) {
-    carbon = initiative.credits[0].value;
+    carbon = `${initiative.credits[0].value}`;
   }
   console.log('RATE', rate);
   console.log('CARBON', carbon);
-
-  const receipt = {
-    status: ReceiptStatus.pending,
-    image: initiative.defaultAsset,
-    organization: {
-      name: organization.name,
-      ein: organization.EIN || 'n/a',
-      address: organization.mailingAddress,
-    },
-    date: new Date(),
-    amount: 0,
-    ticker: 'USD',
-    amountFiat: 0,
-    fiatCurrencyCode: 'USD',
-    donor: {
-      name: 'Anonymous',
-    },
-  };
+  //console.log('INITIATIVE', initiative);
 
   return (
     <main className="w-full bg-gradient-to-t from-slate-200 dark:from-slate-950 mt-12">
@@ -94,7 +82,7 @@ export default async function Handler(props: any) {
                 {initiative.description}
               </span>
             </div>
-            {initiatives.length > 1 && (
+            {initiatives?.length > 1 && (
               <Link className="px-[5%] font-bold hover:underline" href="#more">
                 See more initiatives
               </Link>
@@ -115,14 +103,10 @@ export default async function Handler(props: any) {
         <div className="md:flex md:flex-col items-center">
           <div className="flex flex-col lg:flex-row flex-nowrap gap-10 items-start">
             <div className="w-full lg:w-[60%]">
-              <DonationForm
-                initiative={initiative}
-                rate={rate}
-                carbon={carbon}
-              />
+              <DonationForm initiative={initiative} rate={rate} />
             </div>
             <div className="lg:w-[40%]">
-              <NFTReceipt />
+              <NFTReceipt initiative={initiative} />
             </div>
           </div>
         </div>
@@ -134,24 +118,19 @@ export default async function Handler(props: any) {
                 {' '}
                 {/* md:w-2/6 */}
                 <p className="text-3xl font-semibold">
-                  <a id="more">Other Initiatives</a>
+                  <span id="more">Other Initiatives</span>
                 </p>
                 {initiatives?.length > 0 ? (
-                  initiatives.map((item: any) => {
-                    if (item.id == initiative.id) {
+                  initiatives.map(otherInitiative => {
+                    if (otherInitiative.id === initiative.id) {
                       return;
                     }
                     return (
                       <InitiativeCardCompact
-                        key={item.id}
-                        timestamp={item.created}
-                        imgSrc={item.defaultAsset || 'noimage.png'}
-                        title={item.title}
-                        description={item.description}
-                        amountRaised={item.received}
-                        amountTarget={item.goal}
+                        key={`other-${otherInitiative.id}`}
+                        {...otherInitiative}
                         name={organization.name}
-                        avatarImg={organization.image}
+                        avatarImg={organization.image ?? undefined}
                       />
                     );
                   })

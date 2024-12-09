@@ -1,6 +1,12 @@
-import actions from "./actions";
-import runHook from "./runHook";
-import init from "./init";
-import { Triggers, Hook, ActionName, TriggerName } from "./types";
+import actions from "./actions"
+import runHook from "./runHook"
+import { type ActionName, type Hook, type TriggerName, Triggers } from "./types"
 
-export { actions, runHook, Triggers, Hook, ActionName, TriggerName, init }
+export {
+  actions,
+  runHook,
+  Triggers,
+  type Hook,
+  type ActionName,
+  type TriggerName,
+}

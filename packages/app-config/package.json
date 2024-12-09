@@ -6,14 +6,12 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
-  },
-  "dependencies": {
-    "@cfce/blockchain-tools": "workspace:*"
+    "build": "rm -rf dist && tsc"
   },
   "devDependencies": {
-    "@types/node": "^20.14.9",
+    "@cfce/types": "workspace:*",
+    "@types/node": "^22.9.0",
     "ts-node": "^10.9.2",
-    "typescript": "latest"
+    "typescript": "^5.6.2"
   }
 }

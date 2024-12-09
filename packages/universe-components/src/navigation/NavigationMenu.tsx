@@ -1,10 +1,10 @@
-import * as React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import { cn } from '@/shadCnUtil';
-import { Button } from '@/ui/button';
+import { auth } from '@cfce/auth';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
+import Image from 'next/image';
+import Link from 'next/link';
+import * as React from 'react';
+import { cn } from '~/shadCnUtil';
+import { Button } from '~/ui/button';
 import DarkModeSwitcher from './DarkModeSwitcher';
 
 import {
@@ -15,7 +15,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '@/ui/navigation-menu';
+} from '~/ui/navigation-menu';
 
 import {
   Sheet,
@@ -25,13 +25,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/ui/sheet';
+} from '~/ui/sheet';
 
-export default function NavMenu() {
-  const { data: session, status } = useSession();
+export default async function NavMenu() {
+  const session = await auth();
+  const status = session?.user ? 'authenticated' : 'unauthenticated';
   //console.log('Header Session', session, status)
   const avatar = session?.user?.image || '/media/nopic.png';
-  const userurl = session?.userId ? `/profile/${session?.userId}` : '';
+  // @ts-ignore - module augmentation is hard
+  const userurl = session?.user.id ? `/profile/${session?.user.id}` : '';
 
   return (
     <>

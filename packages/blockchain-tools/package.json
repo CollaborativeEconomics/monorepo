@@ -2,20 +2,32 @@
   "name": "@cfce/blockchain-tools",
   "version": "1.0.0",
   "description": "Common tools for interacting with diverse blockchains. Used in the CFCE ecosystem.",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server/index.js",
+      "types": "./dist/server/index.d.ts"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -rf dist && tsc && tsc-alias",
+    "build": "rm -rf dist && tsc",
     "prepublishOnly": "npm run build",
-    "addChain": "node src/utils/createChainFromTemplate.js"
+    "addChain": "node src/utils/createChainFromTemplate.js",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CollaborativeEconomics/blockchain-tools.git"
   },
-  "files": [
-    "dist/"
-  ],
   "keywords": [
     "web3",
     "cfce",
@@ -29,26 +41,37 @@
   },
   "homepage": "https://github.com/CollaborativeEconomics/blockchain-tools#readme",
   "devDependencies": {
+    "@cfce/types": "workspace:*",
+    "@types/jest": "^29.5.13",
     "@types/luxon": "^3.4.2",
-    "@types/react": "^18.3.3",
+    "@types/react": "latest",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
     "tsc-alias": "^1.8.8",
-    "typescript": "^5.4.3"
+    "typescript": "^5.6.2"
   },
   "dependencies": {
+    "@avnu/gasless-sdk": "^0.1.6",
     "@cfce/app-config": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/ipfs": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
+    "@crossmarkio/sdk": "^0.4.0",
+    "@gemwallet/api": "^3.8.0",
     "@metamask/providers": "^17.1.1",
-    "@stellar/freighter-api": "^2.0.0",
-    "@stellar/stellar-sdk": "^12.1.0",
+    "@stellar/freighter-api": "3.0.0",
+    "@stellar/stellar-sdk": "^12.3.0",
     "@types/lodash": "^4.17.0",
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",
     "mobula-sdk": "^1.6.0",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
+    "server-only": "^0.0.1",
+    "starknet": "^6.11.0",
+    "starknetkit": "^2.3.3",
+    "viem": "^2.21.40",
     "web3": "^4.6.0",
-    "xrpl": "^3.0.0",
+    "xrpl": "4.0.0",
     "xumm": "^1.7.7",
     "xumm-sdk": "^1.11.1"
   }

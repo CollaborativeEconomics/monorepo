@@ -1,4 +1,10 @@
 {
   "extends": ["//"],
-  "globalEnv": ["GITHUB_ID", "GITHUB_SECRET", "MOBULA_API_KEY", "TURBO_ENV"]
+  "globalEnv": [
+    "GITHUB_ID",
+    "GITHUB_SECRET",
+    "MOBULA_API_KEY",
+    "TURBO_ENV",
+    "BLOB_READ_WRITE_TOKEN"
+  ]
 }

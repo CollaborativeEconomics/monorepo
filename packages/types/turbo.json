@@ -1,0 +1,10 @@
+{
+  "extends": ["//"],
+  "globalEnv": ["TURBO_ENV"],
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**/*.d.ts"],
+      "dependsOn": ["^build"]
+    }
+  }
+}

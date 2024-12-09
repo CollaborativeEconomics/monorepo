@@ -1,9 +1,9 @@
+import "server-only"
+import type { ListQuery } from "@cfce/types"
 import type { Initiative, Prisma } from "@prisma/client"
-import type { ListQuery } from "../types"
 import { prismaClient } from ".."
 
 interface InitiativeQuery extends ListQuery {
-  tag?: string
   orgId?: string
   category?: string
   location?: string
@@ -33,15 +33,6 @@ export async function getInitiatives(query: InitiativeQuery) {
         },
       },
     },
-  }
-
-  if (query?.tag) {
-    const tag = Number.parseInt(query.tag)
-    const record = await prismaClient.initiative.findUnique({
-      where: { tag },
-      include,
-    })
-    return record
   }
 
   if (query?.orgId) {
@@ -105,12 +96,11 @@ export async function getInitiatives(query: InitiativeQuery) {
     filter.skip = start
     filter.take = size
   }
-  const result = await prismaClient.initiative.findMany(filter)
-  return result
+  return prismaClient.initiative.findMany(filter)
 }
 
 export async function getInitiativeById(id: string) {
-  const include: Prisma.InitiativeFindManyArgs["include"] = {
+  const include = {
     category: true,
     credits: true,
     organization: {
@@ -118,6 +108,7 @@ export async function getInitiativeById(id: string) {
         wallets: true,
       },
     },
+    wallets: true,
     stories: {
       include: {
         media: true,
@@ -165,7 +156,20 @@ export async function getInitiativeByTag(tag: number) {
   return result
 }
 
-export async function newInitiative(data: Initiative) {
+export async function newInitiative(data: Prisma.InitiativeCreateInput) {
   const result = await prismaClient.initiative.create({ data })
+  return result
+}
+
+export async function updateInitiative(
+  id: string,
+  data: Prisma.InitiativeUpdateInput,
+) {
+  const result = await prismaClient.initiative.update({ where: { id }, data })
+  return result
+}
+
+export async function deleteInitiative(id: string) {
+  const result = await prismaClient.initiative.delete({ where: { id } })
   return result
 }

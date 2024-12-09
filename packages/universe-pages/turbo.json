@@ -1,0 +1,4 @@
+{
+  "extends": ["//"],
+  "globalEnv": ["BLOB_READ_WRITE_TOKEN", "TURBO_ENV"]
+}

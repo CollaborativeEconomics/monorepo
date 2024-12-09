@@ -1,6 +1,6 @@
 import { get } from "lodash"
 
-import { getRegistryApiKey, getRegistryBaseUrl } from "../init"
+import appConfig from "@cfce/app-config"
 import type { ActionContext } from "../types"
 
 export interface Story {
@@ -35,8 +35,11 @@ const createStory = async (
   context: ActionContext,
   params: CreateStoryParameters,
 ) => {
-  const ApiKey = getRegistryApiKey()
-  const url = new URL(`${getRegistryBaseUrl()}/stories`)
+  const ApiKey = process.env.CFCE_REGISTRY_API_KEY
+  if (!ApiKey) {
+    throw new Error("CFCE_REGISTRY_API_KEY is not set")
+  }
+  const url = new URL(`${appConfig.apis.registry.apiUrl}/stories`)
   const {
     organizationId,
     initiativeId,

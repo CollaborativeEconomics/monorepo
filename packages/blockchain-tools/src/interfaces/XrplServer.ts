@@ -1,3 +1,4 @@
+import type { ChainSlugs, Network } from "@cfce/types"
 import {
   Client,
   type NFTokenCreateOffer,
@@ -9,8 +10,6 @@ import {
   convertStringToHex,
   isoTimeToRippleTime,
 } from "xrpl"
-import { ChainBaseClass } from "../chains"
-import type { ChainSlugs, Network } from "../chains/chainConfig"
 import XrplCommon from "./XrplCommon"
 
 export default class XrplServer extends XrplCommon {
@@ -55,7 +54,7 @@ export default class XrplServer extends XrplCommon {
         Flags: flags, // burnable, onlyXRP, non transferable
         SourceTag: this.sourceTag, // 77777777
       }
-      //if(destinTag){ tx.DestinationTag = destinTag }
+      //if(destinationTag){ tx.DestinationTag = destinationTag }
       console.log("TX", tx)
       client = new Client(this.network.wssurl || "")
       await client.connect()

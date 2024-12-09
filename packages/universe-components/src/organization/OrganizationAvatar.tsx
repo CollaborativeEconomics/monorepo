@@ -1,17 +1,17 @@
-import { cn } from '@/shadCnUtil';
 import React from 'react';
+import { cn } from '~/shadCnUtil';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
   type AvatarProps,
   AvatarTitle,
-} from '../ui/avatar';
+} from '~/ui/avatar';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   organizationId?: string; // eventually required
-  image?: string;
+  image?: string | null;
   name: string;
   avatarProps?: AvatarProps;
 }
@@ -28,8 +28,11 @@ const OrganizationAvatar = React.forwardRef<HTMLDivElement, Props>(
         {...props}
       >
         <Avatar size={avatarProps?.size}>
-          <AvatarImage src={image} alt={name} />
-          <AvatarFallback>OT</AvatarFallback>
+          {image ? (
+            <AvatarImage src={image} alt={name} />
+          ) : (
+            <AvatarFallback>OT</AvatarFallback>
+          )}
         </Avatar>
         <AvatarTitle
           size={avatarProps?.size}

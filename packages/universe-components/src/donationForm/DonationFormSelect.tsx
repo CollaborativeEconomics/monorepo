@@ -1,75 +1,70 @@
+import Image from 'next/image';
 import * as React from 'react';
-import type { InputProps } from '../ui/input';
+import type { InputProps } from '~/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from '~/ui/select';
 
 interface SelectOption {
   value: string;
-  image: string;
-  symbol?: string;
-  enabled?: boolean;
+  label: string;
+  icon: string;
 }
 
-export interface SelectInputProps extends InputProps {
+export interface SelectInputProps<T extends string, U extends SelectOption>
+  extends InputProps {
   className?: string;
-  currentOption: string;
-  handleChange: any;
-  options: SelectOption[];
+  currentOption: T;
+  handleChange: (item: T) => void;
+  options: U[];
   placeHolderText: string;
 }
 
-const DonationFormSelect = React.forwardRef<HTMLInputElement, SelectInputProps>(
-  (
-    {
-      className,
-      options,
-      currentOption,
-      placeHolderText,
-      handleChange,
-      ...props
-    },
-    ref,
-  ) => {
-    return (
-      <Select onValueChange={handleChange} defaultValue={currentOption}>
-        <SelectTrigger
-          className={`dark:border-none h-10 text-lg w-full rounded-full border border-slate-300 bg-white dark:bg-slate-500 ring-offset-background focus-within:border-blue-700 focus-within:ring-1 ${className || ''}`}
-        >
-          <SelectValue
-            className="dark:border-none bg-white placeholder-gray-600"
-            placeholder={placeHolderText}
-          />
-        </SelectTrigger>
+const DonationFormSelect = <T extends string, U extends SelectOption>({
+  className,
+  options,
+  currentOption,
+  placeHolderText,
+  handleChange,
+  ...props
+}: SelectInputProps<T, U>) => {
+  return (
+    <Select onValueChange={handleChange} defaultValue={currentOption}>
+      <SelectTrigger
+        className={`dark:border-none h-10 text-lg w-full rounded-full border border-slate-300 bg-white dark:bg-slate-500 ring-offset-background focus-within:border-blue-700 focus-within:ring-1 ${className || ''}`}
+      >
+        <SelectValue
+          className="dark:border-none bg-white placeholder-gray-600"
+          placeholder={placeHolderText}
+        />
+      </SelectTrigger>
 
-        <SelectContent className="bg-white">
-          {options.map(option => {
-            if (!option?.enabled) {
-              return;
-            }
-            return (
-              <SelectItem
-                className="bg-white text-black dark:text-white"
-                value={option.value}
-                key={option.value}
-              >
-                <div className="flex flex-row gap-3">
-                  {/* TODO: FIX: IMAGE NOT FOUND IS CAUSING MULTIPLE PAGE RELOADS WITH COIN ID AS INIT ID */}
-                  <img src={option.image} width="30px" alt={option.value} />
-                  <div className="my-auto">{option.value}</div>
-                </div>
-              </SelectItem>
-            );
-          })}
-        </SelectContent>
-      </Select>
-    );
-  },
-);
+      <SelectContent className="bg-white">
+        {options.map(option => (
+          <SelectItem
+            className="dark:bg-slate-500 bg-white text-black dark:text-white"
+            value={option.value}
+            key={option.value}
+          >
+            <div className="flex flex-row gap-3">
+              <Image
+                src={option.icon}
+                alt={option.label}
+                width={30}
+                height={30}
+              />
+              <div className="my-auto">{option.label}</div>
+            </div>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+};
 
 DonationFormSelect.displayName = 'DonationFormSelect';
 

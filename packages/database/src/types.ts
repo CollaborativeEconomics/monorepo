@@ -1,22 +1,34 @@
-export interface ListQuery {
-  page?: string
-  size?: string
-  order?: string
-}
-
-export const DonationStatus = {
-  pending: 0,
-  claimed: 1,
-  minting: 2,
-  minted: 3,
-  rejected: 4,
-} as const
-
-export const ReceiptStatus = {
-  claim: "Claim",
-  failed: "Failed",
-  minted: "Minted",
-  minting: "Minting",
-  pending: "Pending",
-  rejected: "Rejected",
-} as const
+export type {
+  Account,
+  Action,
+  Artwork,
+  Category,
+  Chain,
+  Chapter,
+  Collection,
+  Contract,
+  Credit,
+  Cronjob,
+  Donation,
+  Event,
+  EventMedia,
+  Hook,
+  Initiative,
+  InitiativeTier,
+  ImpactLink,
+  NFTData,
+  Offer,
+  Organization,
+  Provider,
+  Reward,
+  Session,
+  Setting,
+  Story,
+  StoryMedia,
+  TokenBoundAccount,
+  User,
+  UserWallet,
+  VerificationToken,
+  Volunteer,
+  Wallet,
+} from "@prisma/client"
