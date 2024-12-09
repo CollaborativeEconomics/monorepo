@@ -21,7 +21,8 @@ const authOptions: NextAuthConfig = {
   callbacks: {
     async jwt(args) {
       //console.log('AUTH JWT ARGS', args)
-      const { token, user, account, profile, isNewUser, trigger, session } = args
+      const { token, user, account, profile, isNewUser, trigger, session } =
+        args
       // Handle account-related information
       if (account) {
         //console.log('AUTH ACCT', account)
@@ -111,6 +112,8 @@ const authOptions: NextAuthConfig = {
       session.orgName = (token?.orgName as string) ?? ""
       // @ts-ignore TODO: move this to state
       session.isAdmin = token?.userRole === "admin"
+      console.log("AUTH SESSION", session)
+      console.log("AUTH TOKEN", token)
       // Handle user-related updates
       // @ts-ignore
       session.user.id = (token?.userId as string) || ""
