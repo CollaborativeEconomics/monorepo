@@ -1,0 +1,34 @@
+diff --git a/_lib/next/handle.d.ts b/_lib/next/handle.d.ts
+index ef138bed2fd7e6e1d5ef65e3750417da7c012a4b..89e568198c223b48a1010081f165b40869946d85 100644
+--- a/_lib/next/handle.d.ts
++++ b/_lib/next/handle.d.ts
+@@ -1,5 +1,12 @@
+-import type { Schema } from 'hono';
+-import type { Frog } from '../frog.jsx';
+-import type { Env } from '../types/env.js';
+-export declare function handle<env extends Env, schema extends Schema, basePath extends string, _state = env['State']>(app: Frog<env, schema, basePath, _state>): (req: Request, requestContext: import("hono/types").FetchEventLike) => Response | Promise<Response>;
++import type { Schema } from "hono"
++import type { Frog } from "../frog.jsx"
++import type { Env } from "../types/env.js"
++export declare function handle<
++  env extends Env,
++  schema extends Schema,
++  basePath extends string,
++  _state = env["State"],
++>(
++  app: Frog<env, schema, basePath, _state>,
++): (req: Request) => Response | Promise<Response>
+ //# sourceMappingURL=handle.d.ts.map
+diff --git a/package.json b/package.json
+index bfb44b105c431c7c2291a19c46b0a83f980551f2..13957f3454a545ae3f2ee7fd341af49bdd1617a5 100644
+--- a/package.json
++++ b/package.json
+@@ -90,7 +90,7 @@
+     }
+   },
+   "peerDependencies": {
+-    "hono": "^4.4.4",
++    "hono": "^4.6.7",
+     "typescript": ">=5.0.4"
+   },
+   "peerDependenciesMeta": {
