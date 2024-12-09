@@ -18,7 +18,7 @@ interface DonationQuery extends ListQuery {
 }
 
 export type DonationWithRelations = Prisma.DonationGetPayload<{
-  include: { organization: true; initiative: true }
+  include: { organization: true; initiative: true, category: true, impactlinks: { include: { story: true } } }
 }>
 
 export async function getDonations(query: DonationQuery) {
@@ -116,6 +116,11 @@ export async function getDonations(query: DonationQuery) {
       category: true,
       organization: true,
       initiative: true,
+      impactlinks: {
+        include: {
+          story: true
+        }
+      }
     },
   })
 
