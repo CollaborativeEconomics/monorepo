@@ -2,10 +2,13 @@ import { get } from "lodash"
 import {
   type NFTokenCreateOffer,
   type NFTokenMint,
+  type Payment,
   type Node,
   type TxResponse,
+  type TransactionMetadata,
   isCreatedNode,
   isModifiedNode,
+  Client,
 } from "xrpl"
 import type { NFTokenPage } from "xrpl/dist/npm/models/ledger"
 import ChainBaseClass from "../chains/ChainBaseClass"
@@ -19,6 +22,7 @@ type transactionMethods =
   | "tx_history"
 
 export default class XrplCommon extends ChainBaseClass {
+  
   async getTransactionInfo(txId: string) {
     const payload = { transaction: txId, binary: false }
     const txInfo = await this.fetchLedger("tx", payload)
@@ -94,6 +98,18 @@ export default class XrplCommon extends ChainBaseClass {
   }
 
   findToken(txInfo: TxResponse<NFTokenMint>): string | { error: string } {
+    //const meta = txInfo?.result?.meta as TransactionMetadata<NFTokenMintMetadata>
+    //const tokenID = meta?.nftoken_id as string
+    const tokenID = get(txInfo, "result.meta.nftoken_id") as string
+    console.log('TOKEN ID', tokenID)
+    if(tokenID){
+      return tokenID
+    }
+    return { error: "Token not found" }
+  }
+
+/*
+  findTokenOLD(txInfo: TxResponse<NFTokenMint>): string | { error: string } {
     // Extract affected nodes
     const affectedNodes = get(txInfo, "result.meta.AffectedNodes") as
       | Node[]
@@ -102,29 +118,29 @@ export default class XrplCommon extends ChainBaseClass {
       return { error: "No affected nodes found" }
     }
 
+    // Check first time there is no modified nodes
+    for (const node of affectedNodes) {
+      if (isCreatedNode(node) && node.CreatedNode.LedgerEntryType === "NFTokenPage") {
+        return node.CreatedNode.NewFields.NFTokens[0].NFToken.NFTokenID
+      }
+    }
+
     // Iterate through each node to find the modified node with new token
     for (const node of affectedNodes) {
       if (isModifiedNode(node)) {
-        const tokens = get(node, "ModifiedNode.FinalFields.NFTokens") as
-          | NFTokenPage["NFTokens"]
-          | undefined
-        const previousTokens = get(
-          node,
-          "ModifiedNode.PreviousFields.NFTokens",
-        ) as NFTokenPage["NFTokens"] | undefined
-
+        const tokens = get(node, "ModifiedNode.FinalFields.NFTokens") as NFTokenPage["NFTokens"] | undefined
+        const previousTokens = get(node, "ModifiedNode.PreviousFields.NFTokens") as NFTokenPage["NFTokens"] | undefined
         // Check if tokens and previous tokens are defined
         if (!tokens || !previousTokens) {
-          return { error: "No final or previous fields found" }
+          continue
+          //return { error: "No final or previous fields found" }
         }
-
         const newTokenId = this.getNewTokenId(tokens, previousTokens)
         if (newTokenId) {
           return newTokenId
         }
       }
     }
-
     return { error: "Token not found" }
   }
 
@@ -146,5 +162,36 @@ export default class XrplCommon extends ChainBaseClass {
     }
 
     return null
+  }
+*/
+
+  async sendPayment({ address, amount, memo }: { address: string; amount: number; memo?: string }) {
+    console.log('PAY', address, amount, memo)
+    const sender = '0x0' // TODO: get from wallet
+    //const wei = Math.floor(amount * 1000000).toString()
+    const wei = String(this.toBaseUnit(amount))
+    const transaction = {
+      TransactionType: 'Payment',
+      Account: sender,
+      Destination: address,
+      Amount: wei
+    } as Payment
+    const url = this.network.rpcUrls.main
+    const client = new Client(url)
+    await client.connect()
+    //const payment = await client.autofill(transaction)
+    //const res = await client.submit(payment)
+    const res = await client.submitAndWait(transaction)
+    console.log('RES', res)
+    //const code = res?.result?.meta?.TransactionResult
+    client.disconnect()
+    return {success:true}
+    
+    //if (code === "tesSUCCESS") {
+    //  console.log('Transaction succeeded')
+    //  return {success:true}
+    //}
+    //console.log('Error sending transaction:', code)
+    //return {success:false, error:'Error sending payment'}
   }
 }
