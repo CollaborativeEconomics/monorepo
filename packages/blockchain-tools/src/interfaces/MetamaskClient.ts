@@ -305,7 +305,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
   }
 
-  async getBalance(address: string): Promise<string | undefined | null> {
+  async getBalance(): Promise<string | undefined | null> {
     console.log("Get balance...")
     if (!this.metamask) {
       console.error("Error getting balance, Metamask not available")
@@ -313,7 +313,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
     const balance = await this.metamask.request<string>({
       method: "eth_getBalance",
-      params: [address, "latest"],
+      params: [this.connectedWallet, "latest"],
     })
     console.log("Balance:", balance)
     //web3.eth.getBalance(address, (err,res) => {
@@ -412,7 +412,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
     console.log("GAS", Number.parseInt(gasPrice), gasPrice)
     const gas = numHex(210000)
-    const wei = numHex(amount * 10 ** this.network.decimals)
+    const wei = numHex(Math.floor(amount * 10 ** this.network.decimals))
     const method = "eth_sendTransaction"
     const tx = {
       from: this.connectedWallet,

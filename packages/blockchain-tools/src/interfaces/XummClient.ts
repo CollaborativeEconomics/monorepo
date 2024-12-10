@@ -4,6 +4,8 @@ import XrplCommon from "./XrplCommon"
 
 export default class XummClient extends XrplCommon {
   wallet?: Xumm
+  connectedWallet = ""
+
 
   getWallet() {
     if (!this.wallet) {
@@ -46,6 +48,7 @@ export default class XummClient extends XrplCommon {
         //   token: token,
         //   topic: "",
         // }
+        this.connectedWallet = address
         return { success: true, walletAddress: address, network: network }
       }
       console.log("Error", state)
@@ -96,28 +99,40 @@ export default class XummClient extends XrplCommon {
         },
       )
       console.log("CREATED", payload)
-      // @ts-ignore: I hate types
-      console.log("Payload URL:", payload?.created.next.always)
-      // @ts-ignore: I hate types
-      console.log("Payload QR:", payload?.created.refs.qr_png)
-      // @ts-ignore: I hate types
-      const resolved = await payload.resolved // Return payload promise for the next `then`
       if (!payload) {
         return { success: false, error: "No payload" }
       }
-      const data = await wallet.payload?.get(payload.created)
+      // @ts-ignore: I hate types
+      console.log("Payload URL:", payload.created.next.always)
+      // @ts-ignore: I hate types
+      console.log("Payload QR:", payload.created.refs.qr_png)
+      // @ts-ignore: I hate types
+      const resolved = await payload.resolved // Return payload promise for the next `then`
       console.log("RESOLVED")
       console.log("Payload resolved", resolved)
-      if (!data) {
-        return { success: false, error: "No data" }
+      // Wait till resolved...
+      //const data = await wallet.payload?.get(payload.created)
+      //if (!data) {
+      //  return { success: false, error: "No data" }
+      //}
+      // @ts-ignore: I hate types
+      const approved = resolved?.data?.signed || false
+      console.log(approved ? "APPROVED" : "REJECTED")
+      if (approved) {
+        // @ts-ignore: I hate types
+        const txid = resolved?.data?.txid || ''
+        return { success: true, txid, walletAddress: this.connectedWallet }
       }
-      return {
-        success: true,
-        ...(data.response.txid ? { txid: data.response.txid } : {}),
-        ...(data.response.account
-          ? { walletAddress: data.response.account }
-          : {}),
-      }
+      //if(resolved.data.signed){
+      //  return {
+      //    success: true,
+      //    ...(data.response.txid ? { txid: data.response.txid } : {}),
+      //    ...(data.response.account
+      //      ? { walletAddress: data.response.account }
+      //      : {}),
+      //  }
+      //}
+      return { success: false, error: "Error sending payment" }
       // TODO: re-implement below with new methods
       // data.signed doesn't exist anymore (https://docs.xumm.dev/js-ts-sdk/sdk-syntax/xumm.payload/get)
       // if (Object.keys(data).indexOf("signed") > -1) {
@@ -133,10 +148,7 @@ export default class XummClient extends XrplCommon {
       if (ex instanceof Error) {
         return { success: false, error: ex.message }
       }
-      return {
-        success: false,
-        error: "Error sending payment",
-      }
+      return { success: false, error: "Error sending payment" }
     }
   }
 

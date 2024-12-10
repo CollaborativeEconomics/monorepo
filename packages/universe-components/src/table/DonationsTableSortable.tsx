@@ -10,6 +10,7 @@ import {
 } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import Image from 'next/image';
 import { useState } from 'react';
 import {
   Table,
@@ -24,43 +25,112 @@ interface DonationsTableSortableProps {
   donations?: DonationWithRelations[];
 }
 
+type Donation = {
+  id: string
+  created: Date
+  initiative?: string
+  organization?: string
+  amount: number
+  chain?: string
+  storyId?: string
+  image?: string
+  impactScore?: string
+  impactLabel?: string
+  impact?: string
+}
+
+function money(amount:number){
+  return '$'+amount.toFixed(2)
+}
+
+function localDate(sdate:string){
+  return new Date(sdate).toLocaleString()
+}
+
 export default function DonationsTableSortable(
   props: DonationsTableSortableProps,
 ) {
   const router = useRouter();
   const donations = props?.donations || [];
 
+  const recs:Donation[] = donations.map(rec => { 
+    const unitValue = rec.impactlinks.length > 0 ? (rec.impactlinks[0].story?.unitvalue||0) : 0
+    let impactScore = ''
+    if(unitValue>0){
+      impactScore = Math.ceil(Number(rec.amount) / unitValue).toString()
+    }
+    const unitLabel = rec.impactlinks.length > 0 ? (rec.impactlinks[0].story?.unitlabel||'') : ''
+    let impactLabel = unitLabel
+    if(unitLabel){
+      impactLabel = unitLabel + (impactScore == '1' ? '' : 's')
+    }
+    //console.log('UNITS', unitValue, unitLabel)
+    console.log('IMPACT', impactScore, impactLabel)
+    const item = {
+      id: rec.id,
+      created: rec.created,
+      initiative: rec.initiative?.title || 'No name',
+      organization: rec.organization?.name || 'No name',
+      amount: Number(rec.usdvalue),
+      chain: rec.chain || 'N/A',
+      storyId: rec.storyId || '',
+      image: rec.storyId ? '/media/icon-story.svg' : '',
+      impactScore,
+      impactLabel,
+      impact: `${impactScore} ${impactLabel}`
+    }
+    return item
+  })
+
+  const [data, setData] = useState(recs)
   const [order, setOrder] = useState('');
-  // const [data, setData] = useState(recs);
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columnHelper = createColumnHelper<DonationWithRelations>();
+  //const columnHelper = createColumnHelper<DonationWithRelations>();
+  const columnHelper = createColumnHelper<Donation>();
 
   const columns = [
     columnHelper.accessor('created', {
       header: 'Date',
-      cell: info => info.getValue().toString(), // TODO: format nicer
+      cell: info => {
+        const date = new Date(info.getValue());
+        return new Intl.DateTimeFormat('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+        }).format(date);
+      },
     }),
     columnHelper.accessor('initiative', {
       header: 'Initiative',
-      cell: info => info.getValue()?.title ?? '',
+      cell: info => info.getValue(),
     }),
     columnHelper.accessor('organization', {
       header: 'Organization',
-      cell: info => info.getValue()?.name ?? '',
+      cell: info => info.getValue(),
     }),
     columnHelper.accessor('amount', {
       header: 'Amount',
-      cell: info => info.getValue(),
+      cell: info => money(info.getValue()),
     }),
     columnHelper.accessor('chain', {
       header: 'Chain',
-      cell: info => info.getValue(), // TODO: format nicer
+      cell: info => info.getValue(),
     }),
+    columnHelper.accessor('impact', {
+      header: 'Impact',
+      cell: info => info.getValue()
+    }),
+    columnHelper.accessor('image', {
+      header: '',
+      cell: info => info.getValue()
+    })
   ];
 
   const table = useReactTable({
-    data: donations,
+    data,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -71,14 +141,15 @@ export default function DonationsTableSortable(
   const list = table.getRowModel().rows;
 
   function clicked(evt: React.MouseEvent) {
+    if(list.length<1){ return }
     const parent = (evt.target as HTMLElement).closest(
       '[data-id]',
     ) as HTMLElement | null;
-    if (parent?.dataset.id) {
+    if (parent?.dataset?.id) {
       const rowId = Number.parseInt(parent.dataset.id, 10);
-      const { id: nftId } = donations[rowId];
+      const { id: nftId } = data[rowId];
       console.log('CLICKED', rowId, nftId);
-      console.log('DATA', donations[rowId]);
+      console.log('DATA', data[rowId]);
       router.push(`/donations/${nftId}`);
     }
   }
@@ -119,11 +190,17 @@ export default function DonationsTableSortable(
           list.map(row => {
             return (
               <TableRow key={row.id} data-id={row.id}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                {row.getVisibleCells().map(cell => {
+                  const align = cell?.column?.id == 'amount' ? 'text-right' : ''
+                  return (
+                    <TableCell key={cell.id} className={align}>
+                      { (cell?.column?.id=='image' && cell?.getValue()!='')
+                        ? (<Image src={cell?.getValue() as string} width={20} height={20} alt="NFT" />)
+                        : flexRender(cell.column.columnDef.cell, cell.getContext())
+                      }
+                    </TableCell>
+                  )}
+                )}
               </TableRow>
             );
           })

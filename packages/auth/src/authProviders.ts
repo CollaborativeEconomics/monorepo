@@ -174,6 +174,20 @@ const authProviders: Record<AuthTypes, Provider> = {
     credentials: credentialsDefinition,
     authorize: authorizeChain,
   },
+  crossmark: {
+    id: "Crossmark",
+    name: "XRPL - Crossmark",
+    type: "credentials",
+    credentials: credentialsDefinition,
+    authorize: authorizeChain,
+  },
+  gemwallet: {
+    id: "GemWallet",
+    name: "XRPL - Gem Wallet",
+    type: "credentials",
+    credentials: credentialsDefinition,
+    authorize: authorizeChain,
+  },
   // lobstr: CredentialsProvider({
   //   id: "Lobstr",
   //   name: "Stellar - Lobstr",
