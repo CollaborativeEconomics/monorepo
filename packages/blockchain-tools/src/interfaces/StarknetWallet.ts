@@ -49,10 +49,10 @@ class StarknetWallet extends ChainBaseClass {
       modalMode: "alwaysAsk"
     });
 
-    const account = await connector?.account();
+    const account = await connector?.account(this.provider);
     
     // Get current chain from wallet
-    const currentChain = await wallet?.provider?.getChainId();
+    const currentChain = await this.provider?.getChainId();
 
     const envChain = appConfig.chains.starknet?.network
     
@@ -74,6 +74,10 @@ class StarknetWallet extends ChainBaseClass {
         console.error('Failed to switch network:', error);
         throw new Error(`Please switch to ${envChain === "mainnet" ? 'Mainnet' : 'Sepolia'} network in your wallet`);
       }
+    }
+
+    if (!account) {
+      throw new Error("Account not found");
     }
 
     this.connectedWallet = account.address;
@@ -98,7 +102,7 @@ class StarknetWallet extends ChainBaseClass {
         ({wallet} = await this.getWallet())
       }
 
-      if (wallet?.isConnected) {
+      if (this.connectedWallet) {
         return {
           success: true,
           walletAddress: this.connectedWallet,
@@ -119,7 +123,7 @@ class StarknetWallet extends ChainBaseClass {
         ({connector: this.connector} = await this.getWallet());
       }
       
-      const account = await this.connector?.account();
+      const account = await this.connector?.account(this.provider);
       if (!account) {
         throw new Error("No account found");
       }
@@ -200,7 +204,7 @@ class StarknetWallet extends ChainBaseClass {
       }
 
 
-      const account = await connector?.account()
+      const account = await connector?.account(this.provider);
       console.log("Account", account)
       console.log("Account connected", )
 
@@ -215,18 +219,21 @@ class StarknetWallet extends ChainBaseClass {
       const gasTokenPrice = await fetchGasTokenPrices(options);
       console.log('GasTokenPrice', gasTokenPrice);
 
-      // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-      let txid;
+      if (!account) {
+        throw new Error("Account not found");
+      }
+
+      let txid: string;
       try {
         // First attempt: gasless transaction
-        txid = await executeCalls(account, calls, {}, options);
+        txid = (await executeCalls(account, calls, {}, options)).transactionHash;
       } catch (err) {
         console.error("Error executing gasless calls", err);
         throw new Error("Failed to execute gasless transaction");
       }
 
       console.log("TX", txid);
-      const tx = txid?.transactionHash;
+      const tx = txid;
 
       if (!tx) {
         throw new Error("Transaction hash not found")
