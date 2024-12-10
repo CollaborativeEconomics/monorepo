@@ -16,6 +16,7 @@ export interface AppChainConfig {
   enabledWallets: ClientInterfaces[]
   tokens: TokenTickerSymbol[]
   destinationTag?: string
+  defaultAddress?: string
 }
 
 export interface AppConfig {
@@ -53,5 +54,6 @@ export interface AppConfig {
     wallet: ClientInterfaces
     chain: ChainSlugs
     coin: TokenTickerSymbol
+    defaultAddress?: string
   }
 }

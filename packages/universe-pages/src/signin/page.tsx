@@ -27,6 +27,7 @@ export default async function Signin() {
   }
 
   const chains = appConfig.chains;
+  console.log({ chains });
   const chainConfigs = getChainConfiguration();
 
   return (

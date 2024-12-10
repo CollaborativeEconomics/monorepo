@@ -51,13 +51,20 @@ export default async function walletLogin(
     throw new Error("User not found or created")
   }
 
-  await signIn(method, {
-    // redirect: false,
+  const res = await signIn(method, {
+    redirect: false,
     callbackUrl: `/profile/${user.id}`,
     address: walletAddress,
     chainName,
     chainId,
     network,
     currency,
-  })
+  });
+
+  if (!res?.error) {
+    // Instead of redirecting, return the URL
+    return `/profile/${user.id}`;
+  }
+
+  throw new Error(res?.error || 'Sign in failed');
 }
