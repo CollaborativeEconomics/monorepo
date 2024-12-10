@@ -3,9 +3,11 @@
   "strictNullChecks": true,
   "declaration": false,
   "compilerOptions": {
+    "baseUrl": ".",
+    "rootDirs": ["src", "."],
     "outDir": "dist",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
