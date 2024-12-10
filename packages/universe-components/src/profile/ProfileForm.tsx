@@ -2,6 +2,7 @@
 import { LogoutButton } from '@cfce/auth';
 import type {
   Prisma,
+  DonationWithRelations as Donations,
   NFTDataWithRelations as Receipts,
   StoryWithRelations as Stories,
 } from '@cfce/database';
@@ -37,7 +38,7 @@ type FavoriteOrganizations = Prisma.DonationGetPayload<{ include: { organization
 interface UserData {
   user: UserRecord;
   receipts: Receipts[];
-  donations: DonationsByUser[];
+  donations: Donations[];
   favoriteOrganizations: FavoriteOrganizations[];
   badges: UserBadges[];
   stories: Stories[];
