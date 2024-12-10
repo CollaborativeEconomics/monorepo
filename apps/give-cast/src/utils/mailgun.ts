@@ -1,6 +1,6 @@
-import type { EmailBody } from "@/types"
 import formData from "form-data"
 import Mailgun from "mailgun.js"
+import type { EmailBody } from "~/types"
 
 const mailgun = new Mailgun(formData)
 const mailgunClient = mailgun.client({

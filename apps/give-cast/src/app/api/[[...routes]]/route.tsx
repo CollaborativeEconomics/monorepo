@@ -1,17 +1,5 @@
 /** @jsxImportSource frog/jsx */
 
-import { Donation, type EmailBody } from '@/types';
-import {
-  ConfirmIntent,
-  checkUser,
-  emailReceipt,
-  getInitiativeById,
-  getInitiatives,
-  getRates,
-  mintNft,
-  newDonation,
-  sendReceipt,
-} from '@/utils';
 import type { Prisma } from '@cfce/database';
 import { Button, Frog, TextInput, parseEther } from 'frog';
 import { devtools } from 'frog/dev';
@@ -22,6 +10,18 @@ import { createSystem } from 'frog/ui';
 import Image from 'next/image';
 import { http, createPublicClient } from 'viem';
 import { arbitrumSepolia } from 'viem/chains';
+import { Donation, type EmailBody } from '~/types';
+import {
+  ConfirmIntent,
+  checkUser,
+  emailReceipt,
+  getInitiativeById,
+  getInitiatives,
+  getRates,
+  mintNft,
+  newDonation,
+  sendReceipt,
+} from '~/utils';
 
 const client = createPublicClient({
   chain: arbitrumSepolia,
@@ -103,7 +103,7 @@ const warning = {
 //})
 //);
 
-app.frame('/', async (c) => {
+app.frame('/', async c => {
   return c.res({
     action: '/featured',
     image: '/givecast.jpg',
@@ -124,7 +124,7 @@ app.frame('/', async (c) => {
   });
 });
 
-app.frame('/featured', async (c) => {
+app.frame('/featured', async c => {
   const { buttonValue, inputText, frameData } = c;
   const id = buttonValue || ''; // It should never be empty unless accessed directly
   console.log('ID', id);
@@ -154,7 +154,7 @@ app.frame('/featured', async (c) => {
   });
 });
 
-app.frame('/initiative/:id?', async (c) => {
+app.frame('/initiative/:id?', async c => {
   const id = c.req.param('id') || '';
   console.log('ID', id);
   // TODO: If not ID redirect to main
@@ -184,7 +184,7 @@ app.frame('/initiative/:id?', async (c) => {
   });
 });
 
-app.frame('/confirmation', async (c) => {
+app.frame('/confirmation', async c => {
   const { buttonValue, inputText, frameData } = c;
   let amount = 0;
   if (inputText !== undefined) {
@@ -236,7 +236,7 @@ app.frame('/confirmation', async (c) => {
   });
 });
 
-app.frame('/mintquery', async (c) => {
+app.frame('/mintquery', async c => {
   const { transactionId } = c;
   console.log('TX', transactionId);
 
@@ -281,7 +281,7 @@ app.frame('/mintquery', async (c) => {
     let info = null;
     while (count < wait.length) {
       console.log('Retry', count);
-      await new Promise((res) => setTimeout(res, wait[count] * secs));
+      await new Promise(res => setTimeout(res, wait[count] * secs));
       count++;
       try {
         info = await client.getTransactionReceipt({ hash: transactionId });
@@ -328,7 +328,7 @@ app.frame('/mintquery', async (c) => {
   return c.res(rejected);
 });
 
-app.frame('/mint-nft', async (c) => {
+app.frame('/mint-nft', async c => {
   const { buttonValue } = c;
   console.log(recipient);
   let mintingReceipt: Record<string, unknown> = {};
@@ -386,7 +386,7 @@ app.frame('/mint-nft', async (c) => {
   });
 });
 
-app.transaction('/send-ether', (c) => {
+app.transaction('/send-ether', c => {
   const { inputText = '', frameData } = c;
   console.log('AMT', DonorData.coinValue);
   DonorData.email = inputText;

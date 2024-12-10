@@ -1,16 +1,16 @@
 import { getRandomValues } from 'node:crypto';
-import { getUserByWallet, newUser } from '@/utils';
+import { getUserByWallet, newUser } from '~/utils';
 
 function UUID() {
   const buf = getRandomValues(new Uint8Array(16));
   const hex = Array.from(buf)
-    .map((x) => {
+    .map(x => {
       return x.toString(16).padStart(2, '0');
     })
     .join('');
   const ret = `${hex.substr(0, 8)}-${hex.substr(8, 4)}-${hex.substr(
     12,
-    4
+    4,
   )}-${hex.substr(16, 4)}-${hex.substr(20)}`;
   return ret;
 }
