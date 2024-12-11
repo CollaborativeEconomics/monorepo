@@ -49,7 +49,7 @@ class StarknetWallet extends ChainBaseClass {
       modalMode: "alwaysAsk"
     });
 
-    const account = await connector?.account(this.provider);
+    const account = await connector?.account();
     
     // Get current chain from wallet
     const currentChain = await this.provider?.getChainId();
@@ -123,7 +123,7 @@ class StarknetWallet extends ChainBaseClass {
         ({connector: this.connector} = await this.getWallet());
       }
       
-      const account = await this.connector?.account(this.provider);
+      const account = await this.connector?.account();
       if (!account) {
         throw new Error("No account found");
       }
@@ -204,7 +204,7 @@ class StarknetWallet extends ChainBaseClass {
       }
 
 
-      const account = await connector?.account(this.provider);
+      const account = await connector?.account();
       console.log("Account", account)
       console.log("Account connected", )
 
