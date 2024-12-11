@@ -28,4 +28,6 @@ const posthogNodeClient = new PostHogNode(
   { host: 'https://us.i.posthog.com' },
 );
 
+console.log('posthogNodeClient', posthogNodeClient);
+
 export { usePostHog, posthogNodeClient };

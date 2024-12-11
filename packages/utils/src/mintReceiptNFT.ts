@@ -348,7 +348,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Return result
-    console.log("Minting completed")
+    console.log("Minting completed", posthogNodeClient)
     posthogNodeClient.capture({
       distinctId: userId,
       event: "receipt_minted",
