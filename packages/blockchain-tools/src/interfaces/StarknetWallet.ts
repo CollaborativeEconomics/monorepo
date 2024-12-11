@@ -124,6 +124,7 @@ class StarknetWallet extends ChainBaseClass {
       }
       
       const account = await this.connector?.account();
+      const account = await this.connector?.account();
       if (!account) {
         throw new Error("No account found");
       }
@@ -196,9 +197,12 @@ class StarknetWallet extends ChainBaseClass {
     memo,
   }: { address: string; amount: number; memo: string }) {
     try {
+      // Check if API keys are available
+      if (!process.env.NEXT_PUBLIC_AVNU_PUBLIC_KEY || !process.env.NEXT_PUBLIC_AVNU_KEY) {
+        return this.sendPaymentWithGas(address, amount);
+      }
 
       let connector = this.connector
-
       if (!connector) {
         ({connector} = await this.getWallet())
       }
