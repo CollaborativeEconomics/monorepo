@@ -7,14 +7,15 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
 import Checkbox from '~/components/form/checkbox';
+import FileView from '~/components/form/fileview';
 import Select from '~/components/form/select';
 import TextArea from '~/components/form/textarea';
 import TextInput from '~/components/form/textinput';
-import FileView from '~/components/form/fileview';
 import styles from '~/styles/dashboard.module.css';
 import { saveStory } from './actions'; // Update this import
 
 interface AddStoryFormProps {
+  userId: string;
   orgId: string;
   initiatives: Initiative[];
   categories: Category[];
@@ -36,10 +37,12 @@ interface FormData {
 }
 
 export default function AddStoryForm({
+  userId,
   orgId,
   initiatives,
   categories,
 }: AddStoryFormProps) {
+  // const userId = useAuth();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, setMessage] = useState('Enter story info and upload images');
@@ -89,6 +92,7 @@ export default function AddStoryForm({
         data.media && data.media.length > 0 ? data.media[0] : undefined;
 
       const storyData = {
+        userId: userId,
         story: {
           name: data.name,
           description: data.desc,

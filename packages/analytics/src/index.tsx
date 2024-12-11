@@ -4,6 +4,7 @@ import {
   PostHogProvider as PostHogProviderBase,
   usePostHog,
 } from 'posthog-js/react';
+import { PostHog as PostHogNode } from 'posthog-node';
 import React, { useEffect } from 'react';
 
 export function initializeAnalytics() {
@@ -13,11 +14,18 @@ export function initializeAnalytics() {
   });
 }
 
-export function PostHogProvider({ children }: React.PropsWithChildren) {
+export function PostHogProvider({
+  children,
+}: Parameters<typeof PostHogProviderBase>[0]) {
   useEffect(() => {
     initializeAnalytics();
   }, []);
   return <PostHogProviderBase client={posthog}>{children}</PostHogProviderBase>;
 }
 
-export { usePostHog };
+const posthogNodeClient = new PostHogNode(
+  'phc_ycqncNaqbtyTy1Drs5p1paG8TzekkVR4nq7CrRVZEYP',
+  { host: 'https://us.i.posthog.com' },
+);
+
+export { usePostHog, posthogNodeClient };

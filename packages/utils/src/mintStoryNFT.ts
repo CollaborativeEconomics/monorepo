@@ -1,6 +1,7 @@
 // @ts-ignore turbo should error out if these are not set
 // const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
 
+import { posthogNodeClient } from "@cfce/analytics"
 import { BlockchainManager } from "@cfce/blockchain-tools"
 
 const uuidToUint256 = (uuid: string) => {
@@ -37,6 +38,7 @@ export async function mintStoryNFT(storyId: string, tokenCID: string) {
   if ("error" in response) {
     throw new Error(response.error)
   }
+
   console.log("Minted NFT", response.txId, response.tokenId)
   return response
 }
