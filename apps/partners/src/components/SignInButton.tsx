@@ -6,11 +6,11 @@ interface SignInButtonProps {
 }
 
 export default function SignInButton({ className }: SignInButtonProps) {
-  async function onSignIn(evt){
-    console.log('SIGNIN')
-    evt.preventDefault();
-    await signIn('google');
-  }
+  //async function onSignIn(evt){
+  //  console.log('SIGNIN')
+  //  evt.preventDefault();
+  //  await signIn('google');
+  //}
 
   return (
     <>

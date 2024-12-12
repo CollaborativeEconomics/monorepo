@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import timeAgo from 'utils/timeago'
+//import timeAgo from '~/utils/timeago'
 
 interface ContractProps {
   id: string
@@ -15,12 +15,9 @@ interface ContractProps {
   entity_id?: string
 }
 
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(function() {
-    console.log('Copytoclipboard', text)
-  }, function(err) {
-    console.error('Error copying to clipboard:', err)
-  })
+function copyToClipboard(text?:string) {
+  // TODO: add lib
+  console.log('Clipboard', text)
 }
 
 const Contract = (item:ContractProps) => {
@@ -32,7 +29,7 @@ const Contract = (item:ContractProps) => {
       </div>
       <p className="mr-4 grow text-sm text-right font-mono">{item.contract_type}</p>
       <p className="mr-4 grow text-sm text-right font-mono">{item.contract_address}</p>
-      <button onClick={()=>{copyToClipboard(item.contract_address)}}><Image src="/media/icon-copy.png" width={16} height={16} alt="Copy address to clipboard" /></button>
+      <button type="button" onClick={()=>{copyToClipboard(item.contract_address)}}><Image src="/media/icon-copy.png" width={16} height={16} alt="Copy address to clipboard" /></button>
     </div>
   )
 }

@@ -1,5 +1,5 @@
-import React, { forwardRef, HTMLProps } from 'react';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import React, { forwardRef, type HTMLProps } from 'react';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface TextInputProps {
   label?: string;
@@ -32,7 +32,6 @@ const TextInput = forwardRef(
         >
           <input
             onKeyUp={onChange}
-            ref={ref}
             className="w-full"
             {...props}
             {...register}

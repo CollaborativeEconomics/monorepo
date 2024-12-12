@@ -104,7 +104,7 @@ const SidebarContent = ({
 
 const Sidebar = async () => {
   const session = await auth();
-  const organizations = await getOrganizations({});
+  const organizations = await getOrganizations();
   const orgsPlain = JSON.parse(JSON.stringify(organizations))
 
   let currentOrg = null;

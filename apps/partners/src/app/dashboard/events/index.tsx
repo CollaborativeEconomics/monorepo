@@ -20,7 +20,7 @@ import styles from '~/styles/dashboard.module.css';
 import { randomString, randomNumber } from '~/utils/random';
 import dateToPrisma from '~/utils/DateToPrisma';
 import { apiFetch } from '~/utils/api';
-import type { Prisma, Initiative } from "@cfce/database"
+import type { Prisma, Initiative, Event as EventType } from "@cfce/database"
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type Dictionary = { [key: string]: any };
@@ -36,7 +36,7 @@ type DataSubmit = {
   quantity?: string,
   payrate?: string,
   volunteers?: string,
-  image?: string,
+  image?: File[],
   yesNFT?: boolean,
 }
 
@@ -88,9 +88,9 @@ export default function Page() {
   console.log('events page', { session });
 
   const [orgid, setOrgid] = useState(session?.orgId || '');
-  const [initiatives, setInitiatives] = useState([]);
+  const [initiatives, setInitiatives] = useState<Initiative[]>([]);
   const [initsel, setInitsel] = useState<SelectType[]>([]);
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<EventType[]>([]);
 
   useEffect(() => {
     async function loadData() {
@@ -265,7 +265,8 @@ export default function Page() {
 */
         setButtonState(ButtonState.DONE);
       }
-    } catch (ex) {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    } catch (ex:any) {
       console.error(ex);
       showMessage(`Error saving event: ${ex.message}`);
       setButtonState(ButtonState.READY);
@@ -275,7 +276,7 @@ export default function Page() {
   const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
   const imgSource = '/media/upload.jpg';
 
-  function setButtonState(state) {
+  function setButtonState(state:number) {
     switch (state) {
       case ButtonState.READY:
         setButtonText('SUBMIT');
@@ -310,7 +311,7 @@ export default function Page() {
       quantity: '',
       payrate: '',
       volunteers: '',
-      image: '',
+      image: undefined,
       yesNFT: false,
     },
   });
@@ -345,7 +346,7 @@ export default function Page() {
     console.log('Events changed!', change);
   }, [change]);
 
-  async function onOrgChange(id) {
+  async function onOrgChange(id:string) {
     console.log('ORG CHANGED', orgid, 'to', id);
   }
 

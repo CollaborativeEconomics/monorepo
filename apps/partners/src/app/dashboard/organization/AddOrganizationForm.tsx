@@ -1,6 +1,7 @@
 'use client';
 import type { Prisma } from '@cfce/database';
 import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { createOrganizationAction } from './actions';
 import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
@@ -99,6 +100,54 @@ export default function AddOrganizationForm({
   const [message, showMessage] = useState('Enter organization info and click on submit');
   const [change, setChange] = useState(0);
 
+  // Form data
+  const { register, watch } = useForm({
+    defaultValues: {
+      name: '',
+      slug: '',
+      description: '',
+      email: '',
+      ein: '',
+      phone: '',
+      address: '',
+      country: '',
+      image: '',
+      background: '',
+      url: '',
+      twitter: '',
+      facebook: ''
+    }
+  });
+  const [
+      name,
+      slug,
+      description,
+      email,
+      ein,
+      phone,
+      address,
+      country,
+      image,
+      background,
+      url,
+      twitter,
+      facebook
+  ] = watch([
+      'name',
+      'slug',
+      'description',
+      'email',
+      'ein',
+      'phone',
+      'address',
+      'country',
+      'image',
+      'background',
+      'url',
+      'twitter',
+      'facebook'
+  ]);
+
   useEffect(() => {
     console.log('Org changed!', change);
   }, [change]);
@@ -106,19 +155,19 @@ export default function AddOrganizationForm({
   return (
     <div className={styles.mainBox}>
       <form className={styles.vbox} onSubmit={onSubmit}>
-        <TextInput label="Name" name="name" />
-        <TextInput label="Slug" name="slug" />
-        <TextInput label="Description" name="description" />
-        <TextInput label="Email" name="email" />
-        <TextInput label="EIN" name="EIN" />
-        <TextInput label="Phone" name="phone" />
-        <TextInput label="Address" name="mailingAddress" />
-        <TextInput label="Country" name="country" />
-        <TextInput label="Image (url)" name="image" />
-        <TextInput label="Background (url)" name="background" />
-        <TextInput label="website" name="url" />
-        <TextInput label="Twitter" name="twitter" />
-        <TextInput label="Facebook" name="facebook" />
+        <TextInput label="Name" name="name" register={register('name')} />
+        <TextInput label="Slug" name="slug" register={register('slug')} />
+        <TextInput label="Description" name="description" register={register('description')} />
+        <TextInput label="Email" name="email" register={register('email')} />
+        <TextInput label="EIN" name="ein" register={register('ein')} />
+        <TextInput label="Phone" name="phone" register={register('phone')} />
+        <TextInput label="Address" name="address" register={register('address')} />
+        <TextInput label="Country" name="country" register={register('country')} />
+        <TextInput label="Image (url)" name="image" register={register('image')} />
+        <TextInput label="Background (url)" name="background" register={register('background')} />
+        <TextInput label="website" name="url" register={register('url')} />
+        <TextInput label="Twitter" name="twitter" register={register('twitter')} />
+        <TextInput label="Facebook" name="facebook" register={register('facebook')} />
         <Select
           label="Category"
           name="categoryId"

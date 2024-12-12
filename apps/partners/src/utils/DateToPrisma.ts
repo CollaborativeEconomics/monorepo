@@ -1,4 +1,4 @@
-export default function dateToPrisma(sdate: number | string | Date): string | undefined {
+export default function dateToPrisma(sdate: number | string | Date) {
   let date = new Date()
   let ret = null
   try {
