@@ -1,8 +1,6 @@
 const apiUrl = process.env.CFCE_REGISTRY_API_URL || ""
 const apiKey = process.env.CFCE_REGISTRY_API_KEY || ""
 
-type Dictionary = { [key: string]: any }
-
 const fetchRegistry = async (url: string) => {
   try {
     console.log("Fetching", url)
@@ -15,9 +13,9 @@ const fetchRegistry = async (url: string) => {
     const response = await fetch(url, options)
     const result = await response.json()
     return result.data
-  } catch (ex: any) {
+  } catch (ex) {
     console.error(ex)
-    return { error: ex.message }
+    return { error: ex instanceof Error ? ex.message : "Unknown error" }
   }
 }
 
@@ -35,9 +33,9 @@ const postRegistry = async (url: string, body: Dictionary) => {
     const response = await fetch(url, options)
     const result = await response.json()
     return result
-  } catch (ex: any) {
-    console.error(ex)
-    return { error: ex.message }
+  } catch (ex) {
+    console.error(ex instanceof Error ? ex.message : "Unknown error")
+    return { error: ex instanceof Error ? ex.message : "Unknown error" }
   }
 }
 

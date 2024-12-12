@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import type { EIP1193Provider } from 'viem';
 
 const MintPage: React.FC = () => {
   return (
@@ -16,7 +17,7 @@ const MintPage: React.FC = () => {
 
 declare global {
   interface Window {
-    ethereum: any; // or a more specific type if known
+    ethereum: EIP1193Provider; // source: https://ethereum.stackexchange.com/questions/94439/trying-to-use-window-ethereum-request-in-typescript-errors-out-with-property-re
   }
 }
 
@@ -31,6 +32,7 @@ async function addNFT() {
     try {
       const wasAdded = await window.ethereum.request({
         method: 'wallet_watchAsset',
+        // @ts-expect-error doesn't infer 721 support
         params: {
           type: 'ERC721',
           options: {

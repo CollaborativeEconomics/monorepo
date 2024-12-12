@@ -1,5 +1,3 @@
-type Dictionary = { [key: string]: any }
-
 export async function fetchApi(query: string) {
   try {
     const url = `/api/${query}`
@@ -17,7 +15,10 @@ export async function fetchApi(query: string) {
   }
 }
 
-export async function postApi(query: string, data: Dictionary) {
+export async function postApi(
+  query: string,
+  data: Record<string, string | number>,
+) {
   try {
     const url = `/api/${query}`
     const body = JSON.stringify(data)

@@ -1,23 +1,28 @@
+import { mintingContract } from "./abi"
 import {
-  IntentStory,
-  IntentNext,
-  IntentFirst,
-  DonateIntent,
   ConfirmIntent,
-} from './constant';
-import { mintingContract } from './abi';
-import { getOrganizations, getInitiativeById, getInitiatives, getUserByWallet, newDonation, newUser } from './registry';
-import getRates from './rate';
-import { checkUser } from './user';
-import { emailReceipt } from './mailgun';
-import { mintNft } from './mint';
-import sendReceipt from './receipt';
+  DonateIntent,
+  IntentFirst,
+  IntentNext,
+  IntentStory,
+} from "./constant"
+import { mintNft } from "./mint"
+import getRates from "./rate"
+import sendReceipt from "./receipt"
+import {
+  getInitiativeById,
+  getInitiatives,
+  getOrganizations,
+  getUserByWallet,
+  newDonation,
+  newUser,
+} from "./registry"
+import { checkUser } from "./user"
 
 export {
   checkUser,
   ConfirmIntent,
   DonateIntent,
-  emailReceipt,
   getInitiativeById,
   getInitiatives,
   getOrganizations,
@@ -31,4 +36,4 @@ export {
   newDonation,
   newUser,
   sendReceipt,
-};
+}

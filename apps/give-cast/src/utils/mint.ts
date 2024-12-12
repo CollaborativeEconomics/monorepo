@@ -5,12 +5,14 @@ import { mintingContract } from "./erc721"
 const contractAddress = process.env.MINTER_CONTRACT as `0x`
 
 const privateKey = process.env.MINTER_PRIVATE
-if (!privateKey) {
-  throw new Error("MINTER_PRIVATE environment variable is required")
+if (!privateKey || !contractAddress) {
+  throw new Error(
+    "MINTER_PRIVATE and MINTER_CONTRACT environment variables are required",
+  )
 }
 
-if (!privateKey.startsWith("0x")) {
-  throw new Error("MINTER_PRIVATE must start with 0x")
+if (!privateKey.startsWith("0x") || !contractAddress.startsWith("0x")) {
+  throw new Error("MINTER_PRIVATE and MINTER_CONTRACT must start with 0x")
 }
 
 const account = privateKeyToAccount(privateKey as `0x${string}`)
@@ -29,7 +31,7 @@ const walletClient = createWalletClient({
 export async function mintNft(toAddress: string) {
   console.log("minting nft to address", toAddress)
   try {
-    const { request }: any = await client.simulateContract({
+    const { request } = await client.simulateContract({
       address: mintingContract.address as `0x${string}`,
       abi: mintingContract.abi,
       account,
@@ -57,12 +59,12 @@ export async function mintNft(toAddress: string) {
         continue
       }
       console.log("TX", info)
-      if (info?.status == "success") {
+      if (info?.status === "success") {
         console.log("TX SUCCESS")
         // get nft id
         const logs = info.logs
         if (logs.length > 1) {
-          nftId = parseInt(info.logs[1].data, 16)
+          nftId = Number.parseInt(info.logs[1].data, 16)
         }
         break
       }
@@ -71,8 +73,8 @@ export async function mintNft(toAddress: string) {
       break
     }
     return { nftId, txId }
-  } catch (error: any) {
+  } catch (error) {
     console.log(error)
-    return { error: error?.message }
+    return { error: error instanceof Error ? error.message : "Unknown error" }
   }
 }

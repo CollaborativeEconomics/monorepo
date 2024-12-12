@@ -1,6 +1,7 @@
 /** @jsxImportSource frog/jsx */
 
 import type { Prisma } from '@cfce/database';
+import { type ReceiptEmailBody, sendEmailReceipt } from '@cfce/utils';
 import { Button, Frog, TextInput, parseEther } from 'frog';
 import { devtools } from 'frog/dev';
 import { type NeynarVariables, neynar } from 'frog/middlewares';
@@ -10,11 +11,9 @@ import { createSystem } from 'frog/ui';
 import Image from 'next/image';
 import { http, createPublicClient } from 'viem';
 import { arbitrumSepolia } from 'viem/chains';
-import { Donation, type EmailBody } from '~/types';
 import {
   ConfirmIntent,
   checkUser,
-  emailReceipt,
   getInitiativeById,
   getInitiatives,
   getRates,
@@ -46,7 +45,7 @@ let initiatives: Prisma.InitiativeGetPayload<{
 let rate: number;
 let recipient: string;
 
-interface ExtendedEmailBody extends EmailBody {
+interface ExtendedEmailBody extends ReceiptEmailBody {
   email: string;
 }
 const DonorData: ExtendedEmailBody = {
@@ -314,7 +313,10 @@ app.frame('/mintquery', async c => {
         }
         if (DonorData.email !== '') {
           console.log(DonorData.email);
-          const receiptResp = await emailReceipt(DonorData.email, DonorData);
+          const receiptResp = await sendEmailReceipt(
+            DonorData.email,
+            DonorData,
+          );
           console.log('Receipt sent', receiptResp);
         }
         return c.res(confirmed);
