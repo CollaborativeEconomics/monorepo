@@ -6,6 +6,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./mailgun": {
+      "import": "./dist/mailgun.js",
+      "types": "./dist/mailgun.d.ts"
     }
   },
   "scripts": {
