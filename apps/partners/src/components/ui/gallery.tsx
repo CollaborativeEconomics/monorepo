@@ -1,7 +1,7 @@
 'use client';
 
 interface Props {
-  images?: string[];
+  images?: string[] | null;
 }
 
 export default function Gallery(props: Props) {

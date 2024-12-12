@@ -4,13 +4,12 @@ import { getReportedAddresses } from '~/utils/chainLogs';
 import RewardClient from './reward-client';
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>
+  //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export default async function RewardPage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
   const event = await getEventById(id);
 
   if (!event) {

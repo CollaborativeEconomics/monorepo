@@ -2,14 +2,13 @@ import { getContract, getEventById } from '@cfce/database';
 import { Suspense } from 'react';
 import EventClient from './event-client';
 
-export default async function EventPage({
-  params,
-  searchParams,
-}: {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const { id } = params;
+interface PageProps {
+  params: Promise<{ id: string }>
+  //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function EventPage({ params }: PageProps) {
+  const { id } = await params;
   const event = await getEventById(id);
 
   if (!event) {
@@ -25,7 +24,7 @@ export default async function EventPage({
   // TODO: is event still supposed to have media?
   // const media = event.media?.map((it: any) => it.media) || [];
   // media.unshift(event.image); // main image to the top
-  const media = event.image;
+  const media = event.image ? [event.image] : null;
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

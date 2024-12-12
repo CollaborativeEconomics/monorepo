@@ -1,7 +1,8 @@
 'use client';
 
 import type { Contract, Organization } from '@cfce/database';
-import { registryApi } from '@cfce/utils';
+import { getContracts } from '~/actions/database';
+//import { registryApi } from '@cfce/utils';
 import { useEffect, useState } from 'react';
 import ButtonBlue from '~/components/buttonblue';
 import Dashboard from '~/components/dashboard';
@@ -31,22 +32,24 @@ export default function NFTReceiptClient({
     async function fetchContracts() {
       try {
         setLoading(true);
-        const query = [
-          chain && `chain=${chain}`,
-          network && `network=${network}`,
-          wallet && `wallet=${wallet}`,
-          organizationId && `organizationId=${organizationId}`,
-        ]
-          .filter(Boolean)
-          .join('&');
-
-        const response = await registryApi.get<Contract[]>(
-          `contracts?${query}`,
-        );
-        if (response.error) {
-          throw new Error(response.error);
+        //const query = [
+        //  chain && `chain=${chain}`,
+        //  network && `network=${network}`,
+        //  wallet && `wallet=${wallet}`,
+        //  organizationId && `organizationId=${organizationId}`,
+        //]
+        //  .filter(Boolean)
+        //  .join('&');
+        //const response:Contract[] = await registryApi.get<Contract>(`contracts?${query}`);
+        
+        const response = await getContracts({ chain, network })
+        if (!response) {
+          //throw new Error(response.error);
+          throw new Error('Error fetching contracts');
         }
-        setContracts(response);
+        if (response.constructor === Array) {
+          setContracts(response);
+        }
       } catch (err) {
         console.error('Failed to fetch contracts:', err);
         setError(
@@ -93,7 +96,7 @@ export default function NFTReceiptClient({
                   <th align="left">Contract</th>
                   <th align="left">Type</th>
                   <th align="left">Admin</th>
-                  <th align="left">Token ID</th>
+                  {/*<th align="left">Token ID</th>*/}
                 </tr>
               </thead>
               <tbody className="border-t-2">
@@ -104,7 +107,7 @@ export default function NFTReceiptClient({
                     <td>{contract.contract_address}</td>
                     <td>{contract.contract_type}</td>
                     <td>{contract.admin_wallet_address}</td>
-                    <td>{contract.token_id}</td>
+                    {/*<td>{contract.token_id}</td>*/}
                   </tr>
                 ))}
               </tbody>

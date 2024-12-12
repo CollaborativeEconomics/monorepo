@@ -1,9 +1,10 @@
 'use client';
 
-import { type Contract, type Event, newContract } from '@cfce/database';
+import type { Contract, Event } from '@cfce/database';
+import { newContract } from '~/actions/database';
 import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
 import { useState } from 'react';
-import styles from 'styles/dashboard.module.css';
+import styles from '~/styles/dashboard.module.css';
 import { parseEther } from 'viem';
 import { useAccount, useConnect, useWriteContract } from 'wagmi';
 import * as wagmiChains from 'wagmi/chains';
@@ -22,7 +23,7 @@ const arbitrumSepolia = wagmiChains.arbitrumSepolia;
 interface EventClientProps {
   id: string;
   event: Event;
-  media: string[];
+  media: string[] | null;
   contractNFT: Contract | null;
   contractV2E: Contract | null;
 }

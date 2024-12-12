@@ -18,13 +18,21 @@ export async function getContracts(query:ContractQuery) {
   const orderBy = {}
   //let include = {}
 
+  // contract by id
   if (query?.id) {
     const result = await prismaClient.contract.findUnique({ where: { id: query.id } })
     return result
   }
 
+  // all contracts by entity
   if (query?.entity_id && query?.chain && query?.network && query?.contract_type) {
     const result = await getContract(query.entity_id, query.chain, query.network, query.contract_type)
+    return result
+  }
+
+  // all contracts by chain and network
+  if (query?.chain && query?.network) {
+    const result = await getContract(query.chain, query.network)
     return result
   }
 

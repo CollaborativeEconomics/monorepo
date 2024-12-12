@@ -1,9 +1,6 @@
 import { auth } from '@cfce/auth';
-import {
-  type Organization,
-  getOrganizationById,
-  getOrganizations,
-} from '@cfce/database';
+import type { Organization } from '@cfce/database';
+import { getOrganizationById, getOrganizations } from '~/actions/database'
 import {
   Button,
   Sheet,

@@ -52,6 +52,7 @@ const nextConfig = {
         callback();
       });
     }
+    config.externals.push('pino-pretty')
     return config;
   },
   env: {

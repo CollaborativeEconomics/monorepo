@@ -7,7 +7,7 @@ import clipboard from 'clipboardy';
 import { LucideClipboardPaste, LucideQrCode } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import styles from 'styles/dashboard.module.css';
+import styles from '~/styles/dashboard.module.css';
 import { useAccount, useWriteContract } from 'wagmi';
 import * as wagmiChains from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';

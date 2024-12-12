@@ -4,26 +4,43 @@ import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { getToken } from 'next-auth/jwt';
 import Link from 'next/link';
-import Dashboard from 'components/dashboard';
-import Sidebar from 'components/sidebar';
-import Title from 'components/title';
-import Event from 'components/event';
-import Label from 'components/form/label';
-import TextFile from 'components/form/textfile';
-import TextInput from 'components/form/textinput';
-import TextArea from 'components/form/textarea';
-import FileView from 'components/form/fileview';
-import Select from 'components/form/select';
-import Checkbox from 'components/form/checkbox';
-import ButtonBlue from 'components/buttonblue';
-import styles from 'styles/dashboard.module.css';
-import { randomString, randomNumber } from 'utils/random';
-import dateToPrisma from 'utils/dateToPrisma';
-import { apiFetch } from 'utils/api';
+import Dashboard from '~/components/dashboard';
+import Sidebar from '~/components/sidebar';
+import Title from '~/components/title';
+import Event from '~/components/event';
+import Label from '~/components/form/label';
+import TextFile from '~/components/form/textfile';
+import TextInput from '~/components/form/textinput';
+import TextArea from '~/components/form/textarea';
+import FileView from '~/components/form/fileview';
+import Select from '~/components/form/select';
+import Checkbox from '~/components/form/checkbox';
+import ButtonBlue from '~/components/buttonblue';
+import styles from '~/styles/dashboard.module.css';
+import { randomString, randomNumber } from '~/utils/random';
+import dateToPrisma from '~/utils/DateToPrisma';
+import { apiFetch } from '~/utils/api';
+import type { Prisma, Initiative } from "@cfce/database"
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type Dictionary = { [key: string]: any };
+type SelectType = { id: string, name: string }
+type DataFile = { file: File, name: string }
+type DataSubmit = {
+  initiativeId: string,
+  name?: string,
+  desc?: string,
+  budget?: string,
+  unitvalue?: string,
+  unitlabel?: string,
+  quantity?: string,
+  payrate?: string,
+  volunteers?: string,
+  image?: string,
+  yesNFT?: boolean,
+}
 
-function getImageExtension(mime) {
+function getImageExtension(mime:string) {
   let ext = '';
   switch (mime) {
     case 'image/jpg':
@@ -40,7 +57,7 @@ function getImageExtension(mime) {
   return ext;
 }
 
-function getMediaExtension(mime) {
+function getMediaExtension(mime:string) {
   let ext = '';
   switch (mime) {
     case 'application/pdf':
@@ -70,18 +87,18 @@ export default function Page() {
   const { data: session, update } = useSession();
   console.log('events page', { session });
 
-  const [orgid, setOrgid] = useState(session?.orgid || '');
+  const [orgid, setOrgid] = useState(session?.orgId || '');
   const [initiatives, setInitiatives] = useState([]);
-  const [initsel, setInitsel] = useState([]);
+  const [initsel, setInitsel] = useState<SelectType[]>([]);
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     async function loadData() {
-      const oid = session?.orgid ?? '';
-      const org = (await apiFetch('organization?id=' + oid)) || {};
+      const oid = session?.orgId ?? '';
+      const org = (await apiFetch(`organization?id=${oid}`)) || {};
       const ini = org?.initiative || [];
       const iid = org?.initiative?.length > 0 ? org?.initiative[0].id : '';
-      const evt = (await apiFetch('events?orgid=' + oid)) || [];
+      const evt = (await apiFetch(`events?orgid=${oid}`)) || [];
       const sel = listInitiatives(ini);
       console.log('ORG:', org);
       console.log('INI:', ini);
@@ -96,7 +113,7 @@ export default function Page() {
     loadData();
   }, [update]);
 
-  function listInitiatives(initiatives) {
+  function listInitiatives(initiatives:Initiative[]) {
     if (!initiatives) {
       return [{ id: 'null', name: 'No initiatives' }];
     }
@@ -108,7 +125,7 @@ export default function Page() {
     return list;
   }
 
-  async function saveImage(data) {
+  async function saveImage(data:DataFile) {
     if (!data?.file) {
       return { error: 'no image provided' };
     }
@@ -121,7 +138,7 @@ export default function Page() {
     return result;
   }
 
-  async function saveMedia(data) {
+  async function saveMedia(data:DataFile) {
     if (!data?.file) {
       return { error: 'no media provided' };
     }
@@ -140,8 +157,8 @@ export default function Page() {
     showMessage('Enter event info and upload image');
   }
 
-  async function onSubmit(data) {
-    if (buttonText == 'DONE') {
+  async function onSubmit(data:DataSubmit) {
+    if (buttonText === 'DONE') {
       clearForm();
       return;
     }
@@ -171,7 +188,7 @@ export default function Page() {
       return;
     }
     const file = data.image[0];
-    let ext = getImageExtension(file?.type);
+    const ext = getImageExtension(file?.type);
     if (file && !ext) {
       showMessage('Only JPG, PNG and WEBP images are allowed');
       return;
@@ -179,20 +196,20 @@ export default function Page() {
 
     const imgName = randomString();
     const image = { name: imgName + ext, file };
-    const payrate = parseFloat(data.payrate || '0');
+    const payrate = Number.parseFloat(data.payrate || '0');
     const record = {
       created: dateToPrisma(new Date()),
       organizationid: orgid,
       initiativeid: data.initiativeId,
       name: data.name,
       description: data.desc,
-      budget: parseInt(data.budget || '0'),
-      unitvalue: parseInt(data.unitvalue || '0'),
+      budget: Number.parseInt(data.budget || '0', 10),
+      unitvalue: Number.parseInt(data.unitvalue || '0', 10),
       unitlabel: data.unitlabel,
-      quantity: parseInt(data.quantity || '0'),
+      quantity: Number.parseInt(data.quantity || '0', 10),
       payrate: payrate,
-      volunteers: parseInt(data.volunteers || '0'),
-      voltoearn: payrate > 0 ? true : false,
+      volunteers: Number.parseInt(data.volunteers || '0', 10),
+      voltoearn: (payrate  > 0),
       image: '',
     };
 
@@ -202,7 +219,7 @@ export default function Page() {
       const resimg = await saveImage(image);
       console.log('RESIMG', resimg);
       if (resimg.error) {
-        showMessage('Error saving image: ' + resimg.error);
+        showMessage(`Error saving image: ${resimg.error}`);
         setButtonState(ButtonState.READY);
         return;
       }
@@ -220,9 +237,9 @@ export default function Page() {
       const result1 = await resp1.json();
       console.log('RESULT1', result1);
       if (result1?.error) {
-        showMessage('Error saving event: ' + result1.error);
+        showMessage(`Error saving event: ${result1.error}`);
         setButtonState(ButtonState.READY);
-      } else if (typeof result1?.success == 'boolean' && !result1.success) {
+      } else if (typeof result1?.success === 'boolean' && !result1.success) {
         showMessage('Error saving event: unknown');
         setButtonState(ButtonState.READY);
       } else {
@@ -250,7 +267,7 @@ export default function Page() {
       }
     } catch (ex) {
       console.error(ex);
-      showMessage('Error saving event: ' + ex.message);
+      showMessage(`Error saving event: ${ex.message}`);
       setButtonState(ButtonState.READY);
     }
   }
@@ -418,7 +435,7 @@ export default function Page() {
           {events?.length > 0 ? (
             events.map(item => (
               <div className={styles.viewBox} key={item.id}>
-                <Link href={'/dashboard/events/' + item.id}>
+                <Link href={`/dashboard/events/${item.id}`}>
                   <Event key={item.id} {...item} />
                 </Link>
               </div>

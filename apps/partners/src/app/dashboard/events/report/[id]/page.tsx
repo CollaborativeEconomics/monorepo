@@ -3,13 +3,12 @@ import { Suspense } from 'react';
 import ReportClient from './report-client';
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>
+  //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export default async function ReportPage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
   const event = await getEventById(id);
 
   if (!event) {

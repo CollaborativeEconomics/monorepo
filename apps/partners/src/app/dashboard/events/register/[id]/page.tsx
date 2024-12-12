@@ -2,14 +2,13 @@ import { getContract, getEventById } from '@cfce/database';
 import { Suspense } from 'react';
 import RegisterClient from './register-client';
 
-export default async function RegisterPage({
-  params,
-  searchParams,
-}: {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const { id } = params;
+interface PageProps {
+  params: Promise<{ id: string }>
+  //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function RegisterPage({ params }: PageProps ) {
+  const { id } = await params;
   const event = await getEventById(id);
 
   if (!event) {

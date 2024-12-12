@@ -3,7 +3,7 @@
 import type { Contract, Event, Volunteer } from '@cfce/database';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { useState } from 'react';
-import styles from 'styles/dashboard.module.css';
+import styles from '~/styles/dashboard.module.css';
 import { useAccount, useConnect, useWriteContract } from 'wagmi';
 import * as wagmiChains from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
