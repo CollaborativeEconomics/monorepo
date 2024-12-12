@@ -103,7 +103,7 @@ export default async function Initiative(props: {
         <div className="md:flex md:flex-col items-center">
           <div className="flex flex-col lg:flex-row flex-nowrap gap-10 items-start">
             <div className="w-full lg:w-[60%]">
-              <DonationForm initiative={initiative} />
+              <DonationForm initiative={initiative} rate={rate} />
             </div>
             <div className="lg:w-[40%]">
               <NFTReceipt initiative={initiative} />

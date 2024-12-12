@@ -117,13 +117,15 @@ export interface ChainConfig {
 }
 
 export type Interfaces =
+  | "argent"
+  | "crossmark"
   | "freighter"
+  | "gemwallet"
   | "metamask"
+  | "stellar"
+  | "web3"
   | "xaman"
   | "xrpl"
-  | "web3"
-  | "stellar"
-  | "argent"
 
 export type ClientInterfaces = Exclude<Interfaces, "web3" | "xrpl" | "stellar">
 

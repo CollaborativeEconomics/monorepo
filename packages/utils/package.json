@@ -21,7 +21,6 @@
     "@cfce/ipfs": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
     "@cfce/tbas": "workspace:*",
-    "@tanstack/react-query": "^5.51.21",
     "@vercel/blob": "0.24.1",
     "form-data": "^4.0.0",
     "formidable": "^3.5.1",

@@ -1,8 +1,9 @@
 'use client';
 import { usePostHog } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
+import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
 import { BlockchainManager } from '@cfce/blockchain-tools';
-import type { Prisma } from '@cfce/database';
+import type { Chain, Prisma, User } from '@cfce/database';
 import type { TokenTickerSymbol } from '@cfce/types';
 import { mintAndSaveReceiptNFT } from '@cfce/utils';
 import {
@@ -20,6 +21,7 @@ import { CheckboxWithText } from '~/ui/checkbox';
 import { Input } from '~/ui/input';
 import { Label } from '~/ui/label';
 import { Separator } from '~/ui/separator';
+import createDonation from '../actions/createDonation';
 import { CarbonCreditDisplay } from './CarbonCreditDisplay';
 import { ChainSelect } from './ChainSelect';
 import { DonationAmountInput } from './DonationAmountInput';
@@ -35,7 +37,23 @@ interface DonationFormProps {
       wallets: true;
     };
   }>;
+  rate: number;
 }
+
+interface DonationData {
+  organizationId: string;
+  initiativeId?: string;
+  categoryId?: string;
+  userId?: string;
+  sender: string;
+  chainName: string;
+  network: string;
+  coinValue: number;
+  usdValue: number;
+  currency: string;
+}
+
+type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
 
 // Add this function above the DonationForm component
 // @deprecated TODO: remove this
@@ -49,26 +67,37 @@ const getFallbackAddress = (chainName?: string): string => {
 
   return chainName ? fallbackAddresses[chainName] || '' : '';
 };
+
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export default function DonationForm({ initiative }: DonationFormProps) {
+export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const posthog = usePostHog();
+  // TODO: get contract id from contracts table not initiative record
   const contractId = initiative.contractcredit; // needed for CC contract
   const organization = initiative.organization;
   const [loading, setLoading] = useState(false);
   const [chainState, setChainState] = useAtom(chainAtom);
+  //setChainState(draft => {
+  //  console.log('INIT RATE', rate)
+  //  draft.exchangeRate = rate;
+  //});
+  //console.log('INIT STATE', chainState)
+
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
     chainState;
   const [donationForm, setDonationForm] = useAtom(donationFormAtom);
   const { emailReceipt, name, email, amount } = donationForm;
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
+  //console.log('STATE', chainState, exchangeRate)
+
   const chainInterface = useMemo(
     () => BlockchainManager[selectedChain]?.client,
     [selectedChain],
   );
+
   const [buttonMessage, setButtonMessage] = useState(
     'One wallet confirmation required',
   );
@@ -111,7 +140,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
     return '';
   }, [organization, initiative, chainInterface, handleError]);
 
-  useEffect(() => {
+  function getRate() {
     registryApi
       .get<{ coin: TokenTickerSymbol; rate: number }>(
         `/rates?coin=${selectedToken}&chain=${selectedChain}`,
@@ -119,14 +148,32 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       .then(response => {
         if (response.success) {
           const { rate } = response.data;
-          if (rate) {
+          console.log('RATE', rate);
+          if (rate > 0) {
             setChainState(draft => {
+              //console.log('DRAFT', draft)
               draft.exchangeRate = rate;
             });
+            //requestAnimationFrame(() => {
+            //setChainState(draft => {
+            //console.log('DRAFT', draft)
+            //draft.exchangeRate = rate;
+            //});
+            //console.log('CHAIN1', chainState)
+            //});
           }
+          //console.log('CHAIN2', chainState)
         }
       });
+  }
+
+  useEffect(() => {
+    getRate();
   }, [selectedToken, selectedChain, setChainState]);
+
+  //useEffect(() => {
+  //  getRate()
+  //}, []);
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
@@ -155,7 +202,17 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       setLoading(true);
       setButtonMessage('Approving payment...');
 
-      const paymentResult = await sendPayment(destinationWalletAddress, amount);
+      console.log('FORM', donationForm);
+      console.log('CHAIN', chainState);
+      const amountToSend = coinAmount;
+      //const amountToSend = 0.0001
+      //const amountToSend:number = donationForm.showUsd ? (usdAmount / chainState.exchangeRate) : coinAmount;
+      //console.log('AMTS', donationForm.showUsd, amount, usdAmount, coinAmount, chainState.exchangeRate)
+      console.log('SEND', amountToSend);
+      const paymentResult = await sendPayment(
+        destinationWalletAddress,
+        amountToSend,
+      );
 
       if (!paymentResult.success) {
         throw new Error(`Payment error: ${paymentResult.error ?? 'unknown'}`);
@@ -170,6 +227,69 @@ export default function DonationForm({ initiative }: DonationFormProps) {
           chain: selectedChain,
         });
       }
+
+      const network = appConfig.chainDefaults.network || 'testnet';
+      const chainName = chainInterface?.chain.name || '';
+      const currency = chainInterface?.chain.symbol || '';
+      const sender = paymentResult.walletAddress || '';
+
+      // Save user if not exists
+      //const user = (await getUserByWallet(sender)) || ({} as UserRecord);
+      const user = await fetchUserByWallet(sender);
+      console.log('USER', user);
+      let userId = user?.id || '';
+      let userKey = user?.api_key || '';
+      if (!userId) {
+        const anon = await createAnonymousUser({
+          walletAddress: sender,
+          chain: chainName,
+          network,
+          tba: true,
+        });
+        console.log('ANON', anon);
+        if (!anon) {
+          console.log('Error creating anonymous user');
+          setButtonMessage('Error saving user data, contact support');
+          return false;
+        }
+        userId = anon.id;
+        userKey = anon.api_key || '';
+      }
+
+      // Save donation to DB
+      const donationData = {
+        organizationId: organization.id,
+        initiativeId: initiative.id,
+        categoryId: initiative?.categoryId || organization?.categoryId || '',
+        userId,
+        sender,
+        chainName,
+        network,
+        currency,
+        coinValue: coinAmount,
+        usdValue: usdAmount,
+      };
+
+      const donationId = await saveDonation(donationData);
+      console.log('DONATION ID', donationId);
+
+      // TODO: Send receipt
+      //if(receipt){
+      //  console.log('RECEIPT')
+      //  setButtonMessage('Sending receipt, wait a moment...')
+      //  const data = {
+      //    name:     name,
+      //    email:    email,
+      //    org:      organization?.name,
+      //    address:  organization?.mailingAddress,
+      //    ein:      organization?.EIN,
+      //    currency: currency,
+      //    amount:   coinValue.toFixed(4),
+      //    usd:      usdValue.toFixed(2)
+      //  }
+      //  const receiptResp = await sendReceipt(data)
+      //  console.log('Receipt sent', receiptResp)
+      //}
 
       setButtonMessage('Minting NFT receipt, please wait...');
       const data = {
@@ -188,6 +308,7 @@ export default function DonationForm({ initiative }: DonationFormProps) {
         },
       };
       console.log('NFT', data);
+      // TODO: increase sleep time? some chains take longer <<<<
       await sleep(2000); // Wait for tx to confirm
       console.log('SLEEP');
       const receiptResult = await mintAndSaveReceiptNFT(data);
@@ -228,6 +349,62 @@ export default function DonationForm({ initiative }: DonationFormProps) {
       throw new Error('Invalid email');
     }
   }
+
+  //async function saveDonation({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData){
+  const saveDonation = useCallback(
+    async ({
+      organizationId,
+      initiativeId,
+      categoryId,
+      userId,
+      sender,
+      chainName,
+      network,
+      coinValue,
+      usdValue,
+      currency,
+    }: DonationData) => {
+      const donation = {
+        organization: {
+          connect: { id: organizationId },
+        },
+        initiative: {
+          connect: { id: initiativeId },
+        },
+        category: {
+          connect: { id: categoryId },
+        },
+        userId,
+        network,
+        chain: chainName as Chain,
+        wallet: sender,
+        amount: coinValue,
+        usdvalue: usdValue,
+        asset: currency,
+        paytype: 'crypto',
+        status: 1,
+      };
+      console.log('DONATION', donation);
+      //const ApiKey = process.env.CFCE_REGISTRY_API_KEY || ''
+      //const donationResp = await fetch('/api/donations', {method:'post', headers: {'x-api-key': ApiKey }, body:JSON.stringify(donation)})
+      //const donationJson = await donationResp.json()
+      //console.log('SAVED DONATION', donationJson)
+      //if(!donationJson.success){
+      //  //setButtonText('ERROR')
+      //  //setDisabled(true)
+      //  setButtonMessage('Error saving donation')
+      //  return false
+      //}
+      const donationResp = await createDonation(donation);
+      if (!donationResp) {
+        setButtonMessage('Error saving donation');
+        return false;
+      }
+      const donationId = donationResp.id;
+      return donationId;
+    },
+    [],
+  );
 
   return (
     <div className="flex min-h-full w-full">

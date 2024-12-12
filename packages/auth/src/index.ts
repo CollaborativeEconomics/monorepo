@@ -1,6 +1,7 @@
 import {
   createAnonymousUser,
   createNewUser,
+  fetchUserByWallet,
   githubLogin,
   googleLogin,
   signOutAction,
@@ -12,6 +13,7 @@ import { auth, authOptions, handlers, signIn, signOut } from "./nextAuth"
 export {
   createNewUser,
   createAnonymousUser,
+  fetchUserByWallet,
   AuthButton,
   LogoutButton,
   authOptions,
