@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "frog:dev": "frog dev",
     "deploy": "vercel",
     "build": "next build",
     "start": "next start",
