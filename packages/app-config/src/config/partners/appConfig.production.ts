@@ -13,7 +13,19 @@ appConfig.siteInfo = {
 }
 
 // Override chains (empty in this case)
-appConfig.chains = {}
+appConfig.chains = {
+  xdc: {
+    slug: "xdc",
+    network: "mainnet",
+    contracts: {
+      // receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
+      // storyERC1155: "0x0000000000000000000000000000000000000000",
+    },
+    // wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
+    enabledWallets: ["metamask"],
+    tokens: ["XDC"],
+  },
+}
 
 // Override auth
 appConfig.auth = ["google" as AuthTypes]

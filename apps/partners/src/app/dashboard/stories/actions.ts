@@ -11,13 +11,18 @@ export async function saveStory({
   story,
   organizationId,
   initiativeId,
+  categoryId,
   images,
   media,
 }: {
   userId: string
-  story: Omit<Prisma.StoryCreateInput, "organization" | "initiative">
+  story: Omit<
+    Prisma.StoryCreateInput,
+    "organization" | "initiative" | "category"
+  >
   organizationId: string
   initiativeId: string
+  categoryId: string
   images?: (string | File)[]
   media?: string | File
 }) {
@@ -26,6 +31,7 @@ export async function saveStory({
     story,
     organizationId,
     initiativeId,
+    categoryId,
     images,
     media,
   })

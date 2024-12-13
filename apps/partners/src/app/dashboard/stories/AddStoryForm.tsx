@@ -4,7 +4,7 @@
 import type { Category, Initiative } from '@cfce/database';
 import type { File } from 'formidable';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
 import Checkbox from '~/components/form/checkbox';
 import FileView from '~/components/form/fileview';
@@ -53,6 +53,7 @@ export default function AddStoryForm({
     watch,
     formState: { errors },
   } = useForm<FormData>();
+  console.log({ errors });
 
   const initiativesOptions = initiatives.map(initiative => ({
     id: initiative.id,
@@ -67,7 +68,8 @@ export default function AddStoryForm({
   const imageFields = watch(['image1', 'image2', 'image3', 'image4', 'image5']);
   const mediaFile = watch('media');
 
-  async function onSubmit(data: FormData) {
+  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+    console.log('onSubmit', data);
     if (!data.name || !data.desc || !data.image1 || !data.initiativeId) {
       setMessage('All required fields must be filled');
       return;
@@ -97,8 +99,8 @@ export default function AddStoryForm({
           name: data.name,
           description: data.desc,
           amount: Number.parseInt(data.amount),
-          categoryId: data.categoryId,
         },
+        categoryId: data.categoryId,
         organizationId: orgId,
         initiativeId: data.initiativeId,
         images,
@@ -119,11 +121,19 @@ export default function AddStoryForm({
       setMessage('An error occurred while saving the story.');
       setButtonDisabled(false);
     }
-  }
+  };
+
+  const onInvalid = (errors: unknown) => {
+    console.log('onInvalid', errors);
+  };
 
   return (
     <div className={styles.mainBox}>
-      <form className={styles.vbox} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className={styles.vbox}
+        onSubmit={handleSubmit(onSubmit, onInvalid)}
+        // onSubmit={data => console.log('submit', data)}
+      >
         {/* Image Upload Inputs */}
         <FileView
           id="image1"
@@ -160,9 +170,10 @@ export default function AddStoryForm({
 
         {/* Media Input */}
         <div>
-          <label>Other media (PDF, MP3, MP4, etc.):</label>
+          <label htmlFor="media">Other media (PDF, MP3, MP4, etc.):</label>
           <input
             type="file"
+            id="media"
             {...register('media')}
             accept=".pdf,.mp3,.mp4,.webm"
           />
@@ -179,17 +190,14 @@ export default function AddStoryForm({
           register={register('categoryId', { required: true })}
           options={categoriesOptions}
         />
-        <TextInput
-          label="Title"
-          register={register('name', { required: true })}
-        />
+        <TextInput label="Title" {...register('name', { required: true })} />
         <TextArea
           label="Description"
-          register={register('desc', { required: true })}
+          {...register('desc', { required: true })}
         />
         <TextInput
           label="Estimated Amount Spent"
-          register={register('amount', { required: true })}
+          {...register('amount', { required: true })}
         />
         <Checkbox
           label="Mint Story NFT"
@@ -197,7 +205,14 @@ export default function AddStoryForm({
           check={true}
         />
 
-        <ButtonBlue text={buttonText} disabled={buttonDisabled} />
+        <button
+          type="submit"
+          // text={buttonText}
+          disabled={buttonDisabled}
+          // onClick={handleSubmit(onSubmit)}
+        >
+          {buttonText}
+        </button>
 
         {/* Validation error handling */}
         {errors.name && <p className="error">Title is required</p>}

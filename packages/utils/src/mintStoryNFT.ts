@@ -2,6 +2,7 @@
 // const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
 
 import { posthogNodeClient } from "@cfce/analytics"
+import appConfig from "@cfce/app-config"
 import { BlockchainManager } from "@cfce/blockchain-tools"
 
 const uuidToUint256 = (uuid: string) => {
@@ -19,8 +20,10 @@ const uuidToUint256 = (uuid: string) => {
  */
 export async function mintStoryNFT(storyId: string, tokenCID: string) {
   const uint256 = uuidToUint256(storyId)
-  const address = process.env.XDC_WALLET_ADDRESS
-  const contractId = process.env.XDC_NFT1155_CONTRACT
+  // const address = process.env.XDC_WALLET_ADDRESS
+  const address = appConfig.chains?.xdc?.wallet
+  // const contractId = process.env.XDC_NFT1155_CONTRACT
+  const contractId = appConfig.chains?.xdc?.contracts?.storyERC1155
   const walletSeed = process.env.XDC_WALLET_SECRET
   console.log({ uint256, tokenCID, contractId, address })
 
