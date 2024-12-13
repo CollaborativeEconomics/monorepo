@@ -1,5 +1,4 @@
 'use client';
-import { usePostHog } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
 import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
 import { BlockchainManager } from '@cfce/blockchain-tools';
@@ -21,6 +20,7 @@ import { CheckboxWithText } from '~/ui/checkbox';
 import { Input } from '~/ui/input';
 import { Label } from '~/ui/label';
 import { Separator } from '~/ui/separator';
+import { usePostHog } from '../../../analytics/dist';
 import createDonation from '../actions/createDonation';
 import { CarbonCreditDisplay } from './CarbonCreditDisplay';
 import { ChainSelect } from './ChainSelect';

@@ -1,6 +1,6 @@
 "use server"
 import "server-only"
-import { posthogNodeClient } from "@cfce/analytics"
+import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
 import { BlockchainManager } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"

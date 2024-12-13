@@ -1,5 +1,5 @@
 import "server-only"
-import { posthogNodeClient } from "@cfce/analytics"
+import { posthogNodeClient } from "@cfce/analytics/server"
 import {
   type Prisma,
   type Story,

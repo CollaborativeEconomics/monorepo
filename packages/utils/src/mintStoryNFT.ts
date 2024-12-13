@@ -1,7 +1,7 @@
 // @ts-ignore turbo should error out if these are not set
 // const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
 
-import { posthogNodeClient } from "@cfce/analytics"
+import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
 import { BlockchainManager } from "@cfce/blockchain-tools"
 

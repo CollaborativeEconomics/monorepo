@@ -2,8 +2,16 @@
   "name": "@cfce/analytics",
   "version": "0.1.0",
   "private": true,
-  "main": "./dist/index.jsx",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.jsx"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    }
+  },
   "scripts": {
     "build": "rm -rf dist && tsc",
     "lint": "eslint .",

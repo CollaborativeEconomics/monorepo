@@ -23,11 +23,4 @@ export function PostHogProvider({
   return <PostHogProviderBase client={posthog}>{children}</PostHogProviderBase>;
 }
 
-const posthogNodeClient = new PostHogNode(
-  'phc_ycqncNaqbtyTy1Drs5p1paG8TzekkVR4nq7CrRVZEYP',
-  { host: 'https://us.i.posthog.com' },
-);
-
-console.log('posthogNodeClient', posthogNodeClient);
-
-export { usePostHog, posthogNodeClient };
+export { usePostHog };
