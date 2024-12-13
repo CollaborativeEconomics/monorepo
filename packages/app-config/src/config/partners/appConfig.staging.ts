@@ -21,10 +21,9 @@ const chains: AppConfig["chains"] = {
     network: "testnet",
     contracts: {
       // receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-      storyERC1155:
-        "0x5c4c3dcdbf2ac19c5e04a790becc603f89e188b67204b5cb25889ce3858acf9a",
+      storyERC1155: "0xc917ff4128525a65639d18f1d240a788081f022d",
     },
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
+    wallet: "0x1AC546d21473062F3c3B16B6392A2EC26F4539f0",
     enabledWallets: ["metamask"],
     tokens: ["XDC"],
   },
