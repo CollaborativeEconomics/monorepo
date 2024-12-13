@@ -5,6 +5,4 @@ const posthogNodeClient = new PostHog(
   { host: "https://us.i.posthog.com" },
 )
 
-// console.log("posthogNodeClient", posthogNodeClient)
-
 export { posthogNodeClient }

@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 import '~/styles/globals.css';
-import { posthogNodeClient } from '@cfce/analytics/server';
 import { SessionProvider } from 'next-auth/react';
 import Sidebar from '~/components/sidebar';
 export const metadata: Metadata = {
@@ -15,13 +14,6 @@ export const viewport: Viewport = { initialScale: 1.0, width: 'device-width' };
 const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  posthogNodeClient.capture({
-    distinctId: '123',
-    event: 'ping',
-    properties: {
-      url: 'https://cfce.com',
-    },
-  });
   return (
     <html lang="en">
       <body>

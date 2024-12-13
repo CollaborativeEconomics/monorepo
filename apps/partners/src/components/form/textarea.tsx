@@ -1,9 +1,7 @@
 import React, { forwardRef, type HTMLProps } from 'react';
-import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface TextAreaProps {
   label: string;
-  register: UseFormRegisterReturn;
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(

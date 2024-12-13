@@ -4,7 +4,7 @@
 import type { Category, Initiative } from '@cfce/database';
 import type { File } from 'formidable';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
 import Checkbox from '~/components/form/checkbox';
 import FileView from '~/components/form/fileview';
