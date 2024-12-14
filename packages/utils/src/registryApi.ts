@@ -11,7 +11,7 @@ export class RegistryApi {
 
   constructor() {
     // Use window.location.origin in the browser, fallback to "/" for SSR
-    this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : "/api"
+    this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : "http://localhost:3000/api"
     //this.baseUrl = appConfig.apis.registry.apiUrl
     //console.log('BASE URL', this.baseUrl)
     if (!this.baseUrl) {
@@ -33,10 +33,10 @@ export class RegistryApi {
     try {
       const response = await fetch(url, { ...options, headers })
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "An error occurred")
-      }
+      //console.log('DATA', data)
+      //if (!response.ok) {
+      //  throw new Error(data.error || "An error occurred")
+      //}
 
       return {
         data,
@@ -53,31 +53,36 @@ export class RegistryApi {
   }
 
   async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "GET" })
+    const res = await this.request<T>(endpoint, { method: "GET" })
+    //console.log('RES', res)
+    return res
   }
 
   async post<T, U = unknown>(
     endpoint: string,
     data: U,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
+    const res = await this.request<T>(endpoint, { method: "POST", body: JSON.stringify(data) })
+    //console.log('RES', res)
+    return res
   }
 
   async put<T, U = unknown>(
     endpoint: string,
     data: U,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
+    const res = await this.request<T>(endpoint, {
       method: "PUT",
       body: JSON.stringify(data),
     })
+    //console.log('RES', res)
+    return res
   }
 
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "DELETE" })
+    const res = await this.request<T>(endpoint, { method: "DELETE" })
+    console.log('RES', res)
+    return res
   }
 }
 

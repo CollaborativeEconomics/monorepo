@@ -5,20 +5,17 @@ import { headers } from 'next/headers'
 
 export async function GET(req: NextRequest) {
   try {
-    //const apiKey = req.headers.get('x-api-key')
-    const apiKey = (await headers()).get('x-api-key')
-
-    const authorized = await checkApiKey(apiKey)
-
-    if (!authorized) {
-      return NextResponse.json({ success: false }, { status: 403 })
-    }
+    //const apiKey = (await headers()).get('x-api-key')
+    //const authorized = await checkApiKey(apiKey)
+    //if (!authorized) {
+    //  return NextResponse.json({ success: false }, { status: 403 })
+    //}
 
     const { searchParams } = new URL(req.url)
     const query = Object.fromEntries(searchParams.entries())
 
     const result = await getOrganizations(query)
-    return NextResponse.json({ success: true, data: result }, { status: 200 }) // Status code 200 for successful GET request
+    return NextResponse.json(result, { status: 200 }) // Status code 200 for successful GET request
   } catch (error) {
     console.error({ error })
     return NextResponse.json(
@@ -34,7 +31,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     // TODO: ENABLE THIS
-    //const apiKey = req.headers.get("x-api-key")
+    //const apiKey = (await headers()).get('x-api-key')
     //const authorized = await checkApiKey(apiKey)
     //if (!authorized) {
     //  return NextResponse.json({ success: false }, { status: 403 })
@@ -45,7 +42,7 @@ export async function POST(req: NextRequest) {
       ...organization,
       wallets: { create: wallets },
     })
-    return NextResponse.json({ success: true, data: result }, { status: 201 }) // Status code 201 for successful POST request
+    return NextResponse.json(result, { status: 201 }) // Status code 201 for successful POST request
   } catch (error) {
     console.error({ error })
     return NextResponse.json(

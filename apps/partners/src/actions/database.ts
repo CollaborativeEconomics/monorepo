@@ -6,7 +6,7 @@ import * as db from "@cfce/database"
 export async function newContract(data:Prisma.ContractCreateInput): Promise<Contract> {
   try {
     const record = await db.newContract(data)
-    console.log('RESULT', record)
+    //console.log('RESULT', record)
     return record
   } catch (error) {
     console.log('ERROR', error)
@@ -17,7 +17,7 @@ export async function newContract(data:Prisma.ContractCreateInput): Promise<Cont
 export async function getOrganizationById(id:string) {
   try {
     const result = await db.getOrganizationById(id)
-    console.log('RESULT', result)
+    //console.log('RESULT', result)
     return result
   } catch (error) {
     console.log('ERROR', error)
@@ -28,7 +28,7 @@ export async function getOrganizationById(id:string) {
 export async function getOrganizations() {
   try {
     const result = await db.getOrganizations({}) // All orgs
-    console.log('RESULT', result)
+    //console.log('RESULT', result)
     return result
   } catch (error) {
     console.log('ERROR', error)
@@ -45,7 +45,18 @@ interface ContractsQuery {
 export async function getContracts(query:ContractsQuery) {
   try {
     const result = await db.getContracts(query)
-    console.log('RESULT', result)
+    //console.log('RESULT', result)
+    return result
+  } catch (error) {
+    console.log('ERROR', error)
+    throw new Error(error instanceof Error ? error.message : "Unknown error")
+  }
+}
+
+export async function getEventsByOrganization(orgid: string) {
+  try {
+    const result = await db.getEvents({orgid})
+    //console.log('RESULT', result)
     return result
   } catch (error) {
     console.log('ERROR', error)

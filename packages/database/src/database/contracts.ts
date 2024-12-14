@@ -32,7 +32,7 @@ export async function getContracts(query:ContractQuery) {
 
   // all contracts by chain and network
   if (query?.chain && query?.network) {
-    const result = await getContract(query.chain, query.network)
+    const result = await getContractsByChain(query.chain, query.network)
     return result
   }
 
@@ -59,6 +59,11 @@ export async function getContractById(id:string) {
 
 export async function getContract(entity_id:string, chain:string, network:string, contract_type:string) {
   const  result = await prismaClient.contract.findMany({ where: { entity_id, chain, network, contract_type } })
+  return result
+}
+
+export async function getContractsByChain(chain:string, network:string) {
+  const  result = await prismaClient.contract.findMany({ where: { chain, network } })
   return result
 }
 

@@ -1,13 +1,10 @@
+'use client'
 import { useState, useEffect } from 'react';
-//import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import { getToken } from 'next-auth/jwt';
+//import { useRouter } from 'next/navigation'
 import Link from 'next/link';
-import Dashboard from '~/components/dashboard';
-import Sidebar from '~/components/sidebar';
 import Title from '~/components/title';
-import Event from '~/components/event';
+import EventView from '~/components/event';
 import Label from '~/components/form/label';
 import TextFile from '~/components/form/textfile';
 import TextInput from '~/components/form/textinput';
@@ -20,7 +17,7 @@ import styles from '~/styles/dashboard.module.css';
 import { randomString, randomNumber } from '~/utils/random';
 import dateToPrisma from '~/utils/DateToPrisma';
 import { apiFetch } from '~/utils/api';
-import type { Prisma, Initiative, Event as EventType } from "@cfce/database"
+import type { Prisma, Initiative, Event, OrganizationData } from "@cfce/database"
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type Dictionary = { [key: string]: any };
@@ -80,38 +77,23 @@ function getMediaExtension(mime:string) {
   return ext;
 }
 
-export default function Page() {
+interface PageProps { organization: OrganizationData, events: Event[] }
+
+export default function Page({organization, events}:PageProps) {
   //const orgid = organization?.id || ''
   //const initiatives = organization?.initiative || [{id:'0', title:'No initiatives'}]
   //const router = useRouter()
-  const { data: session, update } = useSession();
-  console.log('events page', { session });
+  console.log('Events org', organization?.id);
 
-  const [orgid, setOrgid] = useState(session?.orgId || '');
+  const orgId = organization?.id
   const [initiatives, setInitiatives] = useState<Initiative[]>([]);
   const [initsel, setInitsel] = useState<SelectType[]>([]);
-  const [events, setEvents] = useState<EventType[]>([]);
+  //const [events, setEvents] = useState<Event[]>([]);
 
-  useEffect(() => {
-    async function loadData() {
-      const oid = session?.orgId ?? '';
-      const org = (await apiFetch(`organization?id=${oid}`)) || {};
-      const ini = org?.initiative || [];
-      const iid = org?.initiative?.length > 0 ? org?.initiative[0].id : '';
-      const evt = (await apiFetch(`events?orgid=${oid}`)) || [];
-      const sel = listInitiatives(ini);
-      console.log('ORG:', org);
-      console.log('INI:', ini);
-      console.log('IID:', iid);
-      console.log('EVT:', evt);
-      setOrgid(oid);
-      setInitId(iid);
-      setInitiatives(ini);
-      setInitsel(sel);
-      setEvents(evt.result);
-    }
-    loadData();
-  }, [update]);
+  const ini = organization?.initiative || [];
+  const iid = organization?.initiative?.length > 0 ? organization?.initiative[0].id : '';
+  const sel = listInitiatives(ini);
+  console.log('INIT:', iid);
 
   function listInitiatives(initiatives:Initiative[]) {
     if (!initiatives) {
@@ -121,7 +103,6 @@ export default function Page() {
     for (let i = 0; i < initiatives.length; i++) {
       list.push({ id: initiatives[i].id, name: initiatives[i].title });
     }
-    //setInitId(list[0].id)
     return list;
   }
 
@@ -164,7 +145,6 @@ export default function Page() {
     }
     showMessage('Processing form...');
     console.log('SUBMIT', data);
-    console.log('INITID', initId);
     const selinput = document.getElementById('selectInit') as HTMLInputElement;
     const selinit = selinput?.value;
     console.log(selinit);
@@ -199,7 +179,7 @@ export default function Page() {
     const payrate = Number.parseFloat(data.payrate || '0');
     const record = {
       created: dateToPrisma(new Date()),
-      organizationid: orgid,
+      organizationid: orgId,
       initiativeid: data.initiativeId,
       name: data.name,
       description: data.desc,
@@ -293,9 +273,6 @@ export default function Page() {
     }
   }
 
-  const iid = initiatives?.length > 0 ? initiatives[0].id : '';
-  const [initId, setInitId] = useState(iid);
-  console.log('INITID:', initId);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, showMessage] = useState('Enter event info and upload image');
@@ -347,105 +324,102 @@ export default function Page() {
   }, [change]);
 
   async function onOrgChange(id:string) {
-    console.log('ORG CHANGED', orgid, 'to', id);
+    console.log('ORG CHANGED', orgId, 'to', id);
   }
 
   return (
-    <Dashboard>
-      <Sidebar />
-      <div className={styles.content}>
-        <Title text="Start a Volunteer-to-Earn Event" />
-        <p className={styles.intro}>
-          Volunteer-to-Earn Events reward participants with tokens for their
-          contribution to make the world a better place. Increase volunteer
-          participation in your initiatives with V2E
-        </p>
-        <div className={styles.mainBox}>
-          <form className={styles.vbox}>
-            <FileView
-              id="image"
-              register={register('image')}
-              source={imgSource}
-              width={250}
-              height={250}
-            />
-            <Select
-              id="selectInit"
-              label="Initiative"
-              register={register('initiativeId')}
-              options={initsel}
-            />
-            <TextInput label="Title" register={register('name')} />
-            <TextArea label="Description" register={register('desc')} />
-            <TextInput
-              label="Estimated Budget for the event (in USD)"
-              register={register('budget')}
-            />
-            <TextInput
-              label="Dollars per unit ($20 per tree, $5 per meal, $150 per wheelchair)"
-              register={register('unitvalue')}
-            />
-            <TextInput
-              label="Unit label (tree, meal, wheelchair)"
-              register={register('unitlabel')}
-            />
-            <TextInput
-              label="Total units to deliver"
-              register={register('quantity')}
-            />
-            <TextInput
-              label="Number of volunteers expected to participate"
-              register={register('volunteers')}
-            />
-            <TextInput
-              label="Estimated payment to volunteers per unit (in USD)"
-              register={register('payrate')}
-            />
-            <small className="mb-8 text-slate-300">
-              * If you leave the payment blank it will not be considered
-              Volunteer-to-Earn
-            </small>
-            {/* <Checkbox label="Mint Event NFT" register={register('yesNFT')} check={false} /> */}
-          </form>
-          <ButtonBlue
-            id="buttonSubmit"
-            text={buttonText}
-            disabled={buttonDisabled}
-            onClick={() =>
-              onSubmit({
-                initiativeId,
-                name,
-                desc,
-                budget,
-                unitvalue,
-                unitlabel,
-                quantity,
-                payrate,
-                volunteers,
-                image,
-                yesNFT,
-              })
-            }
+    <div className={styles.content}>
+      <Title text="Start a Volunteer-to-Earn Event" />
+      <p className={styles.intro}>
+        Volunteer-to-Earn Events reward participants with tokens for their
+        contribution to make the world a better place. Increase volunteer
+        participation in your initiatives with V2E
+      </p>
+      <div className={styles.mainBox}>
+        <form className={styles.vbox}>
+          <FileView
+            id="image"
+            register={register('image')}
+            source={imgSource}
+            width={250}
+            height={250}
           />
-          <p id="message" className="text-center">
-            {message}
-          </p>
-        </div>
-        <div>
-          <h1 className="text-center text-2xl my-24">Latest events</h1>
-          {events?.length > 0 ? (
-            events.map(item => (
-              <div className={styles.viewBox} key={item.id}>
-                <Link href={`/dashboard/events/${item.id}`}>
-                  <Event key={item.id} {...item} />
-                </Link>
-              </div>
-            ))
-          ) : (
-            <h1 className="text-center text-2xl my-24">No events found</h1>
-          )}
-        </div>
+          <Select
+            id="selectInit"
+            label="Initiative"
+            register={register('initiativeId')}
+            options={initsel}
+          />
+          <TextInput label="Title" register={register('name')} />
+          <TextArea label="Description" register={register('desc')} />
+          <TextInput
+            label="Estimated Budget for the event (in USD)"
+            register={register('budget')}
+          />
+          <TextInput
+            label="Dollars per unit ($20 per tree, $5 per meal, $150 per wheelchair)"
+            register={register('unitvalue')}
+          />
+          <TextInput
+            label="Unit label (tree, meal, wheelchair)"
+            register={register('unitlabel')}
+          />
+          <TextInput
+            label="Total units to deliver"
+            register={register('quantity')}
+          />
+          <TextInput
+            label="Number of volunteers expected to participate"
+            register={register('volunteers')}
+          />
+          <TextInput
+            label="Estimated payment to volunteers per unit (in USD)"
+            register={register('payrate')}
+          />
+          <small className="mb-8 text-slate-300">
+            * If you leave the payment blank it will not be considered
+            Volunteer-to-Earn
+          </small>
+          {/* <Checkbox label="Mint Event NFT" register={register('yesNFT')} check={false} /> */}
+        </form>
+        <ButtonBlue
+          id="buttonSubmit"
+          text={buttonText}
+          disabled={buttonDisabled}
+          onClick={() =>
+            onSubmit({
+              initiativeId,
+              name,
+              desc,
+              budget,
+              unitvalue,
+              unitlabel,
+              quantity,
+              payrate,
+              volunteers,
+              image,
+              yesNFT,
+            })
+          }
+        />
+        <p id="message" className="text-center">
+          {message}
+        </p>
       </div>
-    </Dashboard>
+      <div>
+        <h1 className="text-center text-2xl my-24">Latest events</h1>
+        {events?.length > 0 ? (
+          events.map(item => (
+            <div className={styles.viewBox} key={item.id}>
+              <Link href={`/dashboard/events/${item.id}`}>
+                <EventView key={item.id} {...item} />
+              </Link>
+            </div>
+          ))
+        ) : (
+          <h1 className="text-center text-2xl my-24">No events found</h1>
+        )}
+      </div>
+    </div>
   );
 }
