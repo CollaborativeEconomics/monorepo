@@ -35,30 +35,24 @@ const chains: AppConfig["chains"] = {
     enabledWallets: ["metamask"],
     tokens: ["XDC"],
   },
-  stellar: {
-    slug: "stellar",
+  arbitrum: {
+    slug: "arbitrum",
     network: "testnet",
-    contracts: {},
-    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
-    enabledWallets: ["freighter"],
-    tokens: ["XLM", "USDC"],
-  },
-  xrpl: {
-    slug: "xrpl",
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
-    network: "testnet",
-    contracts: {},
-    enabledWallets: ["xaman"],
-    tokens: ["XRP"],
-    destinationTag: "77777777",
+    contracts: {
+      receiptMintbotERC721: "0x55e3f6e2abe8443047ec5f70875791a2463c8137c07001c3f279d4f0e0cb62f",
+    },
+    wallet: "0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3",
+    enabledWallets: ["metamask"],
+    tokens: ["ARB"],
   },
 }
 
 const chainDefaults: AppConfig["chainDefaults"] = {
   network: "testnet",
   wallet: "metamask",
-  chain: "xdc",
-  coin: "XDC",
+  chain: "arbitrum",
+  coin: "ARB",
+  defaultAddress: "0x2f033661Aca76816d9f729D1F5f190597E539C3f",
 }
 
 const auth = appConfig.auth as AuthTypes[]

@@ -164,6 +164,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   }, [selectedToken, selectedChain, setChainState]);
 
   const checkBalance = useCallback(async () => {
+    console.log('CHAIN INTERFACE', chainInterface)
     if (!chainInterface || !('getBalance' in chainInterface)) {
       throw new Error('No chain interface or getBalance not supported');
     }

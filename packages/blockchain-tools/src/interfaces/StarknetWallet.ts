@@ -124,7 +124,6 @@ class StarknetWallet extends ChainBaseClass {
       }
       
       const account = await this.connector?.account();
-      const account = await this.connector?.account();
       if (!account) {
         throw new Error("No account found");
       }

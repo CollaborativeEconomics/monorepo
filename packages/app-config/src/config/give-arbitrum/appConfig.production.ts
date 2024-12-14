@@ -12,7 +12,7 @@ appConfig.siteInfo = {
   description: "Make tax-deductible donations with crypto",
   logo: {
     light: "/newui/logo.svg",
-    dark: "/newui/logoWhite.svg",
+    dark: "/newui/logo.png",
   },
 }
 

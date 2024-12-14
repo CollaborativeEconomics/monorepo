@@ -306,23 +306,40 @@ export default class MetaMaskWallet extends ChainBaseClass {
   }
 
   async getBalance(): Promise<string | undefined | null> {
+    const tokenContract = "0x49FAfA0e73eAB2A558ca6B5E582bEdbFC393d519";
+
     console.log("Get balance...")
+    await this.connect()
     if (!this.metamask) {
       console.error("Error getting balance, Metamask not available")
       return
     }
-    const balance = await this.metamask.request<string>({
-      method: "eth_getBalance",
-      params: [this.connectedWallet, "latest"],
-    })
-    console.log("Balance:", balance)
-    //web3.eth.getBalance(address, (err,res) => {
-    //  console.log('Balance', address.substr(0,8), res);
-    //  let bal = (parseInt(res)/10**18).toLocaleString('en-US', { useGrouping: true, minimumFractionDigits: 4, maximumFractionDigits: 4});
-    //  //$('user-address').innerHTML = address.substr(0,10);
-    //  //$('user-balance').innerHTML = bal+' BNB';
-    //});
-    return balance
+
+    if (!this.web3) {
+      console.error("Error getting balance, Web3 not available")
+      return
+    }
+
+    try {
+      if (!tokenContract) {
+        // Get native token balance
+        const balance = await this.metamask.request<string>({
+          method: "eth_getBalance",
+          params: [this.connectedWallet, "latest"],
+        })
+        console.log("Native Balance:", balance)
+        return balance
+      }
+
+      // Get ERC20 token balance
+      const contract = new this.web3.eth.Contract(erc20abi, tokenContract)
+      const balance: number = await contract.methods.balanceOf(this.connectedWallet).call()
+      console.log("Token Balance:", balance)
+      return balance.toString()
+    } catch (error) {
+      console.error("Error fetching balance:", error)
+      return null
+    }
   }
 
   async getGasPrice(): Promise<string | undefined> {
