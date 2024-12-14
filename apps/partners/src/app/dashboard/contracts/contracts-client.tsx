@@ -57,10 +57,14 @@ export default function Page({organization, contracts, initialChain, network}:Pa
   //  console.log('SEL', contract)
   //}
 
-  const chains = (Object.keys(chainConfig) as ChainSlugs[]).map(chain => ({
-    id: chainConfig[chain].slug,
-    name: chainConfig[chain].name,
-  }));
+  function listChains(){
+    const chains = (Object.keys(chainConfig) as ChainSlugs[]).map(chain => ({
+      id: chainConfig[chain].name,
+      name: chainConfig[chain].name,
+    }));
+    console.log('CHAINS', chains)
+    return chains
+  }
 
   const initialWallets = listWallets(initialChain, network)  
   console.log('WALLETS', initialWallets)
@@ -69,6 +73,7 @@ export default function Page({organization, contracts, initialChain, network}:Pa
   //const [wallets, setWallets] = useState(initialWallets)
   const wallets = initialWallets
   console.log('wallets', organization?.wallets)
+  console.log('chain', initialChain)
   console.log('wallet', initialWallet)
   console.log('contract', initialContract)
 
@@ -106,7 +111,7 @@ export default function Page({organization, contracts, initialChain, network}:Pa
           <Select
             label="Chain"
             register={register('chain')}
-            options={chains}
+            options={listChains()}
           />
           <Select
             label="Wallet"
