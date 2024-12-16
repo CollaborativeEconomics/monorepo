@@ -1,3 +1,4 @@
+//"use client"
 import React from 'react';
 import { signIn } from '@cfce/auth';
 
@@ -6,21 +7,16 @@ interface SignInButtonProps {
 }
 
 export default function SignInButton({ className }: SignInButtonProps) {
-  //async function onSignIn(evt){
-  //  console.log('SIGNIN')
-  //  evt.preventDefault();
-  //  await signIn('google');
-  //}
+  async function onSignIn(evt:Event){
+    console.log('SIGNIN')
+    evt.preventDefault();
+    await signIn();
+    //await signIn('google');
+  }
 
   return (
     <>
-      <a
-        href={'/api/auth/signin'}
-        className=""
-        onClick={(e) => {
-          e.preventDefault()
-          signIn()
-        }}>Sign in</a>
+      <a href={'/api/auth/signin'} className="" >Sign in</a>
 
       {/*
       <button

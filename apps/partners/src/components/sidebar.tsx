@@ -54,8 +54,14 @@ const SidebarContent = ({
 
     <nav className="flex-grow">
       <ul>
+        {session?.isAdmin && (
+          <li key={'/dashboard/organization'} className="hover:bg-gray-700">
+            <Link href={'/dashboard/organization'} className="block px-4 py-2">
+              New Organization
+            </Link>
+          </li>
+        )}
         {[
-          { href: '/dashboard/organization', label: 'New Organization' },
           { href: '/dashboard/donations', label: 'Donations' },
           { href: '/dashboard/initiatives', label: 'Initiatives' },
           { href: '/dashboard/stories', label: 'Stories' },

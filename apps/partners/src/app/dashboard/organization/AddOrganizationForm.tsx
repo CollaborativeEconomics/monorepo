@@ -107,9 +107,9 @@ export default function AddOrganizationForm({
       slug: '',
       description: '',
       email: '',
-      ein: '',
+      EIN: '',
       phone: '',
-      address: '',
+      mailingAddress: '',
       country: '',
       image: '',
       background: '',
@@ -123,9 +123,9 @@ export default function AddOrganizationForm({
       slug,
       description,
       email,
-      ein,
+      EIN,
       phone,
-      address,
+      mailingAddress,
       country,
       image,
       background,
@@ -137,9 +137,9 @@ export default function AddOrganizationForm({
       'slug',
       'description',
       'email',
-      'ein',
+      'EIN',
       'phone',
-      'address',
+      'mailingAddress',
       'country',
       'image',
       'background',
@@ -159,9 +159,9 @@ export default function AddOrganizationForm({
         <TextInput label="Slug" name="slug" register={register('slug')} />
         <TextInput label="Description" name="description" register={register('description')} />
         <TextInput label="Email" name="email" register={register('email')} />
-        <TextInput label="EIN" name="ein" register={register('ein')} />
+        <TextInput label="EIN" name="EIN" register={register('EIN')} />
         <TextInput label="Phone" name="phone" register={register('phone')} />
-        <TextInput label="Address" name="address" register={register('address')} />
+        <TextInput label="Address" name="mailingAddress" register={register('mailingAddress')} />
         <TextInput label="Country" name="country" register={register('country')} />
         <TextInput label="Image (url)" name="image" register={register('image')} />
         <TextInput label="Background (url)" name="background" register={register('background')} />
