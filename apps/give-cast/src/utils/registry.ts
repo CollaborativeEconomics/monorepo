@@ -19,7 +19,7 @@ const fetchRegistry = async (url: string) => {
   }
 }
 
-const postRegistry = async (url: string, body: Dictionary) => {
+const postRegistry = async (url: string, body: unknown) => {
   try {
     console.log("Posting", url)
     const options = {
@@ -45,7 +45,7 @@ async function dbQuery(endpoint: string) {
   return res
 }
 
-async function dbPost(endpoint: string, body: Dictionary) {
+async function dbPost(endpoint: string, body: unknown) {
   const url = `${apiUrl}/${endpoint}`
   const res = await postRegistry(url, body)
   return res
@@ -56,5 +56,5 @@ export const getInitiatives = () => dbQuery("initiatives")
 export const getOrganizations = () => dbQuery("organizations")
 export const getUserByWallet = (wallet: string) =>
   dbQuery(`users?wallet=${wallet}`)
-export const newDonation = (body: Dictionary) => dbPost("donations", body)
-export const newUser = (body: Dictionary) => dbPost("users", body)
+export const newDonation = (body: unknown) => dbPost("donations", body)
+export const newUser = (body: unknown) => dbPost("users", body)

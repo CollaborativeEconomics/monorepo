@@ -15,10 +15,7 @@ export async function fetchApi(query: string) {
   }
 }
 
-export async function postApi(
-  query: string,
-  data: Record<string, string | number>,
-) {
+export async function postApi(query: string, data: unknown) {
   try {
     const url = `/api/${query}`
     const body = JSON.stringify(data)
