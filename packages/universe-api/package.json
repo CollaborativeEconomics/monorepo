@@ -181,7 +181,6 @@
     }
   },
   "dependencies": {
-    "@cfce/auth": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",

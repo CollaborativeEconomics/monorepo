@@ -1,7 +1,7 @@
 import "server-only"
 import type { NFTData, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery } from "@cfce/types"
+import type { ListQuery, ChainSlugs } from "@cfce/types"
 
 interface NFTDataQuery extends ListQuery {
   id?: string
@@ -88,8 +88,11 @@ export async function newNftData(data: Prisma.NFTDataCreateInput) {
 
 export async function getNFTbyTokenId(
   tokenId: string,
+  chain: ChainSlugs,
 ): Promise<NFTData | null> {
-  const data = await prismaClient.nFTData.findUnique({ where: { tokenId } })
+  const data = await prismaClient.nFTData.findFirst({
+    where: { tokenId, coinNetwork: chain },
+  })
   return data
 }
 
