@@ -247,5 +247,4 @@ export async function newTBAccount(entity_type:string, entity_id:string){
   }
 }
 
-
 // END
