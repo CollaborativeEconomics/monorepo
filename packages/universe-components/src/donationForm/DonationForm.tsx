@@ -1,4 +1,5 @@
 'use client';
+import { usePostHog } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
 import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
 import { BlockchainManager } from '@cfce/blockchain-tools';
@@ -30,7 +31,6 @@ import {
 import { Input } from '~/ui/input';
 import { Label } from '~/ui/label';
 import { Separator } from '~/ui/separator';
-import { usePostHog } from '../../../analytics/dist';
 import createDonation from '../actions/createDonation';
 import { CarbonCreditDisplay } from './CarbonCreditDisplay';
 import { ChainSelect } from './ChainSelect';
@@ -70,8 +70,8 @@ function sleep(ms: number) {
 }
 
 export default function DonationForm({ initiative, rate }: DonationFormProps) {
-  const posthog = usePostHog();
   // TODO: get contract id from contracts table not initiative record
+  const posthog = usePostHog();
   const contractId = initiative.contractcredit; // needed for CC contract
   const organization = initiative.organization;
   const [loading, setLoading] = useState(false);
@@ -200,15 +200,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         memo: appConfig.chains[selectedChain]?.destinationTag || '',
       };
       const result = await chainInterface.sendPayment(data);
-      if (posthog.__loaded) {
-        posthog.capture('user_donated', {
-          amount,
-          organization: organization.slug,
-          initiative: initiative.slug,
-          token: selectedToken,
-          chain: selectedChain,
-        });
-      }
       console.log('PAYMENT RESULT', result);
       return result;
     },
@@ -300,6 +291,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       setButtonMessage('Approving payment...');
 
       const paymentResult = await sendPayment(destinationWalletAddress, amount);
+      if (posthog.__loaded) {
+        posthog.capture('user_donated', {
+          amount,
+          organization: organization.slug,
+          initiative: initiative.slug,
+          token: selectedToken,
+          chain: selectedChain,
+        });
+      }
       await handleMinting(paymentResult);
     } catch (error) {
       handleError(error);
@@ -314,7 +314,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     checkBalance,
     handleMinting,
     handleError,
-    posthog,
   ]);
 
   function validateForm({ email }: { email: string }) {

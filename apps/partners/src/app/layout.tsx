@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import '~/styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
 import Sidebar from '~/components/sidebar';
+
 export const metadata: Metadata = {
   title: 'Partners Portal',
   description: 'CFCE Partners Portal',

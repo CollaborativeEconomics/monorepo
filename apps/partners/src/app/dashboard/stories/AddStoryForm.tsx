@@ -53,7 +53,6 @@ export default function AddStoryForm({
     watch,
     formState: { errors },
   } = useForm<FormData>();
-  console.log({ errors });
 
   const initiativesOptions = initiatives.map(initiative => ({
     id: initiative.id,
@@ -69,7 +68,6 @@ export default function AddStoryForm({
   const mediaFile = watch('media');
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    console.log('onSubmit', data);
     if (!data.name || !data.desc || !data.image1 || !data.initiativeId) {
       setMessage('All required fields must be filled');
       return;
@@ -123,15 +121,11 @@ export default function AddStoryForm({
     }
   };
 
-  const onInvalid = (errors: unknown) => {
-    console.log('onInvalid', errors);
-  };
-
   return (
     <div className={styles.mainBox}>
       <form
         className={styles.vbox}
-        onSubmit={handleSubmit(onSubmit, onInvalid)}
+        onSubmit={handleSubmit(onSubmit)}
         // onSubmit={data => console.log('submit', data)}
       >
         {/* Image Upload Inputs */}
