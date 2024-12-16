@@ -13,9 +13,8 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url)
     const query = Object.fromEntries(searchParams.entries())
-
     const result = await getOrganizations(query)
-    return NextResponse.json(result, { status: 200 }) // Status code 200 for successful GET request
+    return NextResponse.json({ success: true, data: result }, { status: 200 }) // Status code 200 for successful GET request
   } catch (error) {
     console.error({ error })
     return NextResponse.json(
@@ -42,7 +41,7 @@ export async function POST(req: NextRequest) {
       ...organization,
       wallets: { create: wallets },
     })
-    return NextResponse.json(result, { status: 201 }) // Status code 201 for successful POST request
+    return NextResponse.json({ success: true, data: result }, { status: 201 }) // Status code 201 for successful POST request
   } catch (error) {
     console.error({ error })
     return NextResponse.json(

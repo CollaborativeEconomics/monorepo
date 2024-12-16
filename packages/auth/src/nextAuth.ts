@@ -46,6 +46,7 @@ const authOptions: NextAuthConfig = {
           token.orgId = session.orgId
         }
       }
+      //console.log('TOKEN', token)
       // Handle organization and role-based logic
       if (token?.email) {
         //console.log('AUTH MAIL', token.email)

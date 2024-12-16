@@ -51,6 +51,7 @@ export async function getOrganizations(
   }
 
   if (query?.email) {
+    console.log("Email", query.email)
     const record = await getOrganizationByEmail(query.email)
     console.log("OrgByMail", record?.email, record?.name)
     return record // return one record, not array
@@ -148,11 +149,12 @@ export async function getOrganizationById(id: string): Promise<OrganizationData 
 }
 
 export async function getOrganizationByEmail(email: string): Promise<OrganizationData | null> {
+  console.log('EMAIL', email)
   const organization = await prismaClient.organization.findFirst({
     where: { email },
     include: includePayload
   })
-  //console.log('ORG', organization)
+  console.log('ORG', organization)
   return organization
 }
 

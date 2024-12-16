@@ -32,16 +32,13 @@ export class RegistryApi {
 
     try {
       const response = await fetch(url, { ...options, headers })
-      const data = await response.json()
-      //console.log('DATA', data)
-      //if (!response.ok) {
-      //  throw new Error(data.error || "An error occurred")
+      const result = await response.json()
+      //console.log('RESULT', result)
+      return result // it already contains success and data fields
+      //return {
+      //  data,
+      //  success: true,
       //}
-
-      return {
-        data,
-        success: true,
-      }
     } catch (error) {
       return {
         data: null as T,
