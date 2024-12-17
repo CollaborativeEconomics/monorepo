@@ -4,6 +4,7 @@
 */
 
 import { Suspense } from 'react';
+import appConfig from '@cfce/app-config';
 import { auth } from '@cfce/auth';
 import { chainConfig } from '@cfce/blockchain-tools';
 import { getOrganizationById, getContracts } from '~/actions/database'
@@ -13,7 +14,8 @@ import ContractsClient from './contracts-client';
 
 export default async function Page() {
   const chain = 'Arbitrum'  // TODO: Get from config
-  const network = 'testnet' // TODO: Get from config
+  const network = appConfig.chainDefaults.network
+  //const network = 'testnet' // TODO: Get from config
   const session = await auth();
   const orgId = session?.orgId ?? '';
   const organizationData = await getOrganizationById(orgId)

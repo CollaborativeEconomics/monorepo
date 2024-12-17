@@ -18,11 +18,10 @@ export async function GET(req: NextRequest) {
     //   )
     // }
 
-    console.log("auth")
+    //console.log("auth")
     const { searchParams } = new URL(req.url)
     const query = Object.fromEntries(searchParams.entries())
-
-    console.log("get", query)
+    //console.log("get", query)
     const result = await getUsers(query)
     return NextResponse.json({ success: true, data: result }, { status: 200 }) // Status code 200 for successful GET request
   } catch (error) {

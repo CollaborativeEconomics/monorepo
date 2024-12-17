@@ -930,6 +930,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.709.0
         version: 3.709.0
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../../packages/app-config
       '@cfce/auth':
         specifier: workspace:*
         version: link:../../packages/auth

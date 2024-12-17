@@ -4,6 +4,7 @@ import type { Chain } from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import appConfig from '@cfce/app-config';
 import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
 import TextInput from '~/components/form/textinput';
@@ -12,8 +13,13 @@ import { createWallet } from './actions';
 
 type WalletFormProps = {
   orgId: string;
-  chains: { id: ChainSlugs; name: Chain }[];
+  chains: { id: string; name: string }[];
 };
+
+type DataForm = {
+  chain: string
+  address: string
+}
 
 export default function WalletForm({ orgId, chains }: WalletFormProps) {
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -22,23 +28,32 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
     'Select chain and enter wallet address',
   );
 
-  const { register, handleSubmit, reset } = useForm({
+  const formMethods = useForm({
     defaultValues: {
-      chain: 'XRPL' as Chain,
+      chain: 'Arbitrum',
       address: '',
-    },
-  });
+      network: ''
+    }
+  })
+  const { register, handleSubmit, reset } = formMethods
+  const [selectedChain, setSelectedChain] = useState('Arbitrum');
 
-  const onSubmit = async (data: { chain: Chain; address: string }) => {
-    if (!data.chain) {
+  const onSubmit = async (form: DataForm) => {
+    console.log('DATA', form)
+    if (!selectedChain) {
       setMessage('Chain is required');
       return;
     }
-    if (!data.address) {
+    if (!form.address) {
       setMessage('Address is required');
       return;
     }
     try {
+      const data = {
+        address: form.address,
+        chain: selectedChain as Chain,
+        network: appConfig.chainDefaults.network || 'testnet'
+      }
       setMessage('Saving wallet to database...');
       setButtonDisabled(true);
       setButtonText('WAIT');
@@ -46,8 +61,11 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
       if (result.success) {
         setMessage('Wallet saved');
         setButtonText('DONE');
-        reset();
+        //reset();
         // You might want to add some logic here to refresh the list of wallets
+        // Pass new wallet back to server page component
+        // Or refresh server page component
+        window.location.reload()
       } else {
         throw new Error(result.error);
       }
@@ -59,9 +77,14 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
     }
   };
 
+  function handleChain(val: string){
+    console.log('CHAIN', val)
+    setSelectedChain(val)
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.vbox}>
-      <Select label="Chain" register={register('chain')} options={chains} />
+      <Select label="Chain" register={register('chain')} options={chains} handler={handleChain}/>
       <TextInput label="Address" register={register('address')} />
       <ButtonBlue
         id="buttonSubmit"

@@ -88,6 +88,6 @@ export async function getUserById(id: string) {
 
 export async function getUserByEmail(email: string) {
   const user = await prismaClient.user.findUnique({ where: { email } })
-  console.log('USER', user)
+  //console.log('USER', user)
   return user
 }

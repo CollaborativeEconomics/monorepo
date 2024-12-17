@@ -13,6 +13,7 @@ interface SelectProps {
   selected?: string;
   options?: Option[];
   register?: UseFormRegisterReturn;
+  handler?: (val: string)=>void;
 }
 
 const Select = ({
@@ -22,11 +23,12 @@ const Select = ({
   options,
   register,
   selected,
+  handler,
   ...rest
 }: SelectProps & HTMLProps<HTMLSelectElement>) => (
   <label className="my-4">
     <span className="text-slate-300 text-sm text-left uppercase">{label}</span>
-    <select id={id} {...rest} {...register} name={name}>
+    <select id={id} {...register} {...rest} name={name} onChange={(e) => { return handler ? handler(e.target.value) : null }} >
       {options ? (
         options.map(item => {
           if (item.id === selected) {

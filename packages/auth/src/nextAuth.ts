@@ -58,13 +58,13 @@ const authOptions: NextAuthConfig = {
               console.error("Failed to fetch organization:", error)
               return { data: null }
             })
-          console.log('SESSION-ORG', org?.name)
+          //console.log('SESSION-ORG', org?.name)
 
           token.orgId = org?.id || token.orgId || ""
           token.orgName = org?.name || ""
 
           if (!org) {
-            console.log('AUTH NO-ORG')
+            //console.log('AUTH NO-ORG')
             try {
               // Fetch user data
               const { data: user } = await registryApi
@@ -73,7 +73,7 @@ const authOptions: NextAuthConfig = {
                   console.error("Failed to fetch user:", error)
                   return { data: null }
                 })
-              console.log('USER', user?.email)
+              //console.log('USER', user?.email)
               if (user && user.type === 9) {
                 //console.log('AUTH ADMIN')
                 if (!token.orgId) {
@@ -89,7 +89,7 @@ const authOptions: NextAuthConfig = {
               // Set default values if API call fails
               token.orgName = "User"
             }
-            console.log('ORGID', token.orgId)
+            //console.log('ORGID', token.orgId)
           }
         } catch (error) {
           console.error("Error in JWT callback:", error)
