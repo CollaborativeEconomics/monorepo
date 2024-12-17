@@ -28,6 +28,7 @@ export async function uploadFile({
       access: "public",
       contentType: mime,
     })
+    console.log('UPLOADED', result)
     return { success: true, result }
   } catch (error) {
     return {

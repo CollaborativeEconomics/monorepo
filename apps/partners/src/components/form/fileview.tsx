@@ -49,13 +49,14 @@ const FileView: React.FC<FileProps> = ({
 
   const style = 'mx-auto';
   const size = `w-[${width}px] h-[${height}px]`;
+        // {...register}
 
   return (
     <div className={`relative ${size} m-4 ${className ?? ''}`}>
       <input
         type="file"
         id={id}
-        {...register}
+        register={register}
         ref={e => {
           register.ref(e);
           fileInputRef.current = e;

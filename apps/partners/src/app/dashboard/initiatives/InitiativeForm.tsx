@@ -8,12 +8,13 @@ import FileView from '~/components/form/fileview';
 import TextArea from '~/components/form/textarea';
 import TextInput from '~/components/form/textinput';
 import { createInitiative } from './action';
+import dateToPrisma from '~/utils/DateToPrisma';
 
 type InitiativeFormProps = {
   orgId: string;
 };
 
-type InitiativeFormData = {
+type FormData = {
   title: string;
   description: string;
   start: string;
@@ -28,34 +29,33 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
     'Enter initiative info and upload image',
   );
 
-  const { register, handleSubmit, watch } = useForm<InitiativeFormData>({
+  const today = dateToPrisma()
+  const nextMonth = dateToPrisma(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))
+
+  const { register, handleSubmit, watch } = useForm<FormData>({
     defaultValues: {
       title: '',
       description: '',
-      start: new Date().toJSON().substr(0, 10),
-      finish: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-        .toJSON()
-        .substr(0, 10),
+      start: today,
+      finish: nextMonth,
     },
   });
 
   const image = watch('image');
 
-  const onSubmit = async (data: InitiativeFormData) => {
+  const onSubmit = async (data: FormData) => {
+    console.log('FORM', data)
+
+    if (!data.title || !data.description || !data.image) {
+      setMessage('Error: Missing required fields');
+      return
+    }
+
     setButtonDisabled(true);
     setButtonText('WAIT');
     setMessage('Saving initiative...');
-
     try {
-      const imageFiles = data.image ? Array.from(data.image) : [];
-
-      const result = await createInitiative(
-        {
-          ...data,
-          image: imageFiles,
-        },
-        orgId,
-      );
+      const result = await createInitiative(data, orgId)
 
       if (result.success) {
         setMessage('Initiative saved successfully');
@@ -74,16 +74,18 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
     }
   };
 
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <FileView
+      {/*<FileView
         id="imgFile"
         register={register('image', { required: true })}
         source="/media/upload.jpg"
         width={250}
         height={250}
-        multiple={true}
-      />
+        multiple={false}
+      />*/}
+      <input type="file" {...register('image')} className="mt-4 w-full" />
       <TextInput label="Title" register={register('title')} />
       <TextArea label="Description" register={register('description')} />
       <DatePicker label="Start Date" register={register('start')} />
