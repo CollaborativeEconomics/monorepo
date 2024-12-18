@@ -37,4 +37,4 @@ const sendEmailReceipt = async (email: string, body: ReceiptEmailBody) => {
   return emailResponse
 }
 
-export { sendEmailReceipt }
+export { mailgun, sendEmailReceipt }

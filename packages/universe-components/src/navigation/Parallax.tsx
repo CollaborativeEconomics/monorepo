@@ -12,7 +12,7 @@ interface ParallaxProps
 const PARALLAX_SPEED = 0.1;
 
 const Parallax = (props: ParallaxProps) => {
-  const parallaxRef = useRef(null);
+  const parallaxRef = useRef<HTMLDivElement>(null);
   useParallax(parallaxRef, props.speed ?? PARALLAX_SPEED); // Adjust speed as needed
 
   return (
@@ -23,7 +23,7 @@ const Parallax = (props: ParallaxProps) => {
 };
 
 export const useParallax = (
-  ref: RefObject<HTMLDivElement>,
+  ref: RefObject<HTMLDivElement | null>,
   speed = PARALLAX_SPEED,
 ) => {
   useEffect(() => {

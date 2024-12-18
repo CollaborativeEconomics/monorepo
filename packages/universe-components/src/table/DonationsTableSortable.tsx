@@ -92,7 +92,16 @@ export default function DonationsTableSortable(
   const columns = [
     columnHelper.accessor('created', {
       header: 'Date',
-      cell: info => localDate(info.getValue().toString()),
+      cell: info => {
+        const date = new Date(info.getValue());
+        return new Intl.DateTimeFormat('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+        }).format(date);
+      },
     }),
     columnHelper.accessor('initiative', {
       header: 'Initiative',

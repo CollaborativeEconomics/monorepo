@@ -4,17 +4,18 @@
 import type { Category, Initiative } from '@cfce/database';
 import type { File } from 'formidable';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
 import Checkbox from '~/components/form/checkbox';
+import FileView from '~/components/form/fileview';
 import Select from '~/components/form/select';
 import TextArea from '~/components/form/textarea';
 import TextInput from '~/components/form/textinput';
-import FileView from '~/components/form/fileview';
 import styles from '~/styles/dashboard.module.css';
 import { saveStory } from './actions'; // Update this import
 
 interface AddStoryFormProps {
+  userId: string;
   orgId: string;
   initiatives: Initiative[];
   categories: Category[];
@@ -36,10 +37,12 @@ interface FormData {
 }
 
 export default function AddStoryForm({
+  userId,
   orgId,
   initiatives,
   categories,
 }: AddStoryFormProps) {
+  // const userId = useAuth();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, setMessage] = useState('Enter story info and upload images');
@@ -64,7 +67,7 @@ export default function AddStoryForm({
   const imageFields = watch(['image1', 'image2', 'image3', 'image4', 'image5']);
   const mediaFile = watch('media');
 
-  async function onSubmit(data: FormData) {
+  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     if (!data.name || !data.desc || !data.image1 || !data.initiativeId) {
       setMessage('All required fields must be filled');
       return;
@@ -89,12 +92,13 @@ export default function AddStoryForm({
         data.media && data.media.length > 0 ? data.media[0] : undefined;
 
       const storyData = {
+        userId: userId,
         story: {
           name: data.name,
           description: data.desc,
           amount: Number.parseInt(data.amount),
-          categoryId: data.categoryId,
         },
+        categoryId: data.categoryId,
         organizationId: orgId,
         initiativeId: data.initiativeId,
         images,
@@ -115,11 +119,15 @@ export default function AddStoryForm({
       setMessage('An error occurred while saving the story.');
       setButtonDisabled(false);
     }
-  }
+  };
 
   return (
     <div className={styles.mainBox}>
-      <form className={styles.vbox} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className={styles.vbox}
+        onSubmit={handleSubmit(onSubmit)}
+        // onSubmit={data => console.log('submit', data)}
+      >
         {/* Image Upload Inputs */}
         <FileView
           id="image1"
@@ -156,9 +164,10 @@ export default function AddStoryForm({
 
         {/* Media Input */}
         <div>
-          <label>Other media (PDF, MP3, MP4, etc.):</label>
+          <label htmlFor="media">Other media (PDF, MP3, MP4, etc.):</label>
           <input
             type="file"
+            id="media"
             {...register('media')}
             accept=".pdf,.mp3,.mp4,.webm"
           />
@@ -175,17 +184,14 @@ export default function AddStoryForm({
           register={register('categoryId', { required: true })}
           options={categoriesOptions}
         />
-        <TextInput
-          label="Title"
-          register={register('name', { required: true })}
-        />
+        <TextInput label="Title" {...register('name', { required: true })} />
         <TextArea
           label="Description"
-          register={register('desc', { required: true })}
+          {...register('desc', { required: true })}
         />
         <TextInput
           label="Estimated Amount Spent"
-          register={register('amount', { required: true })}
+          {...register('amount', { required: true })}
         />
         <Checkbox
           label="Mint Story NFT"
@@ -193,7 +199,14 @@ export default function AddStoryForm({
           check={true}
         />
 
-        <ButtonBlue text={buttonText} disabled={buttonDisabled} />
+        <button
+          type="submit"
+          // text={buttonText}
+          disabled={buttonDisabled}
+          // onClick={handleSubmit(onSubmit)}
+        >
+          {buttonText}
+        </button>
 
         {/* Validation error handling */}
         {errors.name && <p className="error">Title is required</p>}

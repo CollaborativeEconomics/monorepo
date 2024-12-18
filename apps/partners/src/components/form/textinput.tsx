@@ -12,7 +12,6 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (
     {
       label,
-      register,
       className,
       name,
       ...props
@@ -23,7 +22,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       <span className="text-slate-300 text-sm uppercase text-left">
         {label}
       </span>
-      <input {...props} {...register} ref={ref} name={name} />
+      <input {...props} ref={ref} name={name} />
     </label>
   ),
 );

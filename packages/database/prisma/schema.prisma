@@ -248,7 +248,7 @@ model NFTData {
   coinSymbol     String?      @db.VarChar(20)
   coinValue      Decimal      @default(0) @db.Decimal(14, 4)
   usdValue       Decimal      @default(0) @db.Decimal(14, 4)
-  tokenId        String       @unique @db.VarChar(255)
+  tokenId        String       @db.VarChar(255)
   offerId        String?      @db.VarChar(255)
   status         Int          @default(0)
   donationId     String?      @db.Uuid
