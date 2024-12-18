@@ -1,4 +1,5 @@
 import "server-only"
+import { posthogNodeClient } from "@cfce/analytics/server"
 import {
   type Prisma,
   type Story,
@@ -34,17 +35,21 @@ async function processFile(
 }
 
 interface CreateStoryParams {
-  story: Omit<Prisma.StoryCreateInput, 'organization' | 'initiative'>
+  userId: string
+  story: Omit<Prisma.StoryCreateInput, "organization" | "initiative">
   organizationId: string
   initiativeId: string
+  categoryId?: string
   images?: (string | File)[]
   media?: string | File
 }
 
 export default async function createStory({
+  userId,
   story,
   organizationId,
   initiativeId,
+  categoryId,
   images,
   media,
 }: CreateStoryParams): Promise<Story> {
@@ -81,6 +86,7 @@ export default async function createStory({
       image: imageCIDs.length > 0 ? `ipfs:${imageCIDs[0]}` : null,
       organization: { connect: { id: organizationId } },
       initiative: { connect: { id: initiativeId } },
+      ...{ category: categoryId ? { connect: { id: categoryId } } : {} },
       media: {
         create: [
           ...imageCIDs.map((cid, index) => ({
@@ -125,6 +131,16 @@ export default async function createStory({
     // Mint the NFT
     const { tokenId } = await mintStoryNFT(storyId, tokenCID)
     console.log("Minted NFT", tokenCID, nftMetadata)
+
+    posthogNodeClient.capture({
+      distinctId: userId,
+      event: "story_minted",
+      properties: {
+        storyId: storyId,
+        tokenCID: tokenCID,
+      },
+    })
+    posthogNodeClient.shutdown()
 
     // Update the story with token information
     return await updateStory(dbStory.id, {

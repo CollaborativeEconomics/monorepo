@@ -20,6 +20,7 @@
     "@auth/prisma-adapter": "^2.7.2",
     "@aws-sdk/client-s3": "^3.654.0",
     "@cfce/app-config": "workspace:*",
+    "@cfce/analytics": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/ipfs": "workspace:*",

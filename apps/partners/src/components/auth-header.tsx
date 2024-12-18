@@ -16,15 +16,17 @@ export default function AuthHeader() {
       </noscript>
       <div className={styles.signedInStatus}>
         <p
-          className={`nojs-show ${!session && loading ? styles.loading : styles.loaded}`}
+          className={`nojs-show ${
+            !session && loading ? styles.loading : styles.loaded
+          }`}
         >
           {!session && (
-            <>
-              <span className={styles.notSignedInText}>
+            <div className="flex justify-between">
+              <div className={styles.notSignedInText}>
                 You are not signed in
-              </span>
+              </div>
               <SignInButton />
-            </>
+            </div>
           )}
           {session?.user && (
             <>
