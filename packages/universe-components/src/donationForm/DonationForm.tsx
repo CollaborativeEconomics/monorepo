@@ -1,4 +1,5 @@
 'use client';
+import { usePostHog } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
 import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
 import {
@@ -6,14 +7,18 @@ import {
   BlockchainManager,
 } from '@cfce/blockchain-tools';
 import type { Chain, Prisma, User } from '@cfce/database';
-import {
-  PAYMENT_STATUS,
+import type { Chain, Prisma, User } from '@cfce/database';
+import {Chain,Prisma,UserEdatabase
   amountCoinAtom,
   amountUSDAtom,
   chainAtom,
   donationFormAtom,
 } from '@cfce/state';
 import type { TokenTickerSymbol } from '@cfce/types';
+import type { TokenTickerSymbol } from '@cfce/types';
+import { mintAndSaveReceiptNFT } from '@cfce/utils';
+import type { TokenTickerSymbol } from '@cfce/types';
+import { mintAndSaveReceiptNFT } from '@cfce/utils';
 import { mintAndSaveReceiptNFT } from '@cfce/utils';
 import { registryApi } from '@cfce/utils';
 import { useAtom, useAtomValue } from 'jotai';
@@ -73,6 +78,7 @@ function sleep(ms: number) {
 
 export default function DonationForm({ initiative, rate }: DonationFormProps) {
   // TODO: get contract id from contracts table not initiative record
+  const posthog = usePostHog();
   const contractId = initiative.contractcredit; // needed for CC contract
   const organization = initiative.organization;
   const [loading, setLoading] = useState(false);
@@ -297,6 +303,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       setButtonMessage('Approving payment...');
 
       const paymentResult = await sendPayment(destinationWalletAddress, amount);
+      if (posthog.__loaded) {
+        posthog.capture('user_donated', {
+          amount,
+          organization: organization.slug,
+          initiative: initiative.slug,
+          token: selectedToken,
+          chain: selectedChain,
+        });
+      }
       await handleMinting(paymentResult);
     } catch (error) {
       handleError(error);

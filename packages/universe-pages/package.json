@@ -72,6 +72,7 @@
   "devDependencies": {
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
+    "@cfce/analytics": "workspace:*",
     "@types/react": "^19.0.0",
     "@types/uuid": "^10.0.0",
     "next": "^15.1.0",

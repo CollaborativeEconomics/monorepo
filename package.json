@@ -23,5 +23,13 @@
   },
   "prisma": {
     "schema": "packages/database/prisma/schema.prisma"
+  },
+  "pnpm": {
+    "overrides": {
+      "hono": "^4.6.7"
+    },
+    "patchedDependencies": {
+      "frog": "patches/frog.patch"
+    }
   }
 }

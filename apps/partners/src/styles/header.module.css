@@ -35,10 +35,10 @@
 
 .signedInText,
 .notSignedInText {
-  position: absolute;
-  padding-top: 0.8rem;
-  left: 1rem;
-  right: 6.5rem;
+  /* position: absolute; */
+  /* padding-top: 0.8rem; */
+  /* left: 1rem; */
+  /* right: 6.5rem; */
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
