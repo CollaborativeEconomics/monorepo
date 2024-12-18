@@ -1,7 +1,10 @@
 'use client';
 import appConfig from '@cfce/app-config';
 import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
-import { BlockchainManager } from '@cfce/blockchain-tools';
+import {
+  BlockchainClientInterfaces,
+  BlockchainManager,
+} from '@cfce/blockchain-tools';
 import type { Chain, Prisma, User } from '@cfce/database';
 import {
   PAYMENT_STATUS,
@@ -89,10 +92,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const coinAmount = useAtomValue(amountCoinAtom);
   //console.log('STATE', chainState, exchangeRate)
 
-  const chainInterface = useMemo(
-    () => BlockchainManager[selectedChain]?.client,
-    [selectedChain],
-  );
+  const chainInterface = BlockchainClientInterfaces[selectedWallet];
 
   const [buttonMessage, setButtonMessage] = useState(
     'One wallet confirmation required',
@@ -145,7 +145,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     return '';
   }, [organization, initiative, chainInterface, handleError]);
 
-  function getRate() {
+  const getRate = useCallback(() => {
     registryApi
       .get<{ coin: TokenTickerSymbol; rate: number }>(
         `/rates?coin=${selectedToken}&chain=${selectedChain}`,
@@ -170,18 +170,26 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           //console.log('CHAIN2', chainState)
         }
       });
-  }
+  }, [selectedToken, selectedChain, setChainState]);
 
   useEffect(() => {
+    console.log('values changed, updating rate', {
+      selectedToken,
+      selectedChain,
+      setChainState,
+    });
     getRate();
-  }, [selectedToken, selectedChain, setChainState]);
+  }, [selectedToken, selectedChain, setChainState, getRate]);
 
   const checkBalance = useCallback(async () => {
     if (!chainInterface || !('getBalance' in chainInterface)) {
       throw new Error('No chain interface or getBalance not supported');
     }
-    const balance = await chainInterface.getBalance();
-    return Number(balance) >= chainInterface.toBaseUnit(amount);
+    const balanceCheck = await chainInterface?.getBalance?.();
+    if (!balanceCheck || 'error' in balanceCheck) {
+      throw new Error(balanceCheck?.error ?? 'Failed to check balance');
+    }
+    return balanceCheck.balance >= chainInterface.toBaseUnit(amount);
   }, [chainInterface, amount]);
 
   const sendPayment = useCallback(
@@ -189,7 +197,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       if (!chainInterface?.sendPayment) {
         throw new Error('No chain interface');
       }
-      const connected = await chainInterface.connect();
+      const connected = await chainInterface.connect?.();
       console.log('CONNECT', connected);
       const data = {
         address,

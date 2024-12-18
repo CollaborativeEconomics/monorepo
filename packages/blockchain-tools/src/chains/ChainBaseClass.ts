@@ -20,12 +20,12 @@ export default abstract class ChainBaseClass {
 
   // isometric functions, must be defined on all subclasses
   public abstract getTransactionInfo(
-    txId: string
+    txId: string,
   ): Promise<Transaction | { error: string }>
-  
+
   // TODO: improve types
   public abstract fetchLedger(method: unknown, params: unknown): unknown
-  
+
   public async sendPayment?(params: {
     address: string
     amount: number
@@ -37,7 +37,7 @@ export default abstract class ChainBaseClass {
     txid?: string
     walletAddress?: string
   }>
-  
+
   public async sendToken?(params: {
     address: string
     amount: number
@@ -51,6 +51,17 @@ export default abstract class ChainBaseClass {
     walletAddress?: string
   }>
 
+  public async getBalance?(): Promise<
+    | {
+        success: boolean
+        balance: number
+      }
+    | {
+        success: boolean
+        error: string
+      }
+  >
+
   // client functions, only defined on client subclasses
   public connect?(): Promise<
     | { success: boolean; error: string }
@@ -59,7 +70,7 @@ export default abstract class ChainBaseClass {
 
   // server functions, only defined on server subclasses
   public web3?: Web3
-  
+
   public async mintNFT?(params: {
     address: string
     uri: string
@@ -73,7 +84,19 @@ export default abstract class ChainBaseClass {
     tokenId?: string
     error?: string
   }>
-  
+
+  public async mintNFT721?(params: {
+    address: string
+    tokenId: string
+    contractId: string
+    walletSeed: string
+  }): Promise<{
+    success: boolean
+    txId?: string
+    tokenId?: string
+    error?: string
+  }>
+
   public async mintNFT1155?(params: {
     address: string
     tokenId: string
@@ -86,7 +109,7 @@ export default abstract class ChainBaseClass {
     tokenId?: string
     error?: string
   }>
-  
+
   // XRPL only?
   public async createSellOffer?(params: {
     tokenId: string
@@ -101,9 +124,9 @@ export default abstract class ChainBaseClass {
   }
 
   toBaseUnit(amount: number): bigint {
-    console.log('DECS', this.network.decimals)
+    console.log("DECS", this.network.decimals)
     const wei = Math.floor(amount * 10 ** this.network.decimals)
-    console.log('WEI', wei)
+    console.log("WEI", wei)
     return BigInt(wei)
   }
 
@@ -125,12 +148,15 @@ export default abstract class ChainBaseClass {
     return Buffer.from(hex.substr(2), "hex").toString(encoding)
   }
 
-  sendPaymentWithGas?(address: string, amount: number): Promise<{
-    success: boolean;
+  sendPaymentWithGas?(
+    address: string,
+    amount: number,
+  ): Promise<{
+    success: boolean
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    result?: any;
-    error?: string;
-    txid?: string;
-    walletAddress?: string;
-  }>;
+    result?: any
+    error?: string
+    txid?: string
+    walletAddress?: string
+  }>
 }

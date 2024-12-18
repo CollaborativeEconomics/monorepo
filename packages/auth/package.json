@@ -15,25 +15,27 @@
   "dependencies": {
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
+    "@cfce/state": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "jotai": "^2.10.4",
+    "lucide-react": "0.447.0",
     "next-auth": "5.0.0-beta.25",
-    "server-only": "^0.0.1",
-    "uuid": "^10.0.0",
     "react-dom": "^19.0.0",
-    "lucide-react": "0.447.0"
+    "server-only": "^0.0.1",
+    "uuid": "^10.0.0"
   },
   "peerDependencies": {
     "@cfce/app-config": "workspace:*"
   },
   "devDependencies": {
-    "@types/react-dom": "^19.0.0",
+    "@cfce/app-config": "workspace:*",
     "@cfce/types": "workspace:*",
     "@types/formidable": "^3.4.5",
     "@types/node": "^22.9.0",
-    "next": "^15.1.0",
-    "@cfce/app-config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@types/uuid": "^10.0.0",
-    "typescript": "^5.6.2",
-    "@types/react": "^19.0.0"
+    "next": "^15.1.0",
+    "typescript": "^5.6.2"
   }
 }

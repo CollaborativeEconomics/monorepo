@@ -23,63 +23,68 @@ type ChainClasses<ClientClass = Interface, ServerClass = Interface> = {
 const getNetwork = (slug: ChainSlugs): Network =>
   appConfig.chains[slug]?.network ?? appConfig.chainDefaults.network
 
+const createEvmClients = (slug: ChainSlugs) => {
+  const network = getNetwork(slug)
+  return {
+    metamask: new MetaMaskWallet(slug, network),
+  }
+}
+
+export const BlockchainClientInterfaces: Record<
+  ClientInterfaces,
+  ChainBaseClass
+> = {
+  xaman: new XummClient("xrpl", getNetwork("xrpl")),
+  crossmark: new CrossmarkWallet("xrpl", getNetwork("xrpl")),
+  gemwallet: new GemWallet("xrpl", getNetwork("xrpl")),
+  freighter: new FreighterWallet("stellar", getNetwork("stellar")),
+  argent: new StarknetWallet("starknet", getNetwork("starknet")),
+  metamask: new MetaMaskWallet("ethereum", getNetwork("ethereum")),
+}
+
 const BlockchainManager = {
   arbitrum: {
-    client: {
-      metamask: new MetaMaskWallet("arbitrum", getNetwork("arbitrum")),
-    },
+    client: createEvmClients("arbitrum"),
     server: new Web3Server("arbitrum", getNetwork("arbitrum")),
   },
   avalanche: {
-    client: {
-      metamask: new MetaMaskWallet("avalanche", getNetwork("avalanche")),
-    },
+    client: createEvmClients("avalanche"),
     server: new Web3Server("avalanche", getNetwork("avalanche")),
   },
   base: {
-    client: {
-      metamask: new MetaMaskWallet("base", getNetwork("base")),
-    },
+    client: createEvmClients("base"),
     server: new Web3Server("base", getNetwork("base")),
   },
   binance: {
-    client: { metamask: new MetaMaskWallet("binance", getNetwork("binance")) },
+    client: createEvmClients("binance"),
     server: new Web3Server("binance", getNetwork("binance")),
   },
   celo: {
-    client: { metamask: new MetaMaskWallet("celo", getNetwork("celo")) },
+    client: createEvmClients("celo"),
     server: new Web3Server("celo", getNetwork("celo")),
   },
   eos: {
-    client: { metamask: new MetaMaskWallet("eos", getNetwork("eos")) },
+    client: createEvmClients("eos"),
     server: new Web3Server("eos", getNetwork("eos")),
   },
   ethereum: {
-    client: {
-      metamask: new MetaMaskWallet("ethereum", getNetwork("ethereum")),
-    },
+    client: createEvmClients("ethereum"),
     server: new Web3Server("ethereum", getNetwork("ethereum")),
   },
   filecoin: {
-    client: {
-      metamask: new MetaMaskWallet("filecoin", getNetwork("filecoin")),
-    },
+    client: createEvmClients("filecoin"),
     server: new Web3Server("filecoin", getNetwork("filecoin")),
   },
   flare: {
-    client: {
-      metamask: new MetaMaskWallet("flare", getNetwork("flare")),
-    },
+    client: createEvmClients("flare"),
     server: new Web3Server("flare", getNetwork("flare")),
   },
   optimism: {
-    client: {
-      metamask: new MetaMaskWallet("optimism", getNetwork("optimism")),
-    },
+    client: createEvmClients("optimism"),
     server: new Web3Server("optimism", getNetwork("optimism")),
   },
   polygon: {
-    client: { metamask: new MetaMaskWallet("polygon", getNetwork("polygon")) },
+    client: createEvmClients("polygon"),
     server: new Web3Server("polygon", getNetwork("polygon")),
   },
   starknet: {
@@ -96,13 +101,11 @@ const BlockchainManager = {
   },
   tron: {
     // TODO: Add Tron wallet and server support
-    client: { metamask: new MetaMaskWallet("tron", getNetwork("tron")) },
+    client: createEvmClients("tron"),
     server: new Web3Server("tron", getNetwork("tron")),
   },
   xdc: {
-    client: {
-      metamask: new MetaMaskWallet("xdc", getNetwork("xdc")),
-    },
+    client: createEvmClients("xdc"),
     server: new Web3Server("xdc", getNetwork("xdc")),
   },
   xrpl: {

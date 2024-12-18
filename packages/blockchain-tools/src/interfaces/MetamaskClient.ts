@@ -305,24 +305,33 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
   }
 
-  async getBalance(): Promise<string | undefined | null> {
+  async getBalance() {
     console.log("Get balance...")
     if (!this.metamask) {
       console.error("Error getting balance, Metamask not available")
-      return
+      return { success: false, error: "Metamask not available" }
     }
-    const balance = await this.metamask.request<string>({
-      method: "eth_getBalance",
-      params: [this.connectedWallet, "latest"],
-    })
-    console.log("Balance:", balance)
-    //web3.eth.getBalance(address, (err,res) => {
-    //  console.log('Balance', address.substr(0,8), res);
-    //  let bal = (parseInt(res)/10**18).toLocaleString('en-US', { useGrouping: true, minimumFractionDigits: 4, maximumFractionDigits: 4});
-    //  //$('user-address').innerHTML = address.substr(0,10);
-    //  //$('user-balance').innerHTML = bal+' BNB';
-    //});
-    return balance
+    try {
+      const balance = await this.metamask.request<string>({
+        method: "eth_getBalance",
+        params: [this.connectedWallet, "latest"],
+      })
+      console.log("Balance:", balance)
+      //web3.eth.getBalance(address, (err,res) => {
+      //  console.log('Balance', address.substr(0,8), res);
+      //  let bal = (parseInt(res)/10**18).toLocaleString('en-US', { useGrouping: true, minimumFractionDigits: 4, maximumFractionDigits: 4});
+      //  //$('user-address').innerHTML = address.substr(0,10);
+      //  //$('user-balance').innerHTML = bal+' BNB';
+      //});
+      if (!balance) {
+        console.error("Error getting balance, no balance returned")
+        return { success: false, error: "No balance returned" }
+      }
+      return { success: true, balance: Number(balance) }
+    } catch (error) {
+      console.error("Error getting balance", error)
+      return { success: false, error: "Error getting balance" }
+    }
   }
 
   async getGasPrice(): Promise<string | undefined> {

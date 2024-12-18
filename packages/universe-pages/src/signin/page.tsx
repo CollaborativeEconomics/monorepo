@@ -45,12 +45,7 @@ export default async function Signin() {
               <div key={`auth-button-${slug} w-full flex`}>
                 {i > 0 && <Separator className="my-4" />}
                 {enabledWallets.map(wallet => (
-                  <AuthButton
-                    className="w-full"
-                    key={wallet}
-                    method={wallet}
-                    chain={slug as ChainSlugs}
-                  />
+                  <AuthButton className="w-full" key={wallet} method={wallet} />
                 ))}
               </div>
             );

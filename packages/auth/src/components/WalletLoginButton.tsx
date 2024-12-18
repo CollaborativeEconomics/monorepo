@@ -1,44 +1,53 @@
 'use client';
 import {
-  BlockchainManager,
+  BlockchainClientInterfaces,
   chainConfig as chainConfigs,
 } from '@cfce/blockchain-tools';
-import type { AuthTypes, ChainSlugs } from '@cfce/types';
+import { chainAtom } from '@cfce/state';
+import type { ClientInterfaces } from '@cfce/types';
+import { useAtomValue } from 'jotai';
+import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { walletLogin } from '../actions';
 import { BaseLoginButton } from './BaseLoginButton';
-import { useRouter } from 'next/navigation';
 
 interface WalletLoginButtonProps {
-  method: AuthTypes;
-  chain: ChainSlugs;
+  method: ClientInterfaces;
   className?: string;
 }
 
 export function WalletLoginButton({
   method,
-  chain,
   className,
 }: WalletLoginButtonProps) {
+  const { selectedChain: chain } = useAtomValue(chainAtom);
+  const walletInterface = BlockchainClientInterfaces[method];
   const chainConfig = chainConfigs[chain];
-  console.log('WalletLoginButton', { method, chain, className, chainConfig });
-  const walletInterface =
-    BlockchainManager[chain as keyof typeof BlockchainManager]?.client;
 
   if (!walletInterface) {
-    throw new Error(`No wallet interface found for chain: ${chain}`);
+    throw new Error(`No wallet interface found for wallet: ${method}`);
   }
 
   const router = useRouter();
 
   const handleLogin = useCallback(async () => {
-    const { network, walletAddress } = await walletInterface.connect();
+    if (!walletInterface.connect) {
+      throw new Error(`No connect method found for wallet: ${method}`);
+    }
+
+    const connection = await walletInterface.connect();
+
+    if ('error' in connection) {
+      throw new Error(`Failed to connect to wallet: ${connection.error}`);
+    }
+
+    const { walletAddress, network } = connection;
 
     if (!walletAddress) {
       throw new Error(`No wallet address found: ${walletAddress}`);
     }
     //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
-  const redirectUrl = await walletLogin(method, {
+    const redirectUrl = await walletLogin(method, {
       walletAddress,
       chainConfig,
       network,
@@ -47,7 +56,6 @@ export function WalletLoginButton({
       router.push(redirectUrl);
     }
   }, [method, walletInterface, chainConfig, router]);
-
 
   return (
     <BaseLoginButton
