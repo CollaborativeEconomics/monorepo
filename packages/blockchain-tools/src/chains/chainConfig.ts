@@ -696,4 +696,27 @@ export const getRpcUrl = (
   return rpcUrl
 }
 
+export const getChainByChainId = (chainId: number): ChainConfig => {
+  // skip chains that don't use IDs like stellar and xrpl
+  if (chainId === 0) {
+    throw new Error("Chain ID 0 is not a valid chain ID")
+  }
+  const idToChainMapping = Object.values(chainConfiguration).reduce(
+    (acc, chain) => {
+      // Check IDs for each network
+      for (const network of Object.values(chain.networks)) {
+        if (network.id === chainId) {
+          acc[chainId] = chain
+        }
+      }
+      return acc
+    },
+    {} as Record<number, ChainConfig>,
+  )
+  if (!idToChainMapping[chainId]) {
+    throw new Error(`Chain configuration not found for chain ID ${chainId}`)
+  }
+  return idToChainMapping[chainId]
+}
+
 export default chainConfiguration

@@ -12,7 +12,6 @@ import StellarServer from "../interfaces/StellarServer"
 import Web3Server from "../interfaces/Web3Server"
 import XrplServer from "../interfaces/XrplServer"
 import XummClient from "../interfaces/XummClient"
-import _SacrificialInterface from "../interfaces/_SacrificialInterface"
 import type ChainBaseClass from "./ChainBaseClass"
 
 type ChainClasses<ClientClass = Interface, ServerClass = Interface> = {

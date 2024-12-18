@@ -44,6 +44,7 @@ class FreighterWallet extends ChainBaseClass {
         success: true,
         walletAddress: this.connectedWallet,
         network: this.network.slug,
+        chain: "stellar" as ChainSlugs,
       }
     } catch (ex) {
       console.error(ex)

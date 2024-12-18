@@ -8,6 +8,7 @@ import {
 } from '@cfce/blockchain-tools';
 import type { Chain, Prisma, User } from '@cfce/database';
 import {
+  PAYMENT_STATUS,
   amountCoinAtom,
   amountUSDAtom,
   chainAtom,

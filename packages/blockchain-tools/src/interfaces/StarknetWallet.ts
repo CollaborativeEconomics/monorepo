@@ -130,6 +130,7 @@ class StarknetWallet extends ChainBaseClass {
         return {
           success: true,
           walletAddress: this.connectedWallet,
+          chain: "starknet" as ChainSlugs,
           network: this.network.slug,
         }
       }

@@ -65,7 +65,12 @@ export default abstract class ChainBaseClass {
   // client functions, only defined on client subclasses
   public connect?(): Promise<
     | { success: boolean; error: string }
-    | { success: boolean; network: Network; walletAddress: string }
+    | {
+        success: boolean
+        chain: ChainSlugs
+        network: Network
+        walletAddress: string
+      }
   >
 
   // server functions, only defined on server subclasses

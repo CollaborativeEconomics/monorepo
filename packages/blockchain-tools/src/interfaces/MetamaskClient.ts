@@ -7,14 +7,15 @@ import type {
   TokenTickerSymbol,
 } from "@cfce/types"
 import type { MetaMaskInpageProvider } from "@metamask/providers"
+import { erc20Abi } from "viem"
+import * as chains from "viem/chains"
 import Web3 from "web3"
 import type {
   ProviderConnectInfo,
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
-import ChainBaseClass from "../chains/ChainBaseClass"
-import erc20abi from "../contracts/solidity/erc20/erc20-abi.json"
+import { ChainBaseClass, getChainByChainId } from "../chains"
 import type { Transaction } from "../types/transaction"
 
 export default class MetaMaskWallet extends ChainBaseClass {
@@ -39,21 +40,24 @@ export default class MetaMaskWallet extends ChainBaseClass {
       this.metamask = window.ethereum
       this.setListeners()
       this.wallets = await this.metamask?.enable()
+      const chainId = await window.ethereum?.chainId
       //console.log('Accounts', this.wallets)
       this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
       //this.connectedWallet = this.metamask.selectedAddress
       //this.setNetwork(window.ethereum.chainId)
       //this.loadWallet(window))
-      if (
-        window.ethereum?.chainId &&
-        this.network.id !== Number.parseInt(window.ethereum.chainId, 16)
-      ) {
+      if (chainId && this.network.id !== Number.parseInt(chainId, 16)) {
         await this.changeNetwork(this.network)
       }
+      if (!chainId) {
+        throw new Error("Error getting chain ID")
+      }
+      const chain = getChainByChainId(Number(chainId))
       return {
         success: true,
         network: this.network.slug,
         walletAddress: this.connectedWallet,
+        chain: chain.slug,
       }
     } catch (ex) {
       const error = ex instanceof Error ? ex.message : ""
@@ -498,7 +502,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
       console.error("Payment error: Error getting web3 instance")
       return { success: false, error: "Error getting web3 instance" }
     }
-    const ctr = new this.web3.eth.Contract(erc20abi, contract)
+    const ctr = new this.web3.eth.Contract(erc20Abi, contract)
     const data = ctr.methods.transfer(address, wei).encodeABI()
     console.log("Data", data)
     //const count = await this.web3.eth.getTransactionCount(this.connectedWallet)

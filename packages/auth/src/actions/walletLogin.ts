@@ -9,11 +9,11 @@ export default async function walletLogin(
   method: AuthTypes,
   {
     walletAddress,
-    chainConfig,
+    // chainConfig,
     network,
   }: {
     walletAddress: string
-    chainConfig: ChainConfig
+    // chainConfig: ChainConfig
     network: string
   },
 ) {
@@ -25,23 +25,23 @@ export default async function walletLogin(
   if (!walletAddress) {
     throw new Error(`No wallet address found: ${walletAddress}`)
   }
-  const chainNetwork = chainConfig.networks[network]
-  console.log("Chain network:", chainNetwork)
-  if (!chainNetwork) {
-    throw new Error(`No chain network found: ${network}`)
-  }
+  // const chainNetwork = chainConfig.networks[network]
+  // console.log("Chain network:", chainNetwork)
+  // if (!chainNetwork) {
+  //   throw new Error(`No chain network found: ${network}`)
+  // }
 
   console.log("Wallet", walletAddress)
-  const chainName = chainConfig.name
-  const chainId = chainNetwork.id
-  const currency = chainNetwork.symbol
+  // const chainName = chainConfig.name
+  // const chainId = chainNetwork.id
+  // const currency = chainNetwork.symbol
   let user = await fetchUserByWallet(walletAddress)
-  console.log('WALLET USER', user)
+  console.log("WALLET USER", user)
   if (user === null) {
-    console.log('ANONYMOUS USER...')
+    console.log("ANONYMOUS USER...")
     user = await createAnonymousUser({
       walletAddress,
-      chain: chainConfig.name as Chain,
+      // chain: chainConfig.name as Chain,
       network,
       tba: true,
     })
@@ -55,16 +55,16 @@ export default async function walletLogin(
     redirect: false,
     callbackUrl: `/profile/${user.id}`,
     address: walletAddress,
-    chainName,
-    chainId,
+    // chainName,
+    // chainId,
     network,
-    currency,
-  });
+    // currency,
+  })
 
   if (!res?.error) {
     // Instead of redirecting, return the URL
-    return `/profile/${user.id}`;
+    return `/profile/${user.id}`
   }
 
-  throw new Error(res?.error || 'Sign in failed');
+  throw new Error(res?.error || "Sign in failed")
 }

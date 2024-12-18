@@ -1,35 +1,40 @@
-import { type Payment, Client } from "xrpl"
-import * as gemWallet from "@gemwallet/api"
+import type { ChainSlugs } from "@cfce/types"
+import gemWallet from "@gemwallet/api"
 import XrplCommon from "./XrplCommon"
 
 export default class GemWallet extends XrplCommon {
-  connectedWallet = ''
+  connectedWallet = ""
 
-  async connect(){
+  async connect() {
     try {
       const ready = await gemWallet.isInstalled()
       const installed = ready?.result?.isInstalled
-      console.log('GEM Ready?', installed)
-      if(!installed){
-        return {success:false, error:'GemWallet not installed'}
+      console.log("GEM Ready?", installed)
+      if (!installed) {
+        return { success: false, error: "GemWallet not installed" }
       }
       const res = await gemWallet.getAddress() // <<<< Here gets stuck forever
-      console.log('RES', res)
-      this.connectedWallet = res.result?.address || ''
-      console.log('GemWallet', this.connectedWallet)
+      console.log("RES", res)
+      this.connectedWallet = res.result?.address || ""
+      console.log("GemWallet", this.connectedWallet)
       return {
         success: true,
         walletAddress: this.connectedWallet,
         network: this.network.slug,
+        chain: "xrpl" as ChainSlugs,
       }
-    } catch(ex) {
+    } catch (ex) {
       console.error(ex)
       return { success: false, error: ex instanceof Error ? ex.message : "" }
     }
   }
 
-  async sendPayment({ address, amount, memo }: { address: string; amount: number; memo?: string }) {
-    console.log('PAY', address, amount, memo)
+  async sendPayment({
+    address,
+    amount,
+    memo,
+  }: { address: string; amount: number; memo?: string }) {
+    console.log("PAY", address, amount, memo)
     try {
       const sender = this.connectedWallet
       const wei = Math.floor(amount * 1000000).toString()
@@ -46,22 +51,26 @@ export default class GemWallet extends XrplCommon {
         //  tfPartialPayment: false,
         //  tfLimitQuality: false,
         //},
-      };
-      console.log('TX', payload)
+      }
+      console.log("TX", payload)
       const res = await gemWallet.sendPayment(payload)
-      console.log('RES', res)
+      console.log("RES", res)
       const txid = res?.result?.hash
-      console.log('TXID', txid)
+      console.log("TXID", txid)
       //if (code === "tesSUCCESS") {
       //  console.log('Transaction succeeded')
       //  return {success:true}
       //}
-      return {success:true, walletAddress:this.connectedWallet, txid, error:''}
-    } catch(ex) {
-      console.log('Error sending payment')
+      return {
+        success: true,
+        walletAddress: this.connectedWallet,
+        txid,
+        error: "",
+      }
+    } catch (ex) {
+      console.log("Error sending payment")
       console.error(ex)
-      return {success:false, error:'Error sending payment'}
+      return { success: false, error: "Error sending payment" }
     }
   }
-
 }

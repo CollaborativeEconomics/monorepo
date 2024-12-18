@@ -1,3 +1,4 @@
+import type { ChainSlugs } from "@cfce/types"
 import { Xumm } from "xumm"
 import type { XummJsonTransaction } from "xumm-sdk/dist/src/types"
 import XrplCommon from "./XrplCommon"
@@ -5,7 +6,6 @@ import XrplCommon from "./XrplCommon"
 export default class XummClient extends XrplCommon {
   wallet?: Xumm
   connectedWallet = ""
-
 
   getWallet() {
     if (!this.wallet) {
@@ -49,7 +49,12 @@ export default class XummClient extends XrplCommon {
         //   topic: "",
         // }
         this.connectedWallet = address
-        return { success: true, walletAddress: address, network: network }
+        return {
+          success: true,
+          walletAddress: address,
+          chain: "xrpl" as ChainSlugs,
+          network: network,
+        }
       }
       console.log("Error", state)
       return { success: false, error: "Could not connect" }
@@ -120,7 +125,7 @@ export default class XummClient extends XrplCommon {
       console.log(approved ? "APPROVED" : "REJECTED")
       if (approved) {
         // @ts-ignore: I hate types
-        const txid = resolved?.data?.txid || ''
+        const txid = resolved?.data?.txid || ""
         return { success: true, txid, walletAddress: this.connectedWallet }
       }
       //if(resolved.data.signed){
