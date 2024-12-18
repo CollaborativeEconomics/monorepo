@@ -1,1 +1,1 @@
-export * from "@cfce/universe-api/hooks";
+export * from "@cfce/api/hooks"

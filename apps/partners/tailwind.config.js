@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@cfce/universe-components/dist/**/*.{js,ts,jsx,tsx,mdx}',
+    './node_modules/@cfce/components/dist/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     container: {

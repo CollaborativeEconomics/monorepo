@@ -1,5 +1,5 @@
 'use client';
-// NOTE: universe-components relies on this package, so we can't import ui components from there
+// NOTE: components relies on this package, so we can't import ui components from there
 
 import { Button } from './Button';
 interface BaseLoginButtonProps {

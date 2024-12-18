@@ -1,6 +1,6 @@
 'use client';
 
-import { DatePicker } from '@cfce/universe-components/form';
+import { DatePicker } from '@cfce/components/form';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';

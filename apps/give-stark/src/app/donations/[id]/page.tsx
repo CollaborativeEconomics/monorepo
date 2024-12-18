@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { getDonationById } from '@cfce/database';
-import { OrganizationAvatar } from '@cfce/universe-components/organization';
-import { Card, CardContent } from '@cfce/universe-components/ui';
-import NotFound from '@cfce/universe-pages/not-found';
+import { OrganizationAvatar } from '@cfce/components/organization';
+import { Card, CardContent } from '@cfce/components/ui';
+import NotFound from '@cfce/pages/not-found';
 import Image from 'next/image';
 import Link from 'next/link';
 

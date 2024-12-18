@@ -1,1 +1,1 @@
-export { default } from '@cfce/universe-pages/stories';
+export { default } from '@cfce/pages/stories';

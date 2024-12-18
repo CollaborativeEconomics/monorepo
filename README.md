@@ -45,9 +45,9 @@ Run `pnpm match-versions` to make sure all the versions are synced (especially i
 - `@cfce/registry-hooks`: Hook/action functions for interacting with the registry and automating tasks
 - `@cfce/tbas`: ERC-6551 Token Bound Accounts utility lib
 - `@cfce/types`: Shared type definitions
-- `@cfce/universe-api`: The registry API
-- `@cfce/universe-components`: Reusable components
-- `@cfce/universe-pages`: Page components (depends on universe-components)
+- `@cfce/api`: The registry API
+- `@cfce/components`: Reusable components
+- `@cfce/pages`: Page components (depends on components)
 
 ## Adding a chain
 

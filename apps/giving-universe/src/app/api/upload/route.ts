@@ -1,1 +1,1 @@
-export * from "@cfce/universe-api/upload";
+export * from "@cfce/api/upload"

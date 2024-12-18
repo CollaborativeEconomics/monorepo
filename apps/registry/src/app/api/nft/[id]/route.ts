@@ -1,1 +1,1 @@
-export * from "@cfce/universe-api/nft/[id]";
+export * from "@cfce/api/nft/[id]"

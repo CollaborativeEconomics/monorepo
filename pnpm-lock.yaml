@@ -98,15 +98,15 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
-      '@cfce/universe-api':
+      '@cfce/api':
         specifier: workspace:*
-        version: link:../../packages/universe-api
-      '@cfce/universe-components':
+        version: link:../../packages/api
+      '@cfce/components':
         specifier: workspace:*
-        version: link:../../packages/universe-components
-      '@cfce/universe-pages':
+        version: link:../../packages/components
+      '@cfce/pages':
         specifier: workspace:*
-        version: link:../../packages/universe-pages
+        version: link:../../packages/pages
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -324,15 +324,15 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
-      '@cfce/universe-api':
+      '@cfce/api':
         specifier: workspace:*
-        version: link:../../packages/universe-api
-      '@cfce/universe-components':
+        version: link:../../packages/api
+      '@cfce/components':
         specifier: workspace:*
-        version: link:../../packages/universe-components
-      '@cfce/universe-pages':
+        version: link:../../packages/components
+      '@cfce/pages':
         specifier: workspace:*
-        version: link:../../packages/universe-pages
+        version: link:../../packages/pages
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -556,15 +556,15 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
-      '@cfce/universe-api':
+      '@cfce/api':
         specifier: workspace:*
-        version: link:../../packages/universe-api
-      '@cfce/universe-components':
+        version: link:../../packages/api
+      '@cfce/components':
         specifier: workspace:*
-        version: link:../../packages/universe-components
-      '@cfce/universe-pages':
+        version: link:../../packages/components
+      '@cfce/pages':
         specifier: workspace:*
-        version: link:../../packages/universe-pages
+        version: link:../../packages/pages
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -773,15 +773,15 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
-      '@cfce/universe-api':
+      '@cfce/api':
         specifier: workspace:*
-        version: link:../../packages/universe-api
-      '@cfce/universe-components':
+        version: link:../../packages/api
+      '@cfce/components':
         specifier: workspace:*
-        version: link:../../packages/universe-components
-      '@cfce/universe-pages':
+        version: link:../../packages/components
+      '@cfce/pages':
         specifier: workspace:*
-        version: link:../../packages/universe-pages
+        version: link:../../packages/pages
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -1008,12 +1008,12 @@ importers:
       '@cfce/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@cfce/universe-api':
+      '@cfce/api':
         specifier: workspace:*
-        version: link:../../packages/universe-api
-      '@cfce/universe-components':
+        version: link:../../packages/api
+      '@cfce/components':
         specifier: workspace:*
-        version: link:../../packages/universe-components
+        version: link:../../packages/components
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -1138,12 +1138,12 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
-      '@cfce/universe-api':
+      '@cfce/api':
         specifier: workspace:*
-        version: link:../../packages/universe-api
-      '@cfce/universe-components':
+        version: link:../../packages/api
+      '@cfce/components':
         specifier: workspace:*
-        version: link:../../packages/universe-components
+        version: link:../../packages/components
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -1256,15 +1256,15 @@ importers:
       '@cfce/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@cfce/universe-api':
+      '@cfce/api':
         specifier: workspace:*
-        version: link:../../packages/universe-api
-      '@cfce/universe-components':
+        version: link:../../packages/api
+      '@cfce/components':
         specifier: workspace:*
-        version: link:../../packages/universe-components
-      '@cfce/universe-pages':
+        version: link:../../packages/components
+      '@cfce/pages':
         specifier: workspace:*
-        version: link:../../packages/universe-pages
+        version: link:../../packages/pages
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -1739,7 +1739,7 @@ importers:
 
   packages/typescript-config: {}
 
-  packages/universe-api:
+  packages/api:
     dependencies:
       '@cfce/auth':
         specifier: workspace:*
@@ -1806,7 +1806,7 @@ importers:
         specifier: ^5.6.2
         version: 5.7.2
 
-  packages/universe-components:
+  packages/components:
     dependencies:
       '@cfce/app-config':
         specifier: workspace:*
@@ -1954,7 +1954,7 @@ importers:
         specifier: ^5.6.2
         version: 5.7.2
 
-  packages/universe-pages:
+  packages/pages:
     dependencies:
       '@cfce/app-config':
         specifier: workspace:*
@@ -1968,9 +1968,9 @@ importers:
       '@cfce/database':
         specifier: workspace:*
         version: link:../database
-      '@cfce/universe-components':
+      '@cfce/components':
         specifier: workspace:*
-        version: link:../universe-components
+        version: link:../components
       '@cfce/utils':
         specifier: workspace:*
         version: link:../utils

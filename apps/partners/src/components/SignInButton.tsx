@@ -1,6 +1,6 @@
 'use client';
 import { googleLogin, signIn } from '@cfce/auth';
-import { Button } from '@cfce/universe-components/ui';
+import { Button } from '@cfce/components/ui';
 import React from 'react';
 
 interface SignInButtonProps {

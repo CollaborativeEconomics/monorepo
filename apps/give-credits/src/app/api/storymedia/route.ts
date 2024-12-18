@@ -1,1 +1,1 @@
-export * from "@cfce/universe-api/storymedia";
+export * from "@cfce/api/storymedia"
