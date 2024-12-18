@@ -48,9 +48,9 @@ const nextConfig = {
   experimental: {
     // instrumentationHook: true,
     optimizePackageImports: [
-      '@cfce/universe-components',
+      '@cfce/components',
       '@cfce/utils',
-      '@cfce/universe-pages',
+      '@cfce/pages',
       '@cfce/blockchain-tools',
     ],
   },

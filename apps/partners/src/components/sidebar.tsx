@@ -4,12 +4,7 @@ import {
   getOrganizationById,
   getOrganizations,
 } from '@cfce/database';
-import {
-  Button,
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@cfce/universe-components/ui';
+import { Button, Sheet, SheetContent, SheetTrigger } from '@cfce/components/ui';
 import { Menu } from 'lucide-react';
 import type { Session } from 'next-auth';
 import Image from 'next/image';
