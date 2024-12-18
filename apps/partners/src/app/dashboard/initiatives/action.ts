@@ -9,8 +9,8 @@ import { uploadFileToIPFS } from "@cfce/ipfs"
 type FormData = {
   title: string;
   description: string;
-  start: string;
-  finish: string;
+  start?: string;
+  finish?: string;
   image: FileList;
 };
 
@@ -64,8 +64,8 @@ export async function createInitiative(data: FormData, orgId: string) {
       title: data.title,
       slug: snakeCase(data.title),
       description: data.description,
-      start: data.start ?? undefined,
-      finish: data.finish ?? undefined,
+      start: data.start,
+      finish: data.finish,
       defaultAsset,
       imageUri,
       tag: Number.parseInt(randomNumber(8)),

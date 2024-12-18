@@ -56,7 +56,7 @@ const FileView: React.FC<FileProps> = ({
       <input
         type="file"
         id={id}
-        register={register}
+        {...register}
         ref={e => {
           register.ref(e);
           fileInputRef.current = e;

@@ -1,6 +1,6 @@
-export default function dateToPrisma(sdate: number | string | Date) {
+export default function dateToPrisma(sdate?: string | Date) {
   let date = new Date()
-  let ret = null
+  let ret = ''
   try {
     if (sdate instanceof Date) {
       date = sdate

@@ -2,7 +2,7 @@
 'use client';
 
 import type { Category, Initiative } from '@cfce/database';
-import type { File } from 'formidable';
+//import type { File } from 'formidable';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';

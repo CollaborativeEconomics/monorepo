@@ -17,8 +17,8 @@ type InitiativeFormProps = {
 type FormData = {
   title: string;
   description: string;
-  start: string;
-  finish: string;
+  start?: string;
+  finish?: string;
   image: FileList;
 };
 
