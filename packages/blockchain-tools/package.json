@@ -42,6 +42,7 @@
   "homepage": "https://github.com/CollaborativeEconomics/blockchain-tools#readme",
   "devDependencies": {
     "@cfce/types": "workspace:*",
+    "@cfce/state": "workspace:*",
     "@types/jest": "^29.5.13",
     "@types/luxon": "^3.4.2",
     "@types/react": "^19.0.0",

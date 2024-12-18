@@ -5,8 +5,8 @@ import {
   amountUSDAtom,
   chainAtom,
   donationFormAtom,
-  localizedNumber,
-} from '@cfce/utils';
+} from '@cfce/state';
+import { localizedNumber } from '@cfce/utils';
 import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import React from 'react';

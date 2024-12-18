@@ -57,6 +57,7 @@
     }
   },
   "devDependencies": {
+    "@cfce/state": "workspace:*",
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
     "@types/lodash": "^4.17.0",

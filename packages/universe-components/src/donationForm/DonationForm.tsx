@@ -1,34 +1,42 @@
 'use client';
 import appConfig from '@cfce/app-config';
-import { BlockchainManager } from '@cfce/blockchain-tools';
-import type { Prisma, Chain, User } from '@cfce/database';
-import createDonation from '../actions/createDonation';
 import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
-import type { TokenTickerSymbol } from '@cfce/types';
-import { mintAndSaveReceiptNFT } from '@cfce/utils';
+import { BlockchainManager } from '@cfce/blockchain-tools';
+import type { Chain, Prisma, User } from '@cfce/database';
 import {
   PAYMENT_STATUS,
   amountCoinAtom,
   amountUSDAtom,
   chainAtom,
   donationFormAtom,
-  registryApi,
-} from '@cfce/utils';
+} from '@cfce/state';
+import type { TokenTickerSymbol } from '@cfce/types';
+import { mintAndSaveReceiptNFT } from '@cfce/utils';
+import { registryApi } from '@cfce/utils';
 import { useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button } from '~/ui/button';
 import { Card } from '~/ui/card';
 import { CheckboxWithText } from '~/ui/checkbox';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '~/ui/dialog';
 import { Input } from '~/ui/input';
 import { Label } from '~/ui/label';
 import { Separator } from '~/ui/separator';
+import createDonation from '../actions/createDonation';
 import { CarbonCreditDisplay } from './CarbonCreditDisplay';
 import { ChainSelect } from './ChainSelect';
 import { DonationAmountInput } from './DonationAmountInput';
 import { MintButton } from './MintButton';
 import { RateMessage } from './RateMessage';
 import { WalletSelect } from './WalletSelect';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "~/ui/dialog";
-import { Button } from "~/ui/button";
 
 interface DonationFormProps {
   initiative: Prisma.InitiativeGetPayload<{
@@ -37,21 +45,21 @@ interface DonationFormProps {
       credits: true;
       wallets: true;
     };
-  }>,
-  rate: number
+  }>;
+  rate: number;
 }
 
 interface DonationData {
-  organizationId: string
-  initiativeId?: string
-  categoryId?: string
-  userId?: string
-  sender: string
-  chainName: string
-  network: string
-  coinValue: number
-  usdValue: number
-  currency: string
+  organizationId: string;
+  initiativeId?: string;
+  categoryId?: string;
+  userId?: string;
+  sender: string;
+  chainName: string;
+  network: string;
+  coinValue: number;
+  usdValue: number;
+  currency: string;
 }
 
 type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
@@ -73,7 +81,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   //});
   //console.log('INIT STATE', chainState)
 
-  const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState;
+  const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
+    chainState;
   const [donationForm, setDonationForm] = useAtom(donationFormAtom);
   const { emailReceipt, name, email, amount } = donationForm;
   const usdAmount = useAtomValue(amountUSDAtom);
@@ -91,16 +100,18 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const [errorDialogState, setErrorDialogState] = useState(false);
 
   const handleError = useCallback((error: unknown) => {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    
-    const canRetryWithGas = errorMessage.includes('gasless') || 
-                           errorMessage.includes('insufficient funds') ||
-                           errorMessage.includes('rejected');
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error occurred';
+
+    const canRetryWithGas =
+      errorMessage.includes('gasless') ||
+      errorMessage.includes('insufficient funds') ||
+      errorMessage.includes('rejected');
 
     if (canRetryWithGas) {
       setErrorDialogState(true);
     }
-    
+
     setButtonMessage(errorMessage);
     console.error(error);
   }, []);
@@ -134,33 +145,35 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     return '';
   }, [organization, initiative, chainInterface, handleError]);
 
-  function getRate(){
-    registryApi.get<{ coin: TokenTickerSymbol; rate: number }>(
-      `/rates?coin=${selectedToken}&chain=${selectedChain}`,
-    ).then(response => {
-      if (response.success) {
-        const { rate } = response.data;
-        console.log('RATE', rate)
-        if (rate>0) {
-          setChainState(draft => {
-            //console.log('DRAFT', draft)
-            draft.exchangeRate = rate;
-          });
-          //requestAnimationFrame(() => {
-            //setChainState(draft => {
+  function getRate() {
+    registryApi
+      .get<{ coin: TokenTickerSymbol; rate: number }>(
+        `/rates?coin=${selectedToken}&chain=${selectedChain}`,
+      )
+      .then(response => {
+        if (response.success) {
+          const { rate } = response.data;
+          console.log('RATE', rate);
+          if (rate > 0) {
+            setChainState(draft => {
               //console.log('DRAFT', draft)
-              //draft.exchangeRate = rate;
+              draft.exchangeRate = rate;
+            });
+            //requestAnimationFrame(() => {
+            //setChainState(draft => {
+            //console.log('DRAFT', draft)
+            //draft.exchangeRate = rate;
             //});
             //console.log('CHAIN1', chainState)
-          //});
+            //});
+          }
+          //console.log('CHAIN2', chainState)
         }
-        //console.log('CHAIN2', chainState)
-      }
-    });
+      });
   }
 
   useEffect(() => {
-    getRate()
+    getRate();
   }, [selectedToken, selectedChain, setChainState]);
 
   const checkBalance = useCallback(async () => {
@@ -204,10 +217,16 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     [chainInterface],
   );
 
-  const handleMinting = useCallback(async (paymentResult: { success: boolean; walletAddress?: string; txid?: string; error?: string }) => {
-    if (!paymentResult.success) {
-      throw new Error(paymentResult.error ?? 'Payment failed');
-    }
+  const handleMinting = useCallback(
+    async (paymentResult: {
+      success: boolean;
+      walletAddress?: string;
+      txid?: string;
+      error?: string;
+    }) => {
+      if (!paymentResult.success) {
+        throw new Error(paymentResult.error ?? 'Payment failed');
+      }
 
       setButtonMessage('Minting NFT receipt, please wait...');
       const data = {
@@ -232,27 +251,29 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const receiptResult = await mintAndSaveReceiptNFT(data);
       console.log('RESULT', receiptResult);
 
-    if ('error' in receiptResult) {
-      throw new Error(receiptResult.error ?? 'Failed to process receipt');
-    }
+      if ('error' in receiptResult) {
+        throw new Error(receiptResult.error ?? 'Failed to process receipt');
+      }
 
-    setButtonMessage('Thank you for your donation!');
-    setDonationForm(draft => {
-      draft.paymentStatus = PAYMENT_STATUS.minted;
-      draft.date = new Date();
-    });
-  }, [
-    name,
-    emailReceipt,
-    email,
-    organization.id,
-    initiative.id,
-    destinationWalletAddress,
-    amount,
-    selectedChain,
-    selectedToken,
-    setDonationForm,
-  ]);
+      setButtonMessage('Thank you for your donation!');
+      setDonationForm(draft => {
+        draft.paymentStatus = PAYMENT_STATUS.minted;
+        draft.date = new Date();
+      });
+    },
+    [
+      name,
+      emailReceipt,
+      email,
+      organization.id,
+      initiative.id,
+      destinationWalletAddress,
+      amount,
+      selectedChain,
+      selectedToken,
+      setDonationForm,
+    ],
+  );
 
   const onSubmit = useCallback(async () => {
     try {
@@ -290,49 +311,61 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     }
   }
 
-
   //async function saveDonation({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData){
-  const saveDonation = useCallback(async ({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData) => {
-
-    const donation = {
-      organization: {
-        connect: { id: organizationId}
-      }, 
-      initiative: {
-        connect: { id: initiativeId },
-      }, 
-      category: {
-        connect: { id: categoryId }
-      },
+  const saveDonation = useCallback(
+    async ({
+      organizationId,
+      initiativeId,
+      categoryId,
       userId,
-      network, 
-      chain:    chainName as Chain,
-      wallet:   sender,
-      amount:   coinValue,
-      usdvalue: usdValue,
-      asset:    currency,
-      paytype:  'crypto',
-      status:   1
-    }
-    console.log('DONATION', donation)
-    //const ApiKey = process.env.CFCE_REGISTRY_API_KEY || ''
-    //const donationResp = await fetch('/api/donations', {method:'post', headers: {'x-api-key': ApiKey }, body:JSON.stringify(donation)})
-    //const donationJson = await donationResp.json()
-    //console.log('SAVED DONATION', donationJson)
-    //if(!donationJson.success){
-    //  //setButtonText('ERROR')
-    //  //setDisabled(true)
-    //  setButtonMessage('Error saving donation')
-    //  return false
-    //}
-    const donationResp = await createDonation(donation)
-    if(!donationResp){
-      setButtonMessage('Error saving donation')
-      return false
-    }
-    const donationId = donationResp.id
-    return donationId
-  },[])
+      sender,
+      chainName,
+      network,
+      coinValue,
+      usdValue,
+      currency,
+    }: DonationData) => {
+      const donation = {
+        organization: {
+          connect: { id: organizationId },
+        },
+        initiative: {
+          connect: { id: initiativeId },
+        },
+        category: {
+          connect: { id: categoryId },
+        },
+        userId,
+        network,
+        chain: chainName as Chain,
+        wallet: sender,
+        amount: coinValue,
+        usdvalue: usdValue,
+        asset: currency,
+        paytype: 'crypto',
+        status: 1,
+      };
+      console.log('DONATION', donation);
+      //const ApiKey = process.env.CFCE_REGISTRY_API_KEY || ''
+      //const donationResp = await fetch('/api/donations', {method:'post', headers: {'x-api-key': ApiKey }, body:JSON.stringify(donation)})
+      //const donationJson = await donationResp.json()
+      //console.log('SAVED DONATION', donationJson)
+      //if(!donationJson.success){
+      //  //setButtonText('ERROR')
+      //  //setDisabled(true)
+      //  setButtonMessage('Error saving donation')
+      //  return false
+      //}
+      const donationResp = await createDonation(donation);
+      if (!donationResp) {
+        setButtonMessage('Error saving donation');
+        return false;
+      }
+      const donationId = donationResp.id;
+      return donationId;
+    },
+    [],
+  );
 
   return (
     <div className="flex min-h-full w-full">
@@ -393,18 +426,17 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
               Insufficient Funds
             </DialogTitle>
             <DialogDescription className="text-white-600">
-              You do not have enough funds in your wallet to complete this transaction. Click on the button below to add funds to your wallet.
+              You do not have enough funds in your wallet to complete this
+              transaction. Click on the button below to add funds to your
+              wallet.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex justify-between">
             <DialogClose>
               <Button
-                variant={"link"}
+                variant={'link'}
                 onClick={() => {
-                  window.open(
-                    'https://changelly.com/buy',
-                    '_blank'
-                  );
+                  window.open('https://changelly.com/buy', '_blank');
                 }}
                 className="bg-blue-600 text-white hover:bg-blue-700"
               >
@@ -417,10 +449,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <Dialog 
-        open={errorDialogState} 
-        onOpenChange={setErrorDialogState}
-      >
+      <Dialog open={errorDialogState} onOpenChange={setErrorDialogState}>
         <DialogContent className="p-6">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold">
@@ -432,7 +461,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           </DialogHeader>
           <DialogFooter className="flex justify-between">
             <Button
-              className='bg-lime-600 text-white text-lg hover:bg-green-600 hover:shadow-inner'
+              className="bg-lime-600 text-white text-lg hover:bg-green-600 hover:shadow-inner"
               onClick={() => {
                 setErrorDialogState(false);
                 setTimeout(() => {
@@ -447,10 +476,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             >
               Try With Gas
             </Button>
-            <Button 
-              variant="ghost"
-              onClick={() => setErrorDialogState(false)}
-            >
+            <Button variant="ghost" onClick={() => setErrorDialogState(false)}>
               Cancel
             </Button>
           </DialogFooter>
