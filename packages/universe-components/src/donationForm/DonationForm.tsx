@@ -7,18 +7,13 @@ import {
   BlockchainManager,
 } from '@cfce/blockchain-tools';
 import type { Chain, Prisma, User } from '@cfce/database';
-import type { Chain, Prisma, User } from '@cfce/database';
-import {Chain,Prisma,UserEdatabase
+import {
   amountCoinAtom,
   amountUSDAtom,
   chainAtom,
   donationFormAtom,
 } from '@cfce/state';
 import type { TokenTickerSymbol } from '@cfce/types';
-import type { TokenTickerSymbol } from '@cfce/types';
-import { mintAndSaveReceiptNFT } from '@cfce/utils';
-import type { TokenTickerSymbol } from '@cfce/types';
-import { mintAndSaveReceiptNFT } from '@cfce/utils';
 import { mintAndSaveReceiptNFT } from '@cfce/utils';
 import { registryApi } from '@cfce/utils';
 import { useAtom, useAtomValue } from 'jotai';
