@@ -15,10 +15,10 @@ import type {
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
-import { ChainBaseClass, getChainByChainId } from "../chains"
+import { InterfaceBaseClass, getChainByChainId } from "../chains"
 import type { Transaction } from "../types/transaction"
 
-export default class MetaMaskWallet extends ChainBaseClass {
+export default class MetaMaskWallet extends InterfaceBaseClass {
   // neturl = ""
   // explorer = ""
   // network = "testnet"

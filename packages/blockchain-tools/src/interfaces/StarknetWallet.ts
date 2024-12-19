@@ -27,11 +27,11 @@ import {
   disconnect,
 } from "starknetkit"
 import { formatEther, parseEther } from "viem"
-import ChainBaseClass from "../chains/ChainBaseClass"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"
 import { ERC721ABI } from "../contracts/starknet/ERC721Abi"
 
-class StarknetWallet extends ChainBaseClass {
+class StarknetWallet extends InterfaceBaseClass {
   provider: Provider
   account: AccountInterface | null = null
   contract: Contract | null = null

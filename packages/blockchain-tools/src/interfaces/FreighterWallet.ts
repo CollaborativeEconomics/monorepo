@@ -7,9 +7,9 @@ import {
   signTransaction,
 } from "@stellar/freighter-api"
 import * as StellarSDK from "@stellar/stellar-sdk"
-import ChainBaseClass from "../chains/ChainBaseClass"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 
-class FreighterWallet extends ChainBaseClass {
+class FreighterWallet extends InterfaceBaseClass {
   horizon: StellarSDK.Horizon.Server
   horizonConfig = {
     network: "",

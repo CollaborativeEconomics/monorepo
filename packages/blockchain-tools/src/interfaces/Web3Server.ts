@@ -1,23 +1,24 @@
 import type { ChainSlugs, Network } from "@cfce/types"
 import _get from "lodash/get"
 import Web3 from "web3"
-import ChainBaseClass from "../chains/ChainBaseClass"
-import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // must pass tokenid
+import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
 
-
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function getObjectValue(obj:any, prop:string) {
-  return prop.split('.').reduce((r, val) => { return r ? r[val] : undefined; }, obj)
+function getObjectValue(obj: any, prop: string) {
+  return prop.split(".").reduce((r, val) => {
+    return r ? r[val] : undefined
+  }, obj)
 }
 
 function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export default class Web3Server extends ChainBaseClass {
+export default class Web3Server extends InterfaceBaseClass {
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
     this.web3 = new Web3(this.network.rpcUrls.main)
@@ -26,7 +27,10 @@ export default class Web3Server extends ChainBaseClass {
   async getGasPrice(minter: string, contractId: string, data: string) {
     const gasPrice = await this.fetchLedger("eth_gasPrice", [])
     console.log("GAS", Number.parseInt(gasPrice, 16), gasPrice)
-    const checkGas = await this.fetchLedger("eth_estimateGas", [ { from: minter, to: contractId, data } ]) || '0x1e8480' // 2000000
+    const checkGas =
+      (await this.fetchLedger("eth_estimateGas", [
+        { from: minter, to: contractId, data },
+      ])) || "0x1e8480" // 2000000
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
     const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
     return { gasPrice, gasLimit }
@@ -39,7 +43,7 @@ export default class Web3Server extends ChainBaseClass {
     contractId,
     walletSeed,
   }: { uri: string; address: string; contractId: string; walletSeed: string }) {
-    console.log('CHAIN', this.chain)
+    console.log("CHAIN", this.chain)
     console.log("Server minting NFT to", address, uri)
     if (!this.web3) {
       console.error("Web3 not available")
@@ -60,8 +64,8 @@ export default class Web3Server extends ChainBaseClass {
     console.log("DATA", data)
     let gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice in XDC is not returning updated prices
-    if(this.chain.slug==='xdc'){
-      gas = {gasPrice:'0x21c2ac6a00', gasLimit:'0xf4240'}  // 145000000000 - 1000000
+    if (this.chain.slug === "xdc") {
+      gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
     }
     console.log("GAS", gas)
 
@@ -82,20 +86,20 @@ export default class Web3Server extends ChainBaseClass {
     //const hasLogs = info.logs?.length > 0
     //const hasTopics = hasLogs && info.logs[0]?.topics?.length > 0
     let tokenNum = ""
-    if(info.logs?.length > 0) {
+    if (info.logs?.length > 0) {
       console.log("LOGS.0", JSON.stringify(info?.logs[0].topics, null, 2))
       //console.log("LOGS.1", JSON.stringify(info?.logs[1].topics, null, 2))
       //tokenNum = ` #${Number.parseInt(Buffer.from(_get(info, "logs.0.topics.3", Buffer.alloc(0))).toString("hex"), 16)}` // Doesn't work as expected
       //const nftSeq = Number.parseInt((info?.logs[0]?.topics[3] || 0).toString(),16)
       //const nftSex = info?.logs?.[0]?.topics?.[3]
-      const nftSex = getObjectValue(info, 'logs.0.topics.3')
-      const nftSeq = Number.parseInt(nftSex,16)
-      console.log('SEQ', nftSeq, nftSex)
+      const nftSex = getObjectValue(info, "logs.0.topics.3")
+      const nftSeq = Number.parseInt(nftSex, 16)
+      console.log("SEQ", nftSeq, nftSex)
       tokenNum = ` #${nftSeq}`
     } else {
-      const supply = await instance.methods.totalSupply.call({from:minter}) // last minted is total nfts
-      console.log('SUPPLY', supply)
-      const nftSeq = Number.parseInt(supply.toString(),10) - 1
+      const supply = await instance.methods.totalSupply.call({ from: minter }) // last minted is total nfts
+      console.log("SUPPLY", supply)
+      const nftSeq = Number.parseInt(supply.toString(), 10) - 1
       tokenNum = ` #${nftSeq}`
     }
     if (info.status === 1n) {
@@ -118,10 +122,15 @@ export default class Web3Server extends ChainBaseClass {
     address,
     tokenId,
     contractId,
-    walletSeed
-  }: { address: string; tokenId: string; contractId: string; walletSeed: string }) {
-    console.log('Server minting NFT721 to', address, 'tokenID', tokenId)
-    console.log('Chain', this.chain)
+    walletSeed,
+  }: {
+    address: string
+    tokenId: string
+    contractId: string
+    walletSeed: string
+  }) {
+    console.log("Server minting NFT721 to", address, "tokenID", tokenId)
+    console.log("Chain", this.chain)
     if (!this.web3) {
       console.error("Web3 not available")
       return { success: false, error: "Web3 not available" }
@@ -142,7 +151,7 @@ export default class Web3Server extends ChainBaseClass {
     console.log("DATA", data)
     //const gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice is not returning updated prices
-    const gas = {gasPrice:'0x21c2ac6a00', gasLimit:'0xf4240'}  // 145000000000 - 1000000
+    const gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
     console.log("GAS", gas)
 
     const tx = {
@@ -325,20 +334,22 @@ export default class Web3Server extends ChainBaseClass {
   //   }
   //   return result
   // }
-  async getTransactionInfo(txId: string, wait?:boolean) {
-    const secs = [2,2,3,3,4,4,5,5,6,6]
+  async getTransactionInfo(txId: string, wait?: boolean) {
+    const secs = [2, 2, 3, 3, 4, 4, 5, 5, 6, 6]
     let count = 0
-    if(!wait){ count = 9 }
-    while(count<10){
+    if (!wait) {
+      count = 9
+    }
+    while (count < 10) {
       count += 1
-      console.log('WAIT', count, '-', secs[count], 'secs')
-      await sleep(secs[count]*1000)
+      console.log("WAIT", count, "-", secs[count], "secs")
+      await sleep(secs[count] * 1000)
       const txInfo = await this.fetchLedger("eth_getTransactionByHash", [txId])
-      console.log('TXINFO', txInfo)
+      console.log("TXINFO", txInfo)
       if (!txInfo || txInfo.error) {
         return { error: "Transaction not found" }
       }
-      if(txInfo?.hash){
+      if (txInfo?.hash) {
         return {
           id: txInfo.hash,
           hash: txInfo.hash,
@@ -347,7 +358,7 @@ export default class Web3Server extends ChainBaseClass {
           value: txInfo.value,
           fee: (BigInt(txInfo.gas) * BigInt(txInfo.gasPrice)).toString(),
           blockNumber: Number.parseInt(txInfo.blockNumber, 16),
-          timestamp: "" // Ethereum transactions do not directly provide a timestamp
+          timestamp: "", // Ethereum transactions do not directly provide a timestamp
         }
       }
     }
@@ -355,7 +366,7 @@ export default class Web3Server extends ChainBaseClass {
   }
 
   async fetchLedger(method: string, params: unknown) {
-    console.log('FETCH', this.network.rpcUrls.main)
+    console.log("FETCH", this.network.rpcUrls.main)
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)
     const opt = {

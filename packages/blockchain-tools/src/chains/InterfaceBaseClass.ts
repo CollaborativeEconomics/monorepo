@@ -1,3 +1,4 @@
+import appConfig from "@cfce/app-config"
 import type {
   ChainConfig,
   ChainSlugs,
@@ -9,13 +10,12 @@ import type { Web3 } from "web3"
 import type { Transaction } from "../types/transaction"
 import chainConfiguration from "./chainConfig"
 
-export default abstract class ChainBaseClass {
-  public chain: ChainConfig
+export default abstract class InterfaceBaseClass {
+  public chain?: ChainConfig
   public network: NetworkConfig
 
-  constructor(chainSlug: ChainSlugs, network: Network) {
-    this.chain = chainConfiguration[chainSlug]
-    this.network = this.chain.networks[network]
+  constructor() {
+    this.network = appConfig.chainDefaults.network
   }
 
   // isometric functions, must be defined on all subclasses

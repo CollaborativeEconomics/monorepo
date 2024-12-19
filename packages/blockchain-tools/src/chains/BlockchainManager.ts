@@ -12,11 +12,11 @@ import StellarServer from "../interfaces/StellarServer"
 import Web3Server from "../interfaces/Web3Server"
 import XrplServer from "../interfaces/XrplServer"
 import XummClient from "../interfaces/XummClient"
-import type ChainBaseClass from "./ChainBaseClass"
+import type InterfaceBaseClass from "./InterfaceBaseClass"
 
 type ChainClasses<ClientClass = Interface, ServerClass = Interface> = {
-  client: Partial<Record<ClientInterfaces, ChainBaseClass>>
-  server: ChainBaseClass
+  client: Partial<Record<ClientInterfaces, InterfaceBaseClass>>
+  server: InterfaceBaseClass
 }
 
 const getNetwork = (slug: ChainSlugs): Network =>
@@ -31,7 +31,7 @@ const createEvmClients = (slug: ChainSlugs) => {
 
 export const BlockchainClientInterfaces: Record<
   ClientInterfaces,
-  ChainBaseClass
+  InterfaceBaseClass
 > = {
   xaman: new XummClient("xrpl", getNetwork("xrpl")),
   crossmark: new CrossmarkWallet("xrpl", getNetwork("xrpl")),

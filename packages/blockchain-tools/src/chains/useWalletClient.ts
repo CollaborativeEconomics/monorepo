@@ -2,14 +2,14 @@ import { chainAtom } from "@cfce/state"
 import type { ClientInterfaces } from "@cfce/types"
 import { useAtomValue } from "jotai"
 import BlockchainManager from "./BlockchainManager"
-import type ChainBaseClass from "./ChainBaseClass"
+import type InterfaceBaseClass from "./InterfaceBaseClass"
 
-export function useWalletClient(): ChainBaseClass | undefined {
+export function useWalletClient(): InterfaceBaseClass | undefined {
   const { selectedChain, selectedWallet } = useAtomValue(chainAtom)
 
   try {
     // we override the inferred type so TS doesn't complain about the specific client not being present (e.g. {argent} doesn't exist in {metamask})
-    const chainClients: Partial<Record<ClientInterfaces, ChainBaseClass>> =
+    const chainClients: Partial<Record<ClientInterfaces, InterfaceBaseClass>> =
       BlockchainManager[selectedChain]?.client
     if (!chainClients) {
       console.warn(`No clients found for chain: ${selectedChain}`)

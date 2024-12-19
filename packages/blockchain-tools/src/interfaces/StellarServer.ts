@@ -9,10 +9,10 @@ import type {
   // TransactionBuilder,
 } from "@stellar/stellar-sdk"
 // import Stellar, { StellarNetworks } from "./common"
-import ChainBaseClass from "../chains/ChainBaseClass"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import Contract721 from "../contracts/soroban/nft721/server"
 
-export default class StellarServer extends ChainBaseClass {
+export default class StellarServer extends InterfaceBaseClass {
   sorobanServer: SorobanRpc.Server
 
   constructor(slug: ChainSlugs, network: Network) {
@@ -33,7 +33,14 @@ export default class StellarServer extends ChainBaseClass {
     transfer?: boolean
     walletSeed: string
   }) {
-    console.log(this.chain.name, "minting NFT to", address, uri, "in", this.network.slug)
+    console.log(
+      this.chain.name,
+      "minting NFT to",
+      address,
+      uri,
+      "in",
+      this.network.slug,
+    )
     console.log("CTR", contractId, this.network.rpcUrls.main)
     const contract = new Contract721({
       contractId,

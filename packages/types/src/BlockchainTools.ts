@@ -56,7 +56,7 @@ export const ChainNames: Chain[] = [
   "XRPL",
 ] as const
 
-export type Network = "mainnet" | "testnet" | "horizon" | string
+export type Network = "mainnet" | "testnet" | "horizon"
 export interface NetworkConfig {
   id: number | string
   name: string

@@ -1,4 +1,4 @@
-export { default as ChainBaseClass } from "./ChainBaseClass"
+export { default as InterfaceBaseClass } from "./InterfaceBaseClass"
 export {
   default as BlockchainManager,
   BlockchainClientInterfaces,

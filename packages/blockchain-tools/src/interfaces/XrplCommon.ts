@@ -1,17 +1,17 @@
 import { get } from "lodash"
 import {
+  Client,
   type NFTokenCreateOffer,
   type NFTokenMint,
-  type Payment,
   type Node,
-  type TxResponse,
+  type Payment,
   type TransactionMetadata,
+  type TxResponse,
   isCreatedNode,
   isModifiedNode,
-  Client,
 } from "xrpl"
 import type { NFTokenPage } from "xrpl/dist/npm/models/ledger"
-import ChainBaseClass from "../chains/ChainBaseClass"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import { Transaction } from "../types/transaction"
 
 type transactionMethods =
@@ -21,8 +21,7 @@ type transactionMethods =
   | "transaction_entry"
   | "tx_history"
 
-export default class XrplCommon extends ChainBaseClass {
-  
+export default class XrplCommon extends InterfaceBaseClass {
   async getTransactionInfo(txId: string) {
     const payload = { transaction: txId, binary: false }
     const txInfo = await this.fetchLedger("tx", payload)
@@ -101,14 +100,14 @@ export default class XrplCommon extends ChainBaseClass {
     //const meta = txInfo?.result?.meta as TransactionMetadata<NFTokenMintMetadata>
     //const tokenID = meta?.nftoken_id as string
     const tokenID = get(txInfo, "result.meta.nftoken_id") as string
-    console.log('TOKEN ID', tokenID)
-    if(tokenID){
+    console.log("TOKEN ID", tokenID)
+    if (tokenID) {
       return tokenID
     }
     return { error: "Token not found" }
   }
 
-/*
+  /*
   findTokenOLD(txInfo: TxResponse<NFTokenMint>): string | { error: string } {
     // Extract affected nodes
     const affectedNodes = get(txInfo, "result.meta.AffectedNodes") as
@@ -165,16 +164,20 @@ export default class XrplCommon extends ChainBaseClass {
   }
 */
 
-  async sendPayment({ address, amount, memo }: { address: string; amount: number; memo?: string }) {
-    console.log('PAY', address, amount, memo)
-    const sender = '0x0' // TODO: get from wallet
+  async sendPayment({
+    address,
+    amount,
+    memo,
+  }: { address: string; amount: number; memo?: string }) {
+    console.log("PAY", address, amount, memo)
+    const sender = "0x0" // TODO: get from wallet
     //const wei = Math.floor(amount * 1000000).toString()
     const wei = String(this.toBaseUnit(amount))
     const transaction = {
-      TransactionType: 'Payment',
+      TransactionType: "Payment",
       Account: sender,
       Destination: address,
-      Amount: wei
+      Amount: wei,
     } as Payment
     const url = this.network.rpcUrls.main
     const client = new Client(url)
@@ -182,11 +185,11 @@ export default class XrplCommon extends ChainBaseClass {
     //const payment = await client.autofill(transaction)
     //const res = await client.submit(payment)
     const res = await client.submitAndWait(transaction)
-    console.log('RES', res)
+    console.log("RES", res)
     //const code = res?.result?.meta?.TransactionResult
     client.disconnect()
-    return {success:true}
-    
+    return { success: true }
+
     //if (code === "tesSUCCESS") {
     //  console.log('Transaction succeeded')
     //  return {success:true}
