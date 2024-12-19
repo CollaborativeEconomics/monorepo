@@ -43,6 +43,10 @@
       "import": "./dist/collections/[id]/route.js",
       "types": "./dist/collections/[id]/route.d.ts"
     },
+    "./contracts": {
+      "import": "./dist/contracts/route.js",
+      "types": "./dist/contracts/route.d.ts"
+    },
     "./credits": {
       "import": "./dist/credits/route.js",
       "types": "./dist/credits/route.d.ts"

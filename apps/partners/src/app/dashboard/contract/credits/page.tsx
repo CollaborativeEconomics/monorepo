@@ -1,34 +1,24 @@
-import { Suspense } from 'react';
+//import { Suspense } from 'react';
 import ContractCreditsClient from './credits-client';
 
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
 interface PageProps {
   //params: Promise<{ slug: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: SearchParams
 }
-
-/*
-interface SearchProps {
-  searchParams: {
-    chain?: string;
-    network?: string;
-    wallet?: string;
-    organizationId?: string;
-  }
-}
-*/
 
 export default async function ContractCreditsPage({ searchParams }: PageProps) {
   const { chain, network, wallet, organizationId } = await searchParams;
 
+    // <Suspense fallback={<div>Loading...</div>}>
+    // </Suspense>
   return (
-    <Suspense fallback={<div>Loading...</div>}>
       <ContractCreditsClient
         chain={chain?.toString()}
         network={network?.toString()}
         wallet={wallet?.toString()}
         organizationId={organizationId?.toString()}
       />
-    </Suspense>
   );
 }

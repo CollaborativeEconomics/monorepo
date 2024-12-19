@@ -30,9 +30,20 @@ const apis = {
   },
 }
 
-const chains = {
-  xdc: appConfig.chains.xdc,
+const chains: AppConfig["chains"] = {
+  arbitrum: {
+    slug: "arbitrum",
+    network: "testnet",
+    contracts: {
+      credits: "0x0???",
+      receiptMintbotERC721: "0x2c647e44003f403bb3e483ff810279efb136c304",
+    },
+    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
+    enabledWallets: ["metamask"],
+    tokens: ["ETH"],
+  },
   stellar: appConfig.chains.stellar,
+  xdc: appConfig.chains.xdc,
   xrpl: appConfig.chains.xrpl,
 }
 

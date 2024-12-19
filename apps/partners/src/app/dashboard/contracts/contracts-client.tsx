@@ -1,9 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { redirect } from 'next/navigation'
 import Title from '~/components/title'
 import Select from '~/components/form/select'
 import LinkButton from '~/components/linkbutton'
+import ButtonBlue from '~/components/buttonblue';
 import ContractView from '~/components/contract'
 import styles from '~/styles/dashboard.module.css'
 import { chainConfig } from '@cfce/blockchain-tools';
@@ -15,6 +17,12 @@ interface PageProps {
   contracts: Contract[]
   initialChain: string
   network: string
+}
+
+interface FormProps {
+  chain: string
+  contract_type: string
+  wallet: string
 }
 
 export default function Page({organization, contracts, initialChain, network}:PageProps) {
@@ -62,7 +70,7 @@ export default function Page({organization, contracts, initialChain, network}:Pa
       id: chainConfig[chain].name,
       name: chainConfig[chain].name,
     }));
-    console.log('CHAINS', chains)
+    //console.log('CHAINS', chains)
     return chains
   }
 
@@ -76,9 +84,10 @@ export default function Page({organization, contracts, initialChain, network}:Pa
   console.log('chain', initialChain)
   console.log('wallet', initialWallet)
   console.log('contract', initialContract)
+  const [message, showMessage] = useState('Enter contract options')
 
   const [ change, setChange ] = useState(0)
-  const { register, watch } = useForm({
+  const { register, handleSubmit, watch } = useForm({
     defaultValues: {
       chain: initialChain,
       wallet: initialWallet,
@@ -95,19 +104,34 @@ export default function Page({organization, contracts, initialChain, network}:Pa
     'contract_type',
   ])
 
-  const url = `/dashboard/contract/${contract_type.toLowerCase()}?chain=${chain}&network=${network}&wallet=${wallet}&organizationId=${organization.id}`
-  console.log('URL', url)
-
+  //const initUrl = `/dashboard/contract/${contract_type.toLowerCase()}?chain=${chain}&network=${network}&wallet=${wallet}&organizationId=${organization.id}`
+  //console.log('URL', initUrl)
+  //const [ url, setUrl ] = useState(initUrl)
   // Used to refresh list of wallets after new record added
   //useEffect(()=>{
   //  console.log('Wallets changed!', change)
   //},[change])
 
+  function selectContract(contract:string){
+    console.log('SEL', contract)
+    //const newUrl = `/dashboard/contract/${contract.toLowerCase()}?chain=${chain}&network=${network}&wallet=${wallet}&organizationId=${organization.id}`
+    //setUrl(newUrl)
+    //console.log('URL', newUrl)
+  }
+
+  async function onSubmit(data: FormProps) {
+    console.log('FORM', data)
+    showMessage('Not ready...')
+    const url = `/dashboard/contract/${data.contract_type.toLowerCase()}?chain=${data.chain}&network=${network}&wallet=${data.wallet}&organizationId=${organization.id}`
+    console.log('URL', url)
+    redirect(url)
+  }
+
   return (
     <div className={styles.content}>
       <Title text="Smart Contracts" />
       <div className={styles.mainBox}>
-        <form className={styles.vbox}>
+        <form className={styles.vbox} onSubmit={handleSubmit(onSubmit)}>
           <Select
             label="Chain"
             register={register('chain')}
@@ -122,12 +146,15 @@ export default function Page({organization, contracts, initialChain, network}:Pa
             label="Contract Type"
             register={register('contract_type')}
             options={listContracts()}
+            handler={selectContract}
           />
+          <ButtonBlue text="CLICK TO START" />
         </form>
       </div>
 
-      <LinkButton href={url} className="mb-12" text="CLICK TO START" />
-      { (contracts && contracts.constructor === Array) ? contracts.map((item) => (
+      {/*<LinkButton href={url} className="mb-12" text="CLICK TO START" />*/}
+
+      { (contracts && contracts.constructor === Array && contracts.length>0) ? contracts.map((item) => (
         <div className={styles.mainBox} key={item.id}>
           <ContractView {...JSON.parse(JSON.stringify(item))} />
         </div>

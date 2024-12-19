@@ -1,20 +1,31 @@
 'use client';
 
-import type { Contract, Organization } from '@cfce/database';
-import { getContracts } from '~/actions/database';
-//import { registryApi } from '@cfce/utils';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form'
+import appConfig from '@cfce/app-config';
+import type { Contract, Organization, Prisma } from '@cfce/database';
 import ButtonBlue from '~/components/buttonblue';
-import Dashboard from '~/components/dashboard';
 import Title from '~/components/title';
+import TextInput from '~/components/form/textinput'
+import Select from '~/components/form/select'
 import styles from '~/styles/dashboard.module.css';
+import { apiFetch } from '~/utils/api';
 
-interface NFTReceiptClientProps {
+type OrganizationData = Prisma.OrganizationGetPayload<{ include: { initiative: true } }>
+
+interface PageProps {
   chain?: string;
   network?: string;
   wallet?: string;
   organizationId?: string;
-  organization?: Organization | null;
+  organization?: OrganizationData | null;
+}
+
+interface FormProps {
+  baseURI?: string
+  initiativeId?: string
+  name?: string
+  symbol?: string
 }
 
 export default function NFTReceiptClient({
@@ -23,101 +34,101 @@ export default function NFTReceiptClient({
   wallet,
   organizationId,
   organization,
-}: NFTReceiptClientProps) {
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+}: PageProps) {
 
-  useEffect(() => {
-    async function fetchContracts() {
-      try {
-        setLoading(true);
-        //const query = [
-        //  chain && `chain=${chain}`,
-        //  network && `network=${network}`,
-        //  wallet && `wallet=${wallet}`,
-        //  organizationId && `organizationId=${organizationId}`,
-        //]
-        //  .filter(Boolean)
-        //  .join('&');
-        //const response:Contract[] = await registryApi.get<Contract>(`contracts?${query}`);
-        
-        const response = await getContracts({ chain, network })
-        if (!response) {
-          //throw new Error(response.error);
-          throw new Error('Error fetching contracts');
-        }
-        if (response.constructor === Array) {
-          setContracts(response);
-        }
-      } catch (err) {
-        console.error('Failed to fetch contracts:', err);
-        setError(
-          err instanceof Error ? err.message : 'Failed to fetch contracts',
-        );
-      } finally {
-        setLoading(false);
-      }
+  const contract_type = 'NFTReceipt'
+  const [initiative, setInitiative] = useState(organization?.initiative[0].id||'')
+  const [initialURI, setInitialURI] = useState(organization?.initiative[0].imageUri||'')
+
+  const [buttonText, setButtonText] = useState('NEW CONTRACT')
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [message, showMessage] = useState('Enter contract options')
+  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 }
+
+  function setButtonState(state:number) {
+    switch (state) {
+      case ButtonState.READY:
+        setButtonText('NEW CONTRACT')
+        setButtonDisabled(false)
+        break
+      case ButtonState.WAIT:
+        setButtonText('WAIT')
+        setButtonDisabled(true)
+        break
+      case ButtonState.DONE:
+        setButtonText('DONE')
+        setButtonDisabled(true)
+        break
     }
-
-    void fetchContracts();
-  }, [chain, network, wallet, organizationId]);
-
-  function onExport() {
-    // TODO: implement export functionality
-    console.log('Export clicked');
   }
 
-  if (loading) {
-    return <div>Loading NFT receipts...</div>;
+  const { register, handleSubmit, watch } = useForm({
+    defaultValues: {      
+      name: 'Give Credits',
+      symbol: 'GIVE',
+      baseURI: initialURI,
+      initiativeId: initiative
+    }
+  })
+
+  const [
+    name,
+    symbol,
+    baseURI,
+    initiativeId
+  ] = watch([
+    'name',
+    'symbol',
+    'baseURI',
+    'initiativeId'
+  ])
+
+  function listInitiatives() {
+    if(!organization || organization.initiative?.length < 1){
+      return [{id:'ALL', name:'All initiatives'}]
+    }
+    const list = organization.initiative?.map(it=>{ return { id: it.id, name: it.title } })
+    console.log('LIST', list)
+    return list
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  function selectInitiative(selected:string){
+    console.log('SEL', selected)
+    setInitiative(selected)
   }
 
+  async function onSubmit(data: FormProps) {
+    console.log('SUBMIT', data)
+    showMessage('Not ready...')
+    // TODO: finish it
+  }
+
+              //onChange={selectInitiative}
   return (
-    <Dashboard>
-      <div className={styles.content}>
-        <div className={styles.mainBox}>
-          <Title text="NFT RECEIPTS" />
-          <div className="w-full p-4 mt-2">
-            {organization && (
-              <div className="mb-4">
-                <h2 className="text-xl font-bold">{organization.name}</h2>
-                <p className="text-gray-600">{organization.description}</p>
-              </div>
-            )}
-            <table className="w-full">
-              <thead>
-                <tr className="text-slate-400">
-                  <th align="left">Chain</th>
-                  <th align="left">Network</th>
-                  <th align="left">Contract</th>
-                  <th align="left">Type</th>
-                  <th align="left">Admin</th>
-                  {/*<th align="left">Token ID</th>*/}
-                </tr>
-              </thead>
-              <tbody className="border-t-2">
-                {contracts.map(contract => (
-                  <tr key={contract.id}>
-                    <td>{contract.chain}</td>
-                    <td>{contract.network}</td>
-                    <td>{contract.contract_address}</td>
-                    <td>{contract.contract_type}</td>
-                    <td>{contract.admin_wallet_address}</td>
-                    {/*<td>{contract.token_id}</td>*/}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="w-full mb-2 flex flex-row justify-between">
-            <ButtonBlue id="buttonExport" text="EXPORT" onClick={onExport} />
+    <div className={styles.vbox}>
+      <Title text="NFT Receipt Contract" />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-row justify-center w-[640px] mx-auto">
+          <div className="w-full">
+            <Select
+              label="Initiative"
+              register={register('initiativeId')}
+              options={listInitiatives()}
+            />
+            <TextInput label="Name" register={register('name')} />
+            <TextInput label="Symbol" register={register('symbol')} />
+            <TextInput label="Image URI" id="baseURI" register={register('baseURI')} />
           </div>
         </div>
-      </div>
-    </Dashboard>
+        <ButtonBlue
+          id="buttonSubmit"
+          text={buttonText}
+          disabled={buttonDisabled}
+        />
+      </form>
+      <p id="message" className="text-center">
+        {message}
+      </p>
+    </div>
   );
 }

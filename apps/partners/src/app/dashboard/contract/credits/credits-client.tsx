@@ -1,108 +1,171 @@
 'use client';
 
-import type { Contract } from '@cfce/database';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form'
+import appConfig from '@cfce/app-config';
+import type { Contract } from '@cfce/database';
 import ButtonBlue from '~/components/buttonblue';
-import Dashboard from '~/components/dashboard';
 import Title from '~/components/title';
+import TextInput from '~/components/form/textinput'
 import styles from '~/styles/dashboard.module.css';
 import { apiFetch } from '~/utils/api';
 
-interface ContractCreditsClientProps {
+interface PageProps {
   chain?: string;
   network?: string;
   wallet?: string;
   organizationId?: string;
 }
 
+interface FormProps {
+  bucket?: string
+  chain?: string
+  minimum?: string
+  provider?: string
+  provider_fees?: string
+  vendor?: string
+  vendor_fees?: string
+  wallet?: string
+}
+
 export default function ContractCreditsClient({
+  organizationId,
   chain,
   network,
   wallet,
-  organizationId,
-}: ContractCreditsClientProps) {
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+}: PageProps) {
+  //const contract_type = 'Credits'
 
-  useEffect(() => {
-    async function fetchContracts() {
-      try {
-        setLoading(true);
-        const query = [
-          chain && `chain=${chain}`,
-          network && `network=${network}`,
-          wallet && `wallet=${wallet}`,
-          organizationId && `organizationId=${organizationId}`,
-        ]
-          .filter(Boolean)
-          .join('&');
-
-        const response = await apiFetch(`contracts?${query}`);
-        if (response.error) {
-          throw new Error(response.error);
-        }
-        setContracts(response);
-      } catch (err) {
-        console.error('Failed to fetch contracts:', err);
-        setError(
-          err instanceof Error ? err.message : 'Failed to fetch contracts',
-        );
-      } finally {
-        setLoading(false);
-      }
+  // TODO: Componentize button state
+  const [buttonText, setButtonText] = useState('NEW CONTRACT')
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [message, showMessage] = useState('Enter contract options')
+  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 }
+  
+  function setButtonState(state:number) {
+    switch (state) {
+      case ButtonState.READY:
+        setButtonText('NEW CONTRACT')
+        setButtonDisabled(false)
+        break
+      case ButtonState.WAIT:
+        setButtonText('WAIT')
+        setButtonDisabled(true)
+        break
+      case ButtonState.DONE:
+        setButtonText('DONE')
+        setButtonDisabled(true)
+        break
     }
-
-    void fetchContracts();
-  }, [chain, network, wallet, organizationId]);
-
-  function onExport() {
-    // TODO: implement export functionality
-    console.log('Export clicked');
   }
 
-  if (loading) {
-    return <div>Loading contracts...</div>;
+  const { register, handleSubmit, watch } = useForm({
+    defaultValues: {
+      chain: chain,
+      wallet: wallet,
+      vendor: '',
+      vendor_fees: '90',
+      provider: '',
+      provider_fees: '10',
+      minimum: '1',
+      bucket: '20'
+    }
+  })
+  const [
+    vendor,
+    vendor_fees,
+    provider,
+    provider_fees,
+    minimum,
+    bucket
+  ] = watch([
+    'vendor',
+    'vendor_fees',
+    'provider',
+    'provider_fees',
+    'minimum',
+    'bucket'
+  ])
+
+
+  async function onSubmit(data: FormProps) {
+    console.log('SUBMIT', data)
+
+    if (!data.chain) {
+      showMessage('Chain is required')
+      return
+    }
+    if (!data.wallet) {
+      showMessage('Wallet is required')
+      return
+    }
+    showMessage('Not ready...')
+
+/*
+    try {
+      showMessage('Deploying contract, please sign transaction...')
+      setButtonState(ButtonState.WAIT)
+
+      // DEPLOY
+      // TODO: get args from form component
+      const deployer = appConfig.chains[chain]?.contracts[contract_type]
+      console.log('CTR', deployer)
+      const res = await deployer?.deploy(data)
+      console.log('RES', res)
+      if(!res || res?.error){
+        showMessage(`Error deploying contract: ${res?.error||'Contract not found'}`)
+        setButtonState(ButtonState.READY)
+        return
+      }
+      showMessage('Contract deployed successfully')
+      setButtonState(ButtonState.READY)
+      // Save to db contracts
+      const contract = {
+        chain,
+        network,
+        contract_type,
+        contract_address: res?.contractId,
+        start_block: res?.block,
+        entity_id: organizationId,
+        admin_wallet_address: wallet
+      }
+      console.log('CTR', contract)
+      const saved = await apiPost('contracts', contract)
+      console.log('SAVED', saved)
+    } catch (ex) {
+      console.error(ex)
+      showMessage(`Error deploying contract: ${ex.message}`)
+      setButtonState(ButtonState.READY)
+    }
+*/
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
-    <Dashboard>
-      <div className={styles.content}>
-        <div className={styles.mainBox}>
-          <Title text="CONTRACTS" />
-          <div className="w-full p-4 mt-2">
-            <table className="w-full">
-              <thead>
-                <tr className="text-slate-400">
-                  <th align="left">Chain</th>
-                  <th align="left">Network</th>
-                  <th align="left">Contract</th>
-                  <th align="left">Type</th>
-                  <th align="left">Admin</th>
-                </tr>
-              </thead>
-              <tbody className="border-t-2">
-                {contracts.map(contract => (
-                  <tr key={contract.id}>
-                    <td>{contract.chain}</td>
-                    <td>{contract.network}</td>
-                    <td>{contract.contract_address}</td>
-                    <td>{contract.contract_type}</td>
-                    <td>{contract.admin_wallet_address}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="w-full mb-2 flex flex-row justify-between">
-            <ButtonBlue id="buttonExport" text="EXPORT" onClick={onExport} />
+    <div className={styles.vbox}>
+      <Title text="Credits Contract" />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* PAGER */}
+        <div className="flex flex-row justify-center w-[640px] mx-auto">
+          {/* PAGE */}
+          <div className="w-full">
+            <TextInput label="Credit Vendor (Wallet address)" register={register('vendor')} />
+            <TextInput label="Vendor Fees (percentage)" register={register('vendor_fees')} />
+            <TextInput label="Credit Provider (Wallet address)" register={register('provider')} />
+            <TextInput label="Provider Fees (percentage)" register={register('provider_fees')} />
+            <TextInput label="Bucket Size" register={register('bucket')} />
+            <TextInput label="Minimum Donation" register={register('minimum')} />
           </div>
         </div>
-      </div>
-    </Dashboard>
+        <ButtonBlue
+          id="buttonSubmit"
+          text={buttonText}
+          disabled={buttonDisabled}
+        />
+      </form>
+      <p id="message" className="text-center">
+        {message}
+      </p>
+    </div>
   );
 }

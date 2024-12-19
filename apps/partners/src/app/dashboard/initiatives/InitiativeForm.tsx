@@ -77,14 +77,16 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/*<FileView
+      {/*
+      <FileView
         id="imgFile"
         register={register('image', { required: true })}
         source="/media/upload.jpg"
         width={250}
         height={250}
         multiple={false}
-      />*/}
+      />
+      */}
       <input type="file" {...register('image')} className="mt-4 w-full" />
       <TextInput label="Title" register={register('title')} />
       <TextArea label="Description" register={register('description')} />

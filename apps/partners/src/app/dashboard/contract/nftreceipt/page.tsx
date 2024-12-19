@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import NFTReceiptClient from './nftreceipt-client';
+import { getOrganizationById } from '~/actions/database'
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -7,13 +8,8 @@ interface PageProps {
 
 export default async function NFTReceiptPage({ searchParams }: PageProps) {
   const { chain, network, wallet, organizationId } = await searchParams;
-
-  // Fetch organization data server-side if needed
-  const organization = organizationId
-    ? await fetch(`/api/organization?id=${organizationId}`).then(res =>
-        res.json(),
-      )
-    : null;
+  const data = await getOrganizationById(organizationId?.toString() || '')
+  const organization = JSON.parse(JSON.stringify(data))
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
