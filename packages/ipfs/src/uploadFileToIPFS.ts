@@ -2,7 +2,6 @@ import "server-only"
 import fs from "node:fs"
 import path from "node:path"
 import { put } from "@vercel/blob"
-//import type { File } from "formidable"
 import uploadDataToIPFS from "./uploadDataToIPFS"
 
 export default async function uploadFileToIPFS(file: File): Promise<string> {

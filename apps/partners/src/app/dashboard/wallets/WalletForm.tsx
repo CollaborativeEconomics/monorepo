@@ -1,5 +1,6 @@
 'use client';
 
+import { revalidatePath } from 'next/cache'
 import type { Chain } from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
 import { useState } from 'react';
@@ -65,7 +66,8 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
         // You might want to add some logic here to refresh the list of wallets
         // Pass new wallet back to server page component
         // Or refresh server page component
-        window.location.reload()
+        revalidatePath('/dashboard/wallets')
+        //window.location.reload()
       } else {
         throw new Error(result.error);
       }

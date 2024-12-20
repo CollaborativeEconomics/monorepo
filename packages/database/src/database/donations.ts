@@ -133,7 +133,7 @@ export async function getDonationById(
   return data
 }
 
-export async function newDonation(data: Prisma.DonationUncheckedCreateInput) {
+export async function newDonation(data: Prisma.DonationCreateInput) {
   const rec = await prismaClient.donation.create({ data })
   console.log("NEW DONATION", rec)
   return rec

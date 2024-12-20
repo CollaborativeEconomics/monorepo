@@ -17,16 +17,6 @@ export default function SignInButton({ className }: SignInButtonProps) {
   return (
     <>
       <a href={'/api/auth/signin'} className="" >Sign in</a>
-
-      {/*
-      <button
-        type="button"
-        className={className}
-        onClick={e => {onSignIn(e)}}
-      >
-        Sign in
-      </button>
-      */}
     </>
   );
 }

@@ -12,12 +12,10 @@
     "@aws-sdk/client-s3": "^3.709.0",
     "@cfce/app-config": "workspace:*",
     "@vercel/blob": "0.24.1",
-    "formidable": "^3.5.2",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@smithy/types": "^3.7.2",
-    "@types/formidable": "^3.4.5",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.1",
     "aws-sdk-client-mock": "^4.1.0",

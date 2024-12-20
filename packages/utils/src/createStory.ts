@@ -10,7 +10,6 @@ import {
 } from "@cfce/database"
 import { uploadDataToIPFS, uploadFileToIPFS } from "@cfce/ipfs"
 import { put } from "@vercel/blob"
-//import type { File } from "formidable"
 import { mintStoryNFT } from "./mintStoryNFT"
 
 async function processFile(

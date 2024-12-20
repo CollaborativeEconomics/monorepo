@@ -11,7 +11,7 @@ export class RegistryApi {
 
   constructor() {
     // Use window.location.origin in the browser, fallback to "/" for SSR
-    this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : "http://localhost:3000/api"
+    this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : `${process.env.NEXTAUTH_URL}/api`
     //this.baseUrl = appConfig.apis.registry.apiUrl
     //console.log('BASE URL', this.baseUrl)
     if (!this.baseUrl) {

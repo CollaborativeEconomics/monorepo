@@ -331,9 +331,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   //async function saveDonation({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData){
   const saveDonation = useCallback(async ({organizationId, initiativeId, categoryId, userId, sender, chainName, network, coinValue, usdValue, currency}:DonationData) => {
     const donation = {
-      organizationId,
-      initiativeId,
-      categoryId,
+      organization: {
+        connect: { id: organizationId },
+      },
+      initiative: {
+        connect: { id: initiativeId },
+      },
+      category: {
+        connect: { id: categoryId },
+      },
       userId,
       network, 
       chain:    chainName as Chain,
@@ -345,16 +351,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       status:   1
     }
     console.log('DONATION', donation)
-    //const ApiKey = process.env.CFCE_REGISTRY_API_KEY || ''
-    //const donationResp = await fetch('/api/donations', {method:'post', headers: {'x-api-key': ApiKey }, body:JSON.stringify(donation)})
-    //const donationJson = await donationResp.json()
-    //console.log('SAVED DONATION', donationJson)
-    //if(!donationJson.success){
-    //  //setButtonText('ERROR')
-    //  //setDisabled(true)
-    //  setButtonMessage('Error saving donation')
-    //  return false
-    //}
     const donationResp = await createDonation(donation)
     if(!donationResp){
       setButtonMessage('Error saving donation')

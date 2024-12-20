@@ -80,20 +80,10 @@ function getMediaExtension(mime:string) {
 interface PageProps { organization: OrganizationData, events: Event[] }
 
 export default function Page({organization, events}:PageProps) {
-  //const orgid = organization?.id || ''
-  //const initiatives = organization?.initiative || [{id:'0', title:'No initiatives'}]
-  //const router = useRouter()
   console.log('Events org', organization?.id);
-
-  const orgId = organization?.id
-  const [initiatives, setInitiatives] = useState<Initiative[]>([]);
-  const [initsel, setInitsel] = useState<SelectType[]>([]);
-  //const [events, setEvents] = useState<Event[]>([]);
-
-  const ini = organization?.initiative || [];
-  const iid = organization?.initiative?.length > 0 ? organization?.initiative[0].id : '';
-  const sel = listInitiatives(ini);
-  console.log('INIT:', iid);
+  const organizationId = organization?.id || ''
+  const initiatives = organization?.initiative || [];
+  const selectInitiative = listInitiatives(initiatives);
 
   function listInitiatives(initiatives:Initiative[]) {
     if (!initiatives) {
@@ -145,11 +135,11 @@ export default function Page({organization, events}:PageProps) {
     }
     showMessage('Processing form...');
     console.log('SUBMIT', data);
-    const selinput = document.getElementById('selectInit') as HTMLInputElement;
-    const selinit = selinput?.value;
-    console.log(selinit);
-    data.initiativeId = selinit;
-    //return
+    const selectObject = document.getElementById('selectInit') as HTMLInputElement;
+    const selectedInitiative = selectObject?.value;
+    console.log(selectedInitiative);
+    data.initiativeId = selectedInitiative;
+
     // Validate data
     if (!data.name) {
       showMessage('Title is required');
@@ -177,9 +167,9 @@ export default function Page({organization, events}:PageProps) {
     const imgName = randomString();
     const image = { name: imgName + ext, file };
     const payrate = Number.parseFloat(data.payrate || '0');
-    const record = {
+    const event = {
       created: dateToPrisma(new Date()),
-      organizationid: orgId,
+      organizationid: organizationId,
       initiativeid: data.initiativeId,
       name: data.name,
       description: data.desc,
@@ -204,14 +194,14 @@ export default function Page({organization, events}:PageProps) {
         return;
       }
       if (typeof resimg?.uri === 'string') {
-        record.image = resimg.uri;
+        event.image = resimg.uri;
       } // Main image
-      console.log('REC', record);
+      console.log('REC', event);
       showMessage('Saving info to database...');
       const opts = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf8' },
-        body: JSON.stringify(record),
+        body: JSON.stringify(event),
       };
       const resp1 = await fetch('/api/events', opts);
       const result1 = await resp1.json();
@@ -223,17 +213,17 @@ export default function Page({organization, events}:PageProps) {
         showMessage('Error saving event: unknown');
         setButtonState(ButtonState.READY);
       } else {
-        const eventid = result1.data?.id;
+        const eventId = result1.data?.id;
         events.push(result1.data);
         setChange(change + 1);
         showMessage('Event info saved');
 
         /*
-        if(data.yesNFT && eventid){
+        if(data.yesNFT && eventId){
           showMessage('Event info saved, minting NFT...')
-          const eventid = result1.data.id
-          console.log('Minting NFT for event', eventid)
-          const resMint = await fetch('/api/mint?eventid='+eventid)
+          const eventId = result1.data.id
+          console.log('Minting NFT for event', eventId)
+          const resMint = await fetch('/api/mint?eventid='+eventId)
           const okNft = await resMint.json()
           console.log('RESULT', okNft)
           if(okNft?.error){
@@ -242,7 +232,7 @@ export default function Page({organization, events}:PageProps) {
             showMessage('Event saved, NFT minted')
           }
         }
-*/
+        */
         setButtonState(ButtonState.DONE);
       }
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -324,7 +314,7 @@ export default function Page({organization, events}:PageProps) {
   }, [change]);
 
   async function onOrgChange(id:string) {
-    console.log('ORG CHANGED', orgId, 'to', id);
+    console.log('ORG CHANGED', organizationId, 'to', id);
   }
 
   return (
@@ -348,7 +338,7 @@ export default function Page({organization, events}:PageProps) {
             id="selectInit"
             label="Initiative"
             register={register('initiativeId')}
-            options={initsel}
+            options={selectInitiative}
           />
           <TextInput label="Title" register={register('name')} />
           <TextArea label="Description" register={register('desc')} />

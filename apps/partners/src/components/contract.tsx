@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-//import timeAgo from '~/utils/timeago'
+import copy from 'clipboard-copy'
 
 interface ContractProps {
   id: string
@@ -15,9 +15,12 @@ interface ContractProps {
   entity_id?: string
 }
 
+
 function copyToClipboard(text?:string) {
-  // TODO: add lib
-  console.log('Clipboard', text)
+  if(!text) { return }
+  copy(text).then(() => {
+    console.log('COPIED:', text)
+  })
 }
 
 const Contract = (item:ContractProps) => {

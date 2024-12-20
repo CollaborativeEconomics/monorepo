@@ -18,11 +18,12 @@ import {
 } from '@cfce/universe-components/ui';
 import { chainConfig } from "@cfce/blockchain-tools";
 import type { ChainSlugs } from '@cfce/types';
-import { randomString, uploadFile } from '@cfce/utils';
+import { uploadFile } from '@cfce/utils';
 import { imageUrl } from '@cfce/utils';
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
+import { v7 as uuid } from "uuid"
 //import { setUser } from '@cfce/database';
 
 // TODO: move to database package?
@@ -62,7 +63,7 @@ export default function Profile({
   async function saveImage(file: File) {
     console.log('IMAGE', file)
     //if(file){ return {error:'no image provided'} }
-    const name = randomString(10)
+    const name = uuid()
     const body = new FormData()
     body.append('name', name)
     body.append('folder', 'avatars')
