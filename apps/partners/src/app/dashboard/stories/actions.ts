@@ -7,12 +7,17 @@ import { revalidatePath } from "next/cache"
 
 export async function saveStory({
   story,
+  categoryId,
   organizationId,
   initiativeId,
   images,
   media,
 }: {
-  story: Omit<Prisma.StoryCreateInput, 'organization' | 'initiative'>
+  story: Omit<
+    Prisma.StoryCreateInput,
+    "organization" | "initiative" | "category"
+  >
+  categoryId?: string
   organizationId: string
   initiativeId: string
   images?: (string | File)[]
@@ -22,6 +27,7 @@ export async function saveStory({
     story,
     organizationId,
     initiativeId,
+    categoryId,
     images,
     media,
   })

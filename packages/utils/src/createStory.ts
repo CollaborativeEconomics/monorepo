@@ -33,7 +33,8 @@ async function processFile(
 }
 
 interface CreateStoryParams {
-  story: Omit<Prisma.StoryCreateInput, 'organization' | 'initiative'>
+  story: Omit<Prisma.StoryCreateInput, "organization" | "initiative">
+  categoryId?: string
   organizationId: string
   initiativeId: string
   images?: (string | File)[]
@@ -44,6 +45,7 @@ export default async function createStory({
   story,
   organizationId,
   initiativeId,
+  categoryId,
   images,
   media,
 }: CreateStoryParams): Promise<Story> {
@@ -78,6 +80,7 @@ export default async function createStory({
       ...story,
       amount: story.amount ?? 0,
       image: imageCIDs.length > 0 ? `ipfs:${imageCIDs[0]}` : null,
+      ...(categoryId ? { category: { connect: { id: categoryId } } } : {}),
       organization: { connect: { id: organizationId } },
       initiative: { connect: { id: initiativeId } },
       media: {

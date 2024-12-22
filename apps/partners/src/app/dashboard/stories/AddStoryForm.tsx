@@ -5,10 +5,10 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
 import Checkbox from '~/components/form/checkbox';
+import FileView from '~/components/form/fileview';
 import Select from '~/components/form/select';
 import TextArea from '~/components/form/textarea';
 import TextInput from '~/components/form/textinput';
-import FileView from '~/components/form/fileview';
 import styles from '~/styles/dashboard.module.css';
 import { saveStory } from './actions'; // Update this import
 
@@ -91,8 +91,8 @@ export default function AddStoryForm({
           name: data.name,
           description: data.desc,
           amount: Number.parseInt(data.amount),
-          categoryId: data.categoryId,
         },
+        categoryId: data.categoryId,
         organizationId: orgId,
         initiativeId: data.initiativeId,
         images,
