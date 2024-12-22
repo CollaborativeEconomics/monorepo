@@ -1,1 +1,1 @@
-export * from "@cfce/universe-api/ping"
+export * from "@cfce/api/ping"
