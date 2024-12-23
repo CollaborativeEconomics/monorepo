@@ -28,11 +28,11 @@ const nextConfig = {
     serverSourceMaps: true,
     // The below packages have barrel files that cause server/client mismatch errors
     optimizePackageImports: [
-      '@cfce/universe-components',
+      '@cfce/components',
       '@cfce/blockchain-tools',
       '@cfce/utils',
-      '@cfce/universe-pages',
-      '@cfce/universe-api',
+      '@cfce/pages',
+      '@cfce/api',
     ],
   },
   webpack,

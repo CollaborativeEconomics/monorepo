@@ -1,1 +1,1 @@
-export * from "@cfce/universe-api/cronjobs";
+export * from "@cfce/api/cronjobs"
