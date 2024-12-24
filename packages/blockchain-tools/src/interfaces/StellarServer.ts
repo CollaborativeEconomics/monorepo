@@ -14,7 +14,7 @@ import type {
   // TransactionBuilder,
 } from "@stellar/stellar-sdk"
 import { chainConfig } from "../chains"
-import { getNetworkForChain } from "../chains/BlockchainManager"
+import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 // import Stellar, { StellarNetworks } from "./common"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import Contract721 from "../contracts/soroban/nft721/server"

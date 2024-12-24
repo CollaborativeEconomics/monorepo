@@ -16,7 +16,7 @@ import {
   isoTimeToRippleTime,
 } from "xrpl"
 import { chainConfig } from "../chains"
-import { getNetworkForChain } from "../chains/BlockchainManager"
+import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import XrplCommon from "./XrplCommon"
 
 export default class XrplServer extends XrplCommon {

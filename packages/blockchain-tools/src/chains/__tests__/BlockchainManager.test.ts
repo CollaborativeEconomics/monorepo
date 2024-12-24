@@ -9,7 +9,7 @@ import {
 import {
   BlockchainClientInterfaces,
   BlockchainServerInterfaces,
-} from "../BlockchainManager"
+} from "../BlockchainInterfaces"
 
 jest.mock("../../interfaces", () => ({
   FreighterWallet: jest.fn(),

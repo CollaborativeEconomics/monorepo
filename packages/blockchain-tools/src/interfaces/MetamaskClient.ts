@@ -16,7 +16,7 @@ import type {
   ProviderRpcError,
 } from "web3"
 import { InterfaceBaseClass, getChainByChainId } from "../chains"
-import { getNetworkForChain } from "../chains/BlockchainManager"
+import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import type { Transaction } from "../types/transaction"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {

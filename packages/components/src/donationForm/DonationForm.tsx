@@ -2,10 +2,7 @@
 import { usePostHog } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
 import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
-import {
-  BlockchainClientInterfaces,
-  BlockchainManager,
-} from '@cfce/blockchain-tools';
+import { BlockchainClientInterfaces } from '@cfce/blockchain-tools';
 import type { Chain, Prisma, User } from '@cfce/database';
 import {
   PAYMENT_STATUS,
@@ -322,6 +319,11 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     checkBalance,
     handleMinting,
     handleError,
+    posthog,
+    selectedToken,
+    selectedChain,
+    organization,
+    initiative,
   ]);
 
   function validateForm({ email }: { email: string }) {

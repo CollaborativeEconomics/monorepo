@@ -1,7 +1,7 @@
 import { chainAtom } from "@cfce/state"
 import type { ClientInterfaces } from "@cfce/types"
 import { useAtomValue } from "jotai"
-import { BlockchainClientInterfaces } from "./BlockchainManager"
+import { BlockchainClientInterfaces } from "./BlockchainInterfaces"
 import type InterfaceBaseClass from "./InterfaceBaseClass"
 
 export function useWalletClient(): InterfaceBaseClass | undefined {

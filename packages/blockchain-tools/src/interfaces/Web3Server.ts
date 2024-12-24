@@ -7,7 +7,7 @@ import type {
 import _get from "lodash/get"
 import Web3 from "web3"
 import { chainConfig } from "../chains"
-import { getNetworkForChain } from "../chains/BlockchainManager"
+import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // must pass tokenid
 import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid

@@ -32,7 +32,7 @@ import {
   disconnect,
 } from "starknetkit"
 import { formatEther, parseEther } from "viem"
-import { getNetworkForChain } from "../chains/BlockchainManager"
+import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"

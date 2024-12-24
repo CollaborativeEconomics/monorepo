@@ -1,6 +1,6 @@
 import appConfig from "@cfce/app-config"
 import {
-  BlockchainManager,
+  BlockchainServerInterfaces,
   abi721,
   chainConfig,
   abi6551registry as registryABI,
@@ -46,6 +46,9 @@ const implementationAddress = (settings.contracts
 const tokenContract = settings.contracts?.tba721TokenContract || "0x0"
 const baseSalt =
   "0x0000000000000000000000000000000000000000000000000000000000000001" as Address
+
+const serverInterface = BlockchainServerInterfaces.evm
+serverInterface.setChain("xdc")
 
 /*
 interface ChainSettings {
@@ -150,7 +153,7 @@ export async function mintTBAccountNFT(entityId: string) {
     throw new Error("Missing wallet or contract info")
   }
 
-  const response = await BlockchainManager.xdc.server.mintNFT721({
+  const response = await serverInterface.mintNFT721({
     address,
     tokenId,
     contractId,

@@ -13,7 +13,7 @@ import {
   isModifiedNode,
 } from "xrpl"
 import type { NFTokenPage } from "xrpl/dist/npm/models/ledger"
-import { getNetworkForChain } from "../chains/BlockchainManager"
+import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
 import { Transaction } from "../types/transaction"

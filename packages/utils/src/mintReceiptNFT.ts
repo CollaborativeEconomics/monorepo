@@ -2,7 +2,7 @@
 import "server-only"
 import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
-import { BlockchainManager } from "@cfce/blockchain-tools"
+import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
@@ -68,7 +68,7 @@ export async function mintAndSaveReceiptNFT({
     // if (!response.success) {
     //   return { success: false, error: "Error fetching rate" }
     // }
-    
+
     // const rate = response.data?.rate
 
     // #region: Input validation
@@ -131,11 +131,8 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Initialize blockchain tools and verify transaction
-    const chainTool = BlockchainManager[chain]?.server
-    if (!chainTool) {
-      console.error("No chain tool found for chain", chain)
-      return { success: false, error: "No chain tool found for chain" }
-    }
+    const chainTool = BlockchainServerInterfaces.evm
+    chainTool.setChain(chain)
 
     const txInfo = await chainTool.getTransactionInfo(txId, true) // wait for receipt
     if ("error" in txInfo) {
@@ -150,7 +147,7 @@ export async function mintAndSaveReceiptNFT({
     console.log("Donor", donorWalletAddress)
     const user = await getUserByWallet(donorWalletAddress)
     let userId = user?.id || ""
-    
+
     if (!userId) {
       console.log("ERROR", "User not found")
       console.log("Creating new user for wallet", donorWalletAddress)
@@ -158,11 +155,13 @@ export async function mintAndSaveReceiptNFT({
         name: donorName,
         email: email || undefined,
         wallets: {
-          create: [{
-            address: donorWalletAddress,
-            chain: chain.charAt(0).toUpperCase() + chain.slice(1) as Chain
-          }]
-        }
+          create: [
+            {
+              address: donorWalletAddress,
+              chain: (chain.charAt(0).toUpperCase() + chain.slice(1)) as Chain,
+            },
+          ],
+        },
       }
       const createdUser = await newUser(newUserData)
       if (!createdUser?.id) {
@@ -191,7 +190,7 @@ export async function mintAndSaveReceiptNFT({
     const amountUSD = (+amount * rate).toFixed(4)
     console.log("Image URI", initiative?.imageUri)
 
-    const uriImage = initiative?.imageUri 
+    const uriImage = initiative?.imageUri
       ? initiative.imageUri
       : "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
 
@@ -227,13 +226,15 @@ export async function mintAndSaveReceiptNFT({
     // #region: Prepare and upload metadata
     const metadata = {
       ...creditMeta,
-      ...(extraMetadata?.output ? JSON.parse(JSON.stringify(extraMetadata.output)) : {}),
+      ...(extraMetadata?.output
+        ? JSON.parse(JSON.stringify(extraMetadata.output))
+        : {}),
       mintedBy: "CFCE via GiveCredit",
       created: created,
       donorAddress: donorWalletAddress,
       organization: organizationName,
       initiative: initiativeName,
-      image: uriImage,  // Already sanitized above
+      image: uriImage, // Already sanitized above
       coinCode: token,
       coinIssuer: chain,
       coinValue: amountCUR,
@@ -244,12 +245,16 @@ export async function mintAndSaveReceiptNFT({
     console.log("META", metadata)
     const fileId = `meta-${txId}`
     // More thorough sanitization of the entire metadata object
-    const metadataString = JSON.stringify(metadata, (key, value) => {
-      if (typeof value === 'string') {
-        return value // Remove any HTML tags and trim
-      }
-      return value;
-    }, 2)
+    const metadataString = JSON.stringify(
+      metadata,
+      (key, value) => {
+        if (typeof value === "string") {
+          return value // Remove any HTML tags and trim
+        }
+        return value
+      },
+      2,
+    )
     console.log("META STRING", metadataString)
     const bytes = Buffer.from(metadataString)
     console.log("BYTES", bytes)
@@ -327,7 +332,7 @@ export async function mintAndSaveReceiptNFT({
       uri: uriMeta,
       walletSeed: walletSecret,
     }
-    const mintResponse = await BlockchainManager[chain]?.server.mintNFT(args)
+    const mintResponse = await chainTool.mintNFT721(args)
     console.log("RESMINT", mintResponse)
     if (!mintResponse) {
       throw new Error("Error minting NFT")

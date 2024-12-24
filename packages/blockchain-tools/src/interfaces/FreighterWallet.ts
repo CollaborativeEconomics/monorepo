@@ -12,7 +12,7 @@ import {
   signTransaction,
 } from "@stellar/freighter-api"
 import * as StellarSDK from "@stellar/stellar-sdk"
-import { getNetworkForChain } from "../chains/BlockchainManager"
+import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
 

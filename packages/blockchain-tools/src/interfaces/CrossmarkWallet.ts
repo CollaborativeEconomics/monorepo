@@ -1,7 +1,7 @@
 import type { ChainSlugs } from "@cfce/types"
 import sdk from "@crossmarkio/sdk"
 import { Client, type Payment } from "xrpl"
-import { getNetworkForChain } from "../chains/BlockchainManager"
+import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import chainConfiguration from "../chains/chainConfig"
 import XrplCommon from "./XrplCommon"
 
