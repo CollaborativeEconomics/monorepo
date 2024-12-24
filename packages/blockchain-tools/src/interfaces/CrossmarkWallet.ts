@@ -1,6 +1,8 @@
 import type { ChainSlugs } from "@cfce/types"
 import sdk from "@crossmarkio/sdk"
 import { Client, type Payment } from "xrpl"
+import { getNetworkForChain } from "../chains/BlockchainManager"
+import chainConfiguration from "../chains/chainConfig"
 import XrplCommon from "./XrplCommon"
 
 export default class CrossmarkWallet extends XrplCommon {
@@ -11,13 +13,12 @@ export default class CrossmarkWallet extends XrplCommon {
       const { request, response, createdAt, resolvedAt } =
         await sdk.methods.signInAndWait()
       const address = response?.data?.address || ""
-      this.connectedWallet = address
       console.log("Crossmark", address)
       return {
         success: true,
         walletAddress: this.connectedWallet,
-        network: this.network.slug,
-        chain: "xrpl" as ChainSlugs,
+        network: this.network,
+        chain: this.chain.slug,
       }
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     } catch (ex: any) {

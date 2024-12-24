@@ -1,4 +1,3 @@
-import type { ChainSlugs } from "@cfce/types"
 import gemWallet from "@gemwallet/api"
 import XrplCommon from "./XrplCommon"
 
@@ -20,8 +19,8 @@ export default class GemWallet extends XrplCommon {
       return {
         success: true,
         walletAddress: this.connectedWallet,
-        network: this.network.slug,
-        chain: "xrpl" as ChainSlugs,
+        network: this.network,
+        chain: this.chain.slug,
       }
     } catch (ex) {
       console.error(ex)

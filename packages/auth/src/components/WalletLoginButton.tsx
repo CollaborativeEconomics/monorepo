@@ -41,7 +41,7 @@ export function WalletLoginButton({
       throw new Error(`Failed to connect to wallet: ${connection.error}`);
     }
 
-    const { walletAddress, network } = connection;
+    const { walletAddress, network, chain } = connection;
 
     if (!walletAddress) {
       throw new Error(`No wallet address found: ${walletAddress}`);
@@ -49,8 +49,8 @@ export function WalletLoginButton({
     //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
     const redirectUrl = await walletLogin(method, {
       walletAddress,
-      chainConfig,
       network,
+      chain,
     });
     if (redirectUrl) {
       router.push(redirectUrl);

@@ -12,11 +12,7 @@ import chainConfiguration from "./chainConfig"
 
 export default abstract class InterfaceBaseClass {
   public chain?: ChainConfig
-  public network: NetworkConfig
-
-  constructor() {
-    this.network = appConfig.chainDefaults.network
-  }
+  public network?: NetworkConfig
 
   // isometric functions, must be defined on all subclasses
   public abstract getTransactionInfo(
@@ -68,7 +64,7 @@ export default abstract class InterfaceBaseClass {
     | {
         success: boolean
         chain: ChainSlugs
-        network: Network
+        network: NetworkConfig
         walletAddress: string
       }
   >
@@ -124,14 +120,18 @@ export default abstract class InterfaceBaseClass {
 
   // utility functions
   fromBaseUnit(amount: bigint): number {
+    if (!this.network) {
+      throw new Error("Network not set, connect or setChain first")
+    }
     const wei = 10 ** this.network.decimals
     return Number(amount) / wei
   }
 
   toBaseUnit(amount: number): bigint {
-    console.log("DECS", this.network.decimals)
+    if (!this.network) {
+      throw new Error("Network not set, connect or setChain first")
+    }
     const wei = Math.floor(amount * 10 ** this.network.decimals)
-    console.log("WEI", wei)
     return BigInt(wei)
   }
 

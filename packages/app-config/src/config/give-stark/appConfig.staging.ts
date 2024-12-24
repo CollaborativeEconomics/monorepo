@@ -1,4 +1,4 @@
-import type { AppConfig, AuthTypes } from "@cfce/types"
+import type { AppConfig, AuthTypes, Network } from "@cfce/types"
 import appConfig from "./appConfig.production"
 
 const siteInfo: AppConfig["siteInfo"] = {
@@ -29,9 +29,11 @@ const chains: AppConfig["chains"] = {
     slug: "starknet",
     network: "testnet",
     contracts: {
-      receiptMintbotERC721: "0x55e3f6e2abe8443047ec5f70875791a2463c8137c07001c3f279d4f0e0cb62f",
+      receiptMintbotERC721:
+        "0x55e3f6e2abe8443047ec5f70875791a2463c8137c07001c3f279d4f0e0cb62f",
     },
-    wallet: "0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3",
+    wallet:
+      "0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3",
     enabledWallets: ["argent"],
     tokens: ["STRK"],
   },
@@ -39,8 +41,9 @@ const chains: AppConfig["chains"] = {
 
 const chainDefaults = {
   ...appConfig.chainDefaults,
-  network: "testnet",
-  defaultAddress: "0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3",
+  network: "testnet" as Network,
+  defaultAddress:
+    "0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3",
 }
 
 const auth = appConfig.auth as AuthTypes[]

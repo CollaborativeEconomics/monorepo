@@ -544,22 +544,24 @@ chainConfiguration.stellar.networks.testnet = {
   wallet: "",
   wssurl: "",
 }
-chainConfiguration.stellar.networks.futurenet = {
-  id: 0,
-  name: "Stellar Futurenet",
-  slug: "futurenet",
-  symbol: "XLM",
-  decimals: 6,
-  gasprice: "250000000",
-  explorer: "https://stellarchain.io",
-  networkPassphrase: "Test SDF Future Network ; October 2022",
-  rpcUrls: {
-    main: "https://horizon-futurenet.stellar.org",
-    soroban: "https://horizon-futurenet.stellar.org",
-  },
-  wallet: "",
-  wssurl: "",
-}
+// having more than testnet and mainnet currently makes this more complex, so commenting for now
+// since we don't use it
+// chainConfiguration.stellar.networks.futurenet = {
+//   id: 0,
+//   name: "Stellar Futurenet",
+//   slug: "futurenet",
+//   symbol: "XLM",
+//   decimals: 6,
+//   gasprice: "250000000",
+//   explorer: "https://stellarchain.io",
+//   networkPassphrase: "Test SDF Future Network ; October 2022",
+//   rpcUrls: {
+//     main: "https://horizon-futurenet.stellar.org",
+//     soroban: "https://horizon-futurenet.stellar.org",
+//   },
+//   wallet: "",
+//   wssurl: "",
+// }
 chainConfiguration.tron.networks.mainnet = {
   id: 728126428,
   name: "Tron Mainnet",

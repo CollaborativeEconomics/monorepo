@@ -16,6 +16,7 @@ import type {
   ProviderRpcError,
 } from "web3"
 import { InterfaceBaseClass, getChainByChainId } from "../chains"
+import { getNetworkForChain } from "../chains/BlockchainManager"
 import type { Transaction } from "../types/transaction"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
@@ -26,38 +27,41 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   connectedWallet? = ""
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
-  web3?: Web3
-
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
-    this.web3 = new Web3(this.network.rpcUrls.main)
-  }
 
   async connect() {
-    console.log("Wallet starting...", this.network)
+    console.log("Wallet starting...")
     //console.log('window.ethereum')
     try {
       this.metamask = window.ethereum
-      this.setListeners()
       this.wallets = await this.metamask?.enable()
       const chainId = await window.ethereum?.chainId
+      if (!chainId) {
+        throw new Error("Error getting chain ID")
+      }
       //console.log('Accounts', this.wallets)
       this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
       //this.connectedWallet = this.metamask.selectedAddress
       //this.setNetwork(window.ethereum.chainId)
       //this.loadWallet(window))
-      if (chainId && this.network.id !== Number.parseInt(chainId, 16)) {
-        await this.changeNetwork(this.network)
+      // if (chainId && this.network.id !== Number.parseInt(chainId, 16)) {
+      //   await this.changeNetwork(this.network)
+      // }
+      // if (!chainId) {
+      //   throw new Error("Error getting chain ID")
+      // }
+      this.setNetwork(chainId)
+      if (!this.network) {
+        throw new Error("Error getting network")
       }
-      if (!chainId) {
-        throw new Error("Error getting chain ID")
+      if (!this.chain) {
+        throw new Error("Error getting chain")
       }
-      const chain = getChainByChainId(Number(chainId))
+      this.web3 = new Web3(this.network.rpcUrls.main)
       return {
         success: true,
-        network: this.network.slug,
+        network: this.network,
         walletAddress: this.connectedWallet,
-        chain: chain.slug,
+        chain: this.chain.slug,
       }
     } catch (ex) {
       const error = ex instanceof Error ? ex.message : ""
@@ -76,6 +80,10 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   setListeners() {
     if (!this.metamask) {
       console.error("Metamask not available")
+      return
+    }
+    if (!this.network) {
+      console.error("Network not set, connect or setChain first")
       return
     }
     // @ts-expect-error returns chain ID string
@@ -107,7 +115,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     // @ts-expect-error returns chain ID string
     this.metamask.on("chainChanged", (chainId: string) => {
       console.log("> onChainChanged", Number.parseInt(chainId), chainId)
-      if (chainId === this.network.id) {
+      if (chainId === this.network?.id) {
         console.log("Already on chain", chainId)
         return
       }
@@ -128,14 +136,13 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
 
   setNetwork(chainId: string) {
     console.log("SetNetwork", chainId)
-    //if(!chainId){ chainId = this.metamask.chainId; }
-    //const mainnet = (chainId == '0x38') // 0x61 testnet
-    //this.network  = mainnet ? 'bsc-mainnet' : 'bsc-testnet'
-    //this.neturl   = mainnet ? this.MAINURL : this.TESTURL
-    //this.explorer = mainnet ? this.MAINEXP : this.TESTEXP
-    //this.chainId  = chainId
-    // console.log("Network", this.network, this.chainId)
-    this.network.id = chainId
+    this.chain = getChainByChainId(Number(chainId))
+    this.network = getNetworkForChain(this.chain.slug)
+    this.setListeners()
+    if (!this.chain || !this.network) {
+      console.error("Couldn't set network or chain for", chainId)
+      return
+    }
   }
 
   async changeNetwork(provider: NetworkConfig) {
@@ -411,6 +418,10 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     amount,
     memo,
   }: { address: string; amount: number; memo: string }) {
+    if (!this.network) {
+      console.error("Network not set, connect or setChain first")
+      return { success: false, error: "Network not set" }
+    }
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
@@ -547,6 +558,10 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   }
 
   async fetchLedger(method: unknown, params: unknown): Promise<unknown> {
+    if (!this.network) {
+      console.error("Network not set, connect or setChain first")
+      return { success: false, error: "Network not set" }
+    }
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)
     const opt = {

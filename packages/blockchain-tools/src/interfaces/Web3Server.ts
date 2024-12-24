@@ -1,6 +1,13 @@
-import type { ChainSlugs, Network } from "@cfce/types"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
 import _get from "lodash/get"
 import Web3 from "web3"
+import { chainConfig } from "../chains"
+import { getNetworkForChain } from "../chains/BlockchainManager"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // must pass tokenid
 import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
@@ -19,8 +26,9 @@ function sleep(ms: number) {
 }
 
 export default class Web3Server extends InterfaceBaseClass {
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
+  setChain(slug: ChainSlugs) {
+    this.chain = chainConfig[slug]
+    this.network = getNetworkForChain(slug)
     this.web3 = new Web3(this.network.rpcUrls.main)
   }
 
@@ -43,6 +51,10 @@ export default class Web3Server extends InterfaceBaseClass {
     contractId,
     walletSeed,
   }: { uri: string; address: string; contractId: string; walletSeed: string }) {
+    if (!this.chain) {
+      console.error("Chain not set")
+      return { success: false, error: "Chain not set" }
+    }
     console.log("CHAIN", this.chain)
     console.log("Server minting NFT to", address, uri)
     if (!this.web3) {
@@ -366,6 +378,10 @@ export default class Web3Server extends InterfaceBaseClass {
   }
 
   async fetchLedger(method: string, params: unknown) {
+    if (!this.network) {
+      console.error("Chain not set, run setChain first")
+      return { success: false, error: "Chain not set" }
+    }
     console.log("FETCH", this.network.rpcUrls.main)
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)

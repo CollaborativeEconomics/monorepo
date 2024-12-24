@@ -5,7 +5,12 @@ import {
   fetchGasTokenPrices,
 } from "@avnu/gasless-sdk"
 import appConfig from "@cfce/app-config"
-import type { ChainSlugs, Network } from "@cfce/types"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
 import {
   constants,
   Account,
@@ -27,7 +32,9 @@ import {
   disconnect,
 } from "starknetkit"
 import { formatEther, parseEther } from "viem"
+import { getNetworkForChain } from "../chains/BlockchainManager"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import chainConfiguration from "../chains/chainConfig"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"
 import { ERC721ABI } from "../contracts/starknet/ERC721Abi"
 
@@ -39,9 +46,14 @@ class StarknetWallet extends InterfaceBaseClass {
   connectedWallet = ""
   connector: Connector | null = null
   decimals = 18
+  network: NetworkConfig
+  chain: ChainConfig
 
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
+  constructor() {
+    super()
+    this.network = getNetworkForChain("starknet")
+    this.chain = chainConfiguration.starknet
+
     this.provider = new Provider({
       nodeUrl: process.env.STARKNET_RPC_URI,
     })
@@ -130,8 +142,8 @@ class StarknetWallet extends InterfaceBaseClass {
         return {
           success: true,
           walletAddress: this.connectedWallet,
-          chain: "starknet" as ChainSlugs,
-          network: this.network.slug,
+          chain: this.chain.slug,
+          network: this.network,
         }
       }
 

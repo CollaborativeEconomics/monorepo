@@ -3,6 +3,7 @@ import type {
   AppConfig,
   AuthTypes,
   ChainSlugs,
+  Network,
 } from "@cfce/types"
 import appConfig from "./appConfig.production"
 
@@ -33,7 +34,7 @@ const chains = Object.entries(appConfig.chains).reduce(
 
 const chainDefaults = {
   ...appConfig.chainDefaults,
-  network: "testnet",
+  network: "testnet" as Network,
 }
 
 const auth = appConfig.auth as AuthTypes[]

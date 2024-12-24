@@ -1,6 +1,7 @@
 "use server"
+import appConfig from "@cfce/app-config"
 import type { Chain } from "@cfce/database"
-import type { AuthTypes, ChainConfig } from "@cfce/types"
+import type { AuthTypes, ChainConfig, ChainSlugs, Network } from "@cfce/types"
 import { signIn } from "../nextAuth"
 import { createAnonymousUser } from "./createNewUser"
 import fetchUserByWallet from "./fetchUserByWallet"
@@ -9,22 +10,10 @@ export default async function walletLogin(
   method: AuthTypes,
   {
     walletAddress,
-    // chainConfig,
     network,
-  }: {
-    walletAddress: string
-    // chainConfig: ChainConfig
-    network: string
-  },
+    chain,
+  }: { walletAddress: `0x${string}`; network: Network; chain: ChainSlugs },
 ) {
-  if (!network) {
-    throw new Error(`No network found: ${network}`)
-  }
-
-  console.log("After wallet connect:", { network, walletAddress })
-  if (!walletAddress) {
-    throw new Error(`No wallet address found: ${walletAddress}`)
-  }
   // const chainNetwork = chainConfig.networks[network]
   // console.log("Chain network:", chainNetwork)
   // if (!chainNetwork) {

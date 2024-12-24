@@ -1,5 +1,10 @@
 // import { Transaction } from "../types/transaction"
-import type { ChainSlugs, Network } from "@cfce/types"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
 import { BASE_FEE, SorobanRpc } from "@stellar/stellar-sdk"
 import type {
   Transaction as StellarTransaction,
@@ -8,15 +13,21 @@ import type {
   // Keypair,
   // TransactionBuilder,
 } from "@stellar/stellar-sdk"
+import { chainConfig } from "../chains"
+import { getNetworkForChain } from "../chains/BlockchainManager"
 // import Stellar, { StellarNetworks } from "./common"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import Contract721 from "../contracts/soroban/nft721/server"
 
 export default class StellarServer extends InterfaceBaseClass {
   sorobanServer: SorobanRpc.Server
+  network: NetworkConfig
+  chain: ChainConfig
 
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
+  constructor() {
+    super()
+    this.chain = chainConfig.stellar
+    this.network = getNetworkForChain(this.chain.slug)
     this.sorobanServer = new SorobanRpc.Server(this.network.rpcUrls.main)
   }
 

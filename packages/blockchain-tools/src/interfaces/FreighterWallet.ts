@@ -1,4 +1,9 @@
-import type { ChainSlugs, Network } from "@cfce/types"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
 import {
   getNetwork,
   getNetworkDetails,
@@ -7,9 +12,14 @@ import {
   signTransaction,
 } from "@stellar/freighter-api"
 import * as StellarSDK from "@stellar/stellar-sdk"
+import { getNetworkForChain } from "../chains/BlockchainManager"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import chainConfiguration from "../chains/chainConfig"
 
 class FreighterWallet extends InterfaceBaseClass {
+  network: NetworkConfig
+  chain: ChainConfig
+
   horizon: StellarSDK.Horizon.Server
   horizonConfig = {
     network: "",
@@ -17,8 +27,10 @@ class FreighterWallet extends InterfaceBaseClass {
   }
   connectedWallet = ""
 
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
+  constructor() {
+    super()
+    this.network = getNetworkForChain("stellar")
+    this.chain = chainConfiguration.stellar
     this.horizon = new StellarSDK.Horizon.Server(this.network.rpcUrls.main)
     //console.log("FREIGHT INIT")
     //console.log("RPC", this.network)
@@ -43,8 +55,8 @@ class FreighterWallet extends InterfaceBaseClass {
       return {
         success: true,
         walletAddress: this.connectedWallet,
-        network: this.network.slug,
-        chain: "stellar" as ChainSlugs,
+        network: this.network,
+        chain: this.chain.slug,
       }
     } catch (ex) {
       console.error(ex)

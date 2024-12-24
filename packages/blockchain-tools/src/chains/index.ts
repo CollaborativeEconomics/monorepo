@@ -1,6 +1,6 @@
 export { default as InterfaceBaseClass } from "./InterfaceBaseClass"
 export {
-  default as BlockchainManager,
+  BlockchainServerInterfaces,
   BlockchainClientInterfaces,
 } from "./BlockchainManager"
 export { default as chainConfig } from "./chainConfig"

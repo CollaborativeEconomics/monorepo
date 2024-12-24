@@ -1,3 +1,5 @@
+import { ChainConfig } from "@cfce/types"
+import { NetworkConfig } from "@cfce/types"
 import { get } from "lodash"
 import {
   Client,
@@ -11,7 +13,9 @@ import {
   isModifiedNode,
 } from "xrpl"
 import type { NFTokenPage } from "xrpl/dist/npm/models/ledger"
+import { getNetworkForChain } from "../chains/BlockchainManager"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import chainConfiguration from "../chains/chainConfig"
 import { Transaction } from "../types/transaction"
 
 type transactionMethods =
@@ -22,6 +26,14 @@ type transactionMethods =
   | "tx_history"
 
 export default class XrplCommon extends InterfaceBaseClass {
+  chain: ChainConfig
+  network: NetworkConfig
+
+  constructor() {
+    super()
+    this.chain = chainConfiguration.xrpl
+    this.network = getNetworkForChain("xrpl")
+  }
   async getTransactionInfo(txId: string) {
     const payload = { transaction: txId, binary: false }
     const txInfo = await this.fetchLedger("tx", payload)

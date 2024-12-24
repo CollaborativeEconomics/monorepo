@@ -1,6 +1,7 @@
 import type { ChainSlugs } from "@cfce/types"
 import { Xumm } from "xumm"
 import type { XummJsonTransaction } from "xumm-sdk/dist/src/types"
+import { getNetworkForChain } from "../chains/BlockchainManager"
 import XrplCommon from "./XrplCommon"
 
 export default class XummClient extends XrplCommon {
@@ -36,7 +37,6 @@ export default class XummClient extends XrplCommon {
         const flow = state
         const user = state.me
         const address = user.account
-        const network = ((await wallet.user.networkType) ?? "").toLowerCase()
         const token = flow.jwt
         // const data = {
         //   wallet: "xumm",
@@ -52,8 +52,8 @@ export default class XummClient extends XrplCommon {
         return {
           success: true,
           walletAddress: address,
-          chain: "xrpl" as ChainSlugs,
-          network: network,
+          chain: this.chain.slug,
+          network: this.network,
         }
       }
       console.log("Error", state)
