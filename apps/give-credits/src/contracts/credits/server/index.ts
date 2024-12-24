@@ -13,8 +13,9 @@ import {
   Keypair,
   Networks,
   Operation,
+  rpc,
   SorobanDataBuilder,
-  SorobanRpc,
+  //SorobanRpc, // <<<<<<<<< replace with new rpc.Server(url)
   type Transaction,
   TransactionBuilder,
   nativeToScVal,
@@ -22,7 +23,6 @@ import {
   xdr,
 } from "@stellar/stellar-sdk"
 import type { StellarNetwork } from "../../networks"
-const { Api, assembleTransaction } = SorobanRpc
 
 //---- SUBMIT TX
 
@@ -45,8 +45,8 @@ const SOROBAN_URL = getRpcUrl(
 if (!SOROBAN_URL) {
   throw new Error("Soroban URL not set")
 }
-const server = new SorobanRpc.Server(SOROBAN_URL)
-//const server = new SorobanRpc.Server(QUIKNODE_URL);
+const server = new rpc.Server(SOROBAN_URL)
+//const server = new rpc.Server(QUIKNODE_URL);
 //console.log('>Server Loaded', server)
 /*
 // Submits a tx and then polls for its status until a timeout is reached.
@@ -144,12 +144,12 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
   const sim = await server.simulateTransaction(tx)
 
   // Other failures are out of scope of this tutorial.
-  if (!Api.isSimulationSuccess(sim)) {
+  if (!rpc.Api.isSimulationSuccess(sim)) {
     throw sim
   }
 
   // If simulation didn't fail, we don't need to restore anything! Just send it.
-  if (!Api.isSimulationRestore(sim)) {
+  if (!rpc.Api.isSimulationRestore(sim)) {
     console.log("No contract restore needed")
     //const prepTx = assembleTransaction(tx, sim);
     //console.log(prepTx)
@@ -256,7 +256,7 @@ export async function submit(
   args: xdr.ScVal[],
 ) {
   const source = Keypair.fromSecret(secret)
-  const server = new SorobanRpc.Server(network.soroban)
+  const server = new rpc.Server(network.soroban)
   const contract = new Contract(contractId)
   const account = await server.getAccount(source.publicKey())
   console.log({ network, contractId, method, args })
@@ -335,13 +335,13 @@ export async function checkContract(
     console.log("CHECK5:", tx)
     const sim = await server.simulateTransaction(tx)
     console.log("CHECK6:", sim)
-    if (!Api.isSimulationSuccess(sim)) {
+    if (!rpc.Api.isSimulationSuccess(sim)) {
       console.log("Error: Contract could not be restored")
       console.log("SIM:", sim)
       return { ready: false }
       //throw sim
     }
-    if (Api.isSimulationRestore(sim)) {
+    if (rpc.Api.isSimulationRestore(sim)) {
       console.log("Contract needs to be restored")
       const result = await restoreContract(source, contract, network)
       console.log("RESTORED", result)

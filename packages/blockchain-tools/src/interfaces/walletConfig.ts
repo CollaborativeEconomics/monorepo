@@ -13,7 +13,7 @@ export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
     name: "Argent",
   },
   crossmark: {
-    icon: "/icons/crossmark.png",
+    icon: "/icons/crossmark.webp",
     slug: "crossmark",
     name: "Crossmark",
   },
@@ -23,7 +23,7 @@ export const walletConfig: Record<ClientInterfaces, WalletConfig> = {
     name: "Freighter",
   },
   gemwallet: {
-    icon: "/icons/gemwallet.png",
+    icon: "/icons/gem.webp",
     slug: "gemwallet",
     name: "Gem Wallet",
   },

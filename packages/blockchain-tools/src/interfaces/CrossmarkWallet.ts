@@ -1,4 +1,4 @@
-import { type Payment, Client } from "xrpl"
+import { type Payment, type Amount, Client } from "xrpl"
 import sdk from '@crossmarkio/sdk'
 import XrplCommon from "./XrplCommon"
 
@@ -25,8 +25,9 @@ export default class CrossmarkWallet extends XrplCommon {
 
   async sendPayment({ address, amount, memo }: { address: string; amount: number; memo?: string }) {
     console.log('PAY', address, amount, memo)
+    /* TODO: FIX
     const sender = this.connectedWallet
-    const wei = Math.floor(amount * 1000000).toString()
+    const wei = Math.floor(amount * 1000000).toString()  // <<<<<<< HERE
     //const wei = String(this.toBaseUnit(amount))
     const transaction = {
       TransactionType: 'Payment',
@@ -43,7 +44,7 @@ export default class CrossmarkWallet extends XrplCommon {
     } = await sdk.methods.signAndSubmitAndWait(transaction)
     console.log('RES', response)
     //console.log('TXID', response?.data?.resp?.hash)
-
+    */
     return {success:true}
     
     //if (code === "tesSUCCESS") {

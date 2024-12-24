@@ -6,6 +6,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./mailgun": {
+      "import": "./dist/mailgun.js",
+      "types": "./dist/mailgun.d.ts"
     }
   },
   "scripts": {
@@ -14,24 +18,26 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.709.0",
+    "@auth/prisma-adapter": "^2.7.2",
     "@cfce/app-config": "workspace:*",
+    "@cfce/analytics": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/ipfs": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
     "@cfce/tbas": "workspace:*",
     "@tanstack/react-query": "^5.62.7",
-    "@vercel/blob": "0.24.1",
+    "@vercel/blob": "0.27.0",
     "form-data": "^4.0.1",
     "immer": "^10.1.1",
     "jotai": "^2.10.3",
     "jotai-immer": "^0.4.1",
     "luxon": "^3.5.0",
-    "mailgun.js": "10.2.3",
+    "mailgun.js": "10.3.0",
     "next-auth": "5.0.0-beta.25",
     "server-only": "^0.0.1",
     "ts-node": "^10.9.2",
-    "uuid": "^10.0.0"
+    "uuid": "11.0.3"
   },
   "peerDependencies": {
     "@cfce/app-config": "workspace:*"

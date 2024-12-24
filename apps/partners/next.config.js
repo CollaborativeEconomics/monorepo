@@ -6,11 +6,11 @@ const nextConfig = {
   experimental: {
     //esmExternals: 'loose', //The "esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
     optimizePackageImports: [
-      '@cfce/universe-components',
+      '@cfce/components',
       '@cfce/blockchain-tools',
       '@cfce/utils',
-      '@cfce/universe-pages',
-      '@cfce/universe-api',
+      '@cfce/pages',
+      '@cfce/api',
     ],
     serverSourceMaps: true,
   },

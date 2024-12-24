@@ -6,7 +6,7 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
-} from '@cfce/universe-components/ui';
+} from '@cfce/components/ui';
 import { Menu } from 'lucide-react';
 import type { Session } from 'next-auth';
 import Image from 'next/image';

@@ -52,4 +52,3 @@ export type ContractType = {
   "TBARegistry": "TBARegistry",
   "V2E": "V2E",
 }
-

@@ -8,15 +8,15 @@ import {
   Keypair,
   Networks,
   Operation,
+  rpc,
   SorobanDataBuilder,
-  SorobanRpc,
   type Transaction,
   TransactionBuilder,
   nativeToScVal,
   xdr,
 } from "@stellar/stellar-sdk"
 import type { StellarNetwork } from "../../networks"
-const { Api, assembleTransaction } = SorobanRpc
+
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -35,7 +35,7 @@ console.log("RPC", RPC_SERVER)
 if (!RPC_SERVER) {
   throw new Error("Soroban URL not set")
 }
-const server = new SorobanRpc.Server(RPC_SERVER)
+const server = new rpc.Server(RPC_SERVER)
 
 /*
 // Submits a tx and then polls for its status until a timeout is reached.
@@ -136,13 +136,13 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
   const sim = await server.simulateTransaction(tx)
 
   // Other failures are out of scope of this tutorial.
-  if (!Api.isSimulationSuccess(sim)) {
+  if (!rpc.Api.isSimulationSuccess(sim)) {
     console.log("Error simulating")
     throw sim
   }
 
   // If simulation didn't fail, we don't need to restore anything! Just send it.
-  if (!Api.isSimulationRestore(sim)) {
+  if (!rpc.Api.isSimulationRestore(sim)) {
     console.log("No contract restore needed")
     //const prepTx = assembleTransaction(tx, sim);
     //console.log(prepTx)
@@ -176,7 +176,7 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
 
   const resp = await submitTx(restoreTx)
   console.log({ resp })
-  //if (resp?.status !== Api.GetTransactionStatus.SUCCESS) {
+  //if (resp?.status !== rpc.Api.GetTransactionStatus.SUCCESS) {
   if (!resp?.success) {
     //throw resp;
     console.log("Error restoring contract", resp)
@@ -249,7 +249,6 @@ export async function submit(
   args: xdr.ScVal[],
 ) {
   const source = Keypair.fromSecret(secret)
-  //const server   = new SorobanRpc.Server(network.soroban)
   const contract = new Contract(contractId)
   const account = await server.getAccount(source.publicKey())
   console.log("SUBMIT", { network, contractId, method, args })
@@ -297,7 +296,6 @@ export async function checkContract(
   args: xdr.ScVal[],
 ) {
   const source = Keypair.fromSecret(secret)
-  //const server   = new SorobanRpc.Server(network.soroban)
   const contract = new Contract(contractId)
   const account = await server.getAccount(source.publicKey())
   console.log({ network, contractId, method, args })
@@ -312,10 +310,10 @@ export async function checkContract(
     .build()
 
   const sim = await server.simulateTransaction(tx)
-  if (!Api.isSimulationSuccess(sim)) {
+  if (!rpc.Api.isSimulationSuccess(sim)) {
     throw sim
   }
-  if (Api.isSimulationRestore(sim)) {
+  if (rpc.Api.isSimulationRestore(sim)) {
     console.log("Contract needs to be restored")
     const result = await restoreContract(source, contract, network)
     console.log("RESULT", result)

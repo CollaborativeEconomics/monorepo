@@ -6,6 +6,7 @@ import { createStory } from "@cfce/utils"
 import { revalidatePath } from "next/cache"
 
 export async function saveStory({
+  userId,
   story,
   categoryId,
   organizationId,
@@ -13,6 +14,7 @@ export async function saveStory({
   images,
   media,
 }: {
+  userId: string
   story: Omit<
     Prisma.StoryCreateInput,
     "organization" | "initiative" | "category"
@@ -24,6 +26,7 @@ export async function saveStory({
   media?: string | File
 }) {
   const response = await createStory({
+    userId,
     story,
     organizationId,
     initiativeId,

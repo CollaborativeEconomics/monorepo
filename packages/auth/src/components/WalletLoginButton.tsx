@@ -7,6 +7,7 @@ import type { AuthTypes, ChainSlugs } from '@cfce/types';
 import { useCallback } from 'react';
 import { walletLogin } from '../actions';
 import { BaseLoginButton } from './BaseLoginButton';
+import { useRouter } from 'next/navigation';
 
 interface WalletLoginButtonProps {
   method: AuthTypes;
@@ -28,6 +29,8 @@ export function WalletLoginButton({
     throw new Error(`No wallet interface found for chain: ${chain}`);
   }
 
+  const router = useRouter();
+
   const handleLogin = useCallback(async () => {
     const { network, walletAddress } = await walletInterface.connect();
 
@@ -35,12 +38,16 @@ export function WalletLoginButton({
       throw new Error(`No wallet address found: ${walletAddress}`);
     }
     //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
-    await walletLogin(method, {
+  const redirectUrl = await walletLogin(method, {
       walletAddress,
       chainConfig,
       network,
     });
-  }, [method, walletInterface, chainConfig]);
+    if (redirectUrl) {
+      router.push(redirectUrl);
+    }
+  }, [method, walletInterface, chainConfig, router]);
+
 
   return (
     <BaseLoginButton

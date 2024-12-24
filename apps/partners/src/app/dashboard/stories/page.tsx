@@ -25,6 +25,7 @@ export default async function DashboardPage() {
 
       {/* Pass data to the client-side form */}
       <AddStoryForm
+        userId={session?.user?.id ?? 'anonymous'}
         orgId={orgId}
         initiatives={initiatives}
         categories={categories}

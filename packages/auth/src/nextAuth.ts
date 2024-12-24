@@ -49,11 +49,11 @@ const authOptions: NextAuthConfig = {
       //console.log('TOKEN', token)
       // Handle organization and role-based logic
       if (token?.email) {
-        //console.log('AUTH MAIL', token.email)
+        // console.log("AUTH MAIL", token.email)
         try {
           // Fetch organization data
           const { data: org } = await registryApi
-            .get<Organization>(`/organizations?email=${token.email}`)
+            .get<Organization>(`/organizations?email=${token.email}`) // <<<<<
             .catch((error) => {
               console.error("Failed to fetch organization:", error)
               return { data: null }
@@ -64,15 +64,12 @@ const authOptions: NextAuthConfig = {
           token.orgName = org?.name || ""
 
           if (!org) {
-            //console.log('AUTH NO-ORG')
+            console.log("AUTH NO-ORG")
             try {
               // Fetch user data
-              const { data: user } = await registryApi
-                .get<User>(`/users?email=${token.email}`)
-                .catch((error) => {
-                  console.error("Failed to fetch user:", error)
-                  return { data: null }
-                })
+              const { data: user, error } = await registryApi.get<User>(
+                `/users?email=${token.email}`,
+              )
               //console.log('USER', user?.email)
               if (user && user.type === 9) {
                 //console.log('AUTH ADMIN')
@@ -100,7 +97,7 @@ const authOptions: NextAuthConfig = {
       return token
     },
     async session(args) {
-      //console.log('AUTH SESSION ARGS', args)
+      // console.log("AUTH SESSION ARGS", args)
       const { session, token, user, trigger, newSession } = args
       //session.authId = token.authId
       // Handle organization and admin-related updates

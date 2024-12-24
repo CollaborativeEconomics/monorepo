@@ -13,9 +13,9 @@ const TextInput = forwardRef(
   (
     {
       label,
-      register,
       className,
       onChange,
+      register,
       renderRight = null,
       ...props
     }: TextInputProps & HTMLProps<HTMLInputElement>,

@@ -1,0 +1,33 @@
+{
+  "name": "give-cast",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "frog:dev": "frog dev",
+    "deploy": "vercel",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@cfce/database": "workspace:*",
+    "@cfce/utils": "workspace:*",
+    "form-data": "^4.0.1",
+    "frog": "^0.18.2",
+    "hono": "^4.6.7",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "viem": "^2.21.54"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.2",
+    "vercel": "39.2.2"
+  }
+}

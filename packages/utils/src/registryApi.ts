@@ -11,7 +11,16 @@ export class RegistryApi {
 
   constructor() {
     // Use window.location.origin in the browser, fallback to "/" for SSR
-    this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : `${process.env.NEXTAUTH_URL}/api`
+    // this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : `${process.env.NEXTAUTH_URL}/api`
+    if (typeof window !== "undefined") {
+      this.baseUrl = `${window.location.origin}/api`
+    } else if (process.env.NEXTAUTH_URL) {
+      this.baseUrl = `${process.env.NEXTAUTH_URL}/api`
+    } else if (appConfig.apis.registry.apiUrl) {
+      this.baseUrl = appConfig.apis.registry.apiUrl
+    } else {
+      throw new Error("Registry API URL is not set")
+    }
     //this.baseUrl = appConfig.apis.registry.apiUrl
     //console.log('BASE URL', this.baseUrl)
     if (!this.baseUrl) {
@@ -24,7 +33,6 @@ export class RegistryApi {
     options: RequestInit = {},
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`
-    //console.log('REG-API URL', url)
     const headers = {
       "Content-Type": "application/json",
       ...options.headers,
@@ -39,6 +47,13 @@ export class RegistryApi {
       //  data,
       //  success: true,
       //}
+      
+      //const data: ApiResponse<T> = await response.json()
+      //if (!data.success) {
+      //  throw new Error(data.error || "An error occurred")
+      //}
+      // console.log("REG-API RESPONSE", data)
+      //return data
     } catch (error) {
       return {
         data: null as T,

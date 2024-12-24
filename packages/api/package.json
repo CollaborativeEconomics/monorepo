@@ -1,0 +1,213 @@
+{
+  "name": "@cfce/api",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./artworks": {
+      "import": "./dist/artworks/route.js",
+      "types": "./dist/artworks/route.d.ts"
+    },
+    "./artworks/[id]": {
+      "import": "./dist/artworks/[id]/route.js",
+      "types": "./dist/artworks/[id]/route.d.ts"
+    },
+    "./auth/[...nextauth]": {
+      "import": "./dist/auth/[...nextauth]/route.js",
+      "types": "./dist/auth/[...nextauth]/route.d.ts"
+    },
+    "./categories": {
+      "import": "./dist/categories/route.js",
+      "types": "./dist/categories/route.d.ts"
+    },
+    "./chapters": {
+      "import": "./dist/chapters/route.js",
+      "types": "./dist/chapters/route.d.ts"
+    },
+    "./chapters/[id]": {
+      "import": "./dist/chapters/[id]/route.js",
+      "types": "./dist/chapters/[id]/route.d.ts"
+    },
+    "./collections": {
+      "import": "./dist/collections/route.js",
+      "types": "./dist/collections/route.d.ts"
+    },
+    "./collections/[id]": {
+      "import": "./dist/collections/[id]/route.js",
+      "types": "./dist/collections/[id]/route.d.ts"
+    },
+    "./contracts": {
+      "import": "./dist/contracts/route.js",
+      "types": "./dist/contracts/route.d.ts"
+    },
+    "./credits": {
+      "import": "./dist/credits/route.js",
+      "types": "./dist/credits/route.d.ts"
+    },
+    "./credits/[id]": {
+      "import": "./dist/credits/[id]/route.js",
+      "types": "./dist/credits/[id]/route.d.js"
+    },
+    "./cronjobs": {
+      "import": "./dist/cronjobs/route.js",
+      "types": "./dist/cronjobs/route.d.ts"
+    },
+    "./donations": {
+      "import": "./dist/donations/route.js",
+      "types": "./dist/donations/route.d.ts"
+    },
+    "./donations/[id]": {
+      "import": "./dist/donations/[id]/route.js",
+      "types": "./dist/donations/[id]/route.d.ts"
+    },
+    "./hooks": {
+      "import": "./dist/hooks/route.js",
+      "types": "./dist/hooks/route.d.ts"
+    },
+    "./initiatives": {
+      "import": "./dist/initiatives/route.js",
+      "types": "./dist/initiatives/route.d.ts"
+    },
+    "./initiatives/[id]": {
+      "import": "./dist/initiatives/[id]/route.js",
+      "types": "./dist/initiatives/[id]/route.d.ts"
+    },
+    "./locations": {
+      "import": "./dist/locations/route.js",
+      "types": "./dist/locations/route.d.ts"
+    },
+    "./nft": {
+      "import": "./dist/nft/route.js",
+      "types": "./dist/nft/route.d.ts"
+    },
+    "./nft/[id]": {
+      "import": "./dist/nft/[id]/route.js",
+      "types": "./dist/nft/[id]/route.d.ts"
+    },
+    "./offers": {
+      "import": "./dist/offers/route.js",
+      "types": "./dist/offers/route.d.ts"
+    },
+    "./offers/[id]": {
+      "import": "./dist/offers/[id]/route.js",
+      "types": "./dist/offers/[id]/route.d.ts"
+    },
+    "./organizations": {
+      "import": "./dist/organizations/route.js",
+      "types": "./dist/organizations/route.d.ts"
+    },
+    "./organizations/[id]": {
+      "import": "./dist/organizations/[id]/route.js",
+      "types": "./dist/organizations/[id]/route.d.ts"
+    },
+    "./ping": {
+      "import": "./dist/ping/route.js",
+      "types": "./dist/ping/route.d.ts"
+    },
+    "./profile/[id]": {
+      "import": "./dist/profile/[id]/route.js",
+      "types": "./dist/profile/[id]/route.d.ts"
+    },
+    "./providers": {
+      "import": "./dist/providers/route.js",
+      "types": "./dist/providers/route.d.ts"
+    },
+    "./providers/[id]": {
+      "import": "./dist/providers/[id]/route.js",
+      "types": "./dist/providers/[id]/route.d.ts"
+    },
+    "./rates": {
+      "import": "./dist/rates/route.js",
+      "types": "./dist/rates/route.d.ts"
+    },
+    "./receipts": {
+      "import": "./dist/receipts/route.js",
+      "types": "./dist/receipts/route.d.ts"
+    },
+    "./session": {
+      "import": "./dist/session/route.js",
+      "types": "./dist/session/route.d.ts"
+    },
+    "./settings": {
+      "import": "./dist/settings/route.js",
+      "types": "./dist/settings/route.d.ts"
+    },
+    "./stories": {
+      "import": "./dist/stories/route.js",
+      "types": "./dist/stories/route.d.ts"
+    },
+    "./stories/[id]": {
+      "import": "./dist/stories/[id]/route.js",
+      "types": "./dist/stories/[id]/route.d.ts"
+    },
+    "./storymedia": {
+      "import": "./dist/storymedia/route.js",
+      "types": "./dist/storymedia/route.d.ts"
+    },
+    "./storymedia/[id]": {
+      "import": "./dist/storymedia/[id]/route.js",
+      "types": "./dist/storymedia/[id]/route.d.ts"
+    },
+    "./upload": {
+      "import": "./dist/upload/route.js",
+      "types": "./dist/upload/route.d.ts"
+    },
+    "./users": {
+      "import": "./dist/users/route.js",
+      "types": "./dist/users/route.d.ts"
+    },
+    "./users/[id]": {
+      "import": "./dist/users/[id]/route.js",
+      "types": "./dist/users/[id]/route.d.ts"
+    },
+    "./users/api_key": {
+      "import": "./dist/users/api_key.js",
+      "types": "./dist/users/api_key.d.ts"
+    },
+    "./userwallets": {
+      "import": "./dist/userwallets/route.js",
+      "types": "./dist/userwallets/route.d.ts"
+    },
+    "./wallets": {
+      "import": "./dist/wallets/route.js",
+      "types": "./dist/wallets/route.d.ts"
+    },
+    "./widget/[id]": {
+      "import": "./dist/widget/[id]/route.js",
+      "types": "./dist/widget/[id]/route.d.ts"
+    }
+  },
+  "dependencies": {
+    "@cfce/auth": "workspace:*",
+    "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/database": "workspace:*",
+    "@cfce/registry-hooks": "workspace:*",
+    "@cfce/utils": "workspace:*",
+    "@types/uuid": "^10.0.0",
+    "@vercel/blob": "0.27.0",
+    "uuid": "11.0.3"
+  },
+  "devDependencies": {
+    "@cfce/types": "workspace:*",
+    "@cfce/typescript-config": "workspace:*",
+    "@types/node": "^22.10.1",
+    "@types/react": "^19.0.0",
+    "next": "^15.1.0",
+    "next-auth": "5.0.0-beta.25",
+    "next-themes": "^0.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "peerDependencies": {
+    "next": "^15.1.0",
+    "next-themes": "^0.4.4",
+    "react": "^19.0.0"
+  }
+}

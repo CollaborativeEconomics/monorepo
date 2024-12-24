@@ -337,11 +337,11 @@ export default function Page({organization, events}:PageProps) {
           <Select
             id="selectInit"
             label="Initiative"
-            register={register('initiativeId')}
+            {...register('initiativeId')}
             options={selectInitiative}
           />
           <TextInput label="Title" register={register('name')} />
-          <TextArea label="Description" register={register('desc')} />
+          <TextArea label="Description" {...register('desc')} />
           <TextInput
             label="Estimated Budget for the event (in USD)"
             register={register('budget')}

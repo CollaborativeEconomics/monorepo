@@ -1,21 +1,25 @@
 "use server"
 import "server-only"
+import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
 import { BlockchainManager } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
+  type Chain,
   getInitiativeById,
   getNFTbyTokenId,
   getOrganizationById,
   getUserByWallet,
   newNftData,
+  newUser,
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
 import { ChainSlugs, DonationStatus, TokenTickerSymbol } from "@cfce/types"
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
+import { registryApi } from "./registryApi"
 
 interface MintAndSaveReceiptNFTParams {
   transaction: {
@@ -52,13 +56,14 @@ export async function mintAndSaveReceiptNFT({
       date,
     } = transaction
     console.log("MINT", chain, txId)
+    console.log("Chain", chain)
+    console.log("Token", token)
     const rate = await getCoinRate({ chain, symbol: token })
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {
       return { success: false, error: "Invalid transaction ID" }
     }
-
     if (!chain || !Object.values(ChainSlugs).includes(chain)) {
       return { success: false, error: "Invalid chain" }
     }
@@ -94,7 +99,7 @@ export async function mintAndSaveReceiptNFT({
       return { success: false, error: "Invalid initiative ID" }
     }
 
-    if (!donorName || typeof donorName !== "string") {
+    if (typeof donorName !== "string") {
       return { success: false, error: "Invalid donor name" }
     }
 
@@ -108,7 +113,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Check for existing receipt
-    const existingReceipt = await getNFTbyTokenId(txId)
+    const existingReceipt = await getNFTbyTokenId(txId, chain)
     if (existingReceipt) {
       return { success: false, error: "Receipt already exists" }
     }
@@ -133,10 +138,26 @@ export async function mintAndSaveReceiptNFT({
 
     console.log("Donor", donorWalletAddress)
     const user = await getUserByWallet(donorWalletAddress)
-    const userId = user?.id || ""
+    let userId = user?.id || ""
+    
     if (!userId) {
       console.log("ERROR", "User not found")
-      throw new Error("User not found")
+      console.log("Creating new user for wallet", donorWalletAddress)
+      const newUserData = {
+        name: donorName,
+        email: email || undefined,
+        wallets: {
+          create: [{
+            address: donorWalletAddress,
+            chain: chain.charAt(0).toUpperCase() + chain.slice(1) as Chain
+          }]
+        }
+      }
+      const createdUser = await newUser(newUserData)
+      if (!createdUser?.id) {
+        throw new Error("Failed to create user")
+      }
+      userId = createdUser.id
     }
 
     const initiative = await getInitiativeById(initiativeId)
@@ -157,10 +178,11 @@ export async function mintAndSaveReceiptNFT({
     // #region: Calculate amounts and prepare metadata
     const amountCUR = (+amount).toFixed(4)
     const amountUSD = (+amount * rate).toFixed(4)
+    console.log("Image URI", initiative?.imageUri)
 
-    const uriImage =
-      initiative?.imageUri ||
-      "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
+    const uriImage = initiative?.imageUri 
+      ? initiative.imageUri
+      : "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
 
     const extraMetadata = await runHook(
       Triggers.addMetadataToNFTReceipt,
@@ -194,13 +216,13 @@ export async function mintAndSaveReceiptNFT({
     // #region: Prepare and upload metadata
     const metadata = {
       ...creditMeta,
-      ...(extraMetadata?.output ?? {}),
+      ...(extraMetadata?.output ? JSON.parse(JSON.stringify(extraMetadata.output)) : {}),
       mintedBy: "CFCE via GiveCredit",
       created: created,
       donorAddress: donorWalletAddress,
       organization: organizationName,
       initiative: initiativeName,
-      image: uriImage,
+      image: uriImage,  // Already sanitized above
       coinCode: token,
       coinIssuer: chain,
       coinValue: amountCUR,
@@ -210,8 +232,17 @@ export async function mintAndSaveReceiptNFT({
 
     console.log("META", metadata)
     const fileId = `meta-${txId}`
-    const bytes = Buffer.from(JSON.stringify(metadata, null, 2))
-    const cidMeta = await uploadDataToIPFS(fileId, bytes, "text/plain")
+    // More thorough sanitization of the entire metadata object
+    const metadataString = JSON.stringify(metadata, (key, value) => {
+      if (typeof value === 'string') {
+        return value // Remove any HTML tags and trim
+      }
+      return value;
+    }, 2)
+    console.log("META STRING", metadataString)
+    const bytes = Buffer.from(metadataString)
+    console.log("BYTES", bytes)
+    const cidMeta = await uploadDataToIPFS(fileId, bytes, "application/json")
     console.log("CID", cidMeta)
     if (!cidMeta || typeof cidMeta !== "string") {
       throw new Error("Error uploading metadata")
@@ -222,20 +253,20 @@ export async function mintAndSaveReceiptNFT({
 
     /*
     // #region: Mint NFT on chains
-    const receiptConctractsByChain: Array<{
+    const receiptContractsByChain: Array<{
       chain: ChainSlugs
       contract: string
     }> = []
     for (const chainSlug of Object.keys(appConfig.chains) as ChainSlugs[]) {
       const chain = appConfig.chains[chainSlug]
       if (chain?.contracts.receiptMintbotERC721) {
-        receiptConctractsByChain.push({
+        receiptContractsByChain.push({
           chain: chainSlug as ChainSlugs,
           contract: chain.contracts.receiptMintbotERC721,
         })
       }
     }
-    if (receiptConctractsByChain.length === 0) {
+    if (receiptContractsByChain.length === 0) {
       console.error("No receipt contracts found")
       return { success: false, error: "No receipt contracts found" }
     }
@@ -247,9 +278,8 @@ export async function mintAndSaveReceiptNFT({
         contractId: chainContract.contract,
         address: donorWalletAddress,
         uri: uriMeta,
-        walletSeed: walletSecret
-      }
-      const mintResponse = await BlockchainManager[chainContract.chain]?.server.mintNFT(args)
+        walletSeed: walletSecret,
+      })
       console.log("RESMINT", mintResponse)
       if (!mintResponse) {
         throw new Error('Failed to mint NFT');
@@ -316,7 +346,7 @@ export async function mintAndSaveReceiptNFT({
       tokenId: tokenId,
       status: DonationStatus.claimed,
     }
-    console.log('NFT', data)
+    console.log("NFT", data)
     const saved = await newNftData(data)
 
     if (!saved) {
@@ -349,7 +379,18 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Return result
-    console.log("Minting completed")
+    posthogNodeClient.capture({
+      distinctId: userId,
+      event: "receipt_minted",
+      properties: {
+        coinSymbol: token,
+        coinValue: amountCUR,
+        usdValue: amountUSD,
+        organization: organization.slug,
+        initiative: initiative.slug,
+      },
+    })
+    posthogNodeClient.shutdown()
     const result = {
       success: true,
       image: uriImage,

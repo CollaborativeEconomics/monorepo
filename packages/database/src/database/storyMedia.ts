@@ -1,14 +1,18 @@
 import "server-only"
-import type { Prisma, StoryMedia } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
+import type { Prisma, StoryMedia } from "@prisma/client"
+//import type { File } from "formidable"
 import { prismaClient } from ".."
 
-interface StoryMediaQuery extends ListQuery {}
+interface StoryMediaQuery extends ListQuery {
+  // TODO: change this once we've moved everything to monorepo
+  id?: string
+}
 
 export async function getStoryMedia(
   query: StoryMediaQuery,
 ): Promise<StoryMedia | Array<StoryMedia>> {
-  const where = {}
+  const where = {} as Prisma.StoryMediaWhereInput
   const skip = 0
   const take = 100
   //let orderBy = { created: 'desc' }
@@ -32,6 +36,9 @@ export async function getStoryMedia(
     filter.take = size
     //filter.orderBy = { name: 'asc' }
   }
+  if (query?.id) {
+    filter.where.storyId = query.id
+  }
   const result = await prismaClient.storyMedia.findMany(filter)
   return result
 }
@@ -50,17 +57,25 @@ interface StoryMediaData {
   }>
 }
 
-export async function addStoryMedia(
-  id: string,
-  images: StoryMediaData,
-): Promise<Prisma.BatchPayload | null> {
-  console.log("SPIX", id, images)
+export async function addStoryMedia(id: string, images: StoryMediaData) {
   if (images?.media?.length < 1) {
     return null
   }
   const data = images?.media?.map((it) => {
     return { storyId: id, media: it.media, mime: it.mime }
   })
-  const result = await prismaClient.storyMedia.createMany({ data })
+  const result = await prismaClient.storyMedia.createManyAndReturn({ data })
+  return result
+}
+
+export async function deleteStoryMedia(id: string) {
+  const result = await prismaClient.storyMedia.delete({ where: { id } })
+  return result
+}
+
+export async function deleteStoryMediaByStoryId(id: string) {
+  const result = await prismaClient.storyMedia.deleteMany({
+    where: { storyId: id },
+  })
   return result
 }

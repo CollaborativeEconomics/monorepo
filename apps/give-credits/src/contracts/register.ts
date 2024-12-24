@@ -10,7 +10,8 @@ import {
   Keypair,
   Networks,
   Operation,
-  SorobanRpc,
+  rpc,
+  //SorobanRpc,
   Transaction,
   TransactionBuilder,
   nativeToScVal,
@@ -28,7 +29,7 @@ export default async function registerUser(contractId: string, from: string) {
     console.log("NETENV", netname)
     const network = networks[netname]
     console.log("NETWORK", network)
-    const soroban = new SorobanRpc.Server(network.soroban, { allowHttp: true })
+    const soroban = new rpc.Server(network.soroban, { allowHttp: true })
     const adr = new Address(from).toScVal()
     const ctr = new Contract(contractId)
     console.log("CTR", ctr)
@@ -50,7 +51,7 @@ export default async function registerUser(contractId: string, from: string) {
     console.log("TRX", trx)
     const sim = await soroban.simulateTransaction(trx)
     console.log("SIM", sim)
-    if (SorobanRpc.Api.isSimulationSuccess(sim) && sim.result !== undefined) {
+    if (rpc.Api.isSimulationSuccess(sim) && sim.result !== undefined) {
       console.log("RES", sim.result)
       return true
     }
