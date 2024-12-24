@@ -214,6 +214,21 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     if (!paymentResult.success) {
       throw new Error(paymentResult.error ?? 'Payment failed');
     }
+      // Save donation first
+      const donationData = {
+        organizationId: organization.id,
+        initiativeId: initiative.id,
+        categoryId: undefined,
+        userId: undefined,
+        sender: paymentResult.walletAddress ?? '',
+        chainName: selectedChain,
+        network: appConfig.chains[selectedChain]?.network ?? '',
+        coinValue: amount,
+        usdValue: amount * exchangeRate,
+        currency: selectedToken
+      };
+
+      await saveDonation(donationData);
 
       setButtonMessage('Minting NFT receipt, please wait...');
       const data = {
