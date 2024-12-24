@@ -1,5 +1,5 @@
-import { ChainConfig } from "@cfce/types"
-import { NetworkConfig } from "@cfce/types"
+import type { ChainConfig } from "@cfce/types"
+import type { NetworkConfig } from "@cfce/types"
 import { get } from "lodash"
 import {
   Client,
@@ -12,11 +12,9 @@ import {
   isCreatedNode,
   isModifiedNode,
 } from "xrpl"
-import type { NFTokenPage } from "xrpl/dist/npm/models/ledger"
-import { getNetworkForChain } from "../chains/BlockchainInterfaces"
+import { getNetworkForChain } from "../chains/utils"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
-import { Transaction } from "../types/transaction"
 
 type transactionMethods =
   | "tx"

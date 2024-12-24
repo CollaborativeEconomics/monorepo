@@ -1,7 +1,5 @@
-import type { ChainSlugs } from "@cfce/types"
 import { Xumm } from "xumm"
 import type { XummJsonTransaction } from "xumm-sdk/dist/src/types"
-import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import XrplCommon from "./XrplCommon"
 
 export default class XummClient extends XrplCommon {
@@ -52,7 +50,7 @@ export default class XummClient extends XrplCommon {
         return {
           success: true,
           walletAddress: address,
-          chain: this.chain.slug,
+          chain: this.chain.name,
           network: this.network,
         }
       }

@@ -1,7 +1,7 @@
 import appConfig from "@cfce/app-config"
 import type {
+  Chain,
   ChainConfig,
-  ChainSlugs,
   Network,
   NetworkConfig,
   TokenTickerSymbol,
@@ -63,7 +63,7 @@ export default abstract class InterfaceBaseClass {
     | { success: boolean; error: string }
     | {
         success: boolean
-        chain: ChainSlugs
+        chain: Chain
         network: NetworkConfig
         walletAddress: string
       }

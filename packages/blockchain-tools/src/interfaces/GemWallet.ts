@@ -20,7 +20,7 @@ export default class GemWallet extends XrplCommon {
         success: true,
         walletAddress: this.connectedWallet,
         network: this.network,
-        chain: this.chain.slug,
+        chain: this.chain.name,
       }
     } catch (ex) {
       console.error(ex)

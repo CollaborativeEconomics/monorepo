@@ -1,8 +1,5 @@
-import type { ChainSlugs } from "@cfce/types"
 import sdk from "@crossmarkio/sdk"
-import { Client, type Payment } from "xrpl"
-import { getNetworkForChain } from "../chains/BlockchainInterfaces"
-import chainConfiguration from "../chains/chainConfig"
+import type { Payment } from "xrpl"
 import XrplCommon from "./XrplCommon"
 
 export default class CrossmarkWallet extends XrplCommon {
@@ -18,7 +15,7 @@ export default class CrossmarkWallet extends XrplCommon {
         success: true,
         walletAddress: this.connectedWallet,
         network: this.network,
-        chain: this.chain.slug,
+        chain: this.chain.name,
       }
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     } catch (ex: any) {

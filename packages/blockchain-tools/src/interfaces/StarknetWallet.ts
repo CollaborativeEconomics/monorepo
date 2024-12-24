@@ -32,9 +32,9 @@ import {
   disconnect,
 } from "starknetkit"
 import { formatEther, parseEther } from "viem"
-import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
+import { getNetworkForChain } from "../chains/utils"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"
 import { ERC721ABI } from "../contracts/starknet/ERC721Abi"
 
@@ -142,7 +142,7 @@ class StarknetWallet extends InterfaceBaseClass {
         return {
           success: true,
           walletAddress: this.connectedWallet,
-          chain: this.chain.slug,
+          chain: this.chain.name,
           network: this.network,
         }
       }

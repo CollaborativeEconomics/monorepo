@@ -1,9 +1,4 @@
-import type {
-  ChainConfig,
-  ChainSlugs,
-  Network,
-  NetworkConfig,
-} from "@cfce/types"
+import type { ChainConfig, NetworkConfig } from "@cfce/types"
 import {
   getNetwork,
   getNetworkDetails,
@@ -12,9 +7,9 @@ import {
   signTransaction,
 } from "@stellar/freighter-api"
 import * as StellarSDK from "@stellar/stellar-sdk"
-import { getNetworkForChain } from "../chains/BlockchainInterfaces"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
+import { getNetworkForChain } from "../chains/utils"
 
 class FreighterWallet extends InterfaceBaseClass {
   network: NetworkConfig
@@ -56,7 +51,7 @@ class FreighterWallet extends InterfaceBaseClass {
         success: true,
         walletAddress: this.connectedWallet,
         network: this.network,
-        chain: this.chain.slug,
+        chain: this.chain.name,
       }
     } catch (ex) {
       console.error(ex)

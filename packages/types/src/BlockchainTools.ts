@@ -1,6 +1,6 @@
 // copy of database/src/prisma/schema.prisma Chain enum
 // importing here would cause a circular dependency
-type Chain =
+export type Chain =
   | "Arbitrum"
   | "Avalanche"
   | "Base"

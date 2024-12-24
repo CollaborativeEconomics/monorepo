@@ -1,22 +1,16 @@
 /// <reference path="./metamask.d.ts" />
 
-import type {
-  ChainSlugs,
-  Network,
-  NetworkConfig,
-  TokenTickerSymbol,
-} from "@cfce/types"
+import type { NetworkConfig, TokenTickerSymbol } from "@cfce/types"
 import type { MetaMaskInpageProvider } from "@metamask/providers"
 import { erc20Abi } from "viem"
-import * as chains from "viem/chains"
 import Web3 from "web3"
 import type {
   ProviderConnectInfo,
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
-import { InterfaceBaseClass, getChainByChainId } from "../chains"
-import { getNetworkForChain } from "../chains/BlockchainInterfaces"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
@@ -61,7 +55,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         success: true,
         network: this.network,
         walletAddress: this.connectedWallet,
-        chain: this.chain.slug,
+        chain: this.chain.name,
       }
     } catch (ex) {
       const error = ex instanceof Error ? ex.message : ""

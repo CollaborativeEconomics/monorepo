@@ -1,5 +1,4 @@
-import appConfig from "@cfce/app-config"
-import type { ChainConfig, ChainSlugs, Chains } from "@cfce/types"
+import type { Chains } from "@cfce/types"
 
 const chainConfiguration: Chains = {
   arbitrum: {
@@ -659,66 +658,6 @@ chainConfiguration.xrpl.networks.testnet = {
   },
   wallet: "r3qr25QnANd8RRT9NYtgUrrty3yTfpGx9c",
   wssurl: "wss://s.altnet.rippletest.net:51233",
-}
-
-export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
-  const chainKeys = Object.keys(
-    appConfig.chains,
-  ) as (keyof typeof appConfig.chains)[]
-
-  return chainKeys.reduce(
-    (obj, key) => {
-      obj[key] = chainConfiguration[key]
-      return obj
-    },
-    {} as Record<ChainSlugs, ChainConfig>,
-  )
-}
-
-export const getRpcUrl = (
-  chain: ChainSlugs,
-  network: string,
-  rpcType = "main",
-): string => {
-  const chainConfig = chainConfiguration[chain]
-  if (!chainConfig) {
-    throw new Error(`Chain configuration not found for ${chain}`)
-  }
-
-  const networkConfig = chainConfig.networks[network]
-  if (!networkConfig) {
-    throw new Error(`Network configuration not found for ${chain} ${network}`)
-  }
-
-  const rpcUrl = networkConfig.rpcUrls[rpcType]
-  if (!rpcUrl) {
-    throw new Error(`RPC URL not found for ${chain} ${network} ${rpcType}`)
-  }
-
-  return rpcUrl
-}
-
-export const getChainByChainId = (chainId: number): ChainConfig => {
-  // skip chains that don't use IDs like stellar and xrpl
-  if (chainId === 0) {
-    throw new Error("Chain ID 0 is not a valid chain ID")
-  }
-  const idToChainMapping = Object.values(chainConfiguration).reduce(
-    (acc, chain) => {
-      // Check IDs for each network
-      for (const network of Object.values(chain.networks)) {
-        if (network.id === chainId) {
-          acc[chainId] = chain
-        }
-      }
-      return acc
-    },
-    {} as Record<number, ChainConfig>,
-  )
-  if (!idToChainMapping[chainId]) {
-    throw new Error(`Chain configuration not found for chain ID ${chainId}`)
-  }
-  return idToChainMapping[chainId]
 }
 
 export default chainConfiguration
