@@ -93,6 +93,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
   const chain = chainConfig[selectedChain];
+  const network = chain.networks[appConfig.chainDefaults.network];
   //console.log('STATE', chainState, exchangeRate)
 
   const chainInterface = BlockchainClientInterfaces[selectedWallet];
@@ -188,22 +189,20 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     if (!chainInterface?.connect) {
       throw new Error('No connect method on chain interface');
     }
-    if (!chainInterface.isConnected()) {
-      await chainInterface?.connect();
-    }
+    await chainInterface?.connect?.(network.id);
     const balanceCheck = await chainInterface?.getBalance?.();
     if (!balanceCheck || 'error' in balanceCheck) {
       throw new Error(balanceCheck?.error ?? 'Failed to check balance');
     }
     return balanceCheck.balance >= chainInterface.toBaseUnit(amount);
-  }, [chainInterface, amount]);
+  }, [chainInterface, amount, network.id]);
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPayment) {
         throw new Error('No sendPayment method on chain interface');
       }
-      const connected = await chainInterface.connect?.();
+      const connected = await chainInterface.connect?.(network.id);
       console.log('CONNECT', connected);
       const data = {
         address,
@@ -215,7 +214,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       console.log('PAYMENT RESULT', result);
       return result;
     },
-    [chainInterface, selectedChain],
+    [chainInterface, network.id, selectedChain],
   );
 
   const sendPaymentWithGas = useCallback(

@@ -59,7 +59,7 @@ export default abstract class InterfaceBaseClass {
   >
 
   // client functions, only defined on client subclasses
-  public connect?(): Promise<
+  public connect?(chainId?: number): Promise<
     | { success: boolean; error: string }
     | {
         success: boolean

@@ -58,7 +58,7 @@ export const ChainNames: Chain[] = [
 
 export type Network = "mainnet" | "testnet"
 export interface NetworkConfig {
-  id: number | string
+  id: number
   name: string
   slug: Network
   symbol: string

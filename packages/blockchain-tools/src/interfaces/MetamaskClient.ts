@@ -22,27 +22,62 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
 
-  async connect() {
-    console.log("Wallet starting...")
+  async connect(newChainId?: number) {
+    console.log("Wallet starting...", newChainId)
     //console.log('window.ethereum')
     try {
       this.metamask = window.ethereum
       this.wallets = await this.metamask?.enable()
-      const chainId = await window.ethereum?.chainId
-      if (!chainId) {
-        throw new Error("Error getting chain ID")
-      }
+      const metamaskChainId = await window.ethereum?.chainId
+
       //console.log('Accounts', this.wallets)
       this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
-      //this.connectedWallet = this.metamask.selectedAddress
-      //this.setNetwork(window.ethereum.chainId)
-      //this.loadWallet(window))
-      // if (chainId && this.network.id !== Number.parseInt(chainId, 16)) {
-      //   await this.changeNetwork(this.network)
-      // }
-      // if (!chainId) {
-      //   throw new Error("Error getting chain ID")
-      // }
+      const newChainIsSameAsConnectedChain =
+        Number(newChainId) === Number(this.network?.id)
+      const metamaskChainIsSameAsConnectedChain =
+        Number(metamaskChainId) === Number(this.network?.id)
+      // early return if chainId and wallet are already set correctly
+      console.log(
+        "newChainIsSameAsConnectedChain",
+        newChainIsSameAsConnectedChain,
+        newChainId,
+        this.network?.id,
+      )
+      console.log(
+        "metamaskChainIsSameAsConnectedChain",
+        metamaskChainIsSameAsConnectedChain,
+        metamaskChainId,
+        this.network?.id,
+      )
+      console.log("this.connectedWallet", this.network)
+      if (
+        newChainId
+          ? newChainIsSameAsConnectedChain && this.connectedWallet
+          : metamaskChainIsSameAsConnectedChain && this.connectedWallet
+      ) {
+        if (!this.chain) {
+          throw new Error("Already connected, but chain not set")
+        }
+        if (!this.network) {
+          throw new Error("Already connected, but network not set")
+        }
+        return {
+          success: true,
+          network: this.network,
+          walletAddress: this.connectedWallet,
+          chain: this.chain.name,
+        }
+      }
+      if (
+        typeof newChainId === "undefined" &&
+        typeof metamaskChainId === "undefined"
+      ) {
+        throw new Error("No chain ID provided or inferred")
+      }
+      const chainId = newChainId ?? metamaskChainId
+      if (typeof chainId !== "number") {
+        throw new Error(`Invalid chain ID type: ${typeof chainId}`)
+      }
       this.setNetwork(chainId)
       if (!this.network) {
         throw new Error("Error getting network")
@@ -87,7 +122,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     // @ts-expect-error returns chain ID string
     this.metamask.on("connect", (info: ProviderConnectInfo) => {
       console.log("> onConnect", Number.parseInt(info.chainId), info.chainId)
-      this.setNetwork(info.chainId)
+      this.setNetwork(Number(info.chainId))
       //if(restore){
       //  restore(this.network, this.connectedWallet)
       //}
@@ -113,11 +148,11 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     // @ts-expect-error returns chain ID string
     this.metamask.on("chainChanged", (chainId: string) => {
       console.log("> onChainChanged", Number.parseInt(chainId), chainId)
-      if (chainId === this.network?.id) {
+      if (Number(chainId) === this.network?.id) {
         console.log("Already on chain", chainId)
         return
       }
-      this.setNetwork(chainId)
+      this.setNetwork(Number(chainId))
       //if(restore){
       //  restore(this.network, this.connectedWallet)
       //}
@@ -132,10 +167,11 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     console.log("Listeners set")
   }
 
-  setNetwork(chainId: string) {
+  setNetwork(chainId: number) {
     console.log("SetNetwork", chainId)
-    this.chain = getChainByChainId(Number(chainId))
+    this.chain = getChainByChainId(chainId)
     this.network = getNetworkForChain(this.chain.slug)
+    this.changeNetwork(this.network)
     this.setListeners()
     if (!this.chain || !this.network) {
       console.error("Couldn't set network or chain for", chainId)
