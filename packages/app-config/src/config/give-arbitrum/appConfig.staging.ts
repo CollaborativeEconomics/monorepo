@@ -19,28 +19,21 @@ const chains: AppConfig["chains"] = {
     slug: "xdc",
     network: "testnet",
     contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
+      receiptMintbotERC721: "0xfeceaea75565961b805e2dbe58e00488f5bc1495",
     },
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
+    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
     enabledWallets: ["metamask"],
     tokens: ["XDC"],
   },
-  stellar: {
-    slug: "stellar",
+  arbitrum: {
+    slug: "arbitrum",
     network: "testnet",
-    contracts: {},
-    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
-    enabledWallets: ["freighter"],
-    tokens: ["XLM", "USDC"],
-  },
-  xrpl: {
-    slug: "xrpl",
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
-    network: "testnet",
-    contracts: {},
-    enabledWallets: ["xaman"],
-    tokens: ["XRP"],
-    destinationTag: "77777777",
+    contracts: {
+      receiptMintbotERC721: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
+    },
+    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
+    enabledWallets: ["metamask"],
+    tokens: ["ETH"],
   },
 }
 

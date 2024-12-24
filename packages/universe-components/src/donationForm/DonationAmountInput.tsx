@@ -41,14 +41,17 @@ export function DonationAmountInput({
         </div>
       </div>
       <InputWithContent
-        type="text"
+        type="number"
         id="amount"
+        step="any"
         value={amount.toString()}
         onChange={({ target: { value } }) => {
-          setDonationForm(draft => {
-            draft.amount = Number.parseFloat(value) || 0;
-            draft.date = new Date();
-          });
+          if (value === '' || !Number.isNaN(Number.parseFloat(value))) {
+            setDonationForm(draft => {
+              draft.amount = Number.parseFloat(value);
+              draft.date = new Date();
+            });
+          }
         }}
         text={showUsd ? '| USD' : `| ${selectedToken}`}
       />

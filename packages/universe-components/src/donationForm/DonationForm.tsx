@@ -75,10 +75,11 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState;
   const [donationForm, setDonationForm] = useAtom(donationFormAtom);
-  const { emailReceipt, name, email, amount } = donationForm;
+  const { emailReceipt, name, email, amount, showUsd } = donationForm;
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
   //console.log('STATE', chainState, exchangeRate)
+  const amountInEth = showUsd ? coinAmount : amount;
 
   const chainInterface = useMemo(
     () => BlockchainManager[selectedChain]?.client,
@@ -169,16 +170,20 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       throw new Error('No chain interface or getBalance not supported');
     }
     const balance = await chainInterface.getBalance();
-    return Number(balance) >= chainInterface.toBaseUnit(amount);
-  }, [chainInterface, amount]);
+    if (!balance) {
+      throw new Error('Could not get balance');
+    }
+  
+    console.log('AMOUNT IN ETH', amountInEth)
+    console.log('BALANCE', balance)
+    return Number(balance) >= amountInEth;
+  }, [chainInterface, amountInEth]);
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPayment) {
         throw new Error('No chain interface');
       }
-      const connected = await chainInterface.connect();
-      console.log('CONNECT', connected);
       const data = {
         address,
         amount,
@@ -268,7 +273,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       setLoading(true);
       setButtonMessage('Approving payment...');
 
-      const paymentResult = await sendPayment(destinationWalletAddress, amount);
+      const paymentResult = await sendPayment(destinationWalletAddress, amountInEth);
       await handleMinting(paymentResult);
     } catch (error) {
       handleError(error);

@@ -13,9 +13,13 @@ import type {
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
+import { http, createConfig, connect, getBalance, sendTransaction, estimateGas } from '@wagmi/core'
+import { mainnet, sepolia, arbitrumSepolia } from '@wagmi/core/chains'
+import { injected } from '@wagmi/core'
 import ChainBaseClass from "../chains/ChainBaseClass"
 import erc20abi from "../contracts/solidity/erc20/erc20-abi.json"
 import type { Transaction } from "../types/transaction"
+import { formatUnits, parseEther } from 'viem'
 
 export default class MetaMaskWallet extends ChainBaseClass {
   // neturl = ""
@@ -27,6 +31,15 @@ export default class MetaMaskWallet extends ChainBaseClass {
   metamask?: MetaMaskInpageProvider
   web3?: Web3
 
+  config = createConfig({
+    chains: [arbitrumSepolia],
+    transports: {
+      // [mainnet.id]: http(),
+      // [sepolia.id]: http(),
+      [arbitrumSepolia.id]: http(),
+    },
+  })
+
   constructor(slug: ChainSlugs, network: Network) {
     super(slug, network)
     this.web3 = new Web3(this.network.rpcUrls.main)
@@ -36,11 +49,15 @@ export default class MetaMaskWallet extends ChainBaseClass {
     console.log("Wallet starting...", this.network)
     //console.log('window.ethereum')
     try {
-      this.metamask = window.ethereum
-      this.setListeners()
-      this.wallets = await this.metamask?.enable()
-      //console.log('Accounts', this.wallets)
-      this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
+
+      const result = await connect(this.config, { connector: injected() })
+      console.log("Result", result)
+      this.connectedWallet = result.accounts[0]
+      // this.metamask = window.ethereum
+      // this.setListeners()
+      this.wallets = [...result.accounts]
+      // //console.log('Accounts', this.wallets)
+      // this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
       //this.connectedWallet = this.metamask.selectedAddress
       //this.setNetwork(window.ethereum.chainId)
       //this.loadWallet(window))
@@ -306,36 +323,39 @@ export default class MetaMaskWallet extends ChainBaseClass {
   }
 
   async getBalance(): Promise<string | undefined | null> {
-    const tokenContract = "0x49FAfA0e73eAB2A558ca6B5E582bEdbFC393d519";
 
     console.log("Get balance...")
-    await this.connect()
+    try {
+      const result = await connect(this.config, { connector: injected() })
+      console.log("Connect result:", result)
+      this.connectedWallet = result.accounts[0]
+      this.metamask = window.ethereum
+    } catch (error) {
+      console.error("Error connecting to wallet:", error)
+    }
+    
     if (!this.metamask) {
       console.error("Error getting balance, Metamask not available")
       return
     }
 
-    if (!this.web3) {
-      console.error("Error getting balance, Web3 not available")
-      return
-    }
-
     try {
-      if (!tokenContract) {
         // Get native token balance
-        const balance = await this.metamask.request<string>({
-          method: "eth_getBalance",
-          params: [this.connectedWallet, "latest"],
+        // const balance = await this.metamask.request<string>({
+        //   method: "eth_getBalance",
+        //   params: [this.connectedWallet, "latest"],
+        // })
+        // if (!balance) {
+        //   console.error("Error fetching balance, balance is null")
+        //   return null
+        // }
+        const balance = await getBalance(this.config, {
+          address: this.connectedWallet as `0x${string}`,
+          blockTag: 'latest',
         })
-        console.log("Native Balance:", balance)
-        return balance
-      }
-
-      // Get ERC20 token balance
-      const contract = new this.web3.eth.Contract(erc20abi, tokenContract)
-      const balance: number = await contract.methods.balanceOf(this.connectedWallet).call()
-      console.log("Token Balance:", balance)
-      return balance.toString()
+        const balanceInETH = formatUnits(balance.value, balance.decimals)
+        console.log("Balance", balanceInETH)
+        return balanceInETH;
     } catch (error) {
       console.error("Error fetching balance:", error)
       return null
@@ -415,52 +435,45 @@ export default class MetaMaskWallet extends ChainBaseClass {
     amount,
     memo,
   }: { address: string; amount: number; memo: string }) {
-    function numHex(num: number) {
-      return `0x${num.toString(16)}`
-    }
-    function strHex(str: string) {
-      return `0x${Buffer.from(str.toString(), "utf8").toString("hex")}`
-    }
     console.log(`Sending ${amount} to ${address}...`)
-    const gasPrice = await this.getGasPrice() //numHex(20000000000)
-    if (!gasPrice) {
-      console.error("Payment error: Error getting gas price")
-      return { success: false, error: "Error getting gas price" }
-    }
-    console.log("GAS", Number.parseInt(gasPrice), gasPrice)
-    const gas = numHex(210000)
-    const wei = numHex(Math.floor(amount * 10 ** this.network.decimals))
-    const method = "eth_sendTransaction"
-    const tx = {
-      from: this.connectedWallet,
-      to: address,
-      value: wei,
-      gasPrice,
-      gas,
-      data: "",
-    }
-    if (memo) {
-      tx.data = strHex(memo)
-    }
-    const params = [tx]
-    console.log("TX", params)
+    
     try {
-      if (!this.metamask) {
-        console.error("Error sending payment, Metamask not available")
-        return {
-          success: false,
-          error: "Metamask not available",
-        }
+      if (!this.connectedWallet) {
+        throw new Error("Wallet not connected")
       }
-      const result = await this.metamask.request({ method, params })
+
+      // Connect first to ensure we have an active connection
+      try {
+        const result = await connect(this.config, { connector: injected() })
+        console.log("Connect result:", result)
+        this.connectedWallet = result.accounts[0]
+        this.metamask = window.ethereum
+      } catch (error) {
+        console.error("Error connecting to wallet:", error)
+        throw error
+      }
+
+      // Convert amount to wei using parseEther
+      const value = parseEther(amount.toString())
+
+      // Prepare transaction parameters
+      const transaction = {
+        account: this.connectedWallet as `0x${string}`,
+        to: address as `0x${string}`,
+        value,
+        data: memo ? (`0x${Buffer.from(memo, "utf8").toString("hex")}` as `0x${string}`) : undefined,
+        gas: await estimateGas(this.config, {
+          account: this.connectedWallet as `0x${string}`,
+          to: address as `0x${string}`,
+          value,
+          data: memo ? (`0x${Buffer.from(memo, "utf8").toString("hex")}` as `0x${string}`) : undefined,
+        }),
+      }
+
+      const result = await sendTransaction(this.config, transaction)
+
       console.log("TXID:", result)
-      if (typeof result !== "string") {
-        console.error("Error sending payment, bad result")
-        return {
-          success: false,
-          error: "Metamask not available",
-        }
-      }
+      
       return {
         success: true,
         txid: result,

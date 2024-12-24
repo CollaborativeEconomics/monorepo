@@ -39,11 +39,11 @@ const chains: AppConfig["chains"] = {
     slug: "arbitrum",
     network: "testnet",
     contracts: {
-      receiptMintbotERC721: "0x55e3f6e2abe8443047ec5f70875791a2463c8137c07001c3f279d4f0e0cb62f",
+      receiptMintbotERC721: "0xb430c12668789F97F03695cEc53240451105C12C",
     },
-    wallet: "0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3",
+    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
     enabledWallets: ["metamask"],
-    tokens: ["ARB"],
+    tokens: ["ETH"],
   },
 }
 
@@ -51,7 +51,7 @@ const chainDefaults: AppConfig["chainDefaults"] = {
   network: "testnet",
   wallet: "metamask",
   chain: "arbitrum",
-  coin: "ARB",
+  coin: "ETH",
   defaultAddress: "0x2f033661Aca76816d9f729D1F5f190597E539C3f",
 }
 
