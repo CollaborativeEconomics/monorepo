@@ -2,7 +2,6 @@ import appConfig from "@cfce/app-config"
 import type {
   ChainSlugs,
   ClientInterfaces,
-  Interfaces,
   TokenTickerSymbol,
 } from "@cfce/types"
 import type { Draft } from "immer"

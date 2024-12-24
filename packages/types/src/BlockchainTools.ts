@@ -116,17 +116,14 @@ export interface ChainConfig {
   networks: Record<string, NetworkConfig>
 }
 
-export type Interfaces =
+export type ClientInterfaces =
   | "argent"
   | "crossmark"
   | "freighter"
   | "gemwallet"
   | "metamask"
-  | "stellar"
-  | "web3"
   | "xaman"
-  | "xrpl"
 
-export type ClientInterfaces = Exclude<Interfaces, "web3" | "xrpl" | "stellar">
+export type ServerInterfaces = "evm" | "xrpl" | "stellar"
 
 export type Chains = Record<ChainSlugs, ChainConfig>

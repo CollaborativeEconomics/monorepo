@@ -3,7 +3,7 @@
 import appConfig from '@cfce/app-config';
 import { getWalletConfiguration } from '@cfce/blockchain-tools';
 import { chainAtom } from '@cfce/state';
-import type { ClientInterfaces, Interfaces } from '@cfce/types';
+import type { ClientInterfaces } from '@cfce/types';
 import { useAtom } from 'jotai';
 import React from 'react';
 import { DonationFormSelect } from './DonationFormSelect';

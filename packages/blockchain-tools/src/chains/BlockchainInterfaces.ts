@@ -4,6 +4,7 @@ import type {
   ClientInterfaces,
   Network,
   NetworkConfig,
+  ServerInterfaces,
 } from "@cfce/types"
 import { getNetwork } from "@stellar/freighter-api"
 import { keys as _keys } from "lodash"
@@ -49,7 +50,7 @@ const BlockchainServerInterfaces = {
   // starknet: todo
   stellar: new StellarServer(),
   xrpl: new XrplServer(),
-} satisfies Record<string, InterfaceBaseClass>
+} satisfies Record<ServerInterfaces, InterfaceBaseClass>
 
 export {
   getNetworkForChain,

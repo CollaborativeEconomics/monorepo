@@ -86,27 +86,27 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.654.0
         version: 3.670.0
+      '@cfce/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@cfce/app-config':
         specifier: workspace:*
         version: link:../../packages/app-config
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
-      '@cfce/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@cfce/registry-hooks':
-        specifier: workspace:*
-        version: link:../../packages/hooks
-      '@cfce/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@cfce/components':
         specifier: workspace:*
         version: link:../../packages/components
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@cfce/pages':
         specifier: workspace:*
         version: link:../../packages/pages
+      '@cfce/registry-hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -312,27 +312,27 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.654.0
         version: 3.670.0
+      '@cfce/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@cfce/app-config':
         specifier: workspace:*
         version: link:../../packages/app-config
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
-      '@cfce/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@cfce/registry-hooks':
-        specifier: workspace:*
-        version: link:../../packages/hooks
-      '@cfce/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@cfce/components':
         specifier: workspace:*
         version: link:../../packages/components
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@cfce/pages':
         specifier: workspace:*
         version: link:../../packages/pages
+      '@cfce/registry-hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -434,7 +434,7 @@ importers:
         version: 1.1.0
       flowbite:
         specifier: ^2.3.0
-        version: 2.5.2(rollup@4.28.1)
+        version: 2.5.2(rollup@3.29.5)
       form-data:
         specifier: ^4.0.0
         version: 4.0.1
@@ -544,27 +544,27 @@ importers:
 
   apps/give-tron:
     dependencies:
+      '@cfce/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@cfce/app-config':
         specifier: workspace:*
         version: link:../../packages/app-config
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
-      '@cfce/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@cfce/registry-hooks':
-        specifier: workspace:*
-        version: link:../../packages/hooks
-      '@cfce/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@cfce/components':
         specifier: workspace:*
         version: link:../../packages/components
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@cfce/pages':
         specifier: workspace:*
         version: link:../../packages/pages
+      '@cfce/registry-hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -761,27 +761,27 @@ importers:
       '@cfce/analytics':
         specifier: workspace:*
         version: link:../../packages/analytics
+      '@cfce/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@cfce/app-config':
         specifier: workspace:*
         version: link:../../packages/app-config
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
-      '@cfce/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@cfce/registry-hooks':
-        specifier: workspace:*
-        version: link:../../packages/hooks
-      '@cfce/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@cfce/components':
         specifier: workspace:*
         version: link:../../packages/components
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@cfce/pages':
         specifier: workspace:*
         version: link:../../packages/pages
+      '@cfce/registry-hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -883,7 +883,7 @@ importers:
         version: 1.1.0
       flowbite:
         specifier: ^2.3.0
-        version: 2.5.2(rollup@3.29.5)
+        version: 2.5.2(rollup@4.28.1)
       form-data:
         specifier: ^4.0.0
         version: 4.0.1
@@ -990,12 +990,18 @@ importers:
       '@cfce/analytics':
         specifier: workspace:*
         version: link:../../packages/analytics
+      '@cfce/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@cfce/auth':
         specifier: workspace:*
         version: link:../../packages/auth
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
+      '@cfce/components':
+        specifier: workspace:*
+        version: link:../../packages/components
       '@cfce/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -1008,12 +1014,6 @@ importers:
       '@cfce/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@cfce/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@cfce/components':
-        specifier: workspace:*
-        version: link:../../packages/components
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -1123,6 +1123,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.654.0
         version: 3.670.0
+      '@cfce/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@cfce/app-config':
         specifier: workspace:*
         version: link:../../packages/app-config
@@ -1132,18 +1135,15 @@ importers:
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
+      '@cfce/components':
+        specifier: workspace:*
+        version: link:../../packages/components
       '@cfce/database':
         specifier: workspace:*
         version: link:../../packages/database
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
-      '@cfce/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@cfce/components':
-        specifier: workspace:*
-        version: link:../../packages/components
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -1238,6 +1238,9 @@ importers:
 
   apps/tests:
     dependencies:
+      '@cfce/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@cfce/app-config':
         specifier: workspace:*
         version: link:../../packages/app-config
@@ -1247,24 +1250,21 @@ importers:
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../../packages/blockchain-tools
+      '@cfce/components':
+        specifier: workspace:*
+        version: link:../../packages/components
       '@cfce/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@cfce/pages':
+        specifier: workspace:*
+        version: link:../../packages/pages
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
       '@cfce/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@cfce/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@cfce/components':
-        specifier: workspace:*
-        version: link:../../packages/components
-      '@cfce/pages':
-        specifier: workspace:*
-        version: link:../../packages/pages
       '@cfce/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -1365,6 +1365,73 @@ importers:
         version: 8.57.1
       typescript:
         specifier: ^5.0.0
+        version: 5.7.2
+
+  packages/api:
+    dependencies:
+      '@cfce/auth':
+        specifier: workspace:*
+        version: link:../auth
+      '@cfce/blockchain-tools':
+        specifier: workspace:*
+        version: link:../blockchain-tools
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../database
+      '@cfce/registry-hooks':
+        specifier: workspace:*
+        version: link:../hooks
+      '@cfce/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@types/formidable':
+        specifier: ^3.4.5
+        version: 3.4.5
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
+      '@vercel/blob':
+        specifier: 0.24.1
+        version: 0.24.1
+      formidable:
+        specifier: ^3.5.1
+        version: 3.5.1
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
+    devDependencies:
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
+      '@cfce/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.9.0
+        version: 22.10.1
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.0.1
+      decimal.js:
+        specifier: ^10.4.3
+        version: 10.4.3
+      next:
+        specifier: ^15.1.0
+        version: 15.1.0(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      next-auth:
+        specifier: 5.0.0-beta.25
+        version: 5.0.0-beta.25(next@15.1.0(@opentelemetry/api@1.9.0)(@playwright/test@1.49.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+      next-themes:
+        specifier: ^0.4.3
+        version: 0.4.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@22.10.1)(typescript@5.7.2)
+      typescript:
+        specifier: ^5.6.2
         version: 5.7.2
 
   packages/api-tests:
@@ -1482,6 +1549,9 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@cfce/state':
+        specifier: workspace:*
+        version: link:../state
       '@crossmarkio/sdk':
         specifier: ^0.4.0
         version: 0.4.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1540,9 +1610,6 @@ importers:
         specifier: ^1.11.1
         version: 1.11.1(encoding@0.1.12)
     devDependencies:
-      '@cfce/state':
-        specifier: workspace:*
-        version: link:../state
       '@cfce/types':
         specifier: workspace:*
         version: link:../types
@@ -1564,278 +1631,6 @@ importers:
       tsc-alias:
         specifier: ^1.8.8
         version: 1.8.10
-      typescript:
-        specifier: ^5.6.2
-        version: 5.7.2
-
-  packages/database:
-    dependencies:
-      '@aws-sdk/client-s3':
-        specifier: ^3.654.0
-        version: 3.670.0
-      '@prisma/client':
-        specifier: ^5.22.0
-        version: 5.22.0(prisma@5.22.0)
-      '@vercel/postgres':
-        specifier: 0.10.0
-        version: 0.10.0(utf-8-validate@5.0.10)
-      prisma:
-        specifier: ^5.22.0
-        version: 5.22.0
-      server-only:
-        specifier: ^0.0.1
-        version: 0.0.1
-    devDependencies:
-      '@cfce/types':
-        specifier: workspace:*
-        version: link:../types
-      '@types/formidable':
-        specifier: ^3.4.5
-        version: 3.4.5
-      '@types/node':
-        specifier: ^22.9.0
-        version: 22.10.1
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
-      ts-jest:
-        specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2)))(typescript@5.7.2)
-      typescript:
-        specifier: ^5.6.2
-        version: 5.7.2
-
-  packages/hooks:
-    dependencies:
-      '@cfce/app-config':
-        specifier: workspace:*
-        version: link:../app-config
-      '@cfce/database':
-        specifier: workspace:*
-        version: link:../database
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      luxon:
-        specifier: ^3.4.4
-        version: 3.5.0
-    devDependencies:
-      '@types/lodash':
-        specifier: ^4.17.0
-        version: 4.17.10
-      '@types/luxon':
-        specifier: ^3.4.2
-        version: 3.4.2
-      msw:
-        specifier: ^2.2.7
-        version: 2.4.10(typescript@5.7.2)
-      typescript:
-        specifier: ^5.6.2
-        version: 5.7.2
-
-  packages/ipfs:
-    dependencies:
-      '@aws-sdk/client-s3':
-        specifier: ^3.654.0
-        version: 3.670.0
-      '@cfce/app-config':
-        specifier: workspace:*
-        version: link:../app-config
-      '@smithy/protocol-http':
-        specifier: ^4.1.7
-        version: 4.1.8
-      '@vercel/blob':
-        specifier: 0.24.1
-        version: 0.24.1
-      formidable:
-        specifier: ^3.5.1
-        version: 3.5.1
-      server-only:
-        specifier: ^0.0.1
-        version: 0.0.1
-    devDependencies:
-      '@smithy/types':
-        specifier: ^3.4.0
-        version: 3.5.0
-      '@types/formidable':
-        specifier: ^3.4.5
-        version: 3.4.5
-      '@types/jest':
-        specifier: ^29.5.13
-        version: 29.5.13
-      '@types/node':
-        specifier: ^22.9.0
-        version: 22.10.1
-      aws-sdk-client-mock:
-        specifier: ^4.0.1
-        version: 4.0.2
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
-      jest-environment-jsdom:
-        specifier: ^29.7.0
-        version: 29.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      jest-esm-transformer:
-        specifier: ^1.0.0
-        version: 1.0.0
-      ts-jest:
-        specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2)))(typescript@5.7.2)
-      typescript:
-        specifier: ^5.6.2
-        version: 5.7.2
-
-  packages/state:
-    dependencies:
-      '@cfce/app-config':
-        specifier: workspace:*
-        version: link:../app-config
-      '@cfce/types':
-        specifier: workspace:*
-        version: link:../types
-      immer:
-        specifier: ^10.0.0
-        version: 10.1.1
-      jotai:
-        specifier: ^2.0.0
-        version: 2.10.0(@types/react@19.0.1)(react@19.0.0)
-      jotai-immer:
-        specifier: ^0.2.0
-        version: 0.2.0(immer@10.1.1)(jotai@2.10.0(@types/react@19.0.1)(react@19.0.0))(react@19.0.0)
-    devDependencies:
-      typescript:
-        specifier: ^5.0.0
-        version: 5.7.2
-
-  packages/tbas:
-    dependencies:
-      '@cfce/app-config':
-        specifier: workspace:*
-        version: link:../app-config
-      '@cfce/blockchain-tools':
-        specifier: workspace:*
-        version: link:../blockchain-tools
-      '@cfce/database':
-        specifier: workspace:*
-        version: link:../database
-      '@cfce/types':
-        specifier: workspace:*
-        version: link:../types
-      server-only:
-        specifier: ^0.0.1
-        version: 0.0.1
-      viem:
-        specifier: ^2.21.40
-        version: 2.21.53(bufferutil@4.0.8)(typescript@5.7.2)(utf-8-validate@5.0.10)(zod@3.23.8)
-    devDependencies:
-      '@smithy/types':
-        specifier: ^3.4.0
-        version: 3.5.0
-      '@types/formidable':
-        specifier: ^3.4.5
-        version: 3.4.5
-      '@types/jest':
-        specifier: ^29.5.13
-        version: 29.5.13
-      '@types/node':
-        specifier: ^22.9.0
-        version: 22.10.1
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
-      jest-environment-jsdom:
-        specifier: ^29.7.0
-        version: 29.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      jest-esm-transformer:
-        specifier: ^1.0.0
-        version: 1.0.0
-      ts-jest:
-        specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2)))(typescript@5.7.2)
-      typescript:
-        specifier: ^5.6.2
-        version: 5.7.2
-
-  packages/types:
-    devDependencies:
-      '@types/node':
-        specifier: ^22.9.0
-        version: 22.10.1
-      next-auth:
-        specifier: 5.0.0-beta.25
-        version: 5.0.0-beta.25(next@15.1.0(@opentelemetry/api@1.9.0)(@playwright/test@1.49.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
-      typescript:
-        specifier: ^5.6.2
-        version: 5.7.2
-
-  packages/typescript-config: {}
-
-  packages/api:
-    dependencies:
-      '@cfce/auth':
-        specifier: workspace:*
-        version: link:../auth
-      '@cfce/blockchain-tools':
-        specifier: workspace:*
-        version: link:../blockchain-tools
-      '@cfce/database':
-        specifier: workspace:*
-        version: link:../database
-      '@cfce/registry-hooks':
-        specifier: workspace:*
-        version: link:../hooks
-      '@cfce/utils':
-        specifier: workspace:*
-        version: link:../utils
-      '@types/formidable':
-        specifier: ^3.4.5
-        version: 3.4.5
-      '@types/uuid':
-        specifier: ^10.0.0
-        version: 10.0.0
-      '@vercel/blob':
-        specifier: 0.24.1
-        version: 0.24.1
-      formidable:
-        specifier: ^3.5.1
-        version: 3.5.1
-      react:
-        specifier: ^19.0.0
-        version: 19.0.0
-      uuid:
-        specifier: ^10.0.0
-        version: 10.0.0
-    devDependencies:
-      '@cfce/types':
-        specifier: workspace:*
-        version: link:../types
-      '@cfce/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/node':
-        specifier: ^22.9.0
-        version: 22.10.1
-      '@types/react':
-        specifier: ^19.0.0
-        version: 19.0.1
-      decimal.js:
-        specifier: ^10.4.3
-        version: 10.4.3
-      next:
-        specifier: ^15.1.0
-        version: 15.1.0(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      next-auth:
-        specifier: 5.0.0-beta.25
-        version: 5.0.0-beta.25(next@15.1.0(@opentelemetry/api@1.9.0)(@playwright/test@1.49.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
-      next-themes:
-        specifier: ^0.4.3
-        version: 0.4.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.10.1)(typescript@5.7.2)
       typescript:
         specifier: ^5.6.2
         version: 5.7.2
@@ -1991,6 +1786,126 @@ importers:
         specifier: ^5.6.2
         version: 5.7.2
 
+  packages/database:
+    dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.654.0
+        version: 3.670.0
+      '@prisma/client':
+        specifier: ^5.22.0
+        version: 5.22.0(prisma@5.22.0)
+      '@vercel/postgres':
+        specifier: 0.10.0
+        version: 0.10.0(utf-8-validate@5.0.10)
+      prisma:
+        specifier: ^5.22.0
+        version: 5.22.0
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+    devDependencies:
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
+      '@types/formidable':
+        specifier: ^3.4.5
+        version: 3.4.5
+      '@types/node':
+        specifier: ^22.9.0
+        version: 22.10.1
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2)))(typescript@5.7.2)
+      typescript:
+        specifier: ^5.6.2
+        version: 5.7.2
+
+  packages/hooks:
+    dependencies:
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../database
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      luxon:
+        specifier: ^3.4.4
+        version: 3.5.0
+    devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.0
+        version: 4.17.10
+      '@types/luxon':
+        specifier: ^3.4.2
+        version: 3.4.2
+      msw:
+        specifier: ^2.2.7
+        version: 2.4.10(typescript@5.7.2)
+      typescript:
+        specifier: ^5.6.2
+        version: 5.7.2
+
+  packages/ipfs:
+    dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.654.0
+        version: 3.670.0
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
+      '@smithy/protocol-http':
+        specifier: ^4.1.7
+        version: 4.1.8
+      '@vercel/blob':
+        specifier: 0.24.1
+        version: 0.24.1
+      formidable:
+        specifier: ^3.5.1
+        version: 3.5.1
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+    devDependencies:
+      '@smithy/types':
+        specifier: ^3.4.0
+        version: 3.5.0
+      '@types/formidable':
+        specifier: ^3.4.5
+        version: 3.4.5
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
+      '@types/node':
+        specifier: ^22.9.0
+        version: 22.10.1
+      aws-sdk-client-mock:
+        specifier: ^4.0.1
+        version: 4.0.2
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
+      jest-environment-jsdom:
+        specifier: ^29.7.0
+        version: 29.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      jest-esm-transformer:
+        specifier: ^1.0.0
+        version: 1.0.0
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2)))(typescript@5.7.2)
+      typescript:
+        specifier: ^5.6.2
+        version: 5.7.2
+
   packages/pages:
     dependencies:
       '@cfce/app-config':
@@ -2002,12 +1917,12 @@ importers:
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../blockchain-tools
-      '@cfce/database':
-        specifier: workspace:*
-        version: link:../database
       '@cfce/components':
         specifier: workspace:*
         version: link:../components
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../database
       '@cfce/utils':
         specifier: workspace:*
         version: link:../utils
@@ -2054,6 +1969,91 @@ importers:
       typescript:
         specifier: ^5.6.2
         version: 5.7.2
+
+  packages/state:
+    dependencies:
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
+      immer:
+        specifier: ^10.0.0
+        version: 10.1.1
+      jotai:
+        specifier: ^2.0.0
+        version: 2.10.0(@types/react@19.0.1)(react@19.0.0)
+      jotai-immer:
+        specifier: ^0.2.0
+        version: 0.2.0(immer@10.1.1)(jotai@2.10.0(@types/react@19.0.1)(react@19.0.0))(react@19.0.0)
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.7.2
+
+  packages/tbas:
+    dependencies:
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
+      '@cfce/blockchain-tools':
+        specifier: workspace:*
+        version: link:../blockchain-tools
+      '@cfce/database':
+        specifier: workspace:*
+        version: link:../database
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+      viem:
+        specifier: ^2.21.40
+        version: 2.21.53(bufferutil@4.0.8)(typescript@5.7.2)(utf-8-validate@5.0.10)(zod@3.23.8)
+    devDependencies:
+      '@smithy/types':
+        specifier: ^3.4.0
+        version: 3.5.0
+      '@types/formidable':
+        specifier: ^3.4.5
+        version: 3.4.5
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
+      '@types/node':
+        specifier: ^22.9.0
+        version: 22.10.1
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
+      jest-environment-jsdom:
+        specifier: ^29.7.0
+        version: 29.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      jest-esm-transformer:
+        specifier: ^1.0.0
+        version: 1.0.0
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@22.10.1)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2)))(typescript@5.7.2)
+      typescript:
+        specifier: ^5.6.2
+        version: 5.7.2
+
+  packages/types:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.9.0
+        version: 22.10.1
+      next-auth:
+        specifier: 5.0.0-beta.25
+        version: 5.0.0-beta.25(next@15.1.0(@opentelemetry/api@1.9.0)(@playwright/test@1.49.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+      typescript:
+        specifier: ^5.6.2
+        version: 5.7.2
+
+  packages/typescript-config: {}
 
   packages/utils:
     dependencies:

@@ -35,7 +35,7 @@ export default async function Signin() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col">
-          <div key={`auth-button-${slug} w-full flex`}>
+          <div className="w-full flex">
             <Separator className="my-4" />
             {enabledAuthMethods.map(method => (
               <AuthButton

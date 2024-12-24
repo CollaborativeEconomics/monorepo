@@ -68,6 +68,11 @@ export default abstract class InterfaceBaseClass {
         walletAddress: string
       }
   >
+  isConnected() {
+    return (
+      typeof this.chain !== "undefined" && typeof this.network !== "undefined"
+    )
+  }
 
   // server functions, only defined on server subclasses
   public web3?: Web3

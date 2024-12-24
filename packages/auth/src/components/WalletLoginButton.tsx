@@ -1,11 +1,9 @@
 'use client';
 import {
   BlockchainClientInterfaces,
-  chainConfig as chainConfigs,
+  walletConfig,
 } from '@cfce/blockchain-tools';
-import { chainAtom } from '@cfce/state';
 import type { ClientInterfaces } from '@cfce/types';
-import { useAtomValue } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { walletLogin } from '../actions';
@@ -20,9 +18,8 @@ export function WalletLoginButton({
   method,
   className,
 }: WalletLoginButtonProps) {
-  const { selectedChain: chain } = useAtomValue(chainAtom);
   const walletInterface = BlockchainClientInterfaces[method];
-  const chainConfig = chainConfigs[chain];
+  const wallet = walletConfig[method];
 
   if (!walletInterface) {
     throw new Error(`No wallet interface found for wallet: ${method}`);
@@ -49,19 +46,19 @@ export function WalletLoginButton({
     //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
     const redirectUrl = await walletLogin(method, {
       walletAddress,
-      network,
+      network: network.slug,
       chain,
     });
     if (redirectUrl) {
       router.push(redirectUrl);
     }
-  }, [method, walletInterface, chainConfig, router]);
+  }, [method, walletInterface, router]);
 
   return (
     <BaseLoginButton
       onClick={handleLogin}
-      icon={chainConfig.icon}
-      name={`${chainConfig.name} Wallet`}
+      icon={wallet.icon}
+      name={`${wallet.name} Wallet`}
       className={className}
     />
   );

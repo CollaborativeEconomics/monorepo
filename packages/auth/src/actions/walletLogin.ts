@@ -1,7 +1,6 @@
 "use server"
-import appConfig from "@cfce/app-config"
-import type { Chain } from "@cfce/database"
-import type { AuthTypes, ChainConfig, ChainSlugs, Network } from "@cfce/types"
+import { chainConfig } from "@cfce/blockchain-tools"
+import type { AuthTypes, ChainSlugs, Network } from "@cfce/types"
 import { signIn } from "../nextAuth"
 import { createAnonymousUser } from "./createNewUser"
 import fetchUserByWallet from "./fetchUserByWallet"
@@ -12,25 +11,21 @@ export default async function walletLogin(
     walletAddress,
     network,
     chain,
-  }: { walletAddress: `0x${string}`; network: Network; chain: ChainSlugs },
+  }: { walletAddress: string; network: Network; chain: ChainSlugs },
 ) {
-  // const chainNetwork = chainConfig.networks[network]
-  // console.log("Chain network:", chainNetwork)
-  // if (!chainNetwork) {
-  //   throw new Error(`No chain network found: ${network}`)
-  // }
+  const config = chainConfig[chain]
+  if (!config) {
+    throw new Error(`No chain config found for chain: ${chain}`)
+  }
 
   console.log("Wallet", walletAddress)
-  // const chainName = chainConfig.name
-  // const chainId = chainNetwork.id
-  // const currency = chainNetwork.symbol
   let user = await fetchUserByWallet(walletAddress)
   console.log("WALLET USER", user)
   if (user === null) {
     console.log("ANONYMOUS USER...")
     user = await createAnonymousUser({
       walletAddress,
-      // chain: chainConfig.name as Chain,
+      chain: config.name,
       network,
       tba: true,
     })

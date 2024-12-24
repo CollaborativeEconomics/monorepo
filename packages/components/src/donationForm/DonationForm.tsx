@@ -2,7 +2,10 @@
 import { usePostHog } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
 import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
-import { BlockchainClientInterfaces } from '@cfce/blockchain-tools';
+import {
+  BlockchainClientInterfaces,
+  chainConfig,
+} from '@cfce/blockchain-tools';
 import type { Chain, Prisma, User } from '@cfce/database';
 import {
   PAYMENT_STATUS,
@@ -89,6 +92,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const { emailReceipt, name, email, amount } = donationForm;
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
+  const chain = chainConfig[selectedChain];
   //console.log('STATE', chainState, exchangeRate)
 
   const chainInterface = BlockchainClientInterfaces[selectedWallet];
@@ -116,7 +120,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   }, []);
 
   const destinationWalletAddress = useMemo(() => {
-    const chainName = chainInterface?.chain.name;
+    const chainName = chain?.name;
 
     const initiativeWallet = initiative?.wallets?.find(
       w => w.chain === chainName,
@@ -142,7 +146,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
     handleError(new Error('No wallet found for chain'));
     return '';
-  }, [organization, initiative, chainInterface, handleError]);
+  }, [organization, initiative, chain, handleError]);
 
   const getRate = useCallback(() => {
     registryApi
@@ -181,8 +185,11 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   }, [selectedToken, selectedChain, setChainState, getRate]);
 
   const checkBalance = useCallback(async () => {
-    if (!chainInterface || !('getBalance' in chainInterface)) {
-      throw new Error('No chain interface or getBalance not supported');
+    if (!chainInterface?.connect) {
+      throw new Error('No connect method on chain interface');
+    }
+    if (!chainInterface.isConnected()) {
+      await chainInterface?.connect();
     }
     const balanceCheck = await chainInterface?.getBalance?.();
     if (!balanceCheck || 'error' in balanceCheck) {
@@ -194,7 +201,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPayment) {
-        throw new Error('No chain interface');
+        throw new Error('No sendPayment method on chain interface');
       }
       const connected = await chainInterface.connect?.();
       console.log('CONNECT', connected);
@@ -215,6 +222,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPaymentWithGas) {
         throw new Error('Gas payments not supported');
+      }
+      if (!chainInterface.isConnected()) {
+        await chainInterface?.connect?.();
       }
 
       const result = await chainInterface.sendPaymentWithGas(address, amount);

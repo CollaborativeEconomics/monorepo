@@ -70,9 +70,13 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     }
   }
 
-  isConnected(window: Window) {
+  isConnected() {
     if (window.ethereum) {
-      return window.ethereum.isConnected() && window.ethereum.selectedAddress
+      return (
+        window.ethereum.isConnected() &&
+        typeof this.chain !== "undefined" &&
+        typeof this.network !== "undefined"
+      )
     }
     return false
   }

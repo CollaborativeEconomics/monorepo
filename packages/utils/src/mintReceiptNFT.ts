@@ -332,7 +332,7 @@ export async function mintAndSaveReceiptNFT({
       uri: uriMeta,
       walletSeed: walletSecret,
     }
-    const mintResponse = await chainTool.mintNFT721(args)
+    const mintResponse = await chainTool.mintNFT(args)
     console.log("RESMINT", mintResponse)
     if (!mintResponse) {
       throw new Error("Error minting NFT")
