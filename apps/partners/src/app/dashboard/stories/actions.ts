@@ -7,22 +7,31 @@ import type { File } from "formidable"
 import { revalidatePath } from "next/cache"
 
 export async function saveStory({
+  userId,
   story,
   organizationId,
   initiativeId,
+  categoryId,
   images,
   media,
 }: {
-  story: Omit<Prisma.StoryCreateInput, 'organization' | 'initiative'>
+  userId: string
+  story: Omit<
+    Prisma.StoryCreateInput,
+    "organization" | "initiative" | "category"
+  >
   organizationId: string
   initiativeId: string
+  categoryId: string
   images?: (string | File)[]
   media?: string | File
 }) {
   const response = await createStory({
+    userId,
     story,
     organizationId,
     initiativeId,
+    categoryId,
     images,
     media,
   })

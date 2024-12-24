@@ -1,5 +1,6 @@
 "use server"
 import "server-only"
+import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
 import { BlockchainManager } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
@@ -356,7 +357,7 @@ export async function mintAndSaveReceiptNFT({
       tokenId: tokenId,
       status: DonationStatus.claimed,
     }
-    console.log('NFT', data)
+    console.log("NFT", data)
     const saved = await newNftData(data)
 
     if (!saved) {
@@ -389,7 +390,18 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Return result
-    console.log("Minting completed")
+    posthogNodeClient.capture({
+      distinctId: userId,
+      event: "receipt_minted",
+      properties: {
+        coinSymbol: token,
+        coinValue: amountCUR,
+        usdValue: amountUSD,
+        organization: organization.slug,
+        initiative: initiative.slug,
+      },
+    })
+    posthogNodeClient.shutdown()
     const result = {
       success: true,
       image: uriImage,

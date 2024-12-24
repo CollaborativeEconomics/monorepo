@@ -1,7 +1,8 @@
 import '~/styles/globals.css';
 
+import { PostHogProvider } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
-import { Footer, Header } from '@cfce/universe-components/navigation';
+import { Footer, Header } from '@cfce/components/navigation';
 import type { Metadata, Viewport } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
@@ -39,9 +40,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SessionProvider>
-            <Header />
-            {children}
-            <Footer />
+            <PostHogProvider>
+              <Header />
+              {children}
+              <Footer />
+            </PostHogProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>
