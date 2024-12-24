@@ -1,8 +1,8 @@
-import { ChainConfig, NetworkConfig } from "@cfce/types";
+import { Chain, ChainConfig, NetworkConfig } from "@cfce/types"
 
-import appConfig from "@cfce/app-config";
-import chainConfiguration from "./chainConfig";
-import { ChainSlugs } from "@cfce/types";
+import appConfig from "@cfce/app-config"
+import { ChainSlugs } from "@cfce/types"
+import chainConfiguration from "./chainConfig"
 
 /**
  * Get the network config for the chain, using appConfig.chainDefaults.network
@@ -42,7 +42,7 @@ export const getChainByChainId = (chainId: number): ChainConfig => {
 
 /**
  * Get the chain configuration for chains defined in appConfig
- * @returns 
+ * @returns
  */
 export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
   const chainKeys = Object.keys(
@@ -56,6 +56,20 @@ export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
     },
     {} as Record<ChainSlugs, ChainConfig>,
   )
+}
+
+/**
+ * Get the chain configuration by the chain name
+ * @param name - The chain name
+ * @returns The chain configuration
+ */
+export const getChainConfigurationByName = (name: Chain): ChainConfig => {
+  const configs = Object.values(chainConfiguration)
+  const config = configs.find((config) => config.name === name)
+  if (!config) {
+    throw new Error(`Chain configuration not found for ${name}`)
+  }
+  return config
 }
 
 /**

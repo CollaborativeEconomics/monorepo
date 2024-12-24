@@ -1,6 +1,6 @@
 "use server"
-import { chainConfig } from "@cfce/blockchain-tools"
-import type { AuthTypes, ChainSlugs, Network } from "@cfce/types"
+import { getChainConfigurationByName } from "@cfce/blockchain-tools"
+import type { AuthTypes, Chain, Network } from "@cfce/types"
 import { signIn } from "../nextAuth"
 import { createAnonymousUser } from "./createNewUser"
 import fetchUserByWallet from "./fetchUserByWallet"
@@ -11,9 +11,9 @@ export default async function walletLogin(
     walletAddress,
     network,
     chain,
-  }: { walletAddress: string; network: Network; chain: ChainSlugs },
+  }: { walletAddress: string; network: Network; chain: Chain },
 ) {
-  const config = chainConfig[chain]
+  const config = getChainConfigurationByName(chain)
   if (!config) {
     throw new Error(`No chain config found for chain: ${chain}`)
   }
