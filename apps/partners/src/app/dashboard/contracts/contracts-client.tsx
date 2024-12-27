@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type FieldValues } from 'react-hook-form'
 import { redirect } from 'next/navigation'
 import Title from '~/components/title'
 import Select from '~/components/form/select'
@@ -14,29 +14,21 @@ import type { Contract, OrganizationData } from '@cfce/database';
 
 interface PageProps {
   organization: OrganizationData
-  contracts: Contract[]
+  allContracts: Contract[]
   initialChain: string
   network: string
 }
 
-interface FormProps {
+interface FormProps extends FieldValues {
   chain: string
   contract_type: string
   wallet: string
 }
 
-export default function Page({organization, contracts, initialChain, network}:PageProps) {
-
-  //function filterWallets(wallets, chain, network) {
-  //  console.log(chain, network)
-  //  const list = wallets?.filter(it=>it?.chain===chain)
-  //  //const list = wallets?.filter(it=>(it?.chain==chain && it?.network==network))
-  //  return list
-  //}
+export default function Page({organization, allContracts, initialChain, network}:PageProps) {
 
   function listWallets(chain:string, network:string) {
-    //const wallets = filterWallets(organization?.wallets, chain, network)
-    const wallets = organization?.wallets?.filter(it=>it?.chain===chain) // filter wallets by chain
+    const wallets = organization?.wallets?.filter(it=>it?.chain===chain && it?.network===network)
     const list = wallets?.map(it=>{ return {id:it.address, name:it.address} })
     return list
   }
@@ -51,42 +43,71 @@ export default function Page({organization, contracts, initialChain, network}:Pa
     ]
   }
 
-  //function listChains() {
-  //  const list = chains.map(it=>{ return { id: it, name: it } })
-  //  return list
-  //}
-
   function listInitiatives() {
     const list = organization?.initiative.map(it=>{ return { id: it.tag, name: it.title } })
     return list
   }
 
-  //function selectContract(contract:event){
-  //  console.log('SEL', contract)
-  //}
-
   function listChains(){
-    const chains = (Object.keys(chainConfig) as ChainSlugs[]).map(chain => ({
+    const list = (Object.keys(chainConfig) as ChainSlugs[]).map(chain => ({
       id: chainConfig[chain].name,
       name: chainConfig[chain].name,
     }));
-    //console.log('CHAINS', chains)
-    return chains
+    //console.log('CHAINS', list)
+    //setChains(list)
+    return list
   }
 
-  const initialWallets = listWallets(initialChain, network)  
-  console.log('WALLETS', initialWallets)
+  function selectChain(value:string){
+    console.log('CHAIN', value)
+    setSelectedChain(value)
+    const wallets = listWallets(value, network)
+    setWallets(wallets)
+    setSelectedWallet(wallets.length > 0 ? wallets[0].id : '')
+    console.log('W>', wallets.length > 0 ? wallets[0].id : '')
+  }
+
+  function selectWallet(value:string){
+    setSelectedWallet(value)
+    //console.log('WALLET', value)
+  }
+
+  function selectContract(value:string){
+    setSelectedContract(value)
+    //const newUrl = `/dashboard/contract/${selectedContract.toLowerCase()}?chain=${selectedChain}&network=${network}&wallet=${selectedWallet}&organizationId=${organization.id}`
+    //console.log('URL', newUrl)
+  }
+
+  async function onSubmit(data: FormProps) {
+    // For some reason, form data is not being passed correctly
+    // Every time the view is refreshed it gets reset to default
+    // While selectedWallet retains its value, so we'll use it
+    console.log('FORM', data)
+    const url = `/dashboard/contract/${data.contract_type.toLowerCase()}?chain=${data.chain}&network=${network}&wallet=${selectedWallet}&organizationId=${organization.id}`
+    console.log('URL', url)
+    redirect(url)
+  }
+
+  const initialChains  = listChains()  
+  const initialWallets = listWallets(initialChain, network)
+  const initialContracts = listContracts()
   const initialWallet = initialWallets?.[0]?.id
   const initialContract = 'Credits' // TODO: get from config
-  //const [wallets, setWallets] = useState(initialWallets)
-  const wallets = initialWallets
-  console.log('wallets', organization?.wallets)
+  const [chains, setChains] = useState(initialChains)
+  const [wallets, setWallets] = useState(initialWallets)
+  const [contracts, setContracts] = useState(initialContracts)
+  const [selectedChain, setSelectedChain] = useState(initialChain);
+  const [selectedWallet, setSelectedWallet] = useState(initialWallet);
+  const [selectedContract, setSelectedContract] = useState(initialContract);
+
+  console.log('REFRESH')
+  //console.log('wallets', organization?.wallets)
   console.log('chain', initialChain)
   console.log('wallet', initialWallet)
   console.log('contract', initialContract)
-  const [message, showMessage] = useState('Enter contract options')
 
   const [ change, setChange ] = useState(0)
+  //const { register, handleSubmit, watch } = useForm({})
   const { register, handleSubmit, watch } = useForm({
     defaultValues: {
       chain: initialChain,
@@ -104,57 +125,42 @@ export default function Page({organization, contracts, initialChain, network}:Pa
     'contract_type',
   ])
 
-  //const initUrl = `/dashboard/contract/${contract_type.toLowerCase()}?chain=${chain}&network=${network}&wallet=${wallet}&organizationId=${organization.id}`
-  //console.log('URL', initUrl)
-  //const [ url, setUrl ] = useState(initUrl)
-  // Used to refresh list of wallets after new record added
-  //useEffect(()=>{
-  //  console.log('Wallets changed!', change)
-  //},[change])
-
-  function selectContract(contract:string){
-    console.log('SEL', contract)
-    //const newUrl = `/dashboard/contract/${contract.toLowerCase()}?chain=${chain}&network=${network}&wallet=${wallet}&organizationId=${organization.id}`
-    //setUrl(newUrl)
-    //console.log('URL', newUrl)
-  }
-
-  async function onSubmit(data: FormProps) {
-    console.log('FORM', data)
-    showMessage('Not ready...')
-    const url = `/dashboard/contract/${data.contract_type.toLowerCase()}?chain=${data.chain}&network=${network}&wallet=${data.wallet}&organizationId=${organization.id}`
-    console.log('URL', url)
-    redirect(url)
-  }
-
   return (
     <div className={styles.content}>
       <Title text="Smart Contracts" />
       <div className={styles.mainBox}>
-        <form className={styles.vbox} onSubmit={handleSubmit(onSubmit)}>
+        <form className={styles.vbox} >
           <Select
             label="Chain"
-            register={register('chain')}
-            options={listChains()}
+            {...register('chain')}
+            options={chains}
+            handler={selectChain}
+            value={selectedChain}
           />
           <Select
             label="Wallet"
-            register={register('wallet')}
-            options={listWallets(chain, network)}
+            {...register('wallet')}
+            options={wallets}
+            handler={selectWallet}
+            value={selectedWallet}
           />
           <Select
             label="Contract Type"
-            register={register('contract_type')}
-            options={listContracts()}
+            {...register('contract_type')}
+            options={contracts}
             handler={selectContract}
+            value={selectedContract}
           />
-          <ButtonBlue text="CLICK TO START" />
         </form>
+        <ButtonBlue text="CLICK TO START" onClick={() =>
+          onSubmit({
+            chain: selectedChain,
+            wallet: selectedWallet,
+            contract_type: selectedContract
+          })
+        }/>
       </div>
-
-      {/*<LinkButton href={url} className="mb-12" text="CLICK TO START" />*/}
-
-      { (contracts && contracts.constructor === Array && contracts.length>0) ? contracts.map((item) => (
+      { (allContracts && allContracts.constructor === Array && allContracts.length>0) ? allContracts.map((item) => (
         <div className={styles.mainBox} key={item.id}>
           <ContractView {...JSON.parse(JSON.stringify(item))} />
         </div>

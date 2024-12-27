@@ -8,14 +8,11 @@ import appConfig from '@cfce/app-config';
 import { auth } from '@cfce/auth';
 import { chainConfig } from '@cfce/blockchain-tools';
 import { getOrganizationById, getContracts } from '~/actions/database'
-//import Dashboard from '~/components/dashboard'
-//import Sidebar from '~/components/sidebar'
 import ContractsClient from './contracts-client';
 
 export default async function Page() {
-  const chain = 'Arbitrum'  // TODO: Get from config
+  const chain = 'Stellar'  // TODO: Get from config but for now start with Stellar
   const network = appConfig.chainDefaults.network
-  //const network = 'testnet' // TODO: Get from config
   const session = await auth();
   const orgId = session?.orgId ?? '';
   const organizationData = await getOrganizationById(orgId)
@@ -27,7 +24,7 @@ export default async function Page() {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ContractsClient organization={organization} contracts={contracts} initialChain={chain} network={network} />
+      <ContractsClient organization={organization} allContracts={contracts} initialChain={chain} network={network} />
     </Suspense>
   )
 }

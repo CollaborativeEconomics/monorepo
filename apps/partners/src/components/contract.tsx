@@ -24,6 +24,7 @@ function copyToClipboard(text?:string) {
 }
 
 const Contract = (item:ContractProps) => {
+  console.log('CTR', item)
   return (
     <div className="flex flex-row justify-between items-center w-full">
       <div className="flex flex-col justify-start items-start w-full">
