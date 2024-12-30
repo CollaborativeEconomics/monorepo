@@ -2,24 +2,20 @@
 
 import appConfig from '@cfce/app-config';
 import { chainConfig } from '@cfce/blockchain-tools';
-import type { Chain, Contract } from '@cfce/database';
-import type { ChainSlugs } from '@cfce/types';
-import type { ChainSlugs } from '@cfce/types';
-import { registryApi } from '@cfce/utils';
-import { useEffect, useState } from 'react';
+import type { ChainSlugs, Network } from '@cfce/types';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import factoryDeployers from '~/chains';
-import chains from '~/chains';
 import ButtonBlue from '~/components/buttonblue';
 import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
-import { apiFetch, apiPost } from '~/utils/api';
+import { apiPost } from '~/utils/api';
 import { randomNumber } from '~/utils/random';
 
 interface PageProps {
-  chain: string;
-  network: string;
+  chain: ChainSlugs;
+  network: Network;
   wallet?: string;
   organizationId?: string;
 }

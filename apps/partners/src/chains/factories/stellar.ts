@@ -1,42 +1,31 @@
 import { FreighterWallet, chainConfig } from "@cfce/blockchain-tools"
-import { WatchWalletChanges, signTransaction } from "@stellar/freighter-api"
+import { signTransaction } from "@stellar/freighter-api"
 import {
-  Account,
   Address,
-  Asset,
   BASE_FEE,
   Contract,
-  Horizon,
-  Keypair,
-  Networks,
-  Operation,
-  SorobanDataBuilder,
-  Transaction,
   TransactionBuilder,
   nativeToScVal,
   rpc,
-  scValToNative,
-  xdr,
+  type xdr,
 } from "@stellar/stellar-sdk"
-// import Wallet from "~/chains/wallets/freighter"
 import { randomNumber } from "~/utils/random"
 import { getContract } from "~/utils/registry-client"
-import type { FactoryReturnType } from ".."
+import type { ContractFactoryDeployer, FactoryReturnType } from ".."
 
 // mainnet, testnet and futurenet
 export const networks = chainConfig.stellar.networks
 
 // Usage
-// const contractId = getContractIdFromTx(successfulTransactionResponse)
-function getContractIdFromTx(
-  // tx: rpc.Api.SendTransactionResponse
-  txHash: string,
-) {
+function getContractIdFromTx(tx: rpc.Api.GetTransactionResponse) {
   try {
-    const opResult = tx.resultXdr.result().results()[0]
-    const retValue = opResult.tr().invokeHostFunctionResult().success()
-    const contractId = Address.contract(retValue).toString()
-    return contractId
+    if ("resultXdr" in tx) {
+      const opResult = tx.resultXdr.result().results()[0]
+      const retValue = opResult.tr().invokeHostFunctionResult().success()
+      const contractId = Address.contract(retValue).toString()
+      return contractId
+    }
+    return null
   } catch (ex) {
     console.error(ex)
     return null
@@ -44,14 +33,14 @@ function getContractIdFromTx(
 }
 
 async function deploy(
-  nettype,
-  factory,
-  owner,
-  deployer,
-  wasm_hash,
-  salt,
-  init_fn,
-  init_args,
+  nettype: string,
+  factory: string,
+  owner: string,
+  deployer: xdr.ScVal,
+  wasm_hash: xdr.ScVal,
+  salt: xdr.ScVal,
+  init_fn: xdr.ScVal,
+  init_args: xdr.ScVal,
 ) {
   console.log(
     "DEPLOY",
@@ -115,10 +104,13 @@ async function deploy(
         console.log("SDATA1", sorobanData)
         //window.sdata1 = sorobanData
         //sorobanData.readBytes += '60'
+        // @ts-ignore: using internal API (https://github.com/stellar/js-stellar-base/blob/1036eabf1f20a1154297c419fc2c663040338b22/src/sorobandata_builder.js#L41)
+        // TODO: find a better way
         const rBytes = sorobanData._data.resources().readBytes() + 60
-        const rFee = (
-          Number.parseInt(sorobanData._data.resourceFee()) + 100
-        ).toString()
+        const rFee =
+          // @ts-ignore: ibid
+          (Number.parseInt(sorobanData._data.resourceFee()) + 100).toString()
+        // @ts-ignore: ibid
         sorobanData._data.resources().readBytes(rBytes)
         sorobanData.setResourceFee(rFee)
         const sdata = sorobanData.build()
@@ -128,7 +120,7 @@ async function deploy(
         //const fee2 = (parseInt(BASE_FEE) + 100).toString()
         console.log("FEE2", fee2)
         //const trz = trx.setSorobanData(sdata).setTransactionFee(fee2).build()
-        const account2 = await soroban.getAccount(deployer)
+        const account2 = await soroban.getAccount(deployer.toString())
         const trz = new TransactionBuilder(account2, {
           fee: fee2,
           networkPassphrase: network.networkPassphrase,
@@ -203,14 +195,15 @@ async function deploy(
       }
       if (res?.status.toString() === "SUCCESS") {
         console.log("TX SUCCESS")
-        const contractId = getContractIdFromTx(res)
+        const transactionInfo = await soroban.getTransaction(txid)
+        const contractId = getContractIdFromTx(transactionInfo)
         console.log("Contract ID:", contractId)
         // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
         return {
           success: true,
           txid,
           contractId,
-          block: res?.ledger.toString(),
+          block: transactionInfo?.latestLedger.toString(),
           error: null,
         }
       }
@@ -285,7 +278,7 @@ async function deploy(
       txid: "",
       contractId: null,
       block: null,
-      error: ex.message,
+      error: ex instanceof Error ? ex.message : "Unknown error",
     }
   }
 }
@@ -483,14 +476,43 @@ async function deployNFTReceipt(data: DeployNFTReceiptData) {
   }
 }
 
+function isDeployCreditsData(data: unknown): data is DeployCreditsData {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "provider" in data &&
+    "vendor" in data &&
+    "bucket" in data
+  )
+}
+
+function isDeployNFTReceiptData(data: unknown): data is DeployNFTReceiptData {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "name" in data &&
+    "symbol" in data
+  )
+}
+
 const StellarContractsDeployers = {
-  Credits: async (data: DeployCreditsData) => {
-    const res = await deployCredits(data)
-    return res
+  Credits: {
+    deploy: async (data: unknown) => {
+      if (!isDeployCreditsData(data)) {
+        throw new Error("Invalid data")
+      }
+      const res = await deployCredits(data)
+      return res
+    },
   },
-  NFTReceipt: async (data: DeployNFTReceiptData) => {
-    const res = await deployNFTReceipt(data)
-    return res
+  NFTReceipt: {
+    deploy: async (data: unknown) => {
+      if (!isDeployNFTReceiptData(data)) {
+        throw new Error("Invalid data")
+      }
+      const res = await deployNFTReceipt(data)
+      return res
+    },
   },
 }
 
