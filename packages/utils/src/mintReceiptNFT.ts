@@ -55,21 +55,10 @@ export async function mintAndSaveReceiptNFT({
       amount,
       date,
     } = transaction
-    console.log("MINT", chain)
+    console.log("MINT", chain, txId)
     console.log("Chain", chain)
     console.log("Token", token)
-    const rate = await getCoinRate({ symbol: token, chain })
-
-    // const response = await registryApi.get<{ coin: TokenTickerSymbol; rate: number }>(
-    //   `/rates?coin=${token}&chain=${chain}`,
-    // )
-    // console.log("RESPONSE", response)
-
-    // if (!response.success) {
-    //   return { success: false, error: "Error fetching rate" }
-    // }
-    
-    // const rate = response.data?.rate
+    const rate = await getCoinRate({ chain, symbol: token })
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {

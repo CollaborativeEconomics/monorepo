@@ -1,6 +1,6 @@
 'use server'
 
-import { Chain, newWallet } from '@cfce/database';
+import { type Chain, newWallet } from '@cfce/database';
 
 export async function createWallet(orgId: string, data: { chain: Chain; address: string }) {
   try {

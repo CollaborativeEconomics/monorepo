@@ -1,13 +1,14 @@
 'use client';
-import { useSession } from 'next-auth/react';
 import React from 'react';
+import { useSession, signIn } from 'next-auth/react';
 import styles from '~/styles/header.module.css';
-import SignInButton from './SignInButton';
+//import SignInButton from './SignInButton';
 import SignOutButton from './SignOutButton';
 
 export default function AuthHeader() {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
+  //const userImage = session?.user?.image ? `url('${session.user.image}')` : 'url(nopic.png)'
 
   return (
     <header className={styles.loginBox}>
@@ -15,36 +16,50 @@ export default function AuthHeader() {
         <style>{'.nojs-show { opacity: 1; top: 0; }'}</style>
       </noscript>
       <div className={styles.signedInStatus}>
-        <p
-          className={`nojs-show ${
-            !session && loading ? styles.loading : styles.loaded
-          }`}
+        <div
+          className={`nojs-show ${!session && loading ? styles.loading : styles.loaded}`}
         >
           {!session && (
-            <div className="flex justify-between">
-              <div className={styles.notSignedInText}>
+            <div className="flex flex-row justify-between" >
+              <span className={styles.notSignedInText}>
                 You are not signed in
-              </div>
-              <SignInButton />
+              </span>
+              {/* For some reason this doesn't work */}
+              {/* Error: `headers` was called outside a request scope */}
+              {/*<SignInButton /> */}
+              <a
+                href={'/api/auth/signin'}
+                className=""
+                onClick={(e) => {
+                  e.preventDefault()
+                  signIn()
+                }}>Sign in</a>
             </div>
           )}
           {session?.user && (
-            <>
-              {session.user.image && (
-                <span
-                  className={styles.avatar}
-                  style={{ backgroundImage: `url('${session.user.image}')` }}
-                />
-              )}
-              <span className={styles.signedInText}>
-                <small>Signed in as</small>
-                <br />
-                <strong>{session.user.email ?? session.user.name}</strong>
-              </span>
+            <div className="flex flex-row justify-between" >
+              <div className="flex flex-row" >
+                {session.user.image ? (
+                  <span
+                    className={styles.avatar}
+                    style={{ backgroundImage: `url("${session.user.image}")` }}
+                  />
+                ) : (
+                  <span
+                    className={styles.avatar}
+                    style={{ backgroundImage: "url(nopic.png)" }}
+                  />
+                )
+              }
+                <div className="ml-3">
+                  <p className="text-xs m-0 p-0">Signed in as</p>
+                  <p className="font-bold m-0 p-0">{session.user.email ?? session.user.name}</p>
+                </div>
+              </div>
               <SignOutButton />
-            </>
+            </div>
           )}
-        </p>
+        </div>
       </div>
     </header>
   );

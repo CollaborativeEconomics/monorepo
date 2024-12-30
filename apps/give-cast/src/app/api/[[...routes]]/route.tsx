@@ -409,7 +409,7 @@ const frameError = {
     </div>
   ),
   intents: [
-    <Button.Reset>Home Page</Button.Reset>
+    <Button.Reset key="reset">Home Page</Button.Reset>
   ]
 }
 
@@ -420,7 +420,7 @@ const frameSuccess = {
     </div>
   ),
   intents: [
-    <Button.Reset>Home Page</Button.Reset>
+    <Button.Reset key="reset">Home Page</Button.Reset>
   ]
 }
 

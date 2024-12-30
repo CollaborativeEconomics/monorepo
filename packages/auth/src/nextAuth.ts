@@ -20,7 +20,7 @@ const authOptions: NextAuthConfig = {
   // },
   callbacks: {
     async jwt(args) {
-      // console.log("AUTH JWT ARGS", args)
+      //console.log('AUTH JWT ARGS', args)
       const { token, user, account, profile, isNewUser, trigger, session } =
         args
       // Handle account-related information
@@ -46,6 +46,7 @@ const authOptions: NextAuthConfig = {
           token.orgId = session.orgId
         }
       }
+      //console.log('TOKEN', token)
       // Handle organization and role-based logic
       if (token?.email) {
         // console.log("AUTH MAIL", token.email)
@@ -57,6 +58,7 @@ const authOptions: NextAuthConfig = {
               console.error("Failed to fetch organization:", error)
               return { data: null }
             })
+          //console.log('SESSION-ORG', org?.name)
 
           token.orgId = org?.id || token.orgId || ""
           token.orgName = org?.name || ""
@@ -68,7 +70,7 @@ const authOptions: NextAuthConfig = {
               const { data: user, error } = await registryApi.get<User>(
                 `/users?email=${token.email}`,
               )
-
+              //console.log('USER', user?.email)
               if (user && user.type === 9) {
                 //console.log('AUTH ADMIN')
                 if (!token.orgId) {
@@ -84,6 +86,7 @@ const authOptions: NextAuthConfig = {
               // Set default values if API call fails
               token.orgName = "User"
             }
+            //console.log('ORGID', token.orgId)
           }
         } catch (error) {
           console.error("Error in JWT callback:", error)
@@ -109,6 +112,8 @@ const authOptions: NextAuthConfig = {
       session.orgName = (token?.orgName as string) ?? ""
       // @ts-ignore TODO: move this to state
       session.isAdmin = token?.userRole === "admin"
+      //console.log("AUTH SESSION", session)
+      //console.log("AUTH TOKEN", token)
       // Handle user-related updates
       // @ts-ignore
       session.user.id = (token?.userId as string) || ""

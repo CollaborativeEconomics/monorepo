@@ -6,7 +6,6 @@ import {
   newStory,
 } from "@cfce/database"
 import { createStory } from "@cfce/utils"
-import { File } from "formidable"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
 
@@ -92,7 +91,6 @@ export async function PUT(req: NextRequest) {
 
     for (const [key, value] of formData.entries()) {
       if (value instanceof File) {
-        // @ts-ignore formidable File type disagrees with native File type
         files[key] = value
       } else {
         story[key] = value.toString()

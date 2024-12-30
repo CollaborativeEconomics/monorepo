@@ -52,9 +52,20 @@ Run `pnpm match-versions` to make sure all the versions are synced (especially i
 ## Adding a chain
 
 1. Add the chain to `packages/database/src/prisma/schema.prisma` chain enum
-1. Add the chain to `packages/types/src/BlockchainTools.ts` (Chain, TokenTickerSymbol if relevant, ChainNames, and ChainSlugs)
-1. Add the chain to `packages/blockchain-tools/src/chains/chainConfig.ts` (entry + at least one network)
+2. Add the chain to `packages/types/src/BlockchainTools.ts` (Chain, TokenTickerSymbol if relevant, ChainNames, and ChainSlugs)
+3. Add the chain to `packages/blockchain-tools/src/chains/chainConfig.ts` (entry + at least one network)
 
 ## Using the blockchain tools
 
 For server-side blockchain interactions that require a wallet secret, use `${CHAIN_NAME}_WALLET_SECRET` from the .env.local file (e.g. `STELLAR_WALLET_SECRET` or `XRPL_WALLET_SECRET`).
+
+## Troublshooting
+### Package versions
+We use syncpack to keep package versions in sync. Some issues can arise if there are conflicts between package versions. For example:
+1. Typescript version mismatch can cause weird unresolvable type errors
+1. Jotai version mismatch can cause issues with state not being shared between components
+
+To list mismatches (dry run), run `npx syncpack list-mismatches`
+To fix mismatches (this will also install any missing packages), run `npx syncpack fix-mismatches`
+
+To help with this, avoid package versions like `*` or `latest`, and instead specify the version number. Sometimes `latest` seems to not be respected or universally installed.

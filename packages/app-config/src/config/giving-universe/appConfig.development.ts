@@ -110,7 +110,7 @@ const chains: AppConfig["chains"] = {
     contracts: {
       receiptMintbotERC721: "0xNotNeeded",
     },
-    enabledWallets: ["crossmark", "gemwallet", "xaman"],
+    enabledWallets: ["gemwallet", "xaman"],
     tokens: ["XRP"],
     destinationTag: "77777777",
   },

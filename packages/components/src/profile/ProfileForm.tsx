@@ -26,12 +26,8 @@ import { redirect } from 'next/navigation';
 type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
 type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>;
 //type Receipts = Prisma.NFTDataGetPayload<{ include: { organization: true; initiative: true; user: true } }>
-type DonationsByUser = Prisma.DonationGetPayload<{
-  include: { organization: true; initiative: true };
-}>;
-type FavoriteOrganizations = Prisma.DonationGetPayload<{
-  include: { organization: true };
-}>;
+type DonationsByUser = Prisma.DonationGetPayload<{ include: { organization: true; initiative: true } }>;
+type FavoriteOrganizations = Prisma.DonationGetPayload<{ include: { organization: true } }>;
 //type Stories = Prisma.StoryGetPayload<{ include: { organization: true } }>
 
 interface UserData {
@@ -96,14 +92,11 @@ export default function Profile({
     //  throw new Error('Error updating user data');
     //}
 
-    const data = { name, email, image };
-    console.log('USER', data);
-    const res = await fetch(`/api/profile/${userId}`, {
-      method: 'post',
-      body: JSON.stringify(data),
-    });
-    const inf = await res.json();
-    console.log('INF', inf);
+    const data = { name, email, image }
+    console.log('USER', data)
+    const res = await fetch(`/api/profile/${userId}`,{method:'post', body:JSON.stringify(data)})
+    const inf = await res.json()
+    console.log('INF', inf)
     //redirect(`/profile/${userId}`);
   }
 
