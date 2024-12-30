@@ -38,7 +38,7 @@ appConfig.chains = {
     slug: "xrpl",
     network: "mainnet",
     contracts: {},
-    enabledWallets: ["crossmark", "gemwallet", "xaman"],
+    enabledWallets: ["gemwallet", "xaman"],
     wallet: "r3qr25QnANd8RRT9NYtgUrrty3yTfpGx9c",
     tokens: ["XRP"],
     destinationTag: "77777777",
