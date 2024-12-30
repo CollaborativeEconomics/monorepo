@@ -1,13 +1,24 @@
-class StarknetContracts {
-  contracts = {
-    Credits: {
-      deploy: async (args)=>{
-        return {error:'Not ready'}
-      }
+import type { ContractFactoryDeployer } from ".."
+
+const StarknetContractDeployer: ContractFactoryDeployer = {
+  Credits: async (args: unknown) => {
+    return {
+      success: false,
+      txid: null,
+      contractId: null,
+      block: null,
+      error: "Not ready",
     }
-  }
+  },
+  NFTReceipt: async (args: unknown) => {
+    return {
+      success: false,
+      txid: null,
+      contractId: null,
+      block: null,
+      error: "Not ready",
+    }
+  },
 }
 
-const Starknet = new StarknetContracts()
-
-export default Starknet
+export default StarknetContractDeployer

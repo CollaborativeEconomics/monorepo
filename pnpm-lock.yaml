@@ -1036,6 +1036,9 @@ importers:
       '@react-oauth/google':
         specifier: 0.12.1
         version: 0.12.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@stellar/freighter-api':
+        specifier: 3.0.0
+        version: 3.0.0
       '@stellar/stellar-sdk':
         specifier: ^13.1.0
         version: 13.1.0

@@ -1,4 +1,4 @@
-import { chainConfig } from "@cfce/blockchain-tools"
+import { FreighterWallet, chainConfig } from "@cfce/blockchain-tools"
 import { WatchWalletChanges, signTransaction } from "@stellar/freighter-api"
 import {
   Account,
@@ -11,23 +11,27 @@ import {
   Networks,
   Operation,
   SorobanDataBuilder,
-  SorobanRpc,
   Transaction,
   TransactionBuilder,
   nativeToScVal,
+  rpc,
   scValToNative,
   xdr,
 } from "@stellar/stellar-sdk"
-import Wallet from "~/chains/wallets/freighter"
+// import Wallet from "~/chains/wallets/freighter"
 import { randomNumber } from "~/utils/random"
 import { getContract } from "~/utils/registry-client"
+import type { FactoryReturnType } from ".."
 
 // mainnet, testnet and futurenet
 export const networks = chainConfig.stellar.networks
 
 // Usage
 // const contractId = getContractIdFromTx(successfulTransactionResponse)
-function getContractIdFromTx(tx) {
+function getContractIdFromTx(
+  // tx: rpc.Api.SendTransactionResponse
+  txHash: string,
+) {
   try {
     const opResult = tx.resultXdr.result().results()[0]
     const retValue = opResult.tr().invokeHostFunctionResult().success()
@@ -62,12 +66,21 @@ async function deploy(
   )
   try {
     const network = networks[nettype]
+    if (!network) {
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Network not found",
+      }
+    }
     const ctr = new Contract(factory)
     console.log("CTR", ctr)
     //const op = ctr.call('deploy', ...args)
     const op = ctr.call("deploy", deployer, wasm_hash, salt, init_fn, init_args)
     console.log("OP", op)
-    const soroban = new SorobanRpc.Server(network.rpcUrls.soroban, {
+    const soroban = new rpc.Server(network.rpcUrls.soroban, {
       allowHttp: true,
     })
     console.log("X1", owner)
@@ -90,10 +103,10 @@ async function deploy(
     const sim = await soroban.simulateTransaction(trx)
     console.log("SIM", sim)
     //window.sim = sim
-    if (SorobanRpc.Api.isSimulationSuccess(sim) && sim.result !== undefined) {
+    if (rpc.Api.isSimulationSuccess(sim) && sim.result !== undefined) {
       console.log("RES", sim.result)
       let xdr = ""
-      let firstTime = false // for now
+      const firstTime = false // for now
       if (firstTime) {
         // Increment tx resources to avoid first time bug
         console.log("FIRST")
@@ -104,14 +117,14 @@ async function deploy(
         //sorobanData.readBytes += '60'
         const rBytes = sorobanData["_data"].resources().readBytes() + 60
         const rFee = (
-          parseInt(sorobanData["_data"].resourceFee()) + 100
+          Number.parseInt(sorobanData["_data"].resourceFee()) + 100
         ).toString()
         sorobanData["_data"].resources().readBytes(rBytes)
         sorobanData.setResourceFee(rFee)
         const sdata = sorobanData.build()
         //window.sdata2 = sorobanData
         console.log("SDATA2", sorobanData)
-        const fee2 = (parseInt(sim.minResourceFee) + 100).toString()
+        const fee2 = (Number.parseInt(sim.minResourceFee) + 100).toString()
         //const fee2 = (parseInt(BASE_FEE) + 100).toString()
         console.log("FEE2", fee2)
         //const trz = trx.setSorobanData(sdata).setTransactionFee(fee2).build()
@@ -151,6 +164,15 @@ async function deploy(
           error: sgn.error.message,
         }
       }
+      if (!network.networkPassphrase) {
+        return {
+          success: false,
+          txid: null,
+          contractId: null,
+          block: null,
+          error: "Network passphrase not found",
+        }
+      }
       // Now send it?
       const txs = TransactionBuilder.fromXDR(
         sgn.signedTxXdr,
@@ -169,7 +191,7 @@ async function deploy(
 
       const txid = res?.hash || ""
       console.log("TXID", txid)
-      if (res?.status.toString() == "ERROR") {
+      if (res?.status.toString() === "ERROR") {
         console.log("TX ERROR")
         return {
           success: false,
@@ -179,7 +201,7 @@ async function deploy(
           error: "Error deploying contract (950)",
         } // get error
       }
-      if (res?.status.toString() == "SUCCESS") {
+      if (res?.status.toString() === "SUCCESS") {
         console.log("TX SUCCESS")
         const contractId = getContractIdFromTx(res)
         console.log("Contract ID:", contractId)
@@ -188,77 +210,74 @@ async function deploy(
           success: true,
           txid,
           contractId,
-          block: res?.ledger.toString(),
+          block: res?.latestLedger.toString(),
           error: null,
         }
-      } else {
-        // Wait for confirmation
-        const secs = 1000
-        const wait = [2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6] // 60 secs / 15 loops
-        let count = 0
-        let info = null
-        while (count < wait.length) {
-          console.log("Retry", count)
-          await new Promise((res) => setTimeout(res, wait[count] * secs))
-          count++
-          info = await soroban.getTransaction(txid)
-          console.log("INFO", info)
-          if (info.status == "ERROR") {
-            console.log("TX FAILED")
-            return {
-              success: false,
-              txid,
-              contractId: null,
-              block: null,
-              error: "Error deploying contract (951)",
-              extra: info,
-            } // get error
-          }
-          if (info.status == "NOT_FOUND" || info.status == "PENDING") {
-            continue // Not ready in blockchain?
-          }
-          if (info.status == "SUCCESS") {
-            console.log("TX SUCCESS2")
-            const contractId = getContractIdFromTx(info)
-            console.log("Contract ID:", contractId)
-            // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
-            return {
-              success: true,
-              txid,
-              contractId,
-              block: info?.ledger.toString(),
-              error: null,
-            }
-          } else {
-            console.log("TX FAILED2")
-            return {
-              success: false,
-              txid,
-              contractId: null,
-              block: null,
-              error: "Error deploying contract (952)",
-              extra: info,
-            } // get error
+      }
+      // Wait for confirmation
+      const secs = 1000
+      const wait = [2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6] // 60 secs / 15 loops
+      let count = 0
+      let info = null
+      while (count < wait.length) {
+        console.log("Retry", count)
+        await new Promise((res) => setTimeout(res, wait[count] * secs))
+        count++
+        info = await soroban.getTransaction(txid)
+        console.log("INFO", info)
+        if (info.status === "FAILED") {
+          console.log("TX FAILED")
+          return {
+            success: false,
+            txid,
+            contractId: null,
+            block: null,
+            error: "Error deploying contract (951)",
+            extra: info,
+          } // get error
+        }
+        if (info.status === "NOT_FOUND") {
+          continue // Not ready in blockchain?
+        }
+        if (info.status === "SUCCESS") {
+          console.log("TX SUCCESS2")
+          const contractId = getContractIdFromTx(info.txHash)
+          console.log("Contract ID:", contractId)
+          // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
+          return {
+            success: true,
+            txid,
+            contractId,
+            block: info?.ledger.toString(),
+            error: null,
           }
         }
+        console.log("TX FAILED2")
         return {
           success: false,
           txid,
           contractId: null,
           block: null,
-          error: "Error deploying contract - timeout (953)",
+          error: "Error deploying contract (952)",
+          extra: info,
         } // get error
       }
-    } else {
-      console.log("BAD", sim)
       return {
         success: false,
-        txid: "",
+        txid,
         contractId: null,
         block: null,
-        error: "Error deploying contract - bad simulation (954)",
+        error: "Error deploying contract - timeout (953)",
       } // get error
     }
+    console.log("BAD", sim)
+    return {
+      success: false,
+      txid: "",
+      contractId: null,
+      block: null,
+      error: "Error deploying contract - bad simulation (954)",
+    } // get error
   } catch (ex) {
     console.log("ERROR", ex)
     return {
@@ -266,7 +285,7 @@ async function deploy(
       txid: "",
       contractId: null,
       block: null,
-      error: ex.message,
+      error: ex instanceof Error ? ex.message : "Unknown error",
     }
   }
 }
@@ -275,13 +294,20 @@ async function deploy(
 // credits contract constructor: initialize(e: Env, admin: Address, initiative: u128, provider: Address, vendor: Address, bucket: i128, xlm: Address) {
 // ARGS [admin, initiative, provider, vendor, bucket, xlm]
 // VARS [deployer, wasm_hash, salt, init_fn, init_args]
-async function deployCredits(data) {
+type DeployCreditsData = {
+  provider: string
+  vendor: string
+  bucket: number
+}
+async function deployCredits(
+  data: DeployCreditsData,
+): Promise<FactoryReturnType> {
   console.log("DATA", data)
   try {
     const chain = "stellar" // TODO: get from config
     const nettype = "testnet" // TODO: get from config
-    const network = networks[nettype]
-    const wallet = new Wallet()
+    // const network = networks[nettype]
+    const wallet = new FreighterWallet(chain, nettype)
     await wallet.init()
     const walletInfo = await wallet.connect()
     console.log("WALLET", walletInfo)
@@ -314,7 +340,16 @@ async function deployCredits(data) {
 
     const xlmContract =
       "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC" // TODO: constant from config
-    const orgwallet = walletInfo.account
+    const orgwallet = walletInfo.walletAddress
+    if (!orgwallet) {
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Wallet address not found",
+      }
+    }
     const deployer = new Address(orgwallet).toScVal()
     const wasm_hash = nativeToScVal(Buffer.from(contractHash, "hex"), {
       type: "bytes",
@@ -352,18 +387,22 @@ async function deployCredits(data) {
       txid: "",
       contractId: null,
       block: null,
-      error: ex.message,
+      error: ex instanceof Error ? ex.message : "Unknown error",
     }
   }
 }
 
-async function deployNFTReceipt(data) {
+type DeployNFTReceiptData = {
+  name: string
+  symbol: string
+}
+async function deployNFTReceipt(data: DeployNFTReceiptData) {
   console.log("DATA", data)
   try {
     const chain = "stellar" // TODO: get from config
     const nettype = "testnet" // TODO: get from config
-    const network = networks[nettype]
-    const wallet = new Wallet()
+    // const network = networks[nettype]
+    const wallet = new FreighterWallet(chain, nettype)
     await wallet.init()
     const walletInfo = await wallet.connect()
     console.log("WALLET", walletInfo)
@@ -398,7 +437,16 @@ async function deployNFTReceipt(data) {
       }
     }
 
-    const orgwallet = walletInfo.account
+    const orgwallet = walletInfo.walletAddress
+    if (!orgwallet) {
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Wallet address not found",
+      }
+    }
     const deployer = new Address(orgwallet).toScVal()
     const wasm_hash = nativeToScVal(Buffer.from(contractHash, "hex"), {
       type: "bytes",
@@ -430,28 +478,20 @@ async function deployNFTReceipt(data) {
       txid: "",
       contractId: null,
       block: null,
-      error: ex.message,
+      error: ex instanceof Error ? ex.message : "Unknown error",
     }
   }
 }
 
-class StellarContracts {
-  contracts = {
-    Credits: {
-      deploy: async (data) => {
-        const res = await deployCredits(data)
-        return res
-      },
-    },
-    NFTReceipt: {
-      deploy: async (data) => {
-        const res = await deployNFTReceipt(data)
-        return res
-      },
-    },
-  }
+const StellarContractsDeployers = {
+  Credits: async (data: DeployCreditsData) => {
+    const res = await deployCredits(data)
+    return res
+  },
+  NFTReceipt: async (data: DeployNFTReceiptData) => {
+    const res = await deployNFTReceipt(data)
+    return res
+  },
 }
 
-const Stellar = new StellarContracts()
-
-export default Stellar
+export default StellarContractsDeployers

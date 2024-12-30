@@ -1,32 +1,35 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form'
 import appConfig from '@cfce/app-config';
-import type { Contract } from '@cfce/database';
+import { chainConfig } from '@cfce/blockchain-tools';
+import type { Chain, Contract } from '@cfce/database';
+import type { ChainSlugs } from '@cfce/types';
+import { registryApi } from '@cfce/utils';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import factoryDeployers from '~/chains';
 import ButtonBlue from '~/components/buttonblue';
+import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
-import TextInput from '~/components/form/textinput'
 import styles from '~/styles/dashboard.module.css';
 import { apiFetch } from '~/utils/api';
-import chains from '~/chains';
 
 interface PageProps {
-  chain?: string;
+  chain?: ChainSlugs;
   network?: string;
   wallet?: string;
   organizationId?: string;
 }
 
 interface FormProps {
-  bucket?: string
-  chain?: string
-  minimum?: string
-  provider?: string
-  provider_fees?: string
-  vendor?: string
-  vendor_fees?: string
-  wallet?: string
+  bucket?: string;
+  chain?: ChainSlugs;
+  minimum?: string;
+  provider?: string;
+  provider_fees?: string;
+  vendor?: string;
+  vendor_fees?: string;
+  wallet?: string;
 }
 
 export default function ContractCreditsClient({
@@ -35,28 +38,32 @@ export default function ContractCreditsClient({
   network,
   wallet,
 }: PageProps) {
-  const contract_type = 'Credits'
+  const contract_type = 'Credits';
 
   // TODO: Componentize button state
-  const [buttonText, setButtonText] = useState('NEW CONTRACT')
-  const [buttonDisabled, setButtonDisabled] = useState(false)
-  const [message, showMessage] = useState('Enter contract options')
-  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 }
-  
-  function setButtonState(state:number) {
+  const [buttonText, setButtonText] = useState('NEW CONTRACT');
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [message, showMessage] = useState('Enter contract options');
+  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
+  if (typeof chain === 'undefined') {
+    return <div>Chain is required</div>;
+  }
+  // const chainConfig = appConfig.chains[chain];
+
+  function setButtonState(state: number) {
     switch (state) {
       case ButtonState.READY:
-        setButtonText('NEW CONTRACT')
-        setButtonDisabled(false)
-        break
+        setButtonText('NEW CONTRACT');
+        setButtonDisabled(false);
+        break;
       case ButtonState.WAIT:
-        setButtonText('WAIT')
-        setButtonDisabled(true)
-        break
+        setButtonText('WAIT');
+        setButtonDisabled(true);
+        break;
       case ButtonState.DONE:
-        setButtonText('DONE')
-        setButtonDisabled(true)
-        break
+        setButtonText('DONE');
+        setButtonDisabled(true);
+        break;
     }
   }
 
@@ -69,76 +76,79 @@ export default function ContractCreditsClient({
       provider: '',
       provider_fees: '10',
       minimum: '1',
-      bucket: '20'
-    }
-  })
-  const [
-    vendor,
-    vendor_fees,
-    provider,
-    provider_fees,
-    minimum,
-    bucket
-  ] = watch([
-    'vendor',
-    'vendor_fees',
-    'provider',
-    'provider_fees',
-    'minimum',
-    'bucket'
-  ])
-
+      bucket: '20',
+    },
+  });
+  const [vendor, vendor_fees, provider, provider_fees, minimum, bucket] = watch(
+    ['vendor', 'vendor_fees', 'provider', 'provider_fees', 'minimum', 'bucket'],
+  );
 
   async function onSubmit(data: FormProps) {
-    console.log('SUBMIT', data)
+    console.log('SUBMIT', data);
 
     if (!data.chain) {
-      showMessage('Chain is required')
-      return
+      showMessage('Chain is required');
+      return;
     }
     if (!data.wallet) {
-      showMessage('Wallet is required')
-      return
+      showMessage('Wallet is required');
+      return;
+    }
+
+    const selectedChainConfig = chainConfig[data.chain];
+    const appChainConfig = appConfig.chains[data.chain];
+    if (typeof selectedChainConfig === 'undefined') {
+      showMessage(`Chain not found: ${data.chain}`);
+      return;
     }
 
     //showMessage('Not ready...')
 
     try {
-      showMessage('Deploying contract, please sign transaction...')
-      setButtonState(ButtonState.WAIT)
+      showMessage('Deploying contract, please sign transaction...');
+      setButtonState(ButtonState.WAIT);
 
       // DEPLOY
       // TODO: get args from form component
-      const address = appConfig.chains[chain]?.contracts.factory
-      console.log('CTR', address)
-      if(!address){
-        showMessage('Error deploying contract: Contract not found')
-        setButtonState(ButtonState.READY)
-        return
+      const address = appChainConfig?.contracts.creditsFactory;
+      console.log('CTR', address);
+      if (!address) {
+        showMessage('Error deploying contract: Contract not found');
+        setButtonState(ButtonState.READY);
+        return;
       }
-      const factory = chains[chain]
-      if(!factory){
-        showMessage('Error deploying contract: Factory not found')
-        setButtonState(ButtonState.READY)
-        return
+      const factory = factoryDeployers[selectedChainConfig.name];
+      if (!factory) {
+        showMessage('Error deploying contract: Factory not found');
+        setButtonState(ButtonState.READY);
+        return;
       }
       // This works for Stellar only, refactor and universalize
-      const owner = ''
-      const deployer = ''
-      const wasm_hash = ''
-      const salt = ''
-      const init_fn = ''
-      const init_args = []
-      const res = await factory.deploy(network, address, owner, deployer, wasm_hash, salt, init_fn, init_args)
+      const owner = '';
+      const deployer = '';
+      const wasm_hash = '';
+      const salt = '';
+      const init_fn = '';
+      const init_args = [];
+      const res = await factory.Credits(
+        network,
+        address,
+        owner,
+        deployer,
+        wasm_hash,
+        salt,
+        init_fn,
+        init_args,
+      );
 
-      console.log('RES', res)
-      if(!res || res?.error){
-        showMessage(`Error deploying contract: ${res?.error||'Unknown'}`)
-        setButtonState(ButtonState.READY)
-        return
+      console.log('RES', res);
+      if (!res || res?.error) {
+        showMessage(`Error deploying contract: ${res?.error || 'Unknown'}`);
+        setButtonState(ButtonState.READY);
+        return;
       }
-      showMessage('Contract deployed successfully')
-      setButtonState(ButtonState.READY)
+      showMessage('Contract deployed successfully');
+      setButtonState(ButtonState.READY);
       // Save to db contracts
       const contract = {
         chain,
@@ -147,19 +157,21 @@ export default function ContractCreditsClient({
         contract_address: res?.contractId,
         start_block: res?.block,
         entity_id: organizationId,
-        admin_wallet_address: wallet
-      }
-      console.log('CTR', contract)
-      const saved = await apiPost('contracts', contract)
-      console.log('SAVED', saved)
+        admin_wallet_address: wallet,
+      };
+      console.log('CTR', contract);
+      const saved = await registryApi.post('contracts', contract);
+      console.log('SAVED', saved);
     } catch (ex) {
-      console.error(ex)
-      showMessage(`Error deploying contract: ${ex.message}`)
-      setButtonState(ButtonState.READY)
+      console.error(ex);
+      showMessage(
+        `Error deploying contract: ${
+          ex instanceof Error ? ex.message : 'Unknown error'
+        }`,
+      );
+      setButtonState(ButtonState.READY);
     }
-
   }
-
 
   return (
     <div className={styles.vbox}>
@@ -169,12 +181,27 @@ export default function ContractCreditsClient({
         <div className="flex flex-row justify-center w-[640px] mx-auto">
           {/* PAGE */}
           <div className="w-full">
-            <TextInput label="Credit Vendor (Wallet address)" register={register('vendor')} />
-            <TextInput label="Vendor Fees (percentage)" register={register('vendor_fees')} />
-            <TextInput label="Credit Provider (Wallet address)" register={register('provider')} />
-            <TextInput label="Provider Fees (percentage)" register={register('provider_fees')} />
+            <TextInput
+              label="Credit Vendor (Wallet address)"
+              register={register('vendor')}
+            />
+            <TextInput
+              label="Vendor Fees (percentage)"
+              register={register('vendor_fees')}
+            />
+            <TextInput
+              label="Credit Provider (Wallet address)"
+              register={register('provider')}
+            />
+            <TextInput
+              label="Provider Fees (percentage)"
+              register={register('provider_fees')}
+            />
             <TextInput label="Bucket Size" register={register('bucket')} />
-            <TextInput label="Minimum Donation" register={register('minimum')} />
+            <TextInput
+              label="Minimum Donation"
+              register={register('minimum')}
+            />
           </div>
         </div>
         <ButtonBlue

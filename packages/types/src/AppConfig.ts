@@ -6,7 +6,11 @@ import type {
   TokenTickerSymbol,
 } from "./BlockchainTools"
 
-type ContractType = "receiptMintbotERC721" | "credits" | "storyERC1155" | "factory"
+type ContractType =
+  | "receiptMintbotERC721"
+  | "credits"
+  | "storyERC1155"
+  | "creditsFactory"
 
 export interface AppChainConfig {
   slug: ChainSlugs

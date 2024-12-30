@@ -35,7 +35,7 @@ const chains: AppConfig["chains"] = {
     slug: "arbitrum",
     network: "testnet",
     contracts: {
-      factory: "0x0???",
+      creditsFactory: "0x0???",
       credits: "0x0???",
       receiptMintbotERC721: "0x2c647e44003f403bb3e483ff810279efb136c304",
     },
@@ -47,9 +47,11 @@ const chains: AppConfig["chains"] = {
     slug: "stellar",
     network: "testnet",
     contracts: {
-      factory: "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      creditsFactory:
+        "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
       credits: "CDHYT3A4XGBNSWP2P7XQTS2AT5XICKD5KOAZ7S2Y2APJMXRDIENP2LZR",
-      receiptMintbotERC721: "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
+      receiptMintbotERC721:
+        "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
     },
     wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
     enabledWallets: ["freighter"],

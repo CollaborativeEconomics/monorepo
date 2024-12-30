@@ -25,6 +25,7 @@
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-popover": "^1.1.2",
     "@react-oauth/google": "0.12.1",
+    "@stellar/freighter-api": "3.0.0",
     "@stellar/stellar-sdk": "^13.1.0",
     "@vercel/blob": "0.27.0",
     "@wagmi/core": "^2.15.2",

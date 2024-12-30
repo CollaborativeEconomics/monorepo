@@ -1,13 +1,24 @@
-class ArbitrumContracts {
-  contracts = {
-    Credits: {
-      deploy: async (args)=>{
-        return {error:'Not ready'}
-      }
+import type { ContractFactoryDeployer } from ".."
+
+const ArbitrumContractDeployer: ContractFactoryDeployer = {
+  Credits: async (args: unknown) => {
+    return {
+      success: false,
+      txid: null,
+      contractId: null,
+      block: null,
+      error: "Not ready",
     }
-  }
+  },
+  NFTReceipt: async (args: unknown) => {
+    return {
+      success: false,
+      txid: null,
+      contractId: null,
+      block: null,
+      error: "Not ready",
+    }
+  },
 }
 
-const Arbitrum = new ArbitrumContracts()
-
-export default Arbitrum
+export default ArbitrumContractDeployer
