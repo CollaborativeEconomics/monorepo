@@ -115,11 +115,11 @@ async function deploy(
         console.log("SDATA1", sorobanData)
         //window.sdata1 = sorobanData
         //sorobanData.readBytes += '60'
-        const rBytes = sorobanData["_data"].resources().readBytes() + 60
+        const rBytes = sorobanData._data.resources().readBytes() + 60
         const rFee = (
-          Number.parseInt(sorobanData["_data"].resourceFee()) + 100
+          Number.parseInt(sorobanData._data.resourceFee()) + 100
         ).toString()
-        sorobanData["_data"].resources().readBytes(rBytes)
+        sorobanData._data.resources().readBytes(rBytes)
         sorobanData.setResourceFee(rFee)
         const sdata = sorobanData.build()
         //window.sdata2 = sorobanData
@@ -210,7 +210,7 @@ async function deploy(
           success: true,
           txid,
           contractId,
-          block: res?.latestLedger.toString(),
+          block: res?.ledger.toString(),
           error: null,
         }
       }
@@ -241,7 +241,7 @@ async function deploy(
         }
         if (info.status === "SUCCESS") {
           console.log("TX SUCCESS2")
-          const contractId = getContractIdFromTx(info.txHash)
+          const contractId = getContractIdFromTx(info)
           console.log("Contract ID:", contractId)
           // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
           return {
@@ -285,14 +285,14 @@ async function deploy(
       txid: "",
       contractId: null,
       block: null,
-      error: ex instanceof Error ? ex.message : "Unknown error",
+      error: ex.message,
     }
   }
 }
 
 // -- deploy --deployer GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C --wasm_hash d433b471c3959a9d87702b3648a2214f2c8c8d716a000ae2c6e13be9bb68ad51 --salt 1234567890 --init_fn init --init_args '[{"u32":123}]'
 // credits contract constructor: initialize(e: Env, admin: Address, initiative: u128, provider: Address, vendor: Address, bucket: i128, xlm: Address) {
-// ARGS [admin, initiative, provider, vendor, bucket, xlm]
+// DATA {provider, vendor, bucket}
 // VARS [deployer, wasm_hash, salt, init_fn, init_args]
 type DeployCreditsData = {
   provider: string

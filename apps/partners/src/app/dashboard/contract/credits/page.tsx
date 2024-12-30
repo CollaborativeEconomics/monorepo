@@ -16,9 +16,9 @@ export default async function ContractCreditsPage({ searchParams }: PageProps) {
   // </Suspense>
   return (
     <ContractCreditsClient
-      chain={chain as ChainSlugs}
-      network={network as Network}
-      wallet={wallet as string}
+      chain={(chain as ChainSlugs) ?? 'stellar'}
+      network={(network as Network) ?? 'testnet'}
+      wallet={(wallet as string) ?? ''}
       organizationId={organizationId as string}
     />
   );

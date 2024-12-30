@@ -15,7 +15,7 @@ export type FactoryReturnType = {
 
 export type ContractFactoryDeployer = Record<
   ContractFactoryTypes,
-  (data: unknown) => Promise<FactoryReturnType>
+  { deploy: (data: unknown) => Promise<FactoryReturnType> }
 >
 
 const FactoryDeployers: Partial<Record<Chain, ContractFactoryDeployer>> = {

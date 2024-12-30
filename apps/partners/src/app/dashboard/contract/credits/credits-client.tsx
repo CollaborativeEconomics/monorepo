@@ -4,19 +4,22 @@ import appConfig from '@cfce/app-config';
 import { chainConfig } from '@cfce/blockchain-tools';
 import type { Chain, Contract } from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
+import type { ChainSlugs } from '@cfce/types';
 import { registryApi } from '@cfce/utils';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import factoryDeployers from '~/chains';
+import chains from '~/chains';
 import ButtonBlue from '~/components/buttonblue';
 import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
-import { apiFetch } from '~/utils/api';
+import { apiFetch, apiPost } from '~/utils/api';
+import { randomNumber } from '~/utils/random';
 
 interface PageProps {
-  chain?: ChainSlugs;
-  network?: string;
+  chain: string;
+  network: string;
   wallet?: string;
   organizationId?: string;
 }
@@ -107,10 +110,9 @@ export default function ContractCreditsClient({
     try {
       showMessage('Deploying contract, please sign transaction...');
       setButtonState(ButtonState.WAIT);
-
-      // DEPLOY
-      // TODO: get args from form component
-      const address = appChainConfig?.contracts.creditsFactory;
+      const address = appChainConfig?.contracts?.factory || '';
+      const owner = appChainConfig?.wallet || '';
+      const deployer = data.wallet;
       console.log('CTR', address);
       if (!address) {
         showMessage('Error deploying contract: Contract not found');
@@ -118,28 +120,32 @@ export default function ContractCreditsClient({
         return;
       }
       const factory = factoryDeployers[selectedChainConfig.name];
+      console.log('FAC', factory);
       if (!factory) {
         showMessage('Error deploying contract: Factory not found');
         setButtonState(ButtonState.READY);
         return;
       }
-      // This works for Stellar only, refactor and universalize
-      const owner = '';
-      const deployer = '';
-      const wasm_hash = '';
-      const salt = '';
-      const init_fn = '';
-      const init_args = [];
-      const res = await factory.Credits(
-        network,
-        address,
+
+      // This only works for Stellar, refactor and universalize
+      const wasm_hash = appChainConfig?.contracts?.creditsHash || '';
+      const salt = randomNumber(32);
+      const init_fn = 'initialize';
+      const xlmContract = appChainConfig?.contracts?.xlmNativeCoin || '';
+      const init_args = [
         owner,
-        deployer,
-        wasm_hash,
-        salt,
-        init_fn,
-        init_args,
-      );
+        organizationId,
+        data.provider,
+        data.vendor,
+        data.bucket,
+        xlmContract,
+      ];
+      //const res = await factory.contracts.Credits.deploy(network, address, owner, deployer, wasm_hash, salt, init_fn, init_args)
+      const res = await factory.Credits.deploy({
+        provider: data.provider,
+        vendor: data.vendor,
+        bucket: data.bucket,
+      });
 
       console.log('RES', res);
       if (!res || res?.error) {
@@ -160,15 +166,12 @@ export default function ContractCreditsClient({
         admin_wallet_address: wallet,
       };
       console.log('CTR', contract);
-      const saved = await registryApi.post('contracts', contract);
+      const saved = await apiPost('contracts', contract);
       console.log('SAVED', saved);
-    } catch (ex) {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    } catch (ex: any) {
       console.error(ex);
-      showMessage(
-        `Error deploying contract: ${
-          ex instanceof Error ? ex.message : 'Unknown error'
-        }`,
-      );
+      showMessage(`Error deploying contract: ${ex?.message || 'Unknown'}`);
       setButtonState(ButtonState.READY);
     }
   }
