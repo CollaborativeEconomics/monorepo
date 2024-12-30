@@ -1,1 +1,1 @@
-export * from "@cfce/universe-api/categories"
+export * from "@cfce/api/categories"

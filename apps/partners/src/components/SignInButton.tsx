@@ -1,5 +1,6 @@
 'use client';
-import { signIn } from '@cfce/auth';
+import { googleLogin, signIn } from '@cfce/auth';
+import { Button } from '@cfce/components/ui';
 import React from 'react';
 
 interface SignInButtonProps {
@@ -8,15 +9,16 @@ interface SignInButtonProps {
 
 export default function SignInButton({ className }: SignInButtonProps) {
   return (
-    <button
+    <Button
       type="button"
       className={className}
       onClick={e => {
+        console.log('sign in');
         e.preventDefault();
-        signIn();
+        googleLogin();
       }}
     >
       Sign in
-    </button>
+    </Button>
   );
 }

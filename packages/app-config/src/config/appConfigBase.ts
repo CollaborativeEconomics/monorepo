@@ -1,8 +1,8 @@
 import type { AppConfig, ClientInterfaces } from "@cfce/types"
 
 const siteInfo: AppConfig["siteInfo"] = {
-  title: "Name",
-  description: "Description",
+  title: "Give Stark",
+  description: "Give Stark is a platform for donation on StarkNet.",
   options: {
     showCarbonCreditDisplay: false,
   },

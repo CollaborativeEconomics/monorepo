@@ -1,6 +1,6 @@
 'use client';
 
-import { DatePicker } from '@cfce/universe-components/form';
+import { DatePicker } from '@cfce/components/form';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
@@ -84,8 +84,8 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
         height={250}
         multiple={true}
       />
-      <TextInput label="Title" register={register('title')} />
-      <TextArea label="Description" register={register('description')} />
+      <TextInput label="Title" {...register('title')} />
+      <TextArea label="Description" {...register('description')} />
       <DatePicker label="Start Date" register={register('start')} />
       <DatePicker label="End Date" register={register('finish')} />
       <ButtonBlue
