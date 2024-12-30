@@ -15,10 +15,10 @@ export default async function ContractCreditsPage({ searchParams }: PageProps) {
     // </Suspense>
   return (
       <ContractCreditsClient
-        chain={chain?.toString()}
-        network={network?.toString()}
-        wallet={wallet?.toString()}
-        organizationId={organizationId?.toString()}
+        chain={chain?.toString() || 'Stellar'}
+        network={network?.toString() || 'testnet'}
+        wallet={wallet?.toString() || ''}
+        organizationId={organizationId?.toString() || ''}
       />
   );
 }

@@ -31,9 +31,9 @@ export default class Wallet {
   netinfo    = {}
   chainId    = '0x0'
   accounts?:[string] = undefined
-  myaccount:string  = ''
-  horizon?:any = null
+  myaccount  = ''
   horizonurl = networks[process.env.NEXT_PUBLIC_BLOCKCHAIN_NETWORK||'testnet'].horizon || ''
+  horizon?:StellarSDK.Horizon.Server = null
   provider   = null
   
   constructor() {
@@ -44,9 +44,8 @@ export default class Wallet {
     //console.log('INIT...')
     if(await isConnected()){
       return {success:true}
-    } else {
-      return {success:false}
     }
+    return {success:false}
   }
 
   async connect() {
@@ -117,9 +116,8 @@ export default class Wallet {
       //console.log("errorResultXdr:", result.errorResultXdr)
       if(result?.successful){
         return {success:true, result, txid, address:this.myaccount}
-      } else {
-        return {success:false, error:'Payment rejected by user', result, txid}
       }
+      return {success:false, error:'Payment rejected by user', result, txid}
     } catch(err) {
       console.error('E>>', err)
       return {success:false, error:err}

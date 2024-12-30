@@ -8,19 +8,21 @@ import ButtonBlue from '~/components/buttonblue';
 import Title from '~/components/title';
 import TextInput from '~/components/form/textinput'
 import styles from '~/styles/dashboard.module.css';
-import { apiFetch } from '~/utils/api';
+import { apiFetch, apiPost } from '~/utils/api';
 import chains from '~/chains';
+import type { ChainSlugs } from "@cfce/types"
+import { randomNumber } from '~/utils/random'
 
 interface PageProps {
-  chain?: string;
-  network?: string;
+  chain: string;
+  network: string;
   wallet?: string;
   organizationId?: string;
 }
 
 interface FormProps {
   bucket?: string
-  chain?: string
+  chain: string
   minimum?: string
   provider?: string
   provider_fees?: string
@@ -35,6 +37,10 @@ export default function ContractCreditsClient({
   network,
   wallet,
 }: PageProps) {
+  //console.log('PROPS', {organizationId,chain,network,wallet})
+  const chainSlug = chain.toLowerCase()
+  const config = appConfig.chains[chainSlug as ChainSlugs]
+  if(!config){ throw new Error('Chain required but not found') }
   const contract_type = 'Credits'
 
   // TODO: Componentize button state
@@ -106,10 +112,9 @@ export default function ContractCreditsClient({
     try {
       showMessage('Deploying contract, please sign transaction...')
       setButtonState(ButtonState.WAIT)
-
-      // DEPLOY
-      // TODO: get args from form component
-      const address = appConfig.chains[chain]?.contracts.factory
+      const address = config?.contracts?.factory || ''
+      const owner = config?.wallet || ''
+      const deployer = data.wallet
       console.log('CTR', address)
       if(!address){
         showMessage('Error deploying contract: Contract not found')
@@ -117,19 +122,32 @@ export default function ContractCreditsClient({
         return
       }
       const factory = chains[chain]
+      console.log('FAC', factory)
       if(!factory){
         showMessage('Error deploying contract: Factory not found')
         setButtonState(ButtonState.READY)
         return
       }
-      // This works for Stellar only, refactor and universalize
-      const owner = ''
-      const deployer = ''
-      const wasm_hash = ''
-      const salt = ''
-      const init_fn = ''
-      const init_args = []
-      const res = await factory.deploy(network, address, owner, deployer, wasm_hash, salt, init_fn, init_args)
+
+      // This only works for Stellar, refactor and universalize
+      const wasm_hash = config?.contracts?.creditsHash || ''
+      const salt = randomNumber(32)
+      const init_fn = 'initialize'
+      const xlmContract = config?.contracts?.xlmNativeCoin || ''
+      const init_args = [
+        owner,
+        organizationId,
+        data.provider,
+        data.vendor,
+        data.bucket,
+        xlmContract
+      ]
+      //const res = await factory.contracts.Credits.deploy(network, address, owner, deployer, wasm_hash, salt, init_fn, init_args)
+      const res = await factory.contracts.Credits.deploy({
+        provider: data.provider,
+        vendor:   data.vendor,
+        bucket:   data.bucket
+      })
 
       console.log('RES', res)
       if(!res || res?.error){
@@ -152,9 +170,10 @@ export default function ContractCreditsClient({
       console.log('CTR', contract)
       const saved = await apiPost('contracts', contract)
       console.log('SAVED', saved)
-    } catch (ex) {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    } catch (ex:any) {
       console.error(ex)
-      showMessage(`Error deploying contract: ${ex.message}`)
+      showMessage(`Error deploying contract: ${ex?.message||'Unknown'}`)
       setButtonState(ButtonState.READY)
     }
 

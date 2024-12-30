@@ -4,6 +4,9 @@ import Wallet from '~/chains/wallets/freighter'
 import { getContract } from '~/utils/registry-client'
 import { randomNumber } from '~/utils/random'
 
+
+// TODO: interfaces for credits and receipts <<<<<
+
 export const networks = {
   mainnet: {
     name: 'public',
@@ -71,7 +74,7 @@ async function deploy(nettype, factory, owner, deployer, wasm_hash, salt, init_f
     if (SorobanRpc.Api.isSimulationSuccess(sim) && sim.result !== undefined) {
       console.log('RES', sim.result)
       let xdr = ''
-      let firstTime = false // for now
+      const firstTime = false // for now
       if(firstTime){
         // Increment tx resources to avoid first time bug
         console.log('FIRST')
@@ -80,14 +83,14 @@ async function deploy(nettype, factory, owner, deployer, wasm_hash, salt, init_f
         console.log('SDATA1', sorobanData)
         //window.sdata1 = sorobanData
         //sorobanData.readBytes += '60'
-        const rBytes = sorobanData['_data'].resources().readBytes() + 60
-        const rFee = (parseInt(sorobanData['_data'].resourceFee()) + 100).toString()
-        sorobanData['_data'].resources().readBytes(rBytes)
+        const rBytes = sorobanData._data.resources().readBytes() + 60
+        const rFee = (Number.parseInt(sorobanData._data.resourceFee()) + 100).toString()
+        sorobanData._data.resources().readBytes(rBytes)
         sorobanData.setResourceFee(rFee)
         const sdata = sorobanData.build()
         //window.sdata2 = sorobanData
         console.log('SDATA2', sorobanData)
-        const fee2 = (parseInt(sim.minResourceFee) + 100).toString()
+        const fee2 = (Number.parseInt(sim.minResourceFee) + 100).toString()
         //const fee2 = (parseInt(BASE_FEE) + 100).toString()
         console.log('FEE2',fee2)
         //const trz = trx.setSorobanData(sdata).setTransactionFee(fee2).build()
@@ -133,52 +136,49 @@ async function deploy(nettype, factory, owner, deployer, wasm_hash, salt, init_f
 
       const txid = res?.hash || ''
       console.log('TXID', txid)
-      if(res?.status.toString() == 'ERROR'){
+      if(res?.status.toString() === 'ERROR'){
         console.log('TX ERROR')
         return {success:false, txid, contractId:null, block:null, error:'Error deploying contract (950)'} // get error
       }
-      if(res?.status.toString() == 'SUCCESS'){
+      if(res?.status.toString() === 'SUCCESS'){
         console.log('TX SUCCESS')
         const contractId = getContractIdFromTx(res)
         console.log("Contract ID:", contractId)
         // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
         return {success:true, txid, contractId, block:res?.ledger.toString(), error:null}
-      } else {
-        // Wait for confirmation
-        const secs = 1000
-        const wait = [2,2,2,3,3,3,4,4,4,5,5,5,6,6,6] // 60 secs / 15 loops
-        let count = 0
-        let info = null
-        while(count < wait.length){
-          console.log('Retry', count)
-          await new Promise(res => setTimeout(res, wait[count]*secs))
-          count++
-          info = await soroban.getTransaction(txid)
-          console.log('INFO', info)
-          if(info.status=='ERROR') {
-            console.log('TX FAILED')
-            return {success:false, txid, contractId:null, block:null, error:'Error deploying contract (951)', extra:info} // get error
-          }
-          if(info.status=='NOT_FOUND' || info.status=='PENDING') {
-            continue // Not ready in blockchain?
-          }
-          if(info.status=='SUCCESS'){
-            console.log('TX SUCCESS2')
-            const contractId = getContractIdFromTx(info)
-            console.log("Contract ID:", contractId)
-            // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
-            return {success:true, txid, contractId, block:info?.ledger.toString(), error:null}
-          } else {
-            console.log('TX FAILED2')
-            return {success:false, txid, contractId:null, block:null, error:'Error deploying contract (952)', extra:info} // get error
-          }
-        }
-        return {success:false, txid, contractId:null, block:null, error:'Error deploying contract - timeout (953)'} // get error
       }
-    } else {
-      console.log('BAD', sim)
-      return {success:false, txid:'', contractId:null, block:null, error:'Error deploying contract - bad simulation (954)'} // get error
+      // Wait for confirmation
+      const secs = 1000
+      const wait = [2,2,2,3,3,3,4,4,4,5,5,5,6,6,6] // 60 secs / 15 loops
+      let count = 0
+      let info = null
+      while(count < wait.length){
+        console.log('Retry', count)
+        await new Promise(res => setTimeout(res, wait[count]*secs))
+        count++
+        info = await soroban.getTransaction(txid)
+        console.log('INFO', info)
+        if(info.status==='ERROR') {
+          console.log('TX FAILED')
+          return {success:false, txid, contractId:null, block:null, error:'Error deploying contract (951)', extra:info} // get error
+        }
+        if(info.status==='NOT_FOUND' || info.status==='PENDING') {
+          continue // Not ready in blockchain?
+        }
+        if(info.status==='SUCCESS'){
+          console.log('TX SUCCESS2')
+          const contractId = getContractIdFromTx(info)
+          console.log("Contract ID:", contractId)
+          // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
+          return {success:true, txid, contractId, block:info?.ledger.toString(), error:null}
+        }
+          console.log('TX FAILED2')
+          return {success:false, txid, contractId:null, block:null, error:'Error deploying contract (952)', extra:info} // get error
+      }
+      return {success:false, txid, contractId:null, block:null, error:'Error deploying contract - timeout (953)'} // get error
     }
+    console.log('BAD', sim)
+    return {success:false, txid:'', contractId:null, block:null, error:'Error deploying contract - bad simulation (954)'} // get error
   } catch(ex) {
     console.log('ERROR', ex)
     return {success:false, txid:'', contractId:null, block:null, error:ex.message}
@@ -189,8 +189,9 @@ async function deploy(nettype, factory, owner, deployer, wasm_hash, salt, init_f
 
 // -- deploy --deployer GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C --wasm_hash d433b471c3959a9d87702b3648a2214f2c8c8d716a000ae2c6e13be9bb68ad51 --salt 1234567890 --init_fn init --init_args '[{"u32":123}]'
 // credits contract constructor: initialize(e: Env, admin: Address, initiative: u128, provider: Address, vendor: Address, bucket: i128, xlm: Address) {
-// ARGS [admin, initiative, provider, vendor, bucket, xlm]
+// DATA {provider, vendor, bucket}
 // VARS [deployer, wasm_hash, salt, init_fn, init_args]
+// ARGS [admin, initiative, provider, vendor, bucket, xlm]
 async function deployCredits(data) {
   console.log('DATA', data)
   try {
