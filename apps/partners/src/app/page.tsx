@@ -9,6 +9,7 @@ import Title from '~/components/title';
 
 export default async function HomePage() {
   const session = await auth();
+  console.log('SESSION', session)
   const name = session?.user?.name ?? '';
   const orgId = session?.orgId ?? '';
   const isLogged = !!name;

@@ -5,18 +5,14 @@ import checkApiKey from "../checkApiKey"
 
 export async function GET(req: NextRequest) {
   try {
-    //const apiKey = req.headers.get('x-api-key')
-    const apiKey = (await headers()).get("x-api-key")
-
-    const authorized = await checkApiKey(apiKey)
-
-    if (!authorized) {
-      return NextResponse.json({ success: false }, { status: 403 })
-    }
+    //const apiKey = (await headers()).get('x-api-key')
+    //const authorized = await checkApiKey(apiKey)
+    //if (!authorized) {
+    //  return NextResponse.json({ success: false }, { status: 403 })
+    //}
 
     const { searchParams } = new URL(req.url)
     const query = Object.fromEntries(searchParams.entries())
-
     const result = await getOrganizations(query)
     return NextResponse.json({ success: true, data: result }, { status: 200 }) // Status code 200 for successful GET request
   } catch (error) {
@@ -33,11 +29,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey, { devOnly: true })
-    if (!authorized) {
-      return NextResponse.json({ success: false }, { status: 403 })
-    }
+    // TODO: ENABLE THIS
+    //const apiKey = (await headers()).get('x-api-key')
+    //const authorized = await checkApiKey(apiKey)
+    //if (!authorized) {
+    //  return NextResponse.json({ success: false }, { status: 403 })
+    //}
 
     const { wallets, ...organization } = await req.json()
     const result = await newOrganization({

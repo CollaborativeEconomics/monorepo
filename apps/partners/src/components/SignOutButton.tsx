@@ -1,16 +1,23 @@
-import { signOutAction } from '@cfce/auth';
+"use client"
 import React from 'react';
+import { signOutAction } from '@cfce/auth';
+import { redirect } from 'next/navigation'
 
 interface SignOutButtonProps {
   className?: string;
 }
 
 export default function SignOutButton({ className }: SignOutButtonProps) {
+  async function onSignout(){
+    console.log('SIGNOUT')
+    await signOutAction()
+    window.location.href='/'
+    redirect('/')
+  }
+
   return (
-    <form action={signOutAction}>
-      <button type="submit" className={className}>
-        Sign out
-      </button>
-    </form>
-  );
+    <>
+      <button type="button" onClick={onSignout} className={className}>Sign out</button>
+    </>
+  )
 }

@@ -10,15 +10,16 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.0",
+    "@types/lodash": "^4.17.13",
     "@types/luxon": "^3.4.2",
-    "msw": "^2.2.7",
-    "typescript": "^5.6.2"
+    "msw": "^2.6.8",
+    "typescript": "^5.7.2"
   },
   "dependencies": {
     "@cfce/app-config": "workspace:*",
     "@cfce/database": "workspace:*",
     "lodash": "^4.17.21",
-    "luxon": "^3.4.4"
+    "luxon": "^3.5.0",
+    "react-query": "^3.39.3"
   }
 }

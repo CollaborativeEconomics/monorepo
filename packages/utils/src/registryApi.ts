@@ -11,6 +11,7 @@ export class RegistryApi {
 
   constructor() {
     // Use window.location.origin in the browser, fallback to "/" for SSR
+    // this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : `${process.env.NEXTAUTH_URL}/api`
     if (typeof window !== "undefined") {
       this.baseUrl = `${window.location.origin}/api`
     } else if (process.env.NEXTAUTH_URL) {
@@ -39,15 +40,20 @@ export class RegistryApi {
 
     try {
       const response = await fetch(url, { ...options, headers })
-      const data: ApiResponse<T> = await response.json()
-
-      if (!data.success) {
-        throw new Error(data.error || "An error occurred")
-      }
-
+      const result = await response.json()
+      //console.log('RESULT', result)
+      return result // it already contains success and data fields
+      //return {
+      //  data,
+      //  success: true,
+      //}
+      
+      //const data: ApiResponse<T> = await response.json()
+      //if (!data.success) {
+      //  throw new Error(data.error || "An error occurred")
+      //}
       // console.log("REG-API RESPONSE", data)
-
-      return data
+      //return data
     } catch (error) {
       return {
         data: null as T,
@@ -59,31 +65,36 @@ export class RegistryApi {
   }
 
   async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "GET" })
+    const res = await this.request<T>(endpoint, { method: "GET" })
+    //console.log('RES', res)
+    return res
   }
 
   async post<T, U = unknown>(
     endpoint: string,
     data: U,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
+    const res = await this.request<T>(endpoint, { method: "POST", body: JSON.stringify(data) })
+    //console.log('RES', res)
+    return res
   }
 
   async put<T, U = unknown>(
     endpoint: string,
     data: U,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
+    const res = await this.request<T>(endpoint, {
       method: "PUT",
       body: JSON.stringify(data),
     })
+    //console.log('RES', res)
+    return res
   }
 
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "DELETE" })
+    const res = await this.request<T>(endpoint, { method: "DELETE" })
+    console.log('RES', res)
+    return res
   }
 }
 

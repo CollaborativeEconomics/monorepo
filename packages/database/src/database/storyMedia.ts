@@ -1,7 +1,7 @@
 import "server-only"
 import type { ListQuery } from "@cfce/types"
 import type { Prisma, StoryMedia } from "@prisma/client"
-import type { File } from "formidable"
+//import type { File } from "formidable"
 import { prismaClient } from ".."
 
 interface StoryMediaQuery extends ListQuery {

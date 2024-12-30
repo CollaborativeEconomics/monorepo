@@ -257,7 +257,8 @@
 .timeTab {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: end;
+  margin-bottom: 40px;
 }
 
 .buttonTime {

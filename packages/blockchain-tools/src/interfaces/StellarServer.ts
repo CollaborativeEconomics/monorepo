@@ -5,7 +5,7 @@ import type {
   Network,
   NetworkConfig,
 } from "@cfce/types"
-import { BASE_FEE, SorobanRpc } from "@stellar/stellar-sdk"
+import { BASE_FEE, rpc } from "@stellar/stellar-sdk"
 import type {
   Transaction as StellarTransaction,
   // Address,
@@ -19,16 +19,16 @@ import chainConfig from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 import Contract721 from "../contracts/soroban/nft721/server"
 
-export default class StellarServer extends InterfaceBaseClass {
-  sorobanServer: SorobanRpc.Server
+export default class StellarServer extends ChainBaseClass {
+  sorobanServer: rpc.Server
   network: NetworkConfig
   chain: ChainConfig
 
-  constructor() {
-    super()
+  constructor(slug: ChainSlugs, network: Network) {
+    super(slug, network)
     this.chain = chainConfig.stellar
     this.network = getNetworkForChain(this.chain.slug)
-    this.sorobanServer = new SorobanRpc.Server(this.network.rpcUrls.main)
+    this.sorobanServer = new rpc.Server(this.network.rpcUrls.main)
   }
 
   async mintNFT({

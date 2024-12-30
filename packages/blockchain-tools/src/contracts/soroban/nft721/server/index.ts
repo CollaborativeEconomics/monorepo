@@ -8,20 +8,21 @@ import {
   // nativeToScVal,
   // Networks,
   Operation,
+  rpc,
   SorobanDataBuilder,
-  SorobanRpc,
+  //SorobanRpc,
   TransactionBuilder,
   xdr,
 } from "@stellar/stellar-sdk"
 import type { Transaction } from "@stellar/stellar-sdk"
-const { Api, assembleTransaction } = SorobanRpc
+//const { Api } = SorobanRpc
 import _get from "lodash/get"
 
 export default class Contract721 {
   contractId: string
   rpcUrl: string
   secret: string
-  server: SorobanRpc.Server
+  server: rpc.Server
   constructor({
     contractId,
     rpcUrl,
@@ -30,7 +31,7 @@ export default class Contract721 {
     this.contractId = contractId
     this.rpcUrl = rpcUrl
     this.secret = secret
-    this.server = new SorobanRpc.Server(rpcUrl)
+    this.server = new rpc.Server(rpcUrl)
   }
 
   sleep(ms: number) {
@@ -101,13 +102,13 @@ export default class Contract721 {
     const sim = await this.server.simulateTransaction(tx)
 
     // Other failures are out of scope of this tutorial.
-    if (!Api.isSimulationSuccess(sim)) {
+    if (!rpc.Api.isSimulationSuccess(sim)) {
       console.log("Error simulating")
       throw sim
     }
 
     // If simulation didn't fail, we don't need to restore anything! Just send it.
-    if (!Api.isSimulationRestore(sim)) {
+    if (!rpc.Api.isSimulationRestore(sim)) {
       console.log("No contract restore needed")
       //const prepTx = assembleTransaction(tx, sim);
       //console.log(prepTx)
@@ -141,7 +142,7 @@ export default class Contract721 {
 
     const resp = await this.submitTx(restoreTx)
     console.log({ resp })
-    //if (resp?.status !== Api.GetTransactionStatus.SUCCESS) {
+    //if (resp?.status !== rpc.Api.GetTransactionStatus.SUCCESS) {
     if (!resp?.success) {
       //throw resp;
       console.log("Error restoring contract", resp)
@@ -229,7 +230,7 @@ export default class Contract721 {
     args: any
   }) {
     const source = Keypair.fromSecret(secret)
-    //const server   = new SorobanRpc.Server(network.soroban)
+    //const server   = new rpc.Server(network.soroban)
     const contract = new Contract(contractId)
     const account = await this.server.getAccount(source.publicKey())
     console.log("SUBMIT", { network, contractId, method, args })
@@ -288,7 +289,7 @@ export default class Contract721 {
     args: any
   }) {
     const source = Keypair.fromSecret(secret)
-    //const this.server   = new SorobanRpc.Server(network.soroban)
+    //const this.server   = new rpc.Server(network.soroban)
     const contract = new Contract(contractId)
     const account = await this.server.getAccount(source.publicKey())
     console.log({ network, contractId, method, args })
@@ -303,10 +304,10 @@ export default class Contract721 {
       .build()
 
     const sim = await this.server.simulateTransaction(tx)
-    if (!Api.isSimulationSuccess(sim)) {
+    if (!rpc.Api.isSimulationSuccess(sim)) {
       throw sim
     }
-    if (Api.isSimulationRestore(sim)) {
+    if (rpc.Api.isSimulationRestore(sim)) {
       console.log("Contract needs to be restored")
       const result = await this.restoreContract(source, contract, network)
       console.log("RESULT", result)

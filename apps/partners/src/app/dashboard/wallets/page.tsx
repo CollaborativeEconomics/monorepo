@@ -10,7 +10,8 @@ import WalletForm from './WalletForm';
 async function getWalletData(orgId: string) {
   const organization = await getOrganizationById(orgId);
   if (!organization) throw new Error('Organization not found');
-  const wallets = organization.wallets || [];
+  const data = organization.wallets || [];
+  const wallets = data.sort((a, b) => a.chain.localeCompare(b.chain)); // sort by chain
   return { organization, wallets };
 }
 
@@ -21,7 +22,7 @@ export default async function WalletsPage() {
 
   const { organization, wallets } = await getWalletData(orgId);
   const chainsList = (Object.keys(chainConfig) as ChainSlugs[]).map(chain => ({
-    id: chainConfig[chain].slug,
+    id: chainConfig[chain].name,
     name: chainConfig[chain].name,
   }));
 

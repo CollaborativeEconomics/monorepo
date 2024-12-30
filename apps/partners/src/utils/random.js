@@ -1,4 +1,5 @@
-import { getRandomValues } from 'node:crypto';
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
+import { getRandomValues } from 'crypto';
 
 function randomAddress() {
   const buf = getRandomValues(new Uint8Array(20));

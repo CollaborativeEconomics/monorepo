@@ -3,15 +3,14 @@
 
 import type { Prisma } from "@cfce/database" // assuming Story is your Prisma model or similar
 import { createStory } from "@cfce/utils"
-import type { File } from "formidable"
 import { revalidatePath } from "next/cache"
 
 export async function saveStory({
   userId,
   story,
+  categoryId,
   organizationId,
   initiativeId,
-  categoryId,
   images,
   media,
 }: {
@@ -20,9 +19,9 @@ export async function saveStory({
     Prisma.StoryCreateInput,
     "organization" | "initiative" | "category"
   >
+  categoryId?: string
   organizationId: string
   initiativeId: string
-  categoryId: string
   images?: (string | File)[]
   media?: string | File
 }) {

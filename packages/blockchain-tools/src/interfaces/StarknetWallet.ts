@@ -82,7 +82,7 @@ class StarknetWallet extends InterfaceBaseClass {
       modalMode: "alwaysAsk",
     })
 
-    const account = await connector?.account()
+    const account = await connector?.account(this.provider)
 
     // Get current chain from wallet
     const currentChain = await this.provider?.getChainId()
@@ -90,10 +90,9 @@ class StarknetWallet extends InterfaceBaseClass {
     const envChain = appConfig.chains.starknet?.network
 
     // Determine target network based on environment
-    const targetChainId =
-      envChain === "mainnet"
-        ? constants.StarknetChainId.SN_MAIN // Mainnet for production
-        : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
+    const targetChainId = envChain === "mainnet"
+      ? constants.StarknetChainId.SN_MAIN // Mainnet for production
+      : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
 
     // Switch network if needed
     if (currentChain !== targetChainId) {
@@ -135,7 +134,7 @@ class StarknetWallet extends InterfaceBaseClass {
       let wallet = this.wallet
 
       if (!wallet) {
-        ;({ wallet } = await this.getWallet())
+        ({ wallet } = await this.getWallet())
       }
 
       if (this.connectedWallet) {
@@ -157,10 +156,10 @@ class StarknetWallet extends InterfaceBaseClass {
   public async sendPaymentWithGas(address: string, amount: number) {
     try {
       if (!this.connector) {
-        ;({ connector: this.connector } = await this.getWallet())
+        ({ connector: this.connector } = await this.getWallet())
       }
 
-      const account = await this.connector?.account()
+      const account = await this.connector?.account(this.provider)
       if (!account) {
         throw new Error("No account found")
       }
@@ -253,7 +252,7 @@ class StarknetWallet extends InterfaceBaseClass {
         ;({ connector } = await this.getWallet())
       }
 
-      const account = await connector?.account()
+      const account = await connector?.account(this.provider)
       console.log("Account", account)
       console.log("Account connected")
 

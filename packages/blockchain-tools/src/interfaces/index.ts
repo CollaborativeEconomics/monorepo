@@ -4,6 +4,7 @@ import GemWallet from "./GemWallet"
 import MetaMaskWallet from "./MetamaskClient"
 import StellarServer from "./StellarServer"
 import Web3Server from "./Web3Server"
+import XrplClient from "./XrplClient"
 import XrplServer from "./XrplServer"
 import XummClient from "./XummClient"
 import { getWalletConfiguration, walletConfig } from "./walletConfig"
@@ -14,6 +15,7 @@ export type Interface =
   | GemWallet
   | MetaMaskWallet
   | XummClient
+  | XrplClient
   | XrplServer
   | StellarServer
   | Web3Server
@@ -24,6 +26,7 @@ export {
   GemWallet,
   MetaMaskWallet,
   XummClient,
+  XrplClient,
   XrplServer,
   StellarServer,
   Web3Server,
