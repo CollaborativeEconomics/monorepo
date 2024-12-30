@@ -9,6 +9,7 @@ import Title from '~/components/title';
 import TextInput from '~/components/form/textinput'
 import styles from '~/styles/dashboard.module.css';
 import { apiFetch } from '~/utils/api';
+import chains from '~/chains';
 
 interface PageProps {
   chain?: string;
@@ -34,7 +35,7 @@ export default function ContractCreditsClient({
   network,
   wallet,
 }: PageProps) {
-  //const contract_type = 'Credits'
+  const contract_type = 'Credits'
 
   // TODO: Componentize button state
   const [buttonText, setButtonText] = useState('NEW CONTRACT')
@@ -99,21 +100,40 @@ export default function ContractCreditsClient({
       showMessage('Wallet is required')
       return
     }
-    showMessage('Not ready...')
 
-/*
+    //showMessage('Not ready...')
+
     try {
       showMessage('Deploying contract, please sign transaction...')
       setButtonState(ButtonState.WAIT)
 
       // DEPLOY
       // TODO: get args from form component
-      const deployer = appConfig.chains[chain]?.contracts[contract_type]
-      console.log('CTR', deployer)
-      const res = await deployer?.deploy(data)
+      const address = appConfig.chains[chain]?.contracts.factory
+      console.log('CTR', address)
+      if(!address){
+        showMessage('Error deploying contract: Contract not found')
+        setButtonState(ButtonState.READY)
+        return
+      }
+      const factory = chains[chain]
+      if(!factory){
+        showMessage('Error deploying contract: Factory not found')
+        setButtonState(ButtonState.READY)
+        return
+      }
+      // This works for Stellar only, refactor and universalize
+      const owner = ''
+      const deployer = ''
+      const wasm_hash = ''
+      const salt = ''
+      const init_fn = ''
+      const init_args = []
+      const res = await factory.deploy(network, address, owner, deployer, wasm_hash, salt, init_fn, init_args)
+
       console.log('RES', res)
       if(!res || res?.error){
-        showMessage(`Error deploying contract: ${res?.error||'Contract not found'}`)
+        showMessage(`Error deploying contract: ${res?.error||'Unknown'}`)
         setButtonState(ButtonState.READY)
         return
       }
@@ -137,7 +157,7 @@ export default function ContractCreditsClient({
       showMessage(`Error deploying contract: ${ex.message}`)
       setButtonState(ButtonState.READY)
     }
-*/
+
   }
 
 
