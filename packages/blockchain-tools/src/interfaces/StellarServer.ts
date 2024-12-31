@@ -19,13 +19,13 @@ import chainConfig from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 import Contract721 from "../contracts/soroban/nft721/server"
 
-export default class StellarServer extends ChainBaseClass {
+export default class StellarServer extends InterfaceBaseClass {
   sorobanServer: rpc.Server
   network: NetworkConfig
   chain: ChainConfig
 
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
+  constructor() {
+    super()
     this.chain = chainConfig.stellar
     this.network = getNetworkForChain(this.chain.slug)
     this.sorobanServer = new rpc.Server(this.network.rpcUrls.main)
