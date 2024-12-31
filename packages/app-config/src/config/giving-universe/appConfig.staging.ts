@@ -38,7 +38,7 @@ const chains: AppConfig["chains"] = {
     wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
     network: "testnet",
     contracts: {},
-    enabledWallets: ["xaman", "gemwallet", "crossmark"],
+    enabledWallets: ["xaman", "gemwallet"],
     tokens: ["XRP"],
     destinationTag: "77777777",
   },

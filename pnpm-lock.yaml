@@ -200,7 +200,11 @@ importers:
         version: 1.0.4(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       cookies-next:
         specifier: 5.0.2
+<<<<<<< HEAD
         version: 5.0.2(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+=======
+        version: 5.0.2(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+>>>>>>> dev
       fetch:
         specifier: ^1.1.0
         version: 1.1.0
@@ -230,7 +234,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -396,7 +404,11 @@ importers:
         version: 4.17.4(react@19.0.0)
       '@sentry/nextjs':
         specifier: ^8.43.0
+<<<<<<< HEAD
         version: 8.47.0(@opentelemetry/core@1.30.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(webpack@5.97.1)
+=======
+        version: 8.47.0(@opentelemetry/core@1.30.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(webpack@5.97.1)
+>>>>>>> dev
       '@stellar/freighter-api':
         specifier: 3.0.0
         version: 3.0.0
@@ -432,7 +444,11 @@ importers:
         version: 1.0.4(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       cookies-next:
         specifier: 5.0.2
+<<<<<<< HEAD
         version: 5.0.2(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+=======
+        version: 5.0.2(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+>>>>>>> dev
       fetch:
         specifier: ^1.1.0
         version: 1.1.0
@@ -462,7 +478,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -646,7 +666,11 @@ importers:
         version: 1.0.4(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       cookies-next:
         specifier: 5.0.2
+<<<<<<< HEAD
         version: 5.0.2(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+=======
+        version: 5.0.2(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+>>>>>>> dev
       fetch:
         specifier: ^1.1.0
         version: 1.1.0
@@ -676,7 +700,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -845,7 +873,11 @@ importers:
         version: 4.17.4(react@19.0.0)
       '@sentry/nextjs':
         specifier: ^8.43.0
+<<<<<<< HEAD
         version: 8.47.0(@opentelemetry/core@1.30.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(webpack@5.97.1)
+=======
+        version: 8.47.0(@opentelemetry/core@1.30.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(webpack@5.97.1)
+>>>>>>> dev
       '@stellar/freighter-api':
         specifier: 3.0.0
         version: 3.0.0
@@ -881,7 +913,11 @@ importers:
         version: 1.0.4(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       cookies-next:
         specifier: 5.0.2
+<<<<<<< HEAD
         version: 5.0.2(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+=======
+        version: 5.0.2(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+>>>>>>> dev
       fetch:
         specifier: ^1.1.0
         version: 1.1.0
@@ -911,7 +947,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1089,7 +1129,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1192,7 +1236,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-swagger-doc:
         specifier: 0.4.1
         version: 0.4.1(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(openapi-types@12.1.3)
@@ -1298,7 +1346,11 @@ importers:
         version: 0.27.0
       cookies-next:
         specifier: 5.0.2
+<<<<<<< HEAD
         version: 5.0.2(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+=======
+        version: 5.0.2(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+>>>>>>> dev
       fetch:
         specifier: ^1.1.0
         version: 1.1.0
@@ -1310,7 +1362,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1436,7 +1492,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1500,7 +1560,11 @@ importers:
         version: 0.469.0(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
@@ -1951,7 +2015,11 @@ importers:
         version: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -2012,7 +2080,11 @@ importers:
         version: 22.10.2
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       typescript:
         specifier: ^5.7.2
         version: 5.7.2
@@ -2074,7 +2146,11 @@ importers:
         version: 10.3.0
       next-auth:
         specifier: 5.0.0-beta.25
+<<<<<<< HEAD
         version: 5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+=======
+        version: 5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+>>>>>>> dev
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -11003,6 +11079,13 @@ packages:
     resolution: {integrity: sha512-eb+F6NabSnjbLwNoC+2o5ItbmP1kg7HliWue71JgLegQt6A5mTN8YbvTLCazdlg6e5SV6A+r8OGvZYskdlmhqQ==}
     engines: {node: '>=6.0.0'}
 
+  tldts-core@6.1.69:
+    resolution: {integrity: sha512-nygxy9n2PBUFQUtAXAc122gGo+04/j5qr5TGQFZTHafTKYvmARVXt2cA5rgero2/dnXUfkdPtiJoKmrd3T+wdA==}
+
+  tldts@6.1.69:
+    resolution: {integrity: sha512-Oh/CqRQ1NXNY7cy9NkTPUauOWiTro0jEYZTioGbOmcQh6EC45oribyIMJp0OJO3677r13tO6SKdWoGZUx2BDFw==}
+    hasBin: true
+
   tmpl@1.0.5:
     resolution: {integrity: sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==}
 
@@ -11024,6 +11107,10 @@ packages:
   tough-cookie@4.1.4:
     resolution: {integrity: sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==}
     engines: {node: '>=6'}
+
+  tough-cookie@5.0.0:
+    resolution: {integrity: sha512-FRKsF7cz96xIIeMZ82ehjC3xW2E+O2+v11udrDYewUbszngYhsGa8z6YUMMzO9QJZzzyd0nGGXnML/TReX6W8Q==}
+    engines: {node: '>=16'}
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
@@ -15640,7 +15727,11 @@ snapshots:
 
   '@sentry/core@8.47.0': {}
 
+<<<<<<< HEAD
   '@sentry/nextjs@8.47.0(@opentelemetry/core@1.30.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(webpack@5.97.1)':
+=======
+  '@sentry/nextjs@8.47.0(@opentelemetry/core@1.30.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.0(@opentelemetry/api@1.9.0))(encoding@0.1.12)(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(webpack@5.97.1)':
+>>>>>>> dev
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/semantic-conventions': 1.28.0
@@ -18717,7 +18808,11 @@ snapshots:
 
   cookie@1.0.2: {}
 
+<<<<<<< HEAD
   cookies-next@5.0.2(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)):
+=======
+  cookies-next@5.0.2(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)):
+>>>>>>> dev
     dependencies:
       cookie: 1.0.2
       next: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -19524,7 +19619,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   eslint-module-utils@2.12.0(@typescript-eslint/parser@8.18.1(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)):
+=======
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.18.1(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@9.17.0(jiti@2.4.2)):
+>>>>>>> dev
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -19546,7 +19645,11 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.17.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
+<<<<<<< HEAD
       eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.1(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+=======
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.1(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@9.17.0(jiti@2.4.2))
+>>>>>>> dev
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -19903,7 +20006,7 @@ snapshots:
   fetch-cookie@3.1.0:
     dependencies:
       set-cookie-parser: 2.7.1
-      tough-cookie: 4.1.4
+      tough-cookie: 5.0.0
 
   fetch-ponyfill@7.1.0(encoding@0.1.12):
     dependencies:
@@ -21966,7 +22069,11 @@ snapshots:
 
   neotraverse@0.6.18: {}
 
+<<<<<<< HEAD
   next-auth@5.0.0-beta.25(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
+=======
+  next-auth@5.0.0-beta.25(next@15.1.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
+>>>>>>> dev
     dependencies:
       '@auth/core': 0.37.2
       next: 15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -23760,6 +23867,12 @@ snapshots:
       elliptic: 6.6.1
       nan: 2.22.0
 
+  tldts-core@6.1.69: {}
+
+  tldts@6.1.69:
+    dependencies:
+      tldts-core: 6.1.69
+
   tmpl@1.0.5: {}
 
   to-fast-properties@1.0.3: {}
@@ -23778,6 +23891,10 @@ snapshots:
       punycode: 2.3.1
       universalify: 0.2.0
       url-parse: 1.5.10
+
+  tough-cookie@5.0.0:
+    dependencies:
+      tldts: 6.1.69
 
   tr46@0.0.3: {}
 

@@ -1,6 +1,6 @@
-import Link from 'next/link'
+import copy from 'clipboard-copy-copy'
 import Image from 'next/image'
-import copy from 'clipboard-copy'
+import Link from 'next/link
 
 interface ContractProps {
   id: string
