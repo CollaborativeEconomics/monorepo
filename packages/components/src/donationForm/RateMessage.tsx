@@ -23,6 +23,7 @@ export function RateMessage({ className }: RateMessageProps) {
     if (showUsd) {
       return `${(+amount / exchangeRate).toFixed(2)} ${selectedToken} at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
     }
+    console.log("Exchange rate", exchangeRate);
     // show USD amount under field
     return `${(+amount * exchangeRate).toFixed(2)} USD at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
   }, [exchangeRate, amount, showUsd, selectedToken]);

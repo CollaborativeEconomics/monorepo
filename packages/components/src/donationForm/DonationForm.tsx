@@ -147,36 +147,36 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     return '';
   }, [organization, initiative, chainInterface, handleError]);
 
-  function getRate() {
-    registryApi
-      .get<{ coin: TokenTickerSymbol; rate: number }>(
+  const getRate = useCallback(async () => {
+    try {
+      const response = await registryApi.get<{ coin: TokenTickerSymbol; rate: number }>(
         `/rates?coin=${selectedToken}&chain=${selectedChain}`,
-      )
-      .then(response => {
-        if (response.success) {
-          const { rate } = response.data;
-          console.log('RATE', rate);
-          if (rate > 0) {
-            setChainState(draft => {
-              //console.log('DRAFT', draft)
-              draft.exchangeRate = rate;
-            });
-            //requestAnimationFrame(() => {
-            //setChainState(draft => {
-            //console.log('DRAFT', draft)
-            //draft.exchangeRate = rate;
-            //});
-            //console.log('CHAIN1', chainState)
-            //});
-          }
-          //console.log('CHAIN2', chainState)
-        }
+      );
+      
+      // Check if response and response.data exist before accessing rate
+      if (response?.data?.rate && response.success) {
+        setChainState(draft => {
+          draft.exchangeRate = response.data.rate;
+        });
+      } else {
+        console.warn('Invalid rate response:', response);
+        // Optionally set a fallback rate or handle the error case
+        setChainState(draft => {
+          draft.exchangeRate = 0.00; // fallback rate
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching rate:', error);
+      // Handle error case with fallback
+      setChainState(draft => {
+        draft.exchangeRate = 0.00; // fallback rate
       });
-  }
+    }
+  }, [selectedToken, selectedChain, setChainState]);
 
   useEffect(() => {
     getRate();
-  }, [selectedToken, selectedChain, setChainState]);
+  }, [getRate]);
 
   const checkBalance = useCallback(async () => {
     if (!chainInterface || !('getBalance' in chainInterface)) {
@@ -228,6 +228,26 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     }) => {
       if (!paymentResult.success) {
         throw new Error(paymentResult.error ?? 'Payment failed');
+      }
+
+      // Save donation first
+      const donationData = {
+        organizationId: organization.id,
+        initiativeId: initiative.id,
+        categoryId: undefined,
+        userId: undefined,
+        sender: paymentResult.walletAddress ?? '',
+        chainName: selectedChain,
+        network: appConfig.chains[selectedChain]?.network ?? '',
+        coinValue: amount,
+        usdValue: amount * exchangeRate,
+        currency: selectedToken
+      };
+
+      const donationId = await saveDonation(donationData);
+
+      if (!donationId) {
+        throw new Error('Error saving donation');
       }
 
       setButtonMessage('Minting NFT receipt, please wait...');

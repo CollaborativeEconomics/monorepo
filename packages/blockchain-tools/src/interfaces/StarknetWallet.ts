@@ -9,27 +9,6 @@ import {
   fetchGasTokenPrices,
 } from "@avnu/gasless-sdk"
 import appConfig from "@cfce/app-config"
-import type { ChainSlugs, Network } from "@cfce/types"
-import {
-  constants,
-  Account,
-  Contract,
-  Provider,
-  RpcProvider,
-  TransactionFinalityStatus,
-  num,
-} from "starknet"
-import type {
-  AccountInterface,
-  Call,
-  GetTransactionReceiptResponse,
-} from "starknet"
-import {
-  type Connector,
-  type StarknetWindowObject,
-  connect,
-  disconnect,
-} from "starknetkit"
 import { formatEther, parseEther } from "viem"
 import ChainBaseClass from "../chains/ChainBaseClass"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"

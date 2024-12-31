@@ -13,6 +13,12 @@
   ],
   "exclude": ["node_modules", "dist", "work"],
   "compilerOptions": {
+    "module": "esnext",
+    "esModuleInterop": true,
+    "target": "es6",
+    "sourceMap": true,
+    "inlineSources": true,
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "outDir": "dist",
     "rootDirs": ["src", "."],
