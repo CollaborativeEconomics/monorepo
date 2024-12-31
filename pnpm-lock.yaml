@@ -6,6 +6,7 @@ settings:
 
 overrides:
   hono: ^4.6.7
+  tough-cookie: ^4.1.3
 
 patchedDependencies:
   frog:
@@ -1485,9 +1486,15 @@ importers:
       '@cfce/database':
         specifier: workspace:*
         version: link:../database
+      '@cfce/state':
+        specifier: workspace:*
+        version: link:../state
       '@cfce/utils':
         specifier: workspace:*
         version: link:../utils
+      jotai:
+        specifier: ^2.10.4
+        version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       lucide-react:
         specifier: 0.469.0
         version: 0.469.0(react@19.0.0)
@@ -1546,6 +1553,9 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@cfce/state':
+        specifier: workspace:*
+        version: link:../state
       '@crossmarkio/sdk':
         specifier: ^0.4.0
         version: 0.4.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1564,6 +1574,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.13
         version: 4.17.13
+      jotai:
+        specifier: ^2.9.1
+        version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1749,6 +1762,9 @@ importers:
       '@cfce/analytics':
         specifier: workspace:*
         version: link:../analytics
+      '@cfce/state':
+        specifier: workspace:*
+        version: link:../state
       '@cfce/types':
         specifier: workspace:*
         version: link:../types
@@ -1950,6 +1966,28 @@ importers:
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       typescript:
         specifier: ^5.7.2
+        version: 5.7.2
+
+  packages/state:
+    dependencies:
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
+      immer:
+        specifier: ^10.0.0
+        version: 10.1.1
+      jotai:
+        specifier: ^2.0.0
+        version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
+      jotai-immer:
+        specifier: ^0.2.0
+        version: 0.2.0(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0))(react@19.0.0)
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
         version: 5.7.2
 
   packages/tbas:
@@ -8667,6 +8705,13 @@ packages:
   jose@5.9.6:
     resolution: {integrity: sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==}
 
+  jotai-immer@0.2.0:
+    resolution: {integrity: sha512-hahK8EPiROS9RoNWmX/Z8rY9WkAijspX4BZ1O7umpcwI4kPNkbcCpu/PhiQ8FMcpEcF6KmbpbMpSSj/GFmo8NA==}
+    peerDependencies:
+      immer: '*'
+      jotai: '>=1.11.0'
+      react: '>=17.0.0'
+
   jotai-immer@0.4.1:
     resolution: {integrity: sha512-nQTt1HBKie/5OJDck1qLpV1PeBA6bjJLAczEYAx70PD8R4Mbu7gtexfBUCzJh6W6ecsOfwHksAYAesVth6SN9A==}
     peerDependencies:
@@ -10996,13 +11041,6 @@ packages:
     resolution: {integrity: sha512-eb+F6NabSnjbLwNoC+2o5ItbmP1kg7HliWue71JgLegQt6A5mTN8YbvTLCazdlg6e5SV6A+r8OGvZYskdlmhqQ==}
     engines: {node: '>=6.0.0'}
 
-  tldts-core@6.1.69:
-    resolution: {integrity: sha512-nygxy9n2PBUFQUtAXAc122gGo+04/j5qr5TGQFZTHafTKYvmARVXt2cA5rgero2/dnXUfkdPtiJoKmrd3T+wdA==}
-
-  tldts@6.1.69:
-    resolution: {integrity: sha512-Oh/CqRQ1NXNY7cy9NkTPUauOWiTro0jEYZTioGbOmcQh6EC45oribyIMJp0OJO3677r13tO6SKdWoGZUx2BDFw==}
-    hasBin: true
-
   tmpl@1.0.5:
     resolution: {integrity: sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==}
 
@@ -11024,10 +11062,6 @@ packages:
   tough-cookie@4.1.4:
     resolution: {integrity: sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==}
     engines: {node: '>=6'}
-
-  tough-cookie@5.0.0:
-    resolution: {integrity: sha512-FRKsF7cz96xIIeMZ82ehjC3xW2E+O2+v11udrDYewUbszngYhsGa8z6YUMMzO9QJZzzyd0nGGXnML/TReX6W8Q==}
-    engines: {node: '>=16'}
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
@@ -16452,7 +16486,7 @@ snapshots:
 
   '@types/pg-pool@2.0.6':
     dependencies:
-      '@types/pg': 8.6.1
+      '@types/pg': 8.11.6
 
   '@types/pg@8.11.6':
     dependencies:
@@ -19907,7 +19941,7 @@ snapshots:
   fetch-cookie@3.1.0:
     dependencies:
       set-cookie-parser: 2.7.1
-      tough-cookie: 5.0.0
+      tough-cookie: 4.1.4
 
   fetch-ponyfill@7.1.0(encoding@0.1.12):
     dependencies:
@@ -21103,6 +21137,12 @@ snapshots:
       '@sideway/pinpoint': 2.0.0
 
   jose@5.9.6: {}
+
+  jotai-immer@0.2.0(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0))(react@19.0.0):
+    dependencies:
+      immer: 10.1.1
+      jotai: 2.11.0(@types/react@19.0.2)(react@19.0.0)
+      react: 19.0.0
 
   jotai-immer@0.4.1(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0)):
     dependencies:
@@ -22890,7 +22930,7 @@ snapshots:
     dependencies:
       debug: 4.4.0
       module-details-from-path: 1.0.3
-      resolve: 1.22.8
+      resolve: 1.22.10
     transitivePeerDependencies:
       - supports-color
 
@@ -23764,12 +23804,6 @@ snapshots:
       elliptic: 6.6.1
       nan: 2.22.0
 
-  tldts-core@6.1.69: {}
-
-  tldts@6.1.69:
-    dependencies:
-      tldts-core: 6.1.69
-
   tmpl@1.0.5: {}
 
   to-fast-properties@1.0.3: {}
@@ -23788,10 +23822,6 @@ snapshots:
       punycode: 2.3.1
       universalify: 0.2.0
       url-parse: 1.5.10
-
-  tough-cookie@5.0.0:
-    dependencies:
-      tldts: 6.1.69
 
   tr46@0.0.3: {}
 

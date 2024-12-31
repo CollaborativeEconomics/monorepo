@@ -2,8 +2,8 @@
 
 import appConfig from '@cfce/app-config';
 import { getWalletConfiguration } from '@cfce/blockchain-tools';
-import type { Interfaces } from '@cfce/types';
-import { chainAtom } from '@cfce/utils';
+import { chainAtom } from '@cfce/state';
+import type { ClientInterfaces } from '@cfce/types';
 import { useAtom } from 'jotai';
 import React from 'react';
 import { DonationFormSelect } from './DonationFormSelect';
@@ -31,7 +31,7 @@ export function WalletSelect() {
   );
 
   return (
-    <DonationFormSelect<Interfaces, WalletOption>
+    <DonationFormSelect<ClientInterfaces, WalletOption>
       id="wallet-select"
       className="mb-6"
       options={wallets}

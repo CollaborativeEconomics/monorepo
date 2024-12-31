@@ -1,23 +1,19 @@
 /// <reference path="./metamask.d.ts" />
 
-import type {
-  ChainSlugs,
-  Network,
-  NetworkConfig,
-  TokenTickerSymbol,
-} from "@cfce/types"
+import type { NetworkConfig, TokenTickerSymbol } from "@cfce/types"
 import type { MetaMaskInpageProvider } from "@metamask/providers"
+import { erc20Abi } from "viem"
 import Web3 from "web3"
 import type {
   ProviderConnectInfo,
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
-import ChainBaseClass from "../chains/ChainBaseClass"
-import erc20abi from "../contracts/solidity/erc20/erc20-abi.json"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
 
-export default class MetaMaskWallet extends ChainBaseClass {
+export default class MetaMaskWallet extends InterfaceBaseClass {
   // neturl = ""
   // explorer = ""
   // network = "testnet"
@@ -25,35 +21,76 @@ export default class MetaMaskWallet extends ChainBaseClass {
   connectedWallet? = ""
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
-  web3?: Web3
 
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
-    this.web3 = new Web3(this.network.rpcUrls.main)
-  }
-
-  async connect() {
-    console.log("Wallet starting...", this.network)
+  async connect(newChainId?: number) {
+    console.log("Wallet starting...", newChainId)
     //console.log('window.ethereum')
     try {
       this.metamask = window.ethereum
-      this.setListeners()
       this.wallets = await this.metamask?.enable()
+      const metamaskChainId = await window.ethereum?.chainId
+
       //console.log('Accounts', this.wallets)
       this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
-      //this.connectedWallet = this.metamask.selectedAddress
-      //this.setNetwork(window.ethereum.chainId)
-      //this.loadWallet(window))
+      const newChainIsSameAsConnectedChain =
+        Number(newChainId) === Number(this.network?.id)
+      const metamaskChainIsSameAsConnectedChain =
+        Number(metamaskChainId) === Number(this.network?.id)
+      // early return if chainId and wallet are already set correctly
+      console.log(
+        "newChainIsSameAsConnectedChain",
+        newChainIsSameAsConnectedChain,
+        newChainId,
+        this.network?.id,
+      )
+      console.log(
+        "metamaskChainIsSameAsConnectedChain",
+        metamaskChainIsSameAsConnectedChain,
+        metamaskChainId,
+        this.network?.id,
+      )
+      console.log("this.connectedWallet", this.network)
       if (
-        window.ethereum?.chainId &&
-        this.network.id !== Number.parseInt(window.ethereum.chainId, 16)
+        newChainId
+          ? newChainIsSameAsConnectedChain && this.connectedWallet
+          : metamaskChainIsSameAsConnectedChain && this.connectedWallet
       ) {
-        await this.changeNetwork(this.network)
+        if (!this.chain) {
+          throw new Error("Already connected, but chain not set")
+        }
+        if (!this.network) {
+          throw new Error("Already connected, but network not set")
+        }
+        return {
+          success: true,
+          network: this.network,
+          walletAddress: this.connectedWallet,
+          chain: this.chain.name,
+        }
       }
+      if (
+        typeof newChainId === "undefined" &&
+        typeof metamaskChainId === "undefined"
+      ) {
+        throw new Error("No chain ID provided or inferred")
+      }
+      const chainId = newChainId ?? metamaskChainId
+      if (typeof chainId !== "number") {
+        throw new Error(`Invalid chain ID type: ${typeof chainId}`)
+      }
+      this.setNetwork(chainId)
+      if (!this.network) {
+        throw new Error("Error getting network")
+      }
+      if (!this.chain) {
+        throw new Error("Error getting chain")
+      }
+      this.web3 = new Web3(this.network.rpcUrls.main)
       return {
         success: true,
-        network: this.network.slug,
+        network: this.network,
         walletAddress: this.connectedWallet,
+        chain: this.chain.name,
       }
     } catch (ex) {
       const error = ex instanceof Error ? ex.message : ""
@@ -62,9 +99,13 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
   }
 
-  isConnected(window: Window) {
+  isConnected() {
     if (window.ethereum) {
-      return window.ethereum.isConnected() && window.ethereum.selectedAddress
+      return (
+        window.ethereum.isConnected() &&
+        typeof this.chain !== "undefined" &&
+        typeof this.network !== "undefined"
+      )
     }
     return false
   }
@@ -74,10 +115,14 @@ export default class MetaMaskWallet extends ChainBaseClass {
       console.error("Metamask not available")
       return
     }
+    if (!this.network) {
+      console.error("Network not set, connect or setChain first")
+      return
+    }
     // @ts-expect-error returns chain ID string
     this.metamask.on("connect", (info: ProviderConnectInfo) => {
       console.log("> onConnect", Number.parseInt(info.chainId), info.chainId)
-      this.setNetwork(info.chainId)
+      this.setNetwork(Number(info.chainId))
       //if(restore){
       //  restore(this.network, this.connectedWallet)
       //}
@@ -103,11 +148,11 @@ export default class MetaMaskWallet extends ChainBaseClass {
     // @ts-expect-error returns chain ID string
     this.metamask.on("chainChanged", (chainId: string) => {
       console.log("> onChainChanged", Number.parseInt(chainId), chainId)
-      if (chainId === this.network.id) {
+      if (Number(chainId) === this.network?.id) {
         console.log("Already on chain", chainId)
         return
       }
-      this.setNetwork(chainId)
+      this.setNetwork(Number(chainId))
       //if(restore){
       //  restore(this.network, this.connectedWallet)
       //}
@@ -122,16 +167,16 @@ export default class MetaMaskWallet extends ChainBaseClass {
     console.log("Listeners set")
   }
 
-  setNetwork(chainId: string) {
+  setNetwork(chainId: number) {
     console.log("SetNetwork", chainId)
-    //if(!chainId){ chainId = this.metamask.chainId; }
-    //const mainnet = (chainId == '0x38') // 0x61 testnet
-    //this.network  = mainnet ? 'bsc-mainnet' : 'bsc-testnet'
-    //this.neturl   = mainnet ? this.MAINURL : this.TESTURL
-    //this.explorer = mainnet ? this.MAINEXP : this.TESTEXP
-    //this.chainId  = chainId
-    // console.log("Network", this.network, this.chainId)
-    this.network.id = chainId
+    this.chain = getChainByChainId(chainId)
+    this.network = getNetworkForChain(this.chain.slug)
+    this.changeNetwork(this.network)
+    this.setListeners()
+    if (!this.chain || !this.network) {
+      console.error("Couldn't set network or chain for", chainId)
+      return
+    }
   }
 
   async changeNetwork(provider: NetworkConfig) {
@@ -305,24 +350,33 @@ export default class MetaMaskWallet extends ChainBaseClass {
     }
   }
 
-  async getBalance(): Promise<string | undefined | null> {
+  async getBalance() {
     console.log("Get balance...")
     if (!this.metamask) {
       console.error("Error getting balance, Metamask not available")
-      return
+      return { success: false, error: "Metamask not available" }
     }
-    const balance = await this.metamask.request<string>({
-      method: "eth_getBalance",
-      params: [this.connectedWallet, "latest"],
-    })
-    console.log("Balance:", balance)
-    //web3.eth.getBalance(address, (err,res) => {
-    //  console.log('Balance', address.substr(0,8), res);
-    //  let bal = (parseInt(res)/10**18).toLocaleString('en-US', { useGrouping: true, minimumFractionDigits: 4, maximumFractionDigits: 4});
-    //  //$('user-address').innerHTML = address.substr(0,10);
-    //  //$('user-balance').innerHTML = bal+' BNB';
-    //});
-    return balance
+    try {
+      const balance = await this.metamask.request<string>({
+        method: "eth_getBalance",
+        params: [this.connectedWallet, "latest"],
+      })
+      console.log("Balance:", balance)
+      //web3.eth.getBalance(address, (err,res) => {
+      //  console.log('Balance', address.substr(0,8), res);
+      //  let bal = (parseInt(res)/10**18).toLocaleString('en-US', { useGrouping: true, minimumFractionDigits: 4, maximumFractionDigits: 4});
+      //  //$('user-address').innerHTML = address.substr(0,10);
+      //  //$('user-balance').innerHTML = bal+' BNB';
+      //});
+      if (!balance) {
+        console.error("Error getting balance, no balance returned")
+        return { success: false, error: "No balance returned" }
+      }
+      return { success: true, balance: Number(balance) }
+    } catch (error) {
+      console.error("Error getting balance", error)
+      return { success: false, error: "Error getting balance" }
+    }
   }
 
   async getGasPrice(): Promise<string | undefined> {
@@ -398,6 +452,10 @@ export default class MetaMaskWallet extends ChainBaseClass {
     amount,
     memo,
   }: { address: string; amount: number; memo: string }) {
+    if (!this.network) {
+      console.error("Network not set, connect or setChain first")
+      return { success: false, error: "Network not set" }
+    }
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
@@ -489,7 +547,7 @@ export default class MetaMaskWallet extends ChainBaseClass {
       console.error("Payment error: Error getting web3 instance")
       return { success: false, error: "Error getting web3 instance" }
     }
-    const ctr = new this.web3.eth.Contract(erc20abi, contract)
+    const ctr = new this.web3.eth.Contract(erc20Abi, contract)
     const data = ctr.methods.transfer(address, wei).encodeABI()
     console.log("Data", data)
     //const count = await this.web3.eth.getTransactionCount(this.connectedWallet)
@@ -534,6 +592,10 @@ export default class MetaMaskWallet extends ChainBaseClass {
   }
 
   async fetchLedger(method: unknown, params: unknown): Promise<unknown> {
+    if (!this.network) {
+      console.error("Network not set, connect or setChain first")
+      return { success: false, error: "Network not set" }
+    }
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)
     const opt = {

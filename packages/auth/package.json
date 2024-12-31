@@ -15,7 +15,9 @@
   "dependencies": {
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
+    "@cfce/state": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "jotai": "^2.10.4",
     "lucide-react": "0.469.0",
     "next-auth": "5.0.0-beta.25",
     "react-dom": "^19.0.0",
