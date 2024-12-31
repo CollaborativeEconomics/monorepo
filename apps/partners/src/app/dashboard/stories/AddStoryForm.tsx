@@ -1,8 +1,6 @@
-// /components/AddStoryForm.tsx
 'use client';
 
 import type { Category, Initiative } from '@cfce/database';
-import type { File } from 'formidable';
 import { useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
@@ -184,14 +182,14 @@ export default function AddStoryForm({
           register={register('categoryId', { required: true })}
           options={categoriesOptions}
         />
-        <TextInput label="Title" {...register('name', { required: true })} />
+        <TextInput label="Title" register={register('name', { required: true })} />
         <TextArea
           label="Description"
           {...register('desc', { required: true })}
         />
         <TextInput
           label="Estimated Amount Spent"
-          {...register('amount', { required: true })}
+          register={register('amount', { required: true })}
         />
         <Checkbox
           label="Mint Story NFT"

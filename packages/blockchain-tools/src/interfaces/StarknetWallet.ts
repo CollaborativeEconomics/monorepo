@@ -9,12 +9,40 @@ import {
   fetchGasTokenPrices,
 } from "@avnu/gasless-sdk"
 import appConfig from "@cfce/app-config"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
+import {
+  constants,
+  Account,
+  Contract,
+  Provider,
+  RpcProvider,
+  TransactionFinalityStatus,
+  num,
+} from "starknet"
+import type {
+  AccountInterface,
+  Call,
+  GetTransactionReceiptResponse,
+} from "starknet"
+import {
+  type Connector,
+  type StarknetWindowObject,
+  connect,
+  disconnect,
+} from "starknetkit"
 import { formatEther, parseEther } from "viem"
-import ChainBaseClass from "../chains/ChainBaseClass"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import chainConfiguration from "../chains/chainConfig"
+import { getNetworkForChain } from "../chains/utils"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"
 import { ERC721ABI } from "../contracts/starknet/ERC721Abi"
 
-class StarknetWallet extends ChainBaseClass {
+class StarknetWallet extends InterfaceBaseClass {
   provider: Provider
   account: AccountInterface | null = null
   contract: Contract | null = null
@@ -22,9 +50,14 @@ class StarknetWallet extends ChainBaseClass {
   connectedWallet = ""
   connector: Connector | null = null
   decimals = 18
+  network: NetworkConfig
+  chain: ChainConfig
 
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
+  constructor() {
+    super()
+    this.network = getNetworkForChain("starknet")
+    this.chain = chainConfiguration.starknet
+
     this.provider = new Provider({
       nodeUrl: process.env.STARKNET_RPC_URI,
     })
@@ -53,7 +86,7 @@ class StarknetWallet extends ChainBaseClass {
       modalMode: "alwaysAsk",
     })
 
-    const account = await connector?.account()
+    const account = await connector?.account(this.provider)
 
     // Get current chain from wallet
     const currentChain = await this.provider?.getChainId()
@@ -61,10 +94,9 @@ class StarknetWallet extends ChainBaseClass {
     const envChain = appConfig.chains.starknet?.network
 
     // Determine target network based on environment
-    const targetChainId =
-      envChain === "mainnet"
-        ? constants.StarknetChainId.SN_MAIN // Mainnet for production
-        : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
+    const targetChainId = envChain === "mainnet"
+      ? constants.StarknetChainId.SN_MAIN // Mainnet for production
+      : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
 
     // Switch network if needed
     if (currentChain !== targetChainId) {
@@ -106,14 +138,15 @@ class StarknetWallet extends ChainBaseClass {
       let wallet = this.wallet
 
       if (!wallet) {
-        ;({ wallet } = await this.getWallet())
+        ({ wallet } = await this.getWallet())
       }
 
       if (this.connectedWallet) {
         return {
           success: true,
           walletAddress: this.connectedWallet,
-          network: this.network.slug,
+          chain: this.chain.name,
+          network: this.network,
         }
       }
 
@@ -127,10 +160,10 @@ class StarknetWallet extends ChainBaseClass {
   public async sendPaymentWithGas(address: string, amount: number) {
     try {
       if (!this.connector) {
-        ;({ connector: this.connector } = await this.getWallet())
+        ({ connector: this.connector } = await this.getWallet())
       }
 
-      const account = await this.connector?.account()
+      const account = await this.connector?.account(this.provider)
       if (!account) {
         throw new Error("No account found")
       }
@@ -223,8 +256,7 @@ class StarknetWallet extends ChainBaseClass {
         ;({ connector } = await this.getWallet())
       }
 
-
-      const account = await connector?.account()
+      const account = await connector?.account(this.provider)
       console.log("Account", account)
       console.log("Account connected")
 
@@ -409,17 +441,21 @@ async fetchLedger(method: unknown, params: unknown): Promise<unknown> {
   }
 
   async getBalance() {
-    if (!this.connectedWallet) {
-      await this.getWallet()
+    try {
+      if (!this.connectedWallet) {
+        await this.getWallet()
+      }
+      const balance = await this.contract?.balanceOf(this.connectedWallet)
+      console.log("Balance", balance)
+      const {
+        balance: { low },
+      } = balance
+      console.log("Balance low", low)
+      return { success: true, balance: low }
+    } catch (error) {
+      console.error("Error getting balance", error)
+      return { success: false, error: "Error getting balance" }
     }
-
-    const balance = await this.contract?.balanceOf(this.connectedWallet)
-    console.log("Balance", balance)
-    const {
-      balance: { low },
-    } = balance
-    console.log("Balance low", low)
-    return low
   }
 }
 

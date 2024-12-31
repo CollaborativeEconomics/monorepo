@@ -19,20 +19,19 @@
     "postinstall": "pnpm db:generate"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.654.0",
-    "@prisma/client": "^5.22.0",
+    "@aws-sdk/client-s3": "^3.709.0",
+    "@prisma/client": "6.1.0",
     "@vercel/postgres": "0.10.0",
-    "prisma": "^5.22.0",
+    "prisma": "6.1.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@cfce/types": "workspace:*",
-    "@types/formidable": "^3.4.5",
-    "@types/node": "^22.9.0",
-    "dotenv": "^16.4.5",
+    "@types/node": "^22.10.1",
+    "dotenv": "^16.4.7",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.6.2"
+    "typescript": "^5.7.2"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"

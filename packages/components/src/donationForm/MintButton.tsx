@@ -1,6 +1,6 @@
 'use client';
 
-import { PAYMENT_STATUS, donationFormAtom } from '@cfce/utils';
+import { PAYMENT_STATUS, donationFormAtom } from '@cfce/state';
 import { useAtom } from 'jotai';
 import React from 'react';
 import { Button } from '~/ui/button';

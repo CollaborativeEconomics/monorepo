@@ -2,18 +2,21 @@
 import { usePostHog } from '@cfce/analytics';
 import appConfig from '@cfce/app-config';
 import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
-import { BlockchainManager } from '@cfce/blockchain-tools';
+import {
+  BlockchainClientInterfaces,
+  chainConfig,
+} from '@cfce/blockchain-tools';
 import type { Chain, Prisma, User } from '@cfce/database';
-import type { TokenTickerSymbol } from '@cfce/types';
-import { mintAndSaveReceiptNFT } from '@cfce/utils';
 import {
   PAYMENT_STATUS,
   amountCoinAtom,
   amountUSDAtom,
   chainAtom,
   donationFormAtom,
-  registryApi,
-} from '@cfce/utils';
+} from '@cfce/state';
+import type { TokenTickerSymbol } from '@cfce/types';
+import { mintAndSaveReceiptNFT } from '@cfce/utils';
+import { registryApi } from '@cfce/utils';
 import { useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '~/ui/button';
@@ -89,12 +92,11 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const { emailReceipt, name, email, amount } = donationForm;
   const usdAmount = useAtomValue(amountUSDAtom);
   const coinAmount = useAtomValue(amountCoinAtom);
+  const chain = chainConfig[selectedChain];
+  const network = chain.networks[appConfig.chainDefaults.network];
   //console.log('STATE', chainState, exchangeRate)
 
-  const chainInterface = useMemo(
-    () => BlockchainManager[selectedChain]?.client,
-    [selectedChain],
-  );
+  const chainInterface = BlockchainClientInterfaces[selectedWallet];
 
   const [buttonMessage, setButtonMessage] = useState(
     'One wallet confirmation required',
@@ -119,7 +121,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   }, []);
 
   const destinationWalletAddress = useMemo(() => {
-    const chainName = chainInterface?.chain.name;
+    const chainName = chain?.name;
 
     const initiativeWallet = initiative?.wallets?.find(
       w => w.chain === chainName,
@@ -145,53 +147,62 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
     handleError(new Error('No wallet found for chain'));
     return '';
-  }, [organization, initiative, chainInterface, handleError]);
+  }, [organization, initiative, chain, handleError]);
 
-  const getRate = useCallback(async () => {
-    try {
-      const response = await registryApi.get<{ coin: TokenTickerSymbol; rate: number }>(
+  const getRate = useCallback(() => {
+    registryApi
+      .get<{ coin: TokenTickerSymbol; rate: number }>(
         `/rates?coin=${selectedToken}&chain=${selectedChain}`,
-      );
-      
-      // Check if response and response.data exist before accessing rate
-      if (response?.data?.rate && response.success) {
-        setChainState(draft => {
-          draft.exchangeRate = response.data.rate;
-        });
-      } else {
-        console.warn('Invalid rate response:', response);
-        // Optionally set a fallback rate or handle the error case
-        setChainState(draft => {
-          draft.exchangeRate = 0.00; // fallback rate
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching rate:', error);
-      // Handle error case with fallback
-      setChainState(draft => {
-        draft.exchangeRate = 0.00; // fallback rate
+      )
+      .then(response => {
+        if (response.success) {
+          const { rate } = response.data;
+          console.log('RATE', rate);
+          if (rate > 0) {
+            setChainState(draft => {
+              //console.log('DRAFT', draft)
+              draft.exchangeRate = rate;
+            });
+            //requestAnimationFrame(() => {
+            //setChainState(draft => {
+            //console.log('DRAFT', draft)
+            //draft.exchangeRate = rate;
+            //});
+            //console.log('CHAIN1', chainState)
+            //});
+          }
+          //console.log('CHAIN2', chainState)
+        }
       });
-    }
   }, [selectedToken, selectedChain, setChainState]);
 
   useEffect(() => {
+    console.log('values changed, updating rate', {
+      selectedToken,
+      selectedChain,
+      setChainState,
+    });
     getRate();
-  }, [getRate]);
+  }, [selectedToken, selectedChain, setChainState, getRate]);
 
   const checkBalance = useCallback(async () => {
-    if (!chainInterface || !('getBalance' in chainInterface)) {
-      throw new Error('No chain interface or getBalance not supported');
+    if (!chainInterface?.connect) {
+      throw new Error('No connect method on chain interface');
     }
-    const balance = await chainInterface.getBalance();
-    return Number(balance) >= chainInterface.toBaseUnit(amount);
-  }, [chainInterface, amount]);
+    await chainInterface?.connect?.(network.id);
+    const balanceCheck = await chainInterface?.getBalance?.();
+    if (!balanceCheck || 'error' in balanceCheck) {
+      throw new Error(balanceCheck?.error ?? 'Failed to check balance');
+    }
+    return balanceCheck.balance >= chainInterface.toBaseUnit(amount);
+  }, [chainInterface, amount, network.id]);
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPayment) {
-        throw new Error('No chain interface');
+        throw new Error('No sendPayment method on chain interface');
       }
-      const connected = await chainInterface.connect();
+      const connected = await chainInterface.connect?.(network.id);
       console.log('CONNECT', connected);
       const data = {
         address,
@@ -203,13 +214,16 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       console.log('PAYMENT RESULT', result);
       return result;
     },
-    [chainInterface, selectedChain],
+    [chainInterface, network.id, selectedChain],
   );
 
   const sendPaymentWithGas = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPaymentWithGas) {
         throw new Error('Gas payments not supported');
+      }
+      if (!chainInterface.isConnected()) {
+        await chainInterface?.connect?.();
       }
 
       const result = await chainInterface.sendPaymentWithGas(address, amount);
@@ -334,6 +348,11 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     checkBalance,
     handleMinting,
     handleError,
+    posthog,
+    selectedToken,
+    selectedChain,
+    organization,
+    initiative,
   ]);
 
   function validateForm({ email }: { email: string }) {

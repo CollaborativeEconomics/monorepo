@@ -1,6 +1,6 @@
 'use client';
 
-import { chainAtom, donationFormAtom } from '@cfce/utils';
+import { chainAtom, donationFormAtom } from '@cfce/state';
 import { useAtom } from 'jotai';
 import React from 'react';
 import { InputWithContent, Label } from '~/ui'; // Adjust the import path as necessary

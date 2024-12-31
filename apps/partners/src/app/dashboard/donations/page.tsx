@@ -7,10 +7,11 @@ export default async function Page() {
   const session = await auth();
   const orgId = session?.orgId ?? '';
   const donations = await getDonations({ orgId: orgId });
+  const donationsPlain = JSON.parse(JSON.stringify(donations))
 
   return (
     <div className={styles.content}>
-      <DonationsTable data={donations} />
+      <DonationsTable data={donationsPlain} />
     </div>
   );
 }

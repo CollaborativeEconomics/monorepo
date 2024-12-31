@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getOrganizations } from '@cfce/database';
+import { getOrganizations, type OrganizationData } from '@cfce/database';
 import { OrganizationCard } from '@cfce/components/organization';
 import { SearchBar } from '@cfce/components/search';
 import { Card } from '@cfce/components/ui';
@@ -14,8 +14,7 @@ export default async function Organizations(props: {
 }) {
   const { query, category, location } = await props.searchParams;
   console.log('SEARCH', query, category, location);
-  const data =
-    (await getOrganizations({ search: query, category, location })) || [];
+  const data = (await getOrganizations({ search: query, category, location })) as OrganizationData[] || [];
   const organizations = data.filter(org => !org.inactive);
   console.log('ORGS', organizations.length);
 

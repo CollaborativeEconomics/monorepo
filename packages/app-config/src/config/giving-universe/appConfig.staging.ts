@@ -1,4 +1,4 @@
-import type { AppConfig, AuthTypes } from "@cfce/types"
+import type { AppConfig, AuthTypes, Network } from "@cfce/types"
 import appConfig from "./appConfig.production"
 
 const siteInfo: AppConfig["siteInfo"] = {
@@ -38,7 +38,7 @@ const chains: AppConfig["chains"] = {
     wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
     network: "testnet",
     contracts: {},
-    enabledWallets: ["xaman", "gemwallet", "crossmark"],
+    enabledWallets: ["xaman", "gemwallet"],
     tokens: ["XRP"],
     destinationTag: "77777777",
   },
@@ -46,7 +46,7 @@ const chains: AppConfig["chains"] = {
 
 const chainDefaults = {
   ...appConfig.chainDefaults,
-  network: "testnet",
+  network: "testnet" as Network,
 }
 
 const auth = appConfig.auth as AuthTypes[]

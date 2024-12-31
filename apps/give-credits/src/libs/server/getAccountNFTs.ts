@@ -1,4 +1,4 @@
-import { BlockchainManager } from "@cfce/blockchain-tools"
+import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
 import { getNftData } from "@cfce/database"
 
 // From database
@@ -14,7 +14,7 @@ export async function getNFTsFromLedger(account: string) {
     console.log("ERROR", "Account is required")
     return { error: "Account is required" }
   }
-  const txInfo = await BlockchainManager.stellar?.server.fetchLedger(
+  const txInfo = await BlockchainServerInterfaces.stellar.fetchLedger(
     `/account/${account}`,
   )
   if (!txInfo || "error" in txInfo || txInfo.status === 404) {

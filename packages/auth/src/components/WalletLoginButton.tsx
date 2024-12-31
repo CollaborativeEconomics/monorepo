@@ -1,59 +1,64 @@
 'use client';
 import {
-  BlockchainManager,
-  chainConfig as chainConfigs,
+  BlockchainClientInterfaces,
+  walletConfig,
 } from '@cfce/blockchain-tools';
-import type { AuthTypes, ChainSlugs } from '@cfce/types';
+import type { ClientInterfaces } from '@cfce/types';
+import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { walletLogin } from '../actions';
 import { BaseLoginButton } from './BaseLoginButton';
-import { useRouter } from 'next/navigation';
 
 interface WalletLoginButtonProps {
-  method: AuthTypes;
-  chain: ChainSlugs;
+  method: ClientInterfaces;
   className?: string;
 }
 
 export function WalletLoginButton({
   method,
-  chain,
   className,
 }: WalletLoginButtonProps) {
-  const chainConfig = chainConfigs[chain];
-  console.log('WalletLoginButton', { method, chain, className, chainConfig });
-  const walletInterface =
-    BlockchainManager[chain as keyof typeof BlockchainManager]?.client;
+  const walletInterface = BlockchainClientInterfaces[method];
+  const wallet = walletConfig[method];
 
   if (!walletInterface) {
-    throw new Error(`No wallet interface found for chain: ${chain}`);
+    throw new Error(`No wallet interface found for wallet: ${method}`);
   }
 
   const router = useRouter();
 
   const handleLogin = useCallback(async () => {
-    const { network, walletAddress } = await walletInterface.connect();
+    if (!walletInterface.connect) {
+      throw new Error(`No connect method found for wallet: ${method}`);
+    }
+
+    const connection = await walletInterface.connect();
+
+    if ('error' in connection) {
+      throw new Error(`Failed to connect to wallet: ${connection.error}`);
+    }
+
+    const { walletAddress, network, chain } = connection;
 
     if (!walletAddress) {
       throw new Error(`No wallet address found: ${walletAddress}`);
     }
     //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
-  const redirectUrl = await walletLogin(method, {
+    const redirectUrl = await walletLogin(method, {
       walletAddress,
-      chainConfig,
-      network,
+      network: network.slug,
+      chain,
     });
     if (redirectUrl) {
       router.push(redirectUrl);
     }
-  }, [method, walletInterface, chainConfig, router]);
-
+  }, [method, walletInterface, router]);
 
   return (
     <BaseLoginButton
       onClick={handleLogin}
-      icon={chainConfig.icon}
-      name={`${chainConfig.name} Wallet`}
+      icon={wallet.icon}
+      name={`${wallet.name} Wallet`}
       className={className}
     />
   );

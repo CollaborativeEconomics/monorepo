@@ -1,10 +1,12 @@
 import { auth } from '@cfce/auth';
+import type { Organization } from '@cfce/database';
+import { getOrganizationById, getOrganizations } from '~/actions/database'
 import {
-  type Organization,
-  getOrganizationById,
-  getOrganizations,
-} from '@cfce/database';
-import { Button, Sheet, SheetContent, SheetTrigger } from '@cfce/components/ui';
+  Button,
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@cfce/components/ui';
 import { Menu } from 'lucide-react';
 import type { Session } from 'next-auth';
 import Image from 'next/image';
@@ -52,12 +54,20 @@ const SidebarContent = ({
 
     <nav className="flex-grow">
       <ul>
+        {session?.isAdmin && (
+          <li key={'/dashboard/organization'} className="hover:bg-gray-700">
+            <Link href={'/dashboard/organization'} className="block px-4 py-2">
+              New Organization
+            </Link>
+          </li>
+        )}
         {[
-          { href: '/dashboard/organization', label: 'New Organization' },
           { href: '/dashboard/donations', label: 'Donations' },
           { href: '/dashboard/initiatives', label: 'Initiatives' },
           { href: '/dashboard/stories', label: 'Stories' },
+          { href: '/dashboard/events', label: 'Events' },
           { href: '/dashboard/wallets', label: 'Wallets' },
+          { href: '/dashboard/contracts', label: 'Contracts' },
         ].map(item => (
           <li key={item.href} className="hover:bg-gray-700">
             <Link href={item.href} className="block px-4 py-2">
@@ -100,7 +110,8 @@ const SidebarContent = ({
 
 const Sidebar = async () => {
   const session = await auth();
-  const organizations = await getOrganizations({});
+  const organizations = await getOrganizations();
+  const orgsPlain = JSON.parse(JSON.stringify(organizations))
 
   let currentOrg = null;
   if (session?.orgId) {
@@ -119,7 +130,7 @@ const Sidebar = async () => {
           <SidebarContent
             session={session}
             currentOrg={currentOrg}
-            organizations={organizations}
+            organizations={orgsPlain}
           />
         </SheetContent>
       </Sheet>
@@ -128,7 +139,7 @@ const Sidebar = async () => {
         <SidebarContent
           session={session}
           currentOrg={currentOrg}
-          organizations={organizations}
+          organizations={orgsPlain}
         />
       </div>
     </>

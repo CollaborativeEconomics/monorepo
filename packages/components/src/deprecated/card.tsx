@@ -1,4 +1,4 @@
-import React, { HTMLProps, PropsWithChildren } from 'react';
+import React, { type PropsWithChildren, type HTMLProps } from 'react';
 
 interface CardProps {
   className?: string;

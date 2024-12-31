@@ -34,7 +34,13 @@ export function ScrollBackground({ children }: ScrollBackgroundProps) {
   }, [handleScroll]);
 
   const backgroundClass =
-    scrollY > 0 ? 'bg-white dark:bg-accent py-4 shadow-md' : 'bg-transparent';
+    scrollY > 0
+      ? 'bg-white dark:bg-gradient-to-b py-4 shadow-md'
+      : 'bg-transparent';
 
-  return <div className={`transition-all ${backgroundClass}`}>{children}</div>;
+  return (
+    <div className={`w-full h-full transition-all ${backgroundClass}`}>
+      {children}
+    </div>
+  );
 }

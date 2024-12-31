@@ -32,7 +32,7 @@ const Page = ({ children, className }: PropsWithChildren<PageProps>) => {
         />
       </Link>
       <main
-        className={`container max-w-3xl rounded-2xl px-4 lg:px-12 py-12  w-11/12 md:w-1/2 2xl:w-1/3 md:mt-20 bg-green-900 shadow-3xl backdrop-blur mx-auto  ${className}`}
+        className={`container max-w-3xl rounded-2xl px-4 lg:px-12 py-12  w-11/12 md:w-1/2 2xl:w-1/3 md:mt-40 bg-green-900 shadow-3xl backdrop-blur mx-auto  ${className}`}
       >
         {children}
       </main>

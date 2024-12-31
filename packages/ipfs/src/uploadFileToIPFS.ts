@@ -2,13 +2,14 @@ import "server-only"
 import fs from "node:fs"
 import path from "node:path"
 import { put } from "@vercel/blob"
-import type { File } from "formidable"
 import uploadDataToIPFS from "./uploadDataToIPFS"
 
 export default async function uploadFileToIPFS(file: File): Promise<string> {
   // Get useful file info
-  const name = path.basename(file.originalFilename ?? "")
-  const mimeType = file.mimetype
+  const name = path.basename(file.name ?? "")
+  //const name = path.basename(file.originalFilename ?? "")
+  //const mimeType = file.mimetype
+  const mimeType = file.type
   if (!mimeType) {
     throw new Error("No MIME type found for file")
   }
@@ -18,7 +19,9 @@ export default async function uploadFileToIPFS(file: File): Promise<string> {
   }
 
   // Convert to bytes
-  const fileBuffer = fs.readFileSync(file.filepath)
+  //const fileBuffer = fs.readFileSync(file.filepath)
+  const buffer = await file.arrayBuffer();
+  const fileBuffer = Buffer.from(buffer);
   const bytes = new Uint8Array(fileBuffer)
 
   // uploadDataToIPFS

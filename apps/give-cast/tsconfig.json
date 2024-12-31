@@ -4,12 +4,27 @@
   "declaration": false,
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDirs": ["src", "."],
+    "rootDirs": [
+      "src",
+      "."
+    ],
     "outDir": "dist",
     "paths": {
-      "~/*": ["./src/*"]
-    }
+      "~/*": [
+        "./src/*"
+      ]
+    },
+    // "jsx": "preserve",
+    //"jsxImportSource": "frog/jsx"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

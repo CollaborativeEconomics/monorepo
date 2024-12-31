@@ -6,7 +6,6 @@ export default class XummClient extends XrplCommon {
   wallet?: Xumm
   connectedWallet = ""
 
-
   getWallet() {
     if (!this.wallet) {
       try {
@@ -36,7 +35,6 @@ export default class XummClient extends XrplCommon {
         const flow = state
         const user = state.me
         const address = user.account
-        const network = ((await wallet.user.networkType) ?? "").toLowerCase()
         const token = flow.jwt
         // const data = {
         //   wallet: "xumm",
@@ -49,7 +47,12 @@ export default class XummClient extends XrplCommon {
         //   topic: "",
         // }
         this.connectedWallet = address
-        return { success: true, walletAddress: address, network: network }
+        return {
+          success: true,
+          walletAddress: address,
+          chain: this.chain.name,
+          network: this.network,
+        }
       }
       console.log("Error", state)
       return { success: false, error: "Could not connect" }
@@ -120,7 +123,7 @@ export default class XummClient extends XrplCommon {
       console.log(approved ? "APPROVED" : "REJECTED")
       if (approved) {
         // @ts-ignore: I hate types
-        const txid = resolved?.data?.txid || ''
+        const txid = resolved?.data?.txid || ""
         return { success: true, txid, walletAddress: this.connectedWallet }
       }
       //if(resolved.data.signed){

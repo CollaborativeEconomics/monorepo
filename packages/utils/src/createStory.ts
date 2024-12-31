@@ -11,7 +11,6 @@ import {
 } from "@cfce/database"
 import { uploadDataToIPFS, uploadFileToIPFS } from "@cfce/ipfs"
 import { put } from "@vercel/blob"
-import type { File } from "formidable"
 import { mintStoryNFT } from "./mintStoryNFT"
 
 async function processFile(
@@ -35,8 +34,8 @@ async function processFile(
 }
 
 interface CreateStoryParams {
-  userId: string
   story: Omit<Prisma.StoryCreateInput, "organization" | "initiative">
+  userId: string
   organizationId: string
   initiativeId: string
   categoryId?: string
@@ -84,6 +83,7 @@ export default async function createStory({
       ...story,
       amount: story.amount ?? 0,
       image: imageCIDs.length > 0 ? `ipfs:${imageCIDs[0]}` : null,
+      ...(categoryId ? { category: { connect: { id: categoryId } } } : {}),
       organization: { connect: { id: organizationId } },
       initiative: { connect: { id: initiativeId } },
       ...{ category: categoryId ? { connect: { id: categoryId } } : {} },

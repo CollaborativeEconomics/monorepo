@@ -2,8 +2,6 @@ import React from 'react';
 
 import appConfig from '@cfce/app-config';
 import { AuthButton, auth } from '@cfce/auth';
-import { getChainConfiguration } from '@cfce/blockchain-tools';
-import type { ChainSlugs } from '@cfce/types';
 import { redirect } from 'next/navigation';
 
 import {
@@ -26,9 +24,7 @@ export default async function Signin() {
     redirect(`/profile/${userId}`);
   }
 
-  const chains = appConfig.chains;
-  console.log({ chains });
-  const chainConfigs = getChainConfiguration();
+  const enabledAuthMethods = appConfig.auth;
 
   return (
     <div className="container mx-auto mt-20">
@@ -38,23 +34,17 @@ export default async function Signin() {
             Sign in
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col">
-          {Object.entries(chains).map(([slug, { enabledWallets }], i) => {
-            const chainConfig = chainConfigs[slug as ChainSlugs];
-            return (
-              <div key={`auth-button-${slug} w-full flex`}>
-                {i > 0 && <Separator className="my-4" />}
-                {enabledWallets.map(wallet => (
-                  <AuthButton
-                    className="w-full"
-                    key={wallet}
-                    method={wallet}
-                    chain={slug as ChainSlugs}
-                  />
-                ))}
-              </div>
-            );
-          })}
+        <CardContent>
+          <div className="w-full flex flex-col gap-4">
+            <Separator className="my-4" />
+            {enabledAuthMethods.map(method => (
+              <AuthButton
+                className="w-full"
+                key={`auth-button-${method}`}
+                method={method}
+              />
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -4,9 +4,13 @@ import {
   StellarServer,
   Web3Server,
   XrplServer,
+  XrplClient,
   XummClient,
 } from "../../interfaces"
-import BlockchainManager from "../BlockchainManager"
+import {
+  BlockchainClientInterfaces,
+  BlockchainServerInterfaces,
+} from "../BlockchainInterfaces"
 
 jest.mock("../../interfaces", () => ({
   FreighterWallet: jest.fn(),
@@ -14,6 +18,7 @@ jest.mock("../../interfaces", () => ({
   StellarServer: jest.fn(),
   Web3Server: jest.fn(),
   XrplServer: jest.fn(),
+  XrplClient: jest.fn(),
   XummClient: jest.fn(),
 }))
 
@@ -24,27 +29,21 @@ describe("BlockchainManager", () => {
   //   expect(instance).toBeDefined()
   //   expect(instance.config).toBeDefined()
   // })
-  it("should correctly connect and store the XDC chain", () => {
-    const xdc = BlockchainManager.xdc
-    expect(xdc).toBeDefined()
-    expect(MetaMaskWallet).toHaveBeenCalledWith("xdc", expect.anything())
-    expect(Web3Server).toHaveBeenCalledWith("xdc", expect.anything())
+  it("Server interface correctly connects and stores the XDC chain", () => {
+    const serverInterface = BlockchainServerInterfaces.evm
+    serverInterface.setChain("xdc")
+    expect(serverInterface).toBeDefined()
+    expect(serverInterface.chain?.slug).toBe("xdc")
   })
 
   it("should correctly connect and store the Stellar chain", () => {
-    const stellar = BlockchainManager.stellar
+    const stellar = BlockchainServerInterfaces.stellar
     expect(stellar).toBeDefined()
-    expect(FreighterWallet).toHaveBeenCalledWith("stellar", expect.anything())
-    expect(StellarServer).toHaveBeenCalledWith("stellar", expect.anything())
+    expect(stellar.chain?.slug).toBe("stellar")
   })
 
-  it("should return undefined for an uninitialized chain", () => {
-    const starknet = BlockchainManager.starknet
-    expect(starknet).toBeUndefined()
-  })
-
-  it("should have chain properties accessible via static getters", () => {
-    expect(BlockchainManager.xdc).toBeDefined()
-    expect(BlockchainManager.stellar).toBeDefined()
-  })
+  // it("should return undefined for an uninitialized chain", () => {
+  //   const starknet = BlockchainManager.starknet
+  //   expect(starknet).toBeUndefined()
+  // })
 })
