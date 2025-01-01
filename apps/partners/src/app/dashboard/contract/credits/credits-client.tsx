@@ -144,6 +144,8 @@ export default function ContractCreditsClient({
       ]
       //const res = await factory.contracts.Credits.deploy(network, address, owner, deployer, wasm_hash, salt, init_fn, init_args)
       const res = await factory.contracts.Credits.deploy({
+        chain: chainSlug,
+        network,
         provider: data.provider,
         vendor:   data.vendor,
         bucket:   data.bucket
@@ -159,7 +161,7 @@ export default function ContractCreditsClient({
       setButtonState(ButtonState.READY)
       // Save to db contracts
       const contract = {
-        chain,
+        chain: chainSlug,
         network,
         contract_type,
         contract_address: res?.contractId,
