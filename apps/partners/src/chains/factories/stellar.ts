@@ -1,6 +1,6 @@
-import { BASE_FEE, Account, Address, Asset, Contract, Horizon, Keypair, Networks, Operation, SorobanDataBuilder, rpc, Transaction, TransactionBuilder, nativeToScVal, scValToNative, type xdr } from '@stellar/stellar-sdk'
+import { Address, BASE_FEE, Contract, Operation, SorobanDataBuilder, rpc, Transaction, TransactionBuilder, nativeToScVal, scValToNative, type xdr } from '@stellar/stellar-sdk'
 import { signTransaction } from "@stellar/freighter-api"
-import Wallet from '~/chains/wallets/freighter'
+import { FreighterWallet, chainConfig } from "@cfce/blockchain-tools"
 import { getContract } from '~/utils/registry-client'
 import { randomNumber } from '~/utils/random'
 
@@ -228,7 +228,7 @@ async function deployCredits(data:CreditsData) {
   console.log('DATA', data)
   try {
     const network = networks[data.network]
-    const wallet  = new Wallet()
+    const wallet  = new FreighterWallet()
     await wallet.init()
     const walletInfo = await wallet.connect()
     console.log('WALLET', walletInfo)
@@ -276,7 +276,7 @@ async function deployNFTReceipt(data:ReceiptData) {
   console.log('DATA', data)
   try {
     const network = networks[data.network]
-    const wallet  = new Wallet()
+    const wallet  = new FreighterWallet()
     await wallet.init()
     const walletInfo = await wallet.connect()
     console.log('WALLET', walletInfo)
