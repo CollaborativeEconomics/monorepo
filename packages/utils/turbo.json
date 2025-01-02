@@ -25,9 +25,7 @@
         "XDC_NETWORK",
         "TURBO_ENV"
       ],
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     }
   }
 }

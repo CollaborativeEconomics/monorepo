@@ -1,8 +1,8 @@
-import { googleLogin } from '../actions';
-import { BaseLoginButton } from './BaseLoginButton';
+import { googleLogin } from "../actions"
+import { BaseLoginButton } from "./BaseLoginButton"
 
 interface GoogleLoginButtonProps {
-  className?: string;
+  className?: string
 }
 
 export function GoogleLoginButton({ className }: GoogleLoginButtonProps) {
@@ -15,5 +15,5 @@ export function GoogleLoginButton({ className }: GoogleLoginButtonProps) {
         className={className}
       />
     </form>
-  );
+  )
 }

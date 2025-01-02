@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react"
 
-import { getOrganizationById, getStories } from '@cfce/database';
-import { InitiativeCard } from '@cfce/components/initiative';
-import { OrganizationAvatar } from '@cfce/components/organization';
-import { StoryCard } from '@cfce/components/story';
+import { getOrganizationById, getStories } from "@cfce/database"
+import { InitiativeCard } from "@cfce/components/initiative"
+import { OrganizationAvatar } from "@cfce/components/organization"
+import { StoryCard } from "@cfce/components/story"
 import {
   Button,
   OrgSocials,
@@ -12,24 +12,24 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@cfce/components/ui';
-import Image from 'next/image';
-import Link from 'next/link';
-import NotFound from '../../not-found';
+} from "@cfce/components/ui"
+import Image from "next/image"
+import Link from "next/link"
+import NotFound from "../../not-found"
 
 export default async function Home(props: {
-  params: Promise<{ organizationId: string }>;
+  params: Promise<{ organizationId: string }>
 }) {
-  const orgId = (await props.params)?.organizationId || null;
+  const orgId = (await props.params)?.organizationId || null
   if (!orgId) {
-    return <NotFound />;
+    return <NotFound />
   }
-  const organization = (await getOrganizationById(orgId)) || null;
+  const organization = (await getOrganizationById(orgId)) || null
   if (!organization) {
-    return <NotFound />;
+    return <NotFound />
   }
-  const stories = (await getStories({ orgId })) || [];
-  const initiatives = organization.initiative;
+  const stories = (await getStories({ orgId })) || []
+  const initiatives = organization.initiative
 
   return (
     <main className="w-full bg-gradient-to-t from-slate-200">
@@ -41,7 +41,7 @@ export default async function Home(props: {
               src={organization.image}
               alt="organization image"
               fill
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: "cover" }}
             />
           )}
 
@@ -51,7 +51,7 @@ export default async function Home(props: {
             <OrganizationAvatar
               name={organization.name}
               image={organization.image}
-              avatarProps={{ size: 'lg', title: organization.name }}
+              avatarProps={{ size: "lg", title: organization.name }}
               className="text-black lg:text-white"
             />
             <div className="flex flex-col items-center pb-5 ml-4 mt-4 lg:mt-0">
@@ -60,9 +60,9 @@ export default async function Home(props: {
               </Button>
               {organization.url ? (
                 <p className="text-sm font-semibold text-black lg:text-white text-center mb-24 lg:mb-0">
-                  to{' '}
+                  to{" "}
                   <span className="underline">
-                    <Link href={organization?.url ?? 'https://example.com'}>
+                    <Link href={organization?.url ?? "https://example.com"}>
                       {organization.name}
                     </Link>
                   </span>
@@ -76,12 +76,12 @@ export default async function Home(props: {
 
         <OrgSocials
           className="pt-[25rem] lg:ml-56 pl-[5%] gap-1 lg:gap-3"
-          twitterLabel={organization.twitter || ''}
-          twitterAddress={organization.twitter || ''}
-          facebookLabel={organization.facebook || ''}
-          facebookAddress={organization.facebook || ''}
-          websiteLabel={organization.url || ''}
-          websiteAddress={organization.url || ''}
+          twitterLabel={organization.twitter || ""}
+          twitterAddress={organization.twitter || ""}
+          facebookLabel={organization.facebook || ""}
+          facebookAddress={organization.facebook || ""}
+          websiteLabel={organization.url || ""}
+          websiteAddress={organization.url || ""}
         />
 
         <div className="pt-20">
@@ -118,20 +118,20 @@ export default async function Home(props: {
           <div className="flex flex-wrap md:flex-nowrap justify-center gap-9 lg:max-w-screen-lg">
             <div className="flex flex-col gap-5 w-full md:w-2/6 min-w-[350px]">
               <p className="text-3xl font-semibold">Initiatives</p>
-              {initiatives.map(initiative => {
+              {initiatives.map((initiative) => {
                 //initiative.organization = organization
-                return <InitiativeCard key={initiative.id} data={initiative} />;
+                return <InitiativeCard key={initiative.id} data={initiative} />
               })}
             </div>
             <div className="flex flex-col gap-5 md:w-4/6">
               <p className="text-3xl font-semibold">Stories</p>
-              {stories.map(story => {
-                return <StoryCard key={story.id} story={story} />;
+              {stories.map((story) => {
+                return <StoryCard key={story.id} story={story} />
               })}
             </div>
           </div>
         </div>
       </div>
     </main>
-  );
+  )
 }

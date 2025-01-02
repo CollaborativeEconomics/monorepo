@@ -1,1 +1,1 @@
-export { default } from '@cfce/pages/nft/[id]';
+export { default } from "@cfce/pages/nft/[id]"

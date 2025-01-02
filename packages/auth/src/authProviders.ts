@@ -18,7 +18,6 @@ interface Credentials {
   currency: string
 }
 
-
 async function getUserByCredentials(
   { id: userId, address, chain, chainId, network, currency }: Credentials,
   createTBA = false,
@@ -75,8 +74,6 @@ async function getUserByCredentials(
     return null
   }
 }
-
-
 
 /*
 async function getUserByCredentials(

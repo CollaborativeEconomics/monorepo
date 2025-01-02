@@ -1,25 +1,25 @@
-import { auth } from '@cfce/auth';
-import startCase from 'lodash/startCase';
-import React from 'react';
-import AuthHeader from '~/components/auth-header';
-import Footer from '~/components/footer';
-import LinkButton from '~/components/linkbutton';
-import Main from '~/components/main';
-import Title from '~/components/title';
+import { auth } from "@cfce/auth"
+import startCase from "lodash/startCase"
+import React from "react"
+import AuthHeader from "~/components/auth-header"
+import Footer from "~/components/footer"
+import LinkButton from "~/components/linkbutton"
+import Main from "~/components/main"
+import Title from "~/components/title"
 
 export default async function HomePage() {
-  const session = await auth();
-  console.log('SESSION', session)
-  const name = session?.user?.name ?? '';
-  const orgId = session?.orgId ?? '';
-  const isLogged = !!name;
-  const isAuthed = !!orgId;
+  const session = await auth()
+  console.log("SESSION", session)
+  const name = session?.user?.name ?? ""
+  const orgId = session?.orgId ?? ""
+  const isLogged = !!name
+  const isAuthed = !!orgId
 
-  let welcomeText = 'Log in with your Google account';
+  let welcomeText = "Log in with your Google account"
   if (isLogged) {
     welcomeText = isAuthed
       ? `Welcome ${startCase(name)}`
-      : 'You are not authorized, request access to the portal';
+      : "You are not authorized, request access to the portal"
   }
 
   return (
@@ -44,5 +44,5 @@ export default async function HomePage() {
       </Main>
       <Footer />
     </>
-  );
+  )
 }

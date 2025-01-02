@@ -1,27 +1,27 @@
-'use client';
+"use client"
 
-import type { Contract, Event, Volunteer } from '@cfce/database';
-import { waitForTransactionReceipt } from '@wagmi/core';
-import { useState } from 'react';
-import styles from '~/styles/dashboard.module.css';
-import { useAccount, useConnect, useWriteContract } from 'wagmi';
-import * as wagmiChains from 'wagmi/chains';
-import ButtonBlue from '~/components/buttonblue';
-import Dashboard from '~/components/dashboard';
-import Sidebar from '~/components/sidebar';
-import Title from '~/components/title';
-import { DistributorAbi } from '~/utils/DistributorAbi';
-import type { getReportedAddresses } from '~/utils/chainLogs';
-import { config } from '~/utils/wagmiConfig';
+import type { Contract, Event, Volunteer } from "@cfce/database"
+import { waitForTransactionReceipt } from "@wagmi/core"
+import { useState } from "react"
+import styles from "~/styles/dashboard.module.css"
+import { useAccount, useConnect, useWriteContract } from "wagmi"
+import * as wagmiChains from "wagmi/chains"
+import ButtonBlue from "~/components/buttonblue"
+import Dashboard from "~/components/dashboard"
+import Sidebar from "~/components/sidebar"
+import Title from "~/components/title"
+import { DistributorAbi } from "~/utils/DistributorAbi"
+import type { getReportedAddresses } from "~/utils/chainLogs"
+import { config } from "~/utils/wagmiConfig"
 
-const arbitrumSepolia = wagmiChains.arbitrumSepolia;
+const arbitrumSepolia = wagmiChains.arbitrumSepolia
 
 interface RewardClientProps {
-  id: string;
-  event: Event;
-  volunteers: Awaited<ReturnType<typeof getReportedAddresses>>['data'];
-  contractNFT: Contract;
-  contractV2E: Contract;
+  id: string
+  event: Event
+  volunteers: Awaited<ReturnType<typeof getReportedAddresses>>["data"]
+  contractNFT: Contract
+  contractV2E: Contract
 }
 
 export default function RewardClient({
@@ -31,45 +31,45 @@ export default function RewardClient({
   contractNFT,
   contractV2E,
 }: RewardClientProps) {
-  const [message, setMessage] = useState('Start the disbursement process');
-  const { data: hash, writeContractAsync } = useWriteContract({ config });
-  const { connectors, connect } = useConnect();
-  const account = useAccount();
+  const [message, setMessage] = useState("Start the disbursement process")
+  const { data: hash, writeContractAsync } = useWriteContract({ config })
+  const { connectors, connect } = useConnect()
+  const account = useAccount()
 
-  const payrate = event?.payrate || 1;
-  const unitlabel = event?.unitlabel || '';
-  let total = 0;
+  const payrate = event?.payrate || 1
+  const unitlabel = event?.unitlabel || ""
+  let total = 0
 
   async function onMint() {
-    const nft = contractNFT.contract_address as `0x${string}`;
-    const distributor = contractV2E.contract_address as `0x${string}`;
+    const nft = contractNFT.contract_address as `0x${string}`
+    const distributor = contractV2E.contract_address as `0x${string}`
 
     if (!account.isConnected) {
-      console.error('User not connected');
-      setMessage('User not connected');
-      return;
+      console.error("User not connected")
+      setMessage("User not connected")
+      return
     }
 
     try {
-      const registered = volunteers?.map(it => it.address);
+      const registered = volunteers?.map((it) => it.address)
       const hash = await writeContractAsync({
         address: distributor,
         abi: DistributorAbi,
-        functionName: 'distributeTokensByUnit',
+        functionName: "distributeTokensByUnit",
         args: [registered as `0x${string}`[]],
         chain: arbitrumSepolia,
         account: account.address,
-      });
+      })
 
       const distributionReceipt = await waitForTransactionReceipt(config, {
         hash,
         confirmations: 2,
-      });
+      })
 
-      setMessage('Tokens distributed successfully');
+      setMessage("Tokens distributed successfully")
     } catch (error) {
-      console.error('Reward distribution error:', error);
-      setMessage('Error distributing tokens');
+      console.error("Reward distribution error:", error)
+      setMessage("Error distributing tokens")
     }
   }
 
@@ -92,8 +92,8 @@ export default function RewardClient({
               <tbody className="border-t-2">
                 {volunteers &&
                   volunteers?.length > 0 &&
-                  volunteers.map(v => {
-                    total += Number(v.value) * Number(payrate);
+                  volunteers.map((v) => {
+                    total += Number(v.value) * Number(payrate)
                     return (
                       <tr key={`volunteer-${v.address}`}>
                         <td>{v.address}</td>
@@ -101,7 +101,7 @@ export default function RewardClient({
                           ${(Number(v.value) * Number(payrate)).toFixed(2)}
                         </td>
                       </tr>
-                    );
+                    )
                   })}
               </tbody>
               <tfoot className="border-t-2">
@@ -132,5 +132,5 @@ export default function RewardClient({
         </div>
       </div>
     </Dashboard>
-  );
+  )
 }

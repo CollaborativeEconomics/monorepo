@@ -7,12 +7,12 @@ import { uploadFile } from "@cfce/utils"
 import { uploadFileToIPFS } from "@cfce/ipfs"
 
 type FormData = {
-  title: string;
-  description: string;
-  start?: string;
-  finish?: string;
-  image: FileList;
-};
+  title: string
+  description: string
+  start?: string
+  finish?: string
+  image: FileList
+}
 
 //async function saveImageToIPFS(data: { name: string; file: File }) {
 //  const body = new FormData()
@@ -27,16 +27,16 @@ type FormData = {
 //}
 
 export async function createInitiative(data: FormData, orgId: string) {
-  console.log('DATA', data)
+  console.log("DATA", data)
   if (!data.title || !data.description || !data.image) {
     return { success: false, error: "Missing required fields" }
   }
 
   try {
-    const file = data.image?.length>0 ? data.image[0] : null; // Only one image per initiative
-    let imageUri = ''
-    let defaultAsset = ''
-    if(file){
+    const file = data.image?.length > 0 ? data.image[0] : null // Only one image per initiative
+    let imageUri = ""
+    let defaultAsset = ""
+    if (file) {
       const ext = file.type.split("/")[1]
       if (!["jpg", "jpeg", "png", "webp"].includes(ext)) {
         return { success: false, error: "Invalid image format" }
@@ -44,16 +44,16 @@ export async function createInitiative(data: FormData, orgId: string) {
 
       // Save image to Vercel
       const name = `${randomString()}.${ext}`
-      const folder = 'media'
-      const resup = await uploadFile({file, name, folder})
+      const folder = "media"
+      const resup = await uploadFile({ file, name, folder })
       if (!resup || resup?.error) {
         return { success: false, error: `Error saving image: ${resup.error}` }
       }
-      defaultAsset = resup?.result?.url || ''
-      
+      defaultAsset = resup?.result?.url || ""
+
       // Save image to IPFS
       const cid = await uploadFileToIPFS(file)
-      imageUri = cid ? `ipfs:${cid}` : ''
+      imageUri = cid ? `ipfs:${cid}` : ""
       //const resimg = await saveImageToIPFS({ name, file })
       //if (resimg.error) {
       //  return { success: false, error: `Error saving image: ${resimg.error}` }
@@ -77,7 +77,7 @@ export async function createInitiative(data: FormData, orgId: string) {
     }
 
     const result = await newInitiative(record)
-    console.log('RES', result)
+    console.log("RES", result)
 
     if (!result) {
       return { success: false, error: "Unknown error" }
@@ -89,7 +89,6 @@ export async function createInitiative(data: FormData, orgId: string) {
     // chainId = 51 // xdc testnet
     // 2. create TBA for that NFT
     // const tab = await createAccount(REGISTRY_NFT_COPY, tokenId, chainId, waitForReceipt=false)
-
 
     return { success: true, data: result }
   } catch (ex) {

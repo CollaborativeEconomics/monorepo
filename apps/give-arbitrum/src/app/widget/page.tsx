@@ -1,9 +1,9 @@
-import { headers } from 'next/headers';
+import { headers } from "next/headers"
 
 export default async function Widget() {
-  const hdrs = await headers();
-  const host = hdrs.get('host');
-  const url = `https://${host}/api/widget/123456-789012`;
+  const hdrs = await headers()
+  const host = hdrs.get("host")
+  const url = `https://${host}/api/widget/123456-789012`
 
   return (
     <main className="flex min-h-screen flex-col items-stretch container py-24 mt-24">
@@ -31,5 +31,5 @@ export default async function Widget() {
         </p>
       </div>
     </main>
-  );
+  )
 }

@@ -11,7 +11,7 @@ export default async function Home() {
   }
   const result = await createUser()
 */
-  const result = 'OK';
+  const result = "OK"
 
   return (
     <>
@@ -22,5 +22,5 @@ export default async function Home() {
         </div>
       </div>
     </>
-  );
+  )
 }

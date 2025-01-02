@@ -41,14 +41,14 @@ export const EntityType = {
 
 // Used in contracts model
 export type ContractType = {
-  "721": "721",
-  "1155": "1155",
-  "Credits": "Credits",
-  "CreditsHash": "CreditsHash",
-  "Factory": "Factory",
-  "NFTReceipt": "NFTReceipt",
-  "NFTReceiptHash": "NFTReceiptHash",
-  "TBAImplementation": "TBAImplementation",
-  "TBARegistry": "TBARegistry",
-  "V2E": "V2E",
+  "721": "721"
+  "1155": "1155"
+  Credits: "Credits"
+  CreditsHash: "CreditsHash"
+  Factory: "Factory"
+  NFTReceipt: "NFTReceipt"
+  NFTReceiptHash: "NFTReceiptHash"
+  TBAImplementation: "TBAImplementation"
+  TBARegistry: "TBARegistry"
+  V2E: "V2E"
 }

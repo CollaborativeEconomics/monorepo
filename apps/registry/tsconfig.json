@@ -5,18 +5,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
-    "rootDirs": [
-      "src",
-      "."
-    ],
+    "rootDirs": ["src", "."],
     "paths": {
-      "~/*": [
-        "./src/*"
-      ]
-    }
+      "~/*": ["./src/*"]
+    },
     // "module": "NodeNext",
     // "moduleResolution": "NodeNext"
-    ,
     "esModuleInterop": true
   },
   "include": [
@@ -29,9 +23,5 @@
     ".next/types/**/*.ts",
     "next.config.mjs"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "work"
-  ]
+  "exclude": ["node_modules", "dist", "work"]
 }

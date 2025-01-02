@@ -14,9 +14,15 @@ body {
   background: var(--back-primary);
 }
 
-h1 { font-size: 1.4em; }
-h2 { font-size: 1.2em; }
-h3 { font-size: 1.0em; }
+h1 {
+  font-size: 1.4em;
+}
+h2 {
+  font-size: 1.2em;
+}
+h3 {
+  font-size: 1.0em;
+}
 
 .selected {
   background-color: #545d79;
@@ -52,28 +58,27 @@ textarea {
   line-height: 1.2em;
 }
 
-
-@media (min-width: 1536px){
+@media (min-width: 1536px) {
   .container {
     max-width: 1536px;
   }
 }
-@media (min-width: 1280px){
+@media (min-width: 1280px) {
   .container {
     max-width: 1280px;
   }
 }
-@media (min-width: 1024px){
+@media (min-width: 1024px) {
   .container {
     max-width: 1024px;
   }
 }
-@media (min-width: 768px){
+@media (min-width: 768px) {
   .container {
     max-width: 768px;
   }
 }
-@media (min-width: 640px){
+@media (min-width: 640px) {
   .container {
     max-width: 640px;
   }

@@ -47,7 +47,7 @@ export class RegistryApi {
       //  data,
       //  success: true,
       //}
-      
+
       //const data: ApiResponse<T> = await response.json()
       //if (!data.success) {
       //  throw new Error(data.error || "An error occurred")
@@ -74,7 +74,10 @@ export class RegistryApi {
     endpoint: string,
     data: U,
   ): Promise<ApiResponse<T>> {
-    const res = await this.request<T>(endpoint, { method: "POST", body: JSON.stringify(data) })
+    const res = await this.request<T>(endpoint, {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
     //console.log('RES', res)
     return res
   }
@@ -93,7 +96,7 @@ export class RegistryApi {
 
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
     const res = await this.request<T>(endpoint, { method: "DELETE" })
-    console.log('RES', res)
+    console.log("RES", res)
     return res
   }
 }
