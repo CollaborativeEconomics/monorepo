@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import Image from 'next/image'
 import copy from 'clipboard-copy'
+import Image from 'next/image'
+import Link from 'next/link'
 
 interface ContractProps {
   id: string
@@ -24,7 +24,7 @@ function copyToClipboard(text?:string) {
 }
 
 const Contract = (item:ContractProps) => {
-  console.log('CTR', item)
+  //console.log('CTR', item)
   return (
     <div className="flex flex-row justify-between items-center w-full">
       <div className="flex flex-col justify-start items-start w-full">

@@ -10,17 +10,18 @@ import TextInput from '~/components/form/textinput'
 import Select from '~/components/form/select'
 import styles from '~/styles/dashboard.module.css';
 import { apiFetch, apiPost } from '~/utils/api';
-import chains from '~/chains';
+import factoryDeployers from '~/chains';
 import type { ChainSlugs } from "@cfce/types"
+import type { Chain } from "@cfce/database"
 
 type OrganizationData = Prisma.OrganizationGetPayload<{ include: { initiative: true } }>
 
 interface PageProps {
   chain: string;
   network: string;
-  wallet?: string;
-  organizationId?: string;
   organization?: OrganizationData | null;
+  organizationId?: string;
+  wallet?: string;
 }
 
 interface FormProps {
@@ -33,14 +34,15 @@ interface FormProps {
 export default function NFTReceiptClient({
   chain,
   network,
-  wallet,
-  organizationId,
   organization,
+  organizationId,
+  wallet,
 }: PageProps) {
-  const chainSlug = chain.toLowerCase()
-  const config = appConfig.chains[chainSlug as ChainSlugs]
-  if(!config){ throw new Error('Chain required but not found') }
+  console.log('CHAIN', chain)
   const contract_type = 'NFTReceipt'
+  const chainSlug = chain.toLowerCase() as ChainSlugs
+  const appChainConfig = appConfig.chains[chainSlug];
+  if(!appChainConfig){ throw new Error('Chain required but not found') }
 
   const [initiative, setInitiative] = useState(organization?.initiative[0].id||'')
   const [initialURI, setInitialURI] = useState(organization?.initiative[0].imageUri||'')
@@ -106,7 +108,7 @@ export default function NFTReceiptClient({
     console.log('SUBMIT', data)
     showMessage('Not ready...')
 
-    if (!chainSlug) {
+    if (!chain) {
       showMessage('Chain is required')
       return
     }
@@ -119,9 +121,9 @@ export default function NFTReceiptClient({
       setButtonState(ButtonState.WAIT)
 
       // DEPLOY
-      const address = config?.contracts?.factory || ''
+      const address = appChainConfig?.contracts?.receiptFactory || ''
       console.log('CTR', address)
-      const factory = chains[chain]
+      const factory = factoryDeployers[chainSlug]
       console.log('FAC', factory)
       if(!factory){
         showMessage('Error deploying contract: Factory not found')
@@ -130,11 +132,11 @@ export default function NFTReceiptClient({
       }
 
       // This only works for Stellar, refactor and universalize
-      const wasm_hash = config?.contracts?.receiptMintbotERC721Hash || ''
-      const init_fn = 'init'
+      const wasm_hash = appChainConfig?.contracts?.receiptMintbotERC721Hash || ''
+      const init_fn = 'initialize'
       const init_args = [ name, symbol ]
-      const res = await factory.contracts.NFTReceipt.deploy({
-        chain: chainSlug,
+      const res = await factory.NFTReceipt.deploy({
+        chain: chain.toLowerCase(),
         network,
         name: data.name,
         symbol: data.symbol
@@ -149,7 +151,7 @@ export default function NFTReceiptClient({
       setButtonState(ButtonState.READY)
       // Save to db contracts
       const contract = {
-        chain: chainSlug,
+        chain: chain.toLowerCase(),
         network,
         contract_type,
         contract_address: res?.contractId,

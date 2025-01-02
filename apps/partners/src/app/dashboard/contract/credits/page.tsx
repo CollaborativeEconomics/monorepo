@@ -1,11 +1,12 @@
 import { Suspense } from 'react';
+import type { ChainSlugs, Network } from '@cfce/types';
 import ContractCreditsClient from './credits-client';
 
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 interface PageProps {
   //params: Promise<{ slug: string }>
-  searchParams: SearchParams
+  searchParams: SearchParams;
 }
 
 export default async function ContractCreditsPage({ searchParams }: PageProps) {
@@ -14,10 +15,10 @@ export default async function ContractCreditsPage({ searchParams }: PageProps) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <ContractCreditsClient
-        chain={chain?.toString() || 'Stellar'}
-        network={network?.toString() || 'testnet'}
-        wallet={wallet?.toString() || ''}
-        organizationId={organizationId?.toString() || ''}
+        chain={(chain as ChainSlugs) ?? 'stellar'}
+        network={(network as Network) ?? 'testnet'}
+        wallet={(wallet as string) ?? ''}
+        organizationId={organizationId as string}
       />
     </Suspense>
   );
