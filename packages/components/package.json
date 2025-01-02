@@ -65,8 +65,8 @@
     }
   },
   "devDependencies": {
-    "@cfce/state": "workspace:*",
     "@cfce/analytics": "workspace:*",
+    "@cfce/state": "workspace:*",
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
     "@types/lodash": "^4.17.13",
@@ -86,7 +86,6 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
-    "react-day-picker": "9.4.4",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
@@ -101,6 +100,7 @@
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
+    "@radix-ui/react-toast": "^1.2.4",
     "@rive-app/react-canvas": "^4.17.0",
     "@stellar/freighter-api": "3.0.0",
     "@stellar/stellar-sdk": "^13.1.0",
@@ -114,6 +114,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "0.469.0",
     "luxon": "^3.5.0",
+    "react-day-picker": "9.4.4",
     "react-hook-form": "^7.54.0",
     "swiper": "^11.1.15",
     "tailwind-merge": "^2.5.5",

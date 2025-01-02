@@ -18,7 +18,7 @@ export async function RecentStories({ userId, limit = 5 }: Props) {
         {stories?.length > 0 ? (
           stories.map(story => (
             <div className="my-4" key={story.id}>
-              <StoryCardCompactVert story={story} />
+              <StoryCardCompactVert story={JSON.parse(JSON.stringify(story))} />
             </div>
           ))
         ) : (

@@ -24,10 +24,10 @@ export default async function Profile({
     <main className="container min-h-screen flex flex-col items-stretch py-24 mt-24">
       <div className="flex flex-col lg:flex-row justify-between">
         <Suspense fallback={<div>Loading profile...</div>}>
-          <ProfileForm user={user} />
+          <ProfileForm user={JSON.parse(JSON.stringify(user))} />
         </Suspense>
         <Suspense fallback={<div>Loading wallets...</div>}>
-          <UserWallets userId={userId} />
+          <UserWallets wallets={JSON.parse(JSON.stringify(user.wallets))} />
         </Suspense>
       </div>
 
