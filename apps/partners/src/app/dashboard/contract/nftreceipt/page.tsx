@@ -2,8 +2,11 @@ import { Suspense } from 'react';
 import NFTReceiptClient from './nftreceipt-client';
 import { getOrganizationById } from '~/actions/database'
 
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+
 interface PageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  //params: Promise<{ slug: string }>
+  searchParams: SearchParams
 }
 
 export default async function NFTReceiptPage({ searchParams }: PageProps) {
@@ -14,10 +17,10 @@ export default async function NFTReceiptPage({ searchParams }: PageProps) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <NFTReceiptClient
-        chain={chain?.toString()}
-        network={network?.toString()}
-        wallet={wallet?.toString()}
-        organizationId={organizationId?.toString()}
+        chain={chain?.toString() || 'Stellar'}
+        network={network?.toString() || 'testnet'}
+        wallet={wallet?.toString() || ''}
+        organizationId={organizationId?.toString() || ''}
         organization={organization}
       />
     </Suspense>
