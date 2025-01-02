@@ -38,6 +38,8 @@ export function ScrollBackground({ children }: ScrollBackgroundProps) {
       ? 'bg-white dark:bg-gradient-to-b py-4 shadow-md'
       : 'bg-transparent';
 
+  console.log('scrollY', scrollY, backgroundClass);
+
   return (
     <div className={`w-full h-full transition-all ${backgroundClass}`}>
       {children}

@@ -1,14 +1,12 @@
-import type { Chain, UserWallet } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
+import type { Chain, UserWallet } from "@prisma/client"
 import { prismaClient } from ".."
 
 interface UserWalletQuery extends ListQuery {
   userId?: string
 }
 // @deprecated looks like
-export async function getUserWallets(
-  query: UserWalletQuery,
-): Promise<UserWallet | Array<UserWallet>> {
+export async function getUserWallets(query: UserWalletQuery) {
   let where = {}
   const skip = 0
   const take = 100
