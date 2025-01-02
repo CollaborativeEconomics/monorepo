@@ -1,7 +1,7 @@
 'use client';
 
 import { chainConfig } from '@cfce/blockchain-tools';
-import type { Wallet } from '@cfce/database';
+import type { Prisma } from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
 import copy from 'clipboard-copy';
 import { Clipboard, Trash2 } from 'lucide-react';
@@ -9,7 +9,9 @@ import Image from 'next/image';
 import { removeWallet } from './actions';
 
 type WalletRowProps = {
-  wallet: Wallet;
+  wallet: Prisma.UserGetPayload<{
+    include: { wallets: true };
+  }>['wallets'][number];
 };
 
 export function WalletRow({ wallet }: WalletRowProps) {

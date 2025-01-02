@@ -1,8 +1,15 @@
 'use client';
 
-import { getChainConfiguration } from '@cfce/blockchain-tools';
-import type { ChainSlugs } from '@cfce/types';
+import appConfig from '@cfce/app-config';
+import {
+  BlockchainClientInterfaces,
+  getChainConfiguration,
+  getWalletConfiguration,
+  walletConfig,
+} from '@cfce/blockchain-tools';
+import type { AuthTypes, ChainSlugs, ClientInterfaces } from '@cfce/types';
 import { Plus } from 'lucide-react';
+import { revalidatePath } from 'next/cache';
 import { useToast } from '../../hooks/use-toast';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
@@ -11,19 +18,36 @@ import { Separator } from '../../ui/separator';
 import { connectWallet } from './actions';
 
 type ConnectWalletOverlayProps = {
+  userId: string;
   onSuccess?: () => void;
 };
 
-export function ConnectWalletOverlay({ onSuccess }: ConnectWalletOverlayProps) {
+export function ConnectWalletOverlay({
+  userId,
+  onSuccess,
+}: ConnectWalletOverlayProps) {
   const { toast } = useToast();
-  const chainConfig = getChainConfiguration();
+  // const chainConfig = getChainConfiguration();
+  const enabledWallets = appConfig.auth.filter(
+    w => !['github', 'google'].includes(w),
+  ) as ClientInterfaces[];
+  // ClientInterfaces is a subset of AuthTypes
 
-  const handleWalletConnect = async (chain: ChainSlugs) => {
+  const handleWalletConnect = async (wallet: ClientInterfaces) => {
     try {
-      // This is a mock implementation - in reality you'd connect to the actual wallet
-      const mockAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+      const walletInterface = BlockchainClientInterfaces[wallet];
+      if (!walletInterface?.connect) {
+        throw new Error('Wallet interface not found');
+      }
 
-      await connectWallet(chain.toUpperCase(), mockAddress);
+      const walletResponse = await walletInterface.connect();
+      if ('error' in walletResponse) {
+        throw new Error(walletResponse.error);
+      }
+
+      const { walletAddress, chain } = walletResponse;
+
+      await connectWallet(walletAddress, chain);
 
       toast({
         title: 'Wallet connected',
@@ -59,20 +83,23 @@ export function ConnectWalletOverlay({ onSuccess }: ConnectWalletOverlayProps) {
           <CardContent className="max-h-80vh overflow-y-scroll">
             <div className="w-full flex flex-col gap-4">
               <Separator className="my-4" />
-              {(Object.keys(chainConfig) as ChainSlugs[]).map(chain => (
-                <Button
-                  key={chain}
-                  className="w-full flex items-center gap-2"
-                  onClick={() => handleWalletConnect(chain)}
-                >
-                  <img
-                    src={chainConfig[chain].icon}
-                    alt={chain}
-                    className="w-6 h-6"
-                  />
-                  <span>Connect {chainConfig[chain].name}</span>
-                </Button>
-              ))}
+              {enabledWallets.map(wallet => {
+                const walletConfig = getWalletConfiguration([wallet])[0];
+                return (
+                  <Button
+                    key={wallet}
+                    className="w-full flex items-between gap-2"
+                    onClick={() => handleWalletConnect(wallet)}
+                  >
+                    <img
+                      src={walletConfig.icon}
+                      alt={wallet}
+                      className="w-6 h-6"
+                    />
+                    <span>Connect {walletConfig.name}</span>
+                  </Button>
+                );
+              })}
             </div>
           </CardContent>
         </Card>

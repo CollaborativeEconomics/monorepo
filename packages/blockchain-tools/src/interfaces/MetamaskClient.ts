@@ -30,51 +30,52 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       this.wallets = await this.metamask?.enable()
       const metamaskChainId = await window.ethereum?.chainId
 
-      //console.log('Accounts', this.wallets)
-      this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
+      // This uses the latest wallet connected
+      this.connectedWallet = this.wallets ? this.wallets[0] : ""
       const newChainIsSameAsConnectedChain =
         Number(newChainId) === Number(this.network?.id)
       const metamaskChainIsSameAsConnectedChain =
         Number(metamaskChainId) === Number(this.network?.id)
       // early return if chainId and wallet are already set correctly
-      console.log(
-        "newChainIsSameAsConnectedChain",
-        newChainIsSameAsConnectedChain,
-        newChainId,
-        this.network?.id,
-      )
-      console.log(
-        "metamaskChainIsSameAsConnectedChain",
-        metamaskChainIsSameAsConnectedChain,
-        metamaskChainId,
-        this.network?.id,
-      )
-      console.log("this.connectedWallet", this.network)
-      if (
-        newChainId
-          ? newChainIsSameAsConnectedChain && this.connectedWallet
-          : metamaskChainIsSameAsConnectedChain && this.connectedWallet
-      ) {
-        if (!this.chain) {
-          throw new Error("Already connected, but chain not set")
-        }
-        if (!this.network) {
-          throw new Error("Already connected, but network not set")
-        }
-        return {
-          success: true,
-          network: this.network,
-          walletAddress: this.connectedWallet,
-          chain: this.chain.name,
-        }
-      }
+      // TODO: do this properly with multiple wallet checks
+      // console.log(
+      //   "newChainIsSameAsConnectedChain",
+      //   newChainIsSameAsConnectedChain,
+      //   newChainId,
+      //   this.network?.id,
+      // )
+      // console.log(
+      //   "metamaskChainIsSameAsConnectedChain",
+      //   metamaskChainIsSameAsConnectedChain,
+      //   metamaskChainId,
+      //   this.network?.id,
+      // )
+      // console.log("this.connectedWallet", this.network)
+      // if (
+      //   newChainId
+      //     ? newChainIsSameAsConnectedChain && this.connectedWallet
+      //     : metamaskChainIsSameAsConnectedChain && this.connectedWallet
+      // ) {
+      //   if (!this.chain) {
+      //     throw new Error("Already connected, but chain not set")
+      //   }
+      //   if (!this.network) {
+      //     throw new Error("Already connected, but network not set")
+      //   }
+      //   return {
+      //     success: true,
+      //     network: this.network,
+      //     walletAddress: this.connectedWallet,
+      //     chain: this.chain.name,
+      //   }
+      // }
       if (
         typeof newChainId === "undefined" &&
         typeof metamaskChainId === "undefined"
       ) {
         throw new Error("No chain ID provided or inferred")
       }
-      const chainId = newChainId ?? metamaskChainId
+      const chainId = newChainId ?? Number(metamaskChainId)
       if (typeof chainId !== "number") {
         throw new Error(`Invalid chain ID type: ${typeof chainId}`)
       }

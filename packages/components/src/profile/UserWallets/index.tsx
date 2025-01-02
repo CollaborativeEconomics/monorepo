@@ -1,14 +1,15 @@
 import { LogoutButton } from '@cfce/auth';
-import type { Wallet } from '@cfce/database';
+import type { Prisma, Wallet } from '@cfce/database';
 import { Divider } from '../../ui';
 import { ConnectWalletOverlay } from './ConnectWalletOverlay';
 import { WalletRow } from './WalletRow';
 
 type Props = {
-  wallets: Wallet[];
+  wallets: Prisma.UserGetPayload<{ include: { wallets: true } }>['wallets'];
 };
 
 export function UserWallets({ wallets }: Props) {
+  const userId = wallets[0].userId;
   return (
     <div className="w-full lg:w-1/3">
       <h2 className="font-semibold mb-2">Connected Wallets</h2>
@@ -17,10 +18,10 @@ export function UserWallets({ wallets }: Props) {
           {wallets.map(wallet => (
             <WalletRow key={wallet.id} wallet={wallet} />
           ))}
+          <ConnectWalletOverlay userId={userId} />
         </div>
         <Divider />
         <div className="w-full space-y-3 p-8">
-          <ConnectWalletOverlay />
           <LogoutButton className="w-full" />
         </div>
       </div>

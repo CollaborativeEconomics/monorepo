@@ -1,5 +1,6 @@
 "use server"
 
+import appConfig from "@cfce/app-config"
 import { auth } from "@cfce/auth"
 import {
   type Chain,
@@ -7,7 +8,7 @@ import {
   getUserWalletByAddress,
   newUserWallet,
 } from "@cfce/database"
-
+import { revalidatePath } from "next/cache"
 export async function removeWallet(id: string) {
   const session = await auth()
   const userId = session?.user?.id
@@ -17,9 +18,10 @@ export async function removeWallet(id: string) {
   }
 
   await deleteUserWallet(id)
+  revalidatePath(`/profile/${userId}`)
 }
 
-export async function connectWallet(chain: string, address: string) {
+export async function connectWallet(address: string, chain: string) {
   const session = await auth()
   // @ts-ignore: module augmentation issue
   const userId = session?.user?.id
@@ -36,12 +38,15 @@ export async function connectWallet(chain: string, address: string) {
 
   // Create new wallet
   const wallet = await newUserWallet({
+    network: appConfig.chainDefaults.network,
     chain: chain as Chain,
     address,
     users: {
       connect: { id: userId },
     },
   })
+
+  revalidatePath(`/profile/${userId}`)
 
   return wallet
 }
