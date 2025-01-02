@@ -1,27 +1,24 @@
-'use client';
-import { usePostHog } from '@cfce/analytics';
-import appConfig from '@cfce/app-config';
-import { createAnonymousUser, fetchUserByWallet } from '@cfce/auth';
-import {
-  BlockchainClientInterfaces,
-  chainConfig,
-} from '@cfce/blockchain-tools';
-import type { Chain, Prisma, User } from '@cfce/database';
+"use client"
+import { usePostHog } from "@cfce/analytics"
+import appConfig from "@cfce/app-config"
+import { createAnonymousUser, fetchUserByWallet } from "@cfce/auth"
+import { BlockchainClientInterfaces, chainConfig } from "@cfce/blockchain-tools"
+import type { Chain, Prisma, User } from "@cfce/database"
 import {
   PAYMENT_STATUS,
   amountCoinAtom,
   amountUSDAtom,
   chainAtom,
   donationFormAtom,
-} from '@cfce/state';
-import type { TokenTickerSymbol } from '@cfce/types';
-import { mintAndSaveReceiptNFT } from '@cfce/utils';
-import { registryApi } from '@cfce/utils';
-import { useAtom, useAtomValue } from 'jotai';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button } from '~/ui/button';
-import { Card } from '~/ui/card';
-import { CheckboxWithText } from '~/ui/checkbox';
+} from "@cfce/state"
+import type { TokenTickerSymbol } from "@cfce/types"
+import { mintAndSaveReceiptNFT } from "@cfce/utils"
+import { registryApi } from "@cfce/utils"
+import { useAtom, useAtomValue } from "jotai"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { Button } from "~/ui/button"
+import { Card } from "~/ui/card"
+import { CheckboxWithText } from "~/ui/checkbox"
 import {
   Dialog,
   DialogClose,
@@ -30,272 +27,212 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '~/ui/dialog';
-import { Input } from '~/ui/input';
-import { Label } from '~/ui/label';
-import { Separator } from '~/ui/separator';
-import createDonation from '../actions/createDonation';
-import { CarbonCreditDisplay } from './CarbonCreditDisplay';
-import { ChainSelect } from './ChainSelect';
-import { DonationAmountInput } from './DonationAmountInput';
-import { MintButton } from './MintButton';
-import { RateMessage } from './RateMessage';
-import { WalletSelect } from './WalletSelect';
+} from "~/ui/dialog"
+import { Input } from "~/ui/input"
+import { Label } from "~/ui/label"
+import { Separator } from "~/ui/separator"
+import createDonation from "../actions/createDonation"
+import { CarbonCreditDisplay } from "./CarbonCreditDisplay"
+import { ChainSelect } from "./ChainSelect"
+import { DonationAmountInput } from "./DonationAmountInput"
+import { MintButton } from "./MintButton"
+import { RateMessage } from "./RateMessage"
+import { WalletSelect } from "./WalletSelect"
 
 interface DonationFormProps {
   initiative: Prisma.InitiativeGetPayload<{
     include: {
-      organization: { include: { wallets: true } };
-      credits: true;
-      wallets: true;
-    };
-  }>;
-  rate: number;
+      organization: { include: { wallets: true } }
+      credits: true
+      wallets: true
+    }
+  }>
+  rate: number
 }
 
 interface DonationData {
-  organizationId: string;
-  initiativeId?: string;
-  categoryId?: string;
-  userId?: string;
-  sender: string;
-  chainName: string;
-  network: string;
-  coinValue: number;
-  usdValue: number;
-  currency: string;
+  organizationId: string
+  initiativeId?: string
+  categoryId?: string
+  userId?: string
+  sender: string
+  chainName: string
+  network: string
+  coinValue: number
+  usdValue: number
+  currency: string
 }
 
-type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
+type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>
 
 function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export default function DonationForm({ initiative, rate }: DonationFormProps) {
   // TODO: get contract id from contracts table not initiative record
-  const posthog = usePostHog();
-  const contractId = initiative.contractcredit; // needed for CC contract
-  const organization = initiative.organization;
-  const [loading, setLoading] = useState(false);
-  const [balanceDialogOpen, setBalanceDialogOpen] = useState(false);
-  const [chainState, setChainState] = useAtom(chainAtom);
-  //setChainState(draft => {
-  //  console.log('INIT RATE', rate)
-  //  draft.exchangeRate = rate;
-  //});
+  const posthog = usePostHog()
+  const contractId = initiative.contractcredit // needed for CC contract
+  const organization = initiative.organization
+  const [loading, setLoading] = useState(false)
+  const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
+  const [chainState, setChainState] = useAtom(chainAtom)
+  setChainState((draft) => {
+    console.log("INIT RATE", rate)
+    draft.exchangeRate = rate
+  })
   //console.log('INIT STATE', chainState)
 
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
-    chainState;
-  const [donationForm, setDonationForm] = useAtom(donationFormAtom);
-  const { emailReceipt, name, email, amount } = donationForm;
-  const usdAmount = useAtomValue(amountUSDAtom);
-  const coinAmount = useAtomValue(amountCoinAtom);
-  const chain = chainConfig[selectedChain];
-  const network = chain.networks[appConfig.chainDefaults.network];
+    chainState
+  const [donationForm, setDonationForm] = useAtom(donationFormAtom)
+  const { emailReceipt, name, email, amount } = donationForm
+  const usdAmount = useAtomValue(amountUSDAtom)
+  const coinAmount = useAtomValue(amountCoinAtom)
+  const chain = chainConfig[selectedChain]
+  const network = chain.networks[appConfig.chainDefaults.network]
   //console.log('STATE', chainState, exchangeRate)
 
-  const chainInterface = BlockchainClientInterfaces[selectedWallet];
+  const chainInterface = BlockchainClientInterfaces[selectedWallet]
 
   const [buttonMessage, setButtonMessage] = useState(
-    'One wallet confirmation required',
-  );
-  const [errorDialogState, setErrorDialogState] = useState(false);
+    "One wallet confirmation required",
+  )
+  const [errorDialogState, setErrorDialogState] = useState(false)
 
   const handleError = useCallback((error: unknown) => {
     const errorMessage =
-      error instanceof Error ? error.message : 'Unknown error occurred';
+      error instanceof Error ? error.message : "Unknown error occurred"
 
     const canRetryWithGas =
-      errorMessage.includes('gasless') ||
-      errorMessage.includes('insufficient funds') ||
-      errorMessage.includes('rejected');
+      errorMessage.includes("gasless") ||
+      errorMessage.includes("insufficient funds") ||
+      errorMessage.includes("rejected")
 
     if (canRetryWithGas) {
-      setErrorDialogState(true);
+      setErrorDialogState(true)
     }
 
-    setButtonMessage(errorMessage);
-    console.error(error);
-  }, []);
+    setButtonMessage(errorMessage)
+    console.error(error)
+  }, [])
 
   const destinationWalletAddress = useMemo(() => {
-    const chainName = chain?.name;
+    const chainName = chain?.name
 
     const initiativeWallet = initiative?.wallets?.find(
-      w => w.chain === chainName,
-    );
+      (w) => w.chain === chainName,
+    )
     if (initiativeWallet) {
-      return initiativeWallet.address;
+      return initiativeWallet.address
     }
 
     const organizationWallet = organization?.wallets.find(
-      w => w.chain === chainName,
-    )?.address;
+      (w) => w.chain === chainName,
+    )?.address
 
     if (organizationWallet) {
-      return organizationWallet;
+      return organizationWallet
     }
 
     // Use fallback address if both initiative and organization wallets are not found
     // There will be no fallback address for production, hence the error will be thrown
-    const fallbackAddress = appConfig.chainDefaults?.defaultAddress;
+    const fallbackAddress = appConfig.chainDefaults?.defaultAddress
     if (fallbackAddress) {
-      return fallbackAddress;
+      return fallbackAddress
     }
 
-    handleError(new Error('No wallet found for chain'));
-    return '';
-  }, [organization, initiative, chain, handleError]);
-
-  const getRate = useCallback(() => {
-    registryApi
-      .get<{ coin: TokenTickerSymbol; rate: number }>(
-        `/rates?coin=${selectedToken}&chain=${selectedChain}`,
-      )
-      .then(response => {
-        if (response.success) {
-          const { rate } = response.data;
-          console.log('RATE', rate);
-          if (rate > 0) {
-            setChainState(draft => {
-              //console.log('DRAFT', draft)
-              draft.exchangeRate = rate;
-            });
-            //requestAnimationFrame(() => {
-            //setChainState(draft => {
-            //console.log('DRAFT', draft)
-            //draft.exchangeRate = rate;
-            //});
-            //console.log('CHAIN1', chainState)
-            //});
-          }
-          //console.log('CHAIN2', chainState)
-        }
-      });
-  }, [selectedToken, selectedChain, setChainState]);
-
-  useEffect(() => {
-    console.log('values changed, updating rate', {
-      selectedToken,
-      selectedChain,
-      setChainState,
-    });
-    getRate();
-  }, [selectedToken, selectedChain, setChainState, getRate]);
+    handleError(new Error("No wallet found for chain"))
+    return ""
+  }, [organization, initiative, chain, handleError])
 
   const checkBalance = useCallback(async () => {
     if (!chainInterface?.connect) {
-      throw new Error('No connect method on chain interface');
+      throw new Error("No connect method on chain interface")
     }
-    await chainInterface?.connect?.(network.id);
-    const balanceCheck = await chainInterface?.getBalance?.();
-    if (!balanceCheck || 'error' in balanceCheck) {
-      throw new Error(balanceCheck?.error ?? 'Failed to check balance');
+    await chainInterface?.connect?.(network.id)
+    const balanceCheck = await chainInterface?.getBalance?.()
+    if (!balanceCheck || "error" in balanceCheck) {
+      throw new Error(balanceCheck?.error ?? "Failed to check balance")
     }
-    return balanceCheck.balance >= chainInterface.toBaseUnit(amount);
-  }, [chainInterface, amount, network.id]);
+    return balanceCheck.balance >= coinAmount
+  }, [chainInterface, coinAmount, network.id])
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPayment) {
-        throw new Error('No sendPayment method on chain interface');
+        throw new Error("No sendPayment method on chain interface")
       }
-      const connected = await chainInterface.connect?.(network.id);
-      console.log('CONNECT', connected);
+
       const data = {
         address,
         amount,
         //amount: chainInterface.toBaseUnit(amount),
-        memo: appConfig.chains[selectedChain]?.destinationTag || '',
-      };
-      const result = await chainInterface.sendPayment(data);
-      console.log('PAYMENT RESULT', result);
-      return result;
+        memo: appConfig.chains[selectedChain]?.destinationTag || "",
+      }
+      const result = await chainInterface.sendPayment(data)
+      console.log("PAYMENT RESULT", result)
+      return result
     },
-    [chainInterface, network.id, selectedChain],
-  );
+    [chainInterface, selectedChain],
+  )
 
   const sendPaymentWithGas = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPaymentWithGas) {
-        throw new Error('Gas payments not supported');
+        throw new Error("Gas payments not supported")
       }
       if (!chainInterface.isConnected()) {
-        await chainInterface?.connect?.();
+        await chainInterface?.connect?.()
       }
 
-      const result = await chainInterface.sendPaymentWithGas(address, amount);
-      console.log('GAS PAYMENT RESULT', result);
-      return result;
+      const result = await chainInterface.sendPaymentWithGas(address, amount)
+      console.log("GAS PAYMENT RESULT", result)
+      return result
     },
     [chainInterface],
-  );
+  )
 
   const handleMinting = useCallback(
     async (paymentResult: {
-      success: boolean;
-      walletAddress?: string;
-      txid?: string;
-      error?: string;
+      success: boolean
+      walletAddress?: string
+      txid?: string
+      error?: string
     }) => {
-      if (!paymentResult.success) {
-        throw new Error(paymentResult.error ?? 'Payment failed');
-      }
 
-      // Save donation first
-      const donationData = {
-        organizationId: organization.id,
-        initiativeId: initiative.id,
-        categoryId: undefined,
-        userId: undefined,
-        sender: paymentResult.walletAddress ?? '',
-        chainName: selectedChain,
-        network: appConfig.chains[selectedChain]?.network ?? '',
-        coinValue: amount,
-        usdValue: amount * exchangeRate,
-        currency: selectedToken
-      };
-
-      const donationId = await saveDonation(donationData);
-
-      if (!donationId) {
-        throw new Error('Error saving donation');
-      }
-
-      setButtonMessage('Minting NFT receipt, please wait...');
+      setButtonMessage("Minting NFT receipt, please wait...")
       const data = {
-        donorName: name || 'Anonymous',
+        donorName: name || "Anonymous",
         email: emailReceipt ? email : undefined,
         organizationId: organization.id,
         initiativeId: initiative.id,
         transaction: {
           date: new Date().toISOString(),
-          donorWalletAddress: paymentResult.walletAddress ?? '',
+          donorWalletAddress: paymentResult.walletAddress ?? "",
           destinationWalletAddress,
           amount,
-          txId: paymentResult.txid ?? '',
+          txId: paymentResult.txid ?? "",
           chain: selectedChain,
           token: selectedToken,
         },
-      };
-      console.log('NFT', data);
+      }
+      console.log("NFT", data)
       // TODO: increase sleep time? some chains take longer <<<<
-      await sleep(2000); // Wait for tx to confirm
-      console.log('SLEEP');
-      const receiptResult = await mintAndSaveReceiptNFT(data);
-      console.log('RESULT', receiptResult);
+      await sleep(2000) // Wait for tx to confirm
+      console.log("SLEEP")
+      const receiptResult = await mintAndSaveReceiptNFT(data)
+      console.log("RESULT", receiptResult)
 
-      if ('error' in receiptResult) {
-        throw new Error(receiptResult.error ?? 'Failed to process receipt');
+      if ("error" in receiptResult) {
+        throw new Error(receiptResult.error ?? "Failed to process receipt")
       }
 
-      setButtonMessage('Thank you for your donation!');
-      setDonationForm(draft => {
-        draft.paymentStatus = PAYMENT_STATUS.minted;
-        draft.date = new Date();
-      });
+      setButtonMessage("Thank you for your donation!")
+      setDonationForm((draft) => {
+        draft.paymentStatus = PAYMENT_STATUS.minted
+        draft.date = new Date()
+      })
     },
     [
       name,
@@ -309,38 +246,79 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       selectedToken,
       setDonationForm,
     ],
-  );
+  )
 
   const onSubmit = useCallback(async () => {
     try {
-      validateForm({ email });
+      validateForm({ email })
 
-      const hasBalance = await checkBalance();
+      const hasBalance = await checkBalance()
       if (!hasBalance) {
-        setBalanceDialogOpen(true);
-        return;
+        setBalanceDialogOpen(true)
+        return
       }
 
-      setLoading(true);
-      setButtonMessage('Approving payment...');
+      setLoading(true)
+      setButtonMessage("Approving payment...")
 
-      const paymentResult = await sendPayment(destinationWalletAddress, amount);
+      const paymentResult = await sendPayment(
+        destinationWalletAddress,
+        coinAmount,
+      )
+
+      if (!paymentResult.success) {
+        throw new Error(paymentResult.error ?? "Payment failed")
+      }
+
       if (posthog.__loaded) {
-        posthog.capture('user_donated', {
+        posthog.capture("user_donated", {
           amount,
           organization: organization.slug,
           initiative: initiative.slug,
           token: selectedToken,
           chain: selectedChain,
-        });
+        })
       }
-      await handleMinting(paymentResult);
+
+      let user = await fetchUserByWallet(paymentResult.walletAddress ?? "")
+
+      if (!user) {
+        user = await createAnonymousUser({
+          walletAddress: paymentResult.walletAddress ?? "",
+          chain: selectedChain as Chain,
+          network: appConfig.chainDefaults.network,
+        })
+      }
+      console.log("USER", user)
+      // Save donation first
+      const donationData = {
+        organizationId: organization.id,
+        initiativeId: initiative.id,
+        categoryId: undefined,
+        userId: user.id,
+        sender: paymentResult.walletAddress ?? "",
+        chainName: selectedChain,
+        network: appConfig.chains[selectedChain]?.network ?? "",
+        coinValue: coinAmount,
+        usdValue: coinAmount * exchangeRate,
+        currency: selectedToken,
+      }
+
+      console.log("DONATION DATA", donationData)
+
+      const donationId = await saveDonation(donationData)
+
+      if (!donationId) {
+        throw new Error("Error saving donation")
+      }
+      await handleMinting(paymentResult)
     } catch (error) {
-      handleError(error);
+      handleError(error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }, [
+    coinAmount,
     amount,
     email,
     destinationWalletAddress,
@@ -353,11 +331,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     selectedChain,
     organization,
     initiative,
-  ]);
+    exchangeRate,
+  ])
 
   function validateForm({ email }: { email: string }) {
     if (email && !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
-      throw new Error('Invalid email');
+      throw new Error("Invalid email")
     }
   }
 
@@ -382,20 +361,23 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         initiative: {
           connect: { id: initiativeId },
         },
-        category: {
-          connect: { id: categoryId },
-        },
+        ...(categoryId && {
+          category: {
+            connect: { id: categoryId },
+          },
+        }),
         userId,
         network,
-        chain: chainName as Chain,
+        chain: (chainName.charAt(0).toUpperCase() +
+          chainName.slice(1)) as Chain,
         wallet: sender,
         amount: coinValue,
         usdvalue: usdValue,
         asset: currency,
-        paytype: 'crypto',
+        paytype: "crypto",
         status: 1,
-      };
-      console.log('DONATION', donation);
+      }
+      console.log("DONATION", donation)
       //const ApiKey = process.env.CFCE_REGISTRY_API_KEY || ''
       //const donationResp = await fetch('/api/donations', {method:'post', headers: {'x-api-key': ApiKey }, body:JSON.stringify(donation)})
       //const donationJson = await donationResp.json()
@@ -406,16 +388,16 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //  setButtonMessage('Error saving donation')
       //  return false
       //}
-      const donationResp = await createDonation(donation);
+      const donationResp = await createDonation(donation)
       if (!donationResp) {
-        setButtonMessage('Error saving donation');
-        return false;
+        setButtonMessage("Error saving donation")
+        return false
       }
-      const donationId = donationResp.id;
-      return donationId;
+      const donationId = donationResp.id
+      return donationId
     },
     [],
-  );
+  )
 
   return (
     <div className="flex min-h-full w-full">
@@ -447,10 +429,10 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             className="pl-4 mb-6"
             id="name-input"
             onChange={({ target: { value: name } }) => {
-              setDonationForm(draft => {
-                draft.name = name;
-                draft.date = new Date();
-              });
+              setDonationForm((draft) => {
+                draft.name = name
+                draft.date = new Date()
+              })
             }}
           />
           <Label htmlFor="email-input" className="mb-2">
@@ -484,9 +466,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           <DialogFooter className="flex justify-between">
             <DialogClose>
               <Button
-                variant={'link'}
+                variant={"link"}
                 onClick={() => {
-                  window.open('https://changelly.com/buy', '_blank');
+                  window.open("https://changelly.com/buy", "_blank")
                 }}
                 className="bg-blue-600 text-white hover:bg-blue-700"
               >
@@ -513,15 +495,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             <Button
               className="bg-lime-600 text-white text-lg hover:bg-green-600 hover:shadow-inner"
               onClick={() => {
-                setErrorDialogState(false);
+                setErrorDialogState(false)
                 setTimeout(() => {
-                  setLoading(true);
-                  setButtonMessage('Approving payment...');
-                  sendPaymentWithGas(destinationWalletAddress, amount)
-                    .then(gasResult => handleMinting(gasResult))
+                  setLoading(true)
+                  setButtonMessage("Approving payment...")
+                  sendPaymentWithGas(destinationWalletAddress, coinAmount)
+                    .then((gasResult) => handleMinting(gasResult))
                     .catch(handleError)
-                    .finally(() => setLoading(false));
-                }, 0);
+                    .finally(() => setLoading(false))
+                }, 0)
               }}
             >
               Try With Gas
@@ -533,5 +515,5 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

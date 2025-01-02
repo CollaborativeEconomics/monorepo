@@ -1,46 +1,46 @@
-'use client';
-import { useCallback, useEffect, useState } from 'react';
+"use client"
+import { useCallback, useEffect, useState } from "react"
 
 interface ScrollBackgroundProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export function ScrollBackground({ children }: ScrollBackgroundProps) {
-  const [scrollY, setScrollY] = useState(0);
+  const [scrollY, setScrollY] = useState(0)
 
   const handleScroll = useCallback(() => {
     const frameId = requestAnimationFrame(() => {
-      setScrollY(window.scrollY);
-    });
-    return frameId;
-  }, []);
+      setScrollY(window.scrollY)
+    })
+    return frameId
+  }, [])
 
   useEffect(() => {
-    setScrollY(window.scrollY);
-    let frameId: number;
+    setScrollY(window.scrollY)
+    let frameId: number
 
     const scrollListener = () => {
-      frameId = handleScroll();
-    };
+      frameId = handleScroll()
+    }
 
-    window.addEventListener('scroll', scrollListener, { passive: true });
+    window.addEventListener("scroll", scrollListener, { passive: true })
 
     return () => {
-      window.removeEventListener('scroll', scrollListener);
+      window.removeEventListener("scroll", scrollListener)
       if (frameId) {
-        cancelAnimationFrame(frameId);
+        cancelAnimationFrame(frameId)
       }
-    };
-  }, [handleScroll]);
+    }
+  }, [handleScroll])
 
   const backgroundClass =
     scrollY > 0
-      ? 'bg-white dark:bg-gradient-to-b py-4 shadow-md'
-      : 'bg-transparent';
+      ? "bg-white dark:bg-gradient-to-b py-4 shadow-md"
+      : "bg-transparent"
 
   return (
     <div className={`w-full h-full transition-all ${backgroundClass}`}>
       {children}
     </div>
-  );
+  )
 }
