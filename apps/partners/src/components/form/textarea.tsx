@@ -1,7 +1,7 @@
-import React, { forwardRef, type HTMLProps } from 'react';
+import React, { forwardRef, type HTMLProps } from "react"
 
 interface TextAreaProps {
-  label: string;
+  label: string
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
@@ -14,6 +14,6 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       <textarea ref={ref} {...props} />
     </label>
   ),
-);
+)
 
-export default TextArea;
+export default TextArea

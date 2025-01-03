@@ -1,7 +1,7 @@
-import Dashboard from '~/components/dashboard';
-import Sidebar from '~/components/sidebar';
-import Title from '~/components/title';
-import styles from '~/styles/dashboard.module.css';
+import Dashboard from "~/components/dashboard"
+import Sidebar from "~/components/sidebar"
+import Title from "~/components/title"
+import styles from "~/styles/dashboard.module.css"
 
 export default function Page() {
   return (
@@ -16,5 +16,5 @@ export default function Page() {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import type { NFTDataWithRelations } from '@cfce/database';
-import Image from 'next/image';
-import React from 'react';
+import type { NFTDataWithRelations } from "@cfce/database"
+import Image from "next/image"
+import React from "react"
 import {
   Table,
   TableBody,
@@ -8,10 +8,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '~/ui/table';
+} from "~/ui/table"
 
 interface ReceiptTableProps {
-  receipts?: NFTDataWithRelations[];
+  receipts?: NFTDataWithRelations[]
 }
 export default function ReceiptTable({ receipts }: ReceiptTableProps) {
   return (
@@ -27,10 +27,10 @@ export default function ReceiptTable({ receipts }: ReceiptTableProps) {
       </TableHeader>
       <TableBody>
         {receipts?.length ? (
-          receipts.map(item => {
-            const image = item.imageUri.startsWith('ipfs')
+          receipts.map((item) => {
+            const image = item.imageUri.startsWith("ipfs")
               ? `https://ipfs.filebase.io/ipfs/${item.imageUri.substr(5)}`
-              : item.imageUri;
+              : item.imageUri
             return (
               <TableRow key={item.id}>
                 <TableCell>
@@ -41,7 +41,7 @@ export default function ReceiptTable({ receipts }: ReceiptTableProps) {
                 <TableCell>{`${item.coinValue}`}</TableCell>
                 <TableCell>{item.coinSymbol}</TableCell>
               </TableRow>
-            );
+            )
           })
         ) : (
           <TableRow>
@@ -50,5 +50,5 @@ export default function ReceiptTable({ receipts }: ReceiptTableProps) {
         )}
       </TableBody>
     </Table>
-  );
+  )
 }

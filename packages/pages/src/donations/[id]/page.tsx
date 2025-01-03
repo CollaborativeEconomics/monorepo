@@ -1,22 +1,22 @@
-import React from 'react';
+import React from "react"
 
-import { getDonationById } from '@cfce/database';
-import { OrganizationAvatar } from '@cfce/components/organization';
-import { Card, CardContent } from '@cfce/components/ui';
-import Image from 'next/image';
-import Link from 'next/link';
-import NotFound from '../../not-found';
+import { getDonationById } from "@cfce/database"
+import { OrganizationAvatar } from "@cfce/components/organization"
+import { Card, CardContent } from "@cfce/components/ui"
+import Image from "next/image"
+import Link from "next/link"
+import NotFound from "../../not-found"
 
 export default async function Donation(props: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }) {
-  const id = (await props.params).id;
+  const id = (await props.params).id
   const donation = await getDonationById(id, {
     initiative: true,
     category: true,
-  });
+  })
   if (!donation) {
-    return <NotFound />;
+    return <NotFound />
   }
 
   return (
@@ -80,39 +80,39 @@ export default async function Donation(props: {
               <p className="mt-4">
                 <label className="inline-block w-32 text-slate-400 font-semibold">
                   Date:
-                </label>{' '}
+                </label>{" "}
                 <span>{new Date(donation.created).toLocaleString()}</span>
               </p>
               <p className="mt-4">
                 <label className="inline-block w-32 text-slate-400 font-semibold">
                   Payment:
-                </label>{' '}
+                </label>{" "}
                 <span>{donation.paytype}</span>
               </p>
               <p className="mt-4">
                 <label className="inline-block w-32 text-slate-400 font-semibold">
                   Chain:
-                </label>{' '}
+                </label>{" "}
                 <span>{donation.chain}</span>
               </p>
               <p className="mt-4">
                 <label className="inline-block w-32 text-slate-400 font-semibold">
                   Network:
-                </label>{' '}
+                </label>{" "}
                 <span>{donation.network}</span>
               </p>
               {donation.wallet && (
                 <p className="mt-4">
                   <label className="inline-block w-32 text-slate-400 font-semibold">
                     Wallet:
-                  </label>{' '}
+                  </label>{" "}
                   <span>{`${donation.wallet.substr(0, 12)}...`}</span>
                 </p>
               )}
               <p className="mt-4">
                 <label className="inline-block w-32 text-slate-400 font-semibold">
                   Amount:
-                </label>{' '}
+                </label>{" "}
                 <span>
                   {donation.amount.toString()} {donation.asset}
                 </span>
@@ -120,7 +120,7 @@ export default async function Donation(props: {
               <p className="mt-4">
                 <label className="inline-block w-32 text-slate-400 font-semibold">
                   USD Value:
-                </label>{' '}
+                </label>{" "}
                 <span>{donation.usdvalue.toString()}</span>
               </p>
             </div>
@@ -128,5 +128,5 @@ export default async function Donation(props: {
         </Card>
       </div>
     </main>
-  );
+  )
 }

@@ -68,8 +68,8 @@ export default class Wallet {
       console.log("NET:", network, networkPassphrase)
       //let pub = process.env.NEXT_PUBLIC_NFT_ISSUER
       const pub = this.myaccount
-      console.log("From", pub || '???')
-      console.log("Paying", amt, "XLM to", dst, "Memo", memo || '[nomemo]')
+      console.log("From", pub || "???")
+      console.log("Paying", amt, "XLM to", dst, "Memo", memo || "[nomemo]")
       if (!this.horizon) {
         throw new Error("Horizon server not initialized")
       }

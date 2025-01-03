@@ -26,7 +26,7 @@ appConfig.chains = {
     },
     enabledWallets: ["metamask"],
     tokens: ["XDC"],
-  }
+  },
 }
 
 // Override auth

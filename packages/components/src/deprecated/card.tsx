@@ -1,7 +1,7 @@
-import React, { type PropsWithChildren, type HTMLProps } from 'react';
+import React, { type PropsWithChildren, type HTMLProps } from "react"
 
 interface CardProps {
-  className?: string;
+  className?: string
 }
 
 // @deprecated use ui/card
@@ -16,6 +16,6 @@ const Card = ({
   >
     {children}
   </div>
-);
+)
 
-export default Card;
+export default Card

@@ -1,18 +1,18 @@
-'use client';
+"use client"
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react"
 import {
   type InstructionImageProps,
   InstructionPaneSectionOverlay,
-} from './InstructionPanes/InstructionPaneSection';
+} from "./InstructionPanes/InstructionPaneSection"
 
 interface OverlayProps extends InstructionImageProps {
-  className?: string;
+  className?: string
 }
 
 function OverlayHandler(props: OverlayProps) {
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const [opacity, setOpacity] = useState(0);
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const [opacity, setOpacity] = useState(0)
   //console.log('in overlay handler')
 
   // Intersection Observer to detect when overlay is visible
@@ -20,52 +20,52 @@ function OverlayHandler(props: OverlayProps) {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
-          window.addEventListener('scroll', handleScroll);
+          window.addEventListener("scroll", handleScroll)
         } else {
-          window.removeEventListener('scroll', handleScroll);
+          window.removeEventListener("scroll", handleScroll)
         }
       },
       { threshold: 0.1 },
-    );
+    )
 
     if (overlayRef.current) {
-      observer.observe(overlayRef.current);
+      observer.observe(overlayRef.current)
     }
 
     return () => {
-      observer.disconnect();
-    };
-  }, []);
+      observer.disconnect()
+    }
+  }, [])
 
   // Handle scroll and calculate progress
   const handleScroll = () => {
-    const element = overlayRef.current;
+    const element = overlayRef.current
     if (element) {
-      const windowHeight = window.innerHeight;
-      const rect = element.getBoundingClientRect();
-      const elementVisible = rect.top - windowHeight < 0;
-      const scrollableDistance = windowHeight; // 62% of the way down
-      let newOpacity = 0;
+      const windowHeight = window.innerHeight
+      const rect = element.getBoundingClientRect()
+      const elementVisible = rect.top - windowHeight < 0
+      const scrollableDistance = windowHeight // 62% of the way down
+      let newOpacity = 0
 
       if (elementVisible) {
-        newOpacity = 1 - rect.top / scrollableDistance;
+        newOpacity = 1 - rect.top / scrollableDistance
         if (newOpacity > 1) {
-          newOpacity = 2 - newOpacity;
+          newOpacity = 2 - newOpacity
         }
-        setOpacity(newOpacity);
+        setOpacity(newOpacity)
         //console.log(opacity)
       }
 
-      setOpacity(newOpacity);
+      setOpacity(newOpacity)
     }
-  };
+  }
 
   //console.log(opacity)
   return (
     <div ref={overlayRef} style={{ opacity }} className={props.className}>
       <InstructionPaneSectionOverlay className={props.sourceProperty} />
     </div>
-  );
+  )
 }
 
-export { OverlayHandler };
+export { OverlayHandler }

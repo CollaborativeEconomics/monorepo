@@ -1,16 +1,16 @@
-import type { Initiative } from '@cfce/database';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-import { Card, CardContent } from '~/ui/card';
-import { DateDisplay } from '~/ui/date-posted';
+import type { Initiative } from "@cfce/database"
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+import { Card, CardContent } from "~/ui/card"
+import { DateDisplay } from "~/ui/date-posted"
 
 export default function InitiativeCardCompact(props: {
-  initiative: Initiative;
+  initiative: Initiative
 }) {
-  const initiative = props.initiative;
+  const initiative = props.initiative
   if (!initiative) {
-    return <></>;
+    return <></>
   }
   return (
     <Card className="flex flex-col overflow-hidden h-56">
@@ -38,5 +38,5 @@ export default function InitiativeCardCompact(props: {
         </Link>
       </CardContent>
     </Card>
-  );
+  )
 }

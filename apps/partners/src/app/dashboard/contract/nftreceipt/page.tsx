@@ -1,14 +1,14 @@
-import { Suspense } from 'react';
-import NFTReceiptClient from './nftreceipt-client';
-import { getOrganizationById } from '~/actions/database'
+import { Suspense } from "react"
+import NFTReceiptClient from "./nftreceipt-client"
+import { getOrganizationById } from "~/actions/database"
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export default async function NFTReceiptPage({ searchParams }: PageProps) {
-  const { chain, network, wallet, organizationId } = await searchParams;
-  const data = await getOrganizationById(organizationId?.toString() || '')
+  const { chain, network, wallet, organizationId } = await searchParams
+  const data = await getOrganizationById(organizationId?.toString() || "")
   const organization = JSON.parse(JSON.stringify(data))
 
   return (
@@ -21,5 +21,5 @@ export default async function NFTReceiptPage({ searchParams }: PageProps) {
         organization={organization}
       />
     </Suspense>
-  );
+  )
 }

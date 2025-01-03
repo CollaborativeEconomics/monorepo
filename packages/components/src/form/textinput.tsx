@@ -1,11 +1,11 @@
-import React, { forwardRef, type HTMLProps } from 'react';
-import type { UseFormRegisterReturn } from 'react-hook-form';
+import React, { forwardRef, type HTMLProps } from "react"
+import type { UseFormRegisterReturn } from "react-hook-form"
 
 interface TextInputProps {
-  label?: string;
-  className?: string;
-  register: UseFormRegisterReturn;
-  onChange?: (event: any) => void;
+  label?: string
+  className?: string
+  register: UseFormRegisterReturn
+  onChange?: (event: any) => void
 }
 
 const TextInput = forwardRef(
@@ -20,16 +20,16 @@ const TextInput = forwardRef(
     ref,
   ) => {
     return (
-      <label className={`m-0 mt-0 ${className ?? ''}`}>
+      <label className={`m-0 mt-0 ${className ?? ""}`}>
         <span className="text-green-300 text-sm text-left uppercase">
           {label}
         </span>
         <input onKeyUp={onChange} {...props} {...register} />
       </label>
-    );
+    )
   },
-);
+)
 
-TextInput.displayName = 'TextInput';
+TextInput.displayName = "TextInput"
 
-export default TextInput;
+export default TextInput

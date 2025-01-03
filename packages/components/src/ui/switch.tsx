@@ -1,16 +1,16 @@
-import React from 'react';
-import { cn } from '~/shadCnUtil';
-import type { InputProps } from './input';
+import React from "react"
+import { cn } from "~/shadCnUtil"
+import type { InputProps } from "./input"
 
 export interface SwitchProps extends InputProps {
-  valueBasis: boolean;
-  handleToggle: () => void;
+  valueBasis: boolean
+  handleToggle: () => void
 }
 
 const Switch = React.forwardRef<HTMLDivElement, SwitchProps>(
   ({ className, valueBasis, handleToggle, id }, ref) => {
     return (
-      <div className={cn('inline-flex items-center px-4', className)} ref={ref}>
+      <div className={cn("inline-flex items-center px-4", className)} ref={ref}>
         <div className="relative inline-block w-8 h-4 rounded-full cursor-pointer">
           <input
             id={id}
@@ -30,9 +30,9 @@ const Switch = React.forwardRef<HTMLDivElement, SwitchProps>(
           </label>
         </div>
       </div>
-    );
+    )
   },
-);
-Switch.displayName = 'switch';
+)
+Switch.displayName = "switch"
 
-export { Switch };
+export { Switch }

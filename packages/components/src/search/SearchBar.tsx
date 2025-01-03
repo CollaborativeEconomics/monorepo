@@ -1,41 +1,41 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-import { type KeyboardEvent, useState } from 'react';
-import { Button } from '~/ui/button';
-import { CardContent } from '~/ui/card';
-import { Input } from '~/ui/input';
-import CategorySelect from './CategorySelect';
-import InitiativeOrgSwitch from './InitiativeOrgSwitch';
-import LocationSelect from './LocationSelect';
+"use client"
+import { useRouter } from "next/navigation"
+import React from "react"
+import { type KeyboardEvent, useState } from "react"
+import { Button } from "~/ui/button"
+import { CardContent } from "~/ui/card"
+import { Input } from "~/ui/input"
+import CategorySelect from "./CategorySelect"
+import InitiativeOrgSwitch from "./InitiativeOrgSwitch"
+import LocationSelect from "./LocationSelect"
 
 interface SearchBarProps {
-  text?: string;
+  text?: string
 }
 
 export default function SearchBar(props: SearchBarProps) {
-  const text = props?.text || '';
-  const router = useRouter();
-  const [query, setQuery] = useState(text);
-  const [category, setCategory] = useState('');
-  const [location, setLocation] = useState('');
+  const text = props?.text || ""
+  const router = useRouter()
+  const [query, setQuery] = useState(text)
+  const [category, setCategory] = useState("")
+  const [location, setLocation] = useState("")
 
   function checkEnter(evt: KeyboardEvent) {
-    if (evt.key === 'Enter') {
-      search();
+    if (evt.key === "Enter") {
+      search()
     }
   }
 
   function search() {
     //console.log('SEARCHBAR', query, category, location)
-    const params = { query, category, location };
-    const url = new URLSearchParams(params).toString();
+    const params = { query, category, location }
+    const url = new URLSearchParams(params).toString()
     //console.log(url)
     if (params) {
-      router.push(`?${url}`);
+      router.push(`?${url}`)
       //router.push(`?search=${query}`)
     } else {
-      router.push('?');
+      router.push("?")
     }
   }
 
@@ -48,18 +48,18 @@ export default function SearchBar(props: SearchBarProps) {
           placeholder="Search"
           className="flex-1"
           value={query}
-          onChange={evt => setQuery(evt.target.value)}
+          onChange={(evt) => setQuery(evt.target.value)}
           onKeyDown={checkEnter}
         />
         <div className="flex flex-row justify-between">
           <CategorySelect
             onChange={(val: string) => {
-              setCategory(val);
+              setCategory(val)
             }}
           />
           <LocationSelect
             onChange={(val: string) => {
-              setLocation(val);
+              setLocation(val)
             }}
           />
         </div>
@@ -68,5 +68,5 @@ export default function SearchBar(props: SearchBarProps) {
         </Button>
       </div>
     </CardContent>
-  );
+  )
 }

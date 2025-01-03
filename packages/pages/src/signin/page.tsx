@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react"
 
-import appConfig from '@cfce/app-config';
-import { AuthButton, auth } from '@cfce/auth';
-import { redirect } from 'next/navigation';
+import appConfig from "@cfce/app-config"
+import { AuthButton, auth } from "@cfce/auth"
+import { redirect } from "next/navigation"
 
 import {
   Card,
@@ -10,21 +10,21 @@ import {
   CardHeader,
   CardTitle,
   Separator,
-} from '@cfce/components/ui';
+} from "@cfce/components/ui"
 
 export default async function Signin() {
   //console.log('SIGN IN...')
-  const session = await auth();
+  const session = await auth()
   //console.log('SESSION', session)
 
   // @ts-ignore: module augmentation is hard, TODO: fix this
-  const userId = session?.user?.id;
+  const userId = session?.user?.id
 
   if (userId) {
-    redirect(`/profile/${userId}`);
+    redirect(`/profile/${userId}`)
   }
 
-  const enabledAuthMethods = appConfig.auth;
+  const enabledAuthMethods = appConfig.auth
 
   return (
     <div className="container mx-auto mt-20">
@@ -37,7 +37,7 @@ export default async function Signin() {
         <CardContent>
           <div className="w-full flex flex-col gap-4">
             <Separator className="my-4" />
-            {enabledAuthMethods.map(method => (
+            {enabledAuthMethods.map((method) => (
               <AuthButton
                 className="w-full"
                 key={`auth-button-${method}`}
@@ -48,5 +48,5 @@ export default async function Signin() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

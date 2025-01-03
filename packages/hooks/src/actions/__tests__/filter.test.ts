@@ -1,5 +1,12 @@
-import { expect, test, describe, beforeAll, afterEach, afterAll } from "bun:test";
-import filter from "../filter";
+import {
+  expect,
+  test,
+  describe,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from "bun:test"
+import filter from "../filter"
 
 const inputContext = {
   b: [
@@ -10,30 +17,43 @@ const inputContext = {
   a: {
     b: {
       c: 1,
-      d: 2
-    }
+      d: 2,
+    },
   },
-  c: [
-    1, 2, 3
-  ],
+  c: [1, 2, 3],
   d: [
     { date: Date.now() },
     { date: Date.now() + 100 },
-    { date: Date.now() - 100 }
-  ]
+    { date: Date.now() - 100 },
+  ],
 }
 
 describe("filter action", async () => {
   test("filters using ===", async () => {
-    const result = await filter(inputContext, { collectionPath: 'b', operator: '===', value: 1, key: 'c' });
-    expect(result).toEqual([inputContext.b[0]]);
+    const result = await filter(inputContext, {
+      collectionPath: "b",
+      operator: "===",
+      value: 1,
+      key: "c",
+    })
+    expect(result).toEqual([inputContext.b[0]])
   })
   test("filters using !==", async () => {
-    const result = await filter(inputContext, { collectionPath: 'b', operator: '!==', value: 1, key: 'c' });
-    expect(result).toEqual([inputContext.b[1], inputContext.b[2]]);
+    const result = await filter(inputContext, {
+      collectionPath: "b",
+      operator: "!==",
+      value: 1,
+      key: "c",
+    })
+    expect(result).toEqual([inputContext.b[1], inputContext.b[2]])
   })
   test("filters using >", async () => {
-    const result = await filter(inputContext, { collectionPath: 'b', operator: '>', value: 1, key: 'c' });
-    expect(result).toEqual([inputContext.b[1], inputContext.b[2]]);
+    const result = await filter(inputContext, {
+      collectionPath: "b",
+      operator: ">",
+      value: 1,
+      key: "c",
+    })
+    expect(result).toEqual([inputContext.b[1], inputContext.b[2]])
   })
 })

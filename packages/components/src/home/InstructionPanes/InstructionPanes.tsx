@@ -1,14 +1,14 @@
-'use client';
+"use client"
 
-import Link from 'next/link';
-import React from 'react';
-import RiveAnimation from '../RiveAnimation';
+import Link from "next/link"
+import React from "react"
+import RiveAnimation from "../RiveAnimation"
 import {
   InstructionPaneSectionContent,
   InstructionPaneSectionImageBlend,
   InstructionPaneSectionText,
   InstructionPaneSectionTitle,
-} from './InstructionPaneSection';
+} from "./InstructionPaneSection"
 
 export default function InstructionPanes() {
   return (
@@ -21,13 +21,13 @@ export default function InstructionPanes() {
             Donate to community causes you care about
           </InstructionPaneSectionTitle>
           <InstructionPaneSectionText>
-            Find organizations working on the{' '}
+            Find organizations working on the{" "}
             <Link
               className="hover:underline"
               href="https://www.cfce.io/un2030/"
             >
               sustainable development goals
-            </Link>{' '}
+            </Link>{" "}
             that you care most about. Invest in those working in your community
             or for a community you care about.
           </InstructionPaneSectionText>
@@ -61,5 +61,5 @@ export default function InstructionPanes() {
       </div>
       <InstructionPaneSectionImageBlend sourceProperty="bg-[url('/home/ReceiveNFTV2.jpg')]" />
     </div>
-  );
+  )
 }

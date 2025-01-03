@@ -1,5 +1,5 @@
 //import { Suspense } from 'react';
-import ContractCreditsClient from './credits-client';
+import ContractCreditsClient from "./credits-client"
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -9,16 +9,16 @@ interface PageProps {
 }
 
 export default async function ContractCreditsPage({ searchParams }: PageProps) {
-  const { chain, network, wallet, organizationId } = await searchParams;
+  const { chain, network, wallet, organizationId } = await searchParams
 
-    // <Suspense fallback={<div>Loading...</div>}>
-    // </Suspense>
+  // <Suspense fallback={<div>Loading...</div>}>
+  // </Suspense>
   return (
-      <ContractCreditsClient
-        chain={chain?.toString()}
-        network={network?.toString()}
-        wallet={wallet?.toString()}
-        organizationId={organizationId?.toString()}
-      />
-  );
+    <ContractCreditsClient
+      chain={chain?.toString()}
+      network={network?.toString()}
+      wallet={wallet?.toString()}
+      organizationId={organizationId?.toString()}
+    />
+  )
 }

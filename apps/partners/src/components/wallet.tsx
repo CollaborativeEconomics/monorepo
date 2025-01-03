@@ -1,24 +1,24 @@
-'use client';
+"use client"
 
-import Image from 'next/image';
+import Image from "next/image"
 
 interface WalletProps {
-  id: string;
-  chain?: string;
-  address?: string;
-  description?: string;
-  status?: string; // 0.pending 1.approved 2.rejected
+  id: string
+  chain?: string
+  address?: string
+  description?: string
+  status?: string // 0.pending 1.approved 2.rejected
 }
 
 function copyToClipboard(text: string) {
   navigator.clipboard.writeText(text).then(
     () => {
-      console.log('Copytoclipboard', text);
+      console.log("Copytoclipboard", text)
     },
-    err => {
-      console.error('Error copying to clipboard:', err);
+    (err) => {
+      console.error("Error copying to clipboard:", err)
     },
-  );
+  )
 }
 
 const Wallet = (item: WalletProps) => {
@@ -29,7 +29,7 @@ const Wallet = (item: WalletProps) => {
       <button
         type="button"
         onClick={() => {
-          copyToClipboard(item.address ?? '');
+          copyToClipboard(item.address ?? "")
         }}
       >
         <Image
@@ -40,7 +40,7 @@ const Wallet = (item: WalletProps) => {
         />
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default Wallet;
+export default Wallet

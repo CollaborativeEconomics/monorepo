@@ -44,9 +44,9 @@
 
 .backButton {
   margin-left: 0;
-  margin-bottom: 1rem; 
-  margin-top: 1.5rem; 
-  padding-top: 0.25rem 0.75rem; 
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 0.25rem 0.75rem;
   color: #ffffff;
   background-color: var(--back-button);
 }
@@ -83,7 +83,7 @@
   color: var(--text-highlight);
 }
 
-.container{
+.container {
   width: 100%;
   max-width: 48rem;
   margin-right: auto;
@@ -136,7 +136,7 @@
   background-color: var(--back-button);
 }
 
-.buttonChain:hover{
+.buttonChain:hover {
   background-color: var(--back-highlight);
 }
 
@@ -165,34 +165,34 @@
 }
 
 .nftContainer {
-  display: flex; 
-  flex-direction: row; 
-  justify-content: space-between; 
-  align-items: center; 
-  width: 100%; 
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .nftLeft {
-  display: flex; 
-  padding: 1.5rem; 
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center; 
+  display: flex;
+  padding: 1.5rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .nftRight {
-  display: flex; 
-  flex-direction: column; 
-  justify-content: flex-start; 
-  align-items: flex-start; 
-  width: 100%; 
-  padding: 1.5rem; 
-  line-height: 2rem;   
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  padding: 1.5rem;
+  line-height: 2rem;
   font-size: 1.5rem;
 }
 
 .nftImage {
-  border-radius: 0.75rem; 
+  border-radius: 0.75rem;
 }
 
 .nftDate {
@@ -213,7 +213,7 @@
 
 .nftImpact {
   font-size: 1rem;
-  line-height: 1.5rem; 
+  line-height: 1.5rem;
   color: var(--text-secondary);
 }
 
@@ -265,7 +265,7 @@
   justify-content: space-between;
 }
 
-@media (max-width: 768px){
+@media (max-width: 768px) {
   .profileForm {
     flex-direction: column;
   }

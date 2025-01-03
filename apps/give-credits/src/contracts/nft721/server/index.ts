@@ -17,7 +17,6 @@ import {
 } from "@stellar/stellar-sdk"
 import type { StellarNetwork } from "../../networks"
 
-
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }

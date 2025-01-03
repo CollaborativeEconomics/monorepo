@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react"
 
 import {
   AlertTriangle,
@@ -6,33 +6,33 @@ import {
   Hourglass,
   type LucideIcon,
   RefreshCw,
-} from 'lucide-react';
-import { cn } from '~/shadCnUtil';
+} from "lucide-react"
+import { cn } from "~/shadCnUtil"
 
 export interface ReceiptStatusProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-  status: string;
+  className?: string
+  status: string
 }
 
 interface BodyProps {
-  className: string;
-  Icon: LucideIcon;
-  text: string;
-  subtext: string;
-  iconWrapperClassName?: string;
+  className: string
+  Icon: LucideIcon
+  text: string
+  subtext: string
+  iconWrapperClassName?: string
 }
 
 interface WrapperProps {
-  className?: string;
-  Icon: LucideIcon;
+  className?: string
+  Icon: LucideIcon
 }
 
 function ReceiptBodyBuilder(status: string): React.JSX.Element {
-  console.log('STATUS',status)
+  console.log("STATUS", status)
   const statusUp = status.toUpperCase()
   switch (statusUp) {
-    case 'CLAIM':
+    case "CLAIM":
       return (
         <ReceiptStatusBody
           className="bg-blue-500"
@@ -40,9 +40,9 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           text="Claim your NFT"
           subtext="Thank you for your donation"
         />
-      );
-    case 'PENDING':
-    case 'READY':
+      )
+    case "PENDING":
+    case "READY":
       return (
         <ReceiptStatusBody
           className="bg-gray-400" //
@@ -50,8 +50,8 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           text="Not Yet Minted"
           subtext="Complete the donation to claim NFT"
         />
-      );
-    case 'MINTING':
+      )
+    case "MINTING":
       return (
         <ReceiptStatusBody
           className="bg-blue-500"
@@ -60,8 +60,8 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           subtext="Transaction received"
           iconWrapperClassName="animate-spin"
         />
-      );
-    case 'MINTED':
+      )
+    case "MINTED":
       return (
         <ReceiptStatusBody
           className="bg-green-400"
@@ -69,8 +69,8 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           text="Minted!"
           subtext="NFT has been sent to your wallet"
         />
-      );
-    case 'REJECTED':
+      )
+    case "REJECTED":
       return (
         <ReceiptStatusBody
           className="bg-gray-400" //
@@ -78,7 +78,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           text="Not Claimed"
           subtext="Donor did not claim NFT"
         />
-      );
+      )
     default:
       return (
         <ReceiptStatusBody
@@ -87,7 +87,7 @@ function ReceiptBodyBuilder(status: string): React.JSX.Element {
           text="Failed"
           subtext="Contact support"
         />
-      );
+      )
   }
 }
 
@@ -97,17 +97,17 @@ const ReceiptStatus = React.forwardRef<HTMLDivElement, ReceiptStatusProps>(
       <div
         ref={ref}
         className={cn(
-          'flex justify-center mt-2 border-dotted border-t-2 border-b-2 border-gray-300 p-4 w-full',
+          "flex justify-center mt-2 border-dotted border-t-2 border-b-2 border-gray-300 p-4 w-full",
           className,
         )}
         {...props}
       >
         {ReceiptBodyBuilder(status)}
       </div>
-    );
+    )
   },
-);
-ReceiptStatus.displayName = 'receipt-status';
+)
+ReceiptStatus.displayName = "receipt-status"
 
 const IconWrapper = React.forwardRef<HTMLDivElement, WrapperProps>(
   ({ className, Icon, ...props }, ref) => {
@@ -115,10 +115,10 @@ const IconWrapper = React.forwardRef<HTMLDivElement, WrapperProps>(
       <div ref={ref} className={cn(className)} {...props}>
         <Icon size="40px" color="white" />
       </div>
-    );
+    )
   },
-);
-IconWrapper.displayName = 'icon-wrapper';
+)
+IconWrapper.displayName = "icon-wrapper"
 
 const ReceiptStatusBody = React.forwardRef<HTMLDivElement, BodyProps>(
   ({ className, iconWrapperClassName, text, subtext, Icon, ...props }, ref) => {
@@ -126,7 +126,7 @@ const ReceiptStatusBody = React.forwardRef<HTMLDivElement, BodyProps>(
       <div
         ref={ref}
         className={cn(
-          'flex flex-row items-center w-auto h-auto rounded-lg gap-3',
+          "flex flex-row items-center w-auto h-auto rounded-lg gap-3",
           className,
         )}
         {...props}
@@ -139,9 +139,9 @@ const ReceiptStatusBody = React.forwardRef<HTMLDivElement, BodyProps>(
           <p className="font-base text-gray-200">{subtext}</p>
         </div>
       </div>
-    );
+    )
   },
-);
-ReceiptStatusBody.displayName = 'receipt-status-body';
+)
+ReceiptStatusBody.displayName = "receipt-status-body"
 
-export { ReceiptStatus };
+export { ReceiptStatus }

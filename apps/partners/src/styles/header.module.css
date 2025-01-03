@@ -35,14 +35,14 @@
 
 .signedInText,
 .notSignedInText {
-/*  position: absolute;*/
+  /*  position: absolute;*/
   margin-bottom: 1rem;
   padding-top: 0.8rem;
   left: 1rem;
   right: 6.5rem;
-/*  white-space: nowrap;*/
-/*  text-overflow: ellipsis;*/
-/*  overflow: hidden;*/
+  /*  white-space: nowrap;*/
+  /*  text-overflow: ellipsis;*/
+  /*  overflow: hidden;*/
   display: inherit;
   z-index: 1;
   line-height: 1.3rem;

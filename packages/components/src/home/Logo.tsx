@@ -1,10 +1,10 @@
-import appConfig from '@cfce/app-config';
-import Image from 'next/image';
-import React from 'react';
+import appConfig from "@cfce/app-config"
+import Image from "next/image"
+import React from "react"
 
 const Logo = () => {
-  const logoLight = `${appConfig.siteInfo.logo?.light ?? '/newui/logo.png'}`;
-  const logoDark = `${appConfig.siteInfo.logo?.dark ?? '/newui/logoWhite.png'}`;
+  const logoLight = `${appConfig.siteInfo.logo?.light ?? "/newui/logo.png"}`
+  const logoDark = `${appConfig.siteInfo.logo?.dark ?? "/newui/logoWhite.png"}`
 
   return (
     <div className="w-60 lg:w-80 h-20 relative">
@@ -21,7 +21,7 @@ const Logo = () => {
         className="object-contain hidden dark:block"
       />
     </div>
-  );
-};
+  )
+}
 
-export default Logo;
+export default Logo

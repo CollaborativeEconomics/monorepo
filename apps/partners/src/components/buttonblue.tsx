@@ -1,10 +1,10 @@
-import React, { type PropsWithChildren, type HTMLAttributes } from 'react';
+import React, { type PropsWithChildren, type HTMLAttributes } from "react"
 
 interface ButtonBlueProps extends HTMLAttributes<HTMLButtonElement> {
-  id?: string;
-  type?: "button" | "submit" | "reset" | undefined;
-  text: string;
-  disabled?: boolean;
+  id?: string
+  type?: "button" | "submit" | "reset" | undefined
+  text: string
+  disabled?: boolean
 }
 
 const ButtonBlue = React.forwardRef<HTMLButtonElement, ButtonBlueProps>(
@@ -19,7 +19,7 @@ const ButtonBlue = React.forwardRef<HTMLButtonElement, ButtonBlueProps>(
       {props.children}
     </button>
   ),
-);
-ButtonBlue.displayName = 'ButtonBlue';
+)
+ButtonBlue.displayName = "ButtonBlue"
 
-export default ButtonBlue;
+export default ButtonBlue

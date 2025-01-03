@@ -1,7 +1,7 @@
 // https://tailwindcomponents.com/component/share-modal
 
-'use client';
-import copy from 'clipboard-copy';
+"use client"
+import copy from "clipboard-copy"
 import {
   Facebook,
   Share as IconShare,
@@ -9,30 +9,30 @@ import {
   Send as Telegram,
   Twitter,
   MessageCircle as Whatsapp,
-} from 'lucide-react';
-import Link from 'next/link';
-import React, { useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
+} from "lucide-react"
+import Link from "next/link"
+import React, { useState } from "react"
+import { Popover, PopoverContent, PopoverTrigger } from "./popover"
 
 export default function ShareModal() {
   const url =
-    typeof window !== 'undefined'
+    typeof window !== "undefined"
       ? window.location.href
-      : 'https://giving-universe.org';
-  const shareFacebook = `https://web.facebook.com/sharer.php?u=${url}`;
-  const shareTwitter = `https://twitter.com/intent/tweet?text=GivingUniverse&url=${url}`;
-  const shareInstagram = `https://www.instagram.com/?url=${url}`;
-  const shareWhatsapp = `https://wa.me/?text=${url}`;
-  const shareTelegram = `https://telegram.me/share/url?text=GivingUniverse&url=${url}`;
+      : "https://giving-universe.org"
+  const shareFacebook = `https://web.facebook.com/sharer.php?u=${url}`
+  const shareTwitter = `https://twitter.com/intent/tweet?text=GivingUniverse&url=${url}`
+  const shareInstagram = `https://www.instagram.com/?url=${url}`
+  const shareWhatsapp = `https://wa.me/?text=${url}`
+  const shareTelegram = `https://telegram.me/share/url?text=GivingUniverse&url=${url}`
 
-  const [open, setOpen] = useState(false);
-  const [button, setButton] = useState('COPY');
+  const [open, setOpen] = useState(false)
+  const [button, setButton] = useState("COPY")
 
   function copyToClipboard(url: string) {
     copy(url).then(() => {
-      console.log('COPIED');
-      setButton('COPIED');
-    });
+      console.log("COPIED")
+      setButton("COPIED")
+    })
   }
 
   return (
@@ -94,8 +94,8 @@ export default function ShareModal() {
                 <button
                   type="button"
                   className="bg-indigo-500 text-white rounded text-sm py-2 px-5 mt-2 hover:bg-indigo-600"
-                  onClick={evt => {
-                    copyToClipboard(url);
+                  onClick={(evt) => {
+                    copyToClipboard(url)
                   }}
                 >
                   {button}
@@ -106,5 +106,5 @@ export default function ShareModal() {
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

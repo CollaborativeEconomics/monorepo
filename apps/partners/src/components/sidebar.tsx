@@ -1,28 +1,23 @@
-import { auth } from '@cfce/auth';
-import type { Organization } from '@cfce/database';
-import { getOrganizationById, getOrganizations } from '~/actions/database'
-import {
-  Button,
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@cfce/components/ui';
-import { Menu } from 'lucide-react';
-import type { Session } from 'next-auth';
-import Image from 'next/image';
-import Link from 'next/link';
-import OrganizationSelect from './OrganizationSelect';
-import SignInButton from './SignInButton';
-import SignOutButton from './SignOutButton';
+import { auth } from "@cfce/auth"
+import type { Organization } from "@cfce/database"
+import { getOrganizationById, getOrganizations } from "~/actions/database"
+import { Button, Sheet, SheetContent, SheetTrigger } from "@cfce/components/ui"
+import { Menu } from "lucide-react"
+import type { Session } from "next-auth"
+import Image from "next/image"
+import Link from "next/link"
+import OrganizationSelect from "./OrganizationSelect"
+import SignInButton from "./SignInButton"
+import SignOutButton from "./SignOutButton"
 
 const SidebarContent = ({
   session,
   currentOrg,
   organizations,
 }: {
-  session: Session | null;
-  currentOrg: Organization | null;
-  organizations: Organization[] | null;
+  session: Session | null
+  currentOrg: Organization | null
+  organizations: Organization[] | null
 }) => (
   <div className="flex flex-col h-full">
     <div className="p-4">
@@ -55,20 +50,20 @@ const SidebarContent = ({
     <nav className="flex-grow">
       <ul>
         {session?.isAdmin && (
-          <li key={'/dashboard/organization'} className="hover:bg-gray-700">
-            <Link href={'/dashboard/organization'} className="block px-4 py-2">
+          <li key={"/dashboard/organization"} className="hover:bg-gray-700">
+            <Link href={"/dashboard/organization"} className="block px-4 py-2">
               New Organization
             </Link>
           </li>
         )}
         {[
-          { href: '/dashboard/donations', label: 'Donations' },
-          { href: '/dashboard/initiatives', label: 'Initiatives' },
-          { href: '/dashboard/stories', label: 'Stories' },
-          { href: '/dashboard/events', label: 'Events' },
-          { href: '/dashboard/wallets', label: 'Wallets' },
-          { href: '/dashboard/contracts', label: 'Contracts' },
-        ].map(item => (
+          { href: "/dashboard/donations", label: "Donations" },
+          { href: "/dashboard/initiatives", label: "Initiatives" },
+          { href: "/dashboard/stories", label: "Stories" },
+          { href: "/dashboard/events", label: "Events" },
+          { href: "/dashboard/wallets", label: "Wallets" },
+          { href: "/dashboard/contracts", label: "Contracts" },
+        ].map((item) => (
           <li key={item.href} className="hover:bg-gray-700">
             <Link href={item.href} className="block px-4 py-2">
               {item.label}
@@ -96,7 +91,7 @@ const SidebarContent = ({
             />
           )}
           <p className="text-sm mb-1">
-            <strong>{session.orgName ?? ''}</strong>
+            <strong>{session.orgName ?? ""}</strong>
           </p>
           <p className="text-xs text-gray-300 mb-2">
             {session.user?.email ?? session.user?.name}
@@ -106,16 +101,16 @@ const SidebarContent = ({
       )}
     </div>
   </div>
-);
+)
 
 const Sidebar = async () => {
-  const session = await auth();
-  const organizations = await getOrganizations();
+  const session = await auth()
+  const organizations = await getOrganizations()
   const orgsPlain = JSON.parse(JSON.stringify(organizations))
 
-  let currentOrg = null;
+  let currentOrg = null
   if (session?.orgId) {
-    currentOrg = await getOrganizationById(session.orgId);
+    currentOrg = await getOrganizationById(session.orgId)
   }
 
   return (
@@ -143,7 +138,7 @@ const Sidebar = async () => {
         />
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

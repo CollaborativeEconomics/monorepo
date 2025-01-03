@@ -1,34 +1,34 @@
-'use client';
+"use client"
 
-import { PAYMENT_STATUS, donationFormAtom } from '@cfce/state';
-import { useAtom } from 'jotai';
-import React from 'react';
-import { Button } from '~/ui/button';
+import { PAYMENT_STATUS, donationFormAtom } from "@cfce/state"
+import { useAtom } from "jotai"
+import React from "react"
+import { Button } from "~/ui/button"
 
 interface MintButtonProps {
-  onClick: () => void;
+  onClick: () => void
 }
 
 export function MintButton({ onClick }: MintButtonProps) {
-  const [donationForm] = useAtom(donationFormAtom);
-  const { paymentStatus } = donationForm;
+  const [donationForm] = useAtom(donationFormAtom)
+  const { paymentStatus } = donationForm
 
   const buttonProps = React.useMemo(() => {
     if (paymentStatus === PAYMENT_STATUS.sending) {
-      return { disabled: true, text: 'Sending' };
+      return { disabled: true, text: "Sending" }
     }
     if (paymentStatus === PAYMENT_STATUS.minting) {
-      return { disabled: true, text: 'Minting' };
+      return { disabled: true, text: "Minting" }
     }
     if (paymentStatus === PAYMENT_STATUS.minted) {
-      return { disabled: true, text: 'Minted' };
+      return { disabled: true, text: "Minted" }
     }
     if (paymentStatus === PAYMENT_STATUS.failed) {
-      return { disabled: true, text: 'Failed' };
+      return { disabled: true, text: "Failed" }
     }
     // status === ready
-    return { disabled: false, text: 'Donate' };
-  }, [paymentStatus]);
+    return { disabled: false, text: "Donate" }
+  }, [paymentStatus])
 
   return (
     <Button
@@ -38,5 +38,5 @@ export function MintButton({ onClick }: MintButtonProps) {
     >
       {buttonProps.text}
     </Button>
-  );
+  )
 }

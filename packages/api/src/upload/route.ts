@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       )
     }
     // Upload to Vercel
-    const path = folder ? `${folder}/${name}` : name ?? "unnamed_file"
+    const path = folder ? `${folder}/${name}` : (name ?? "unnamed_file")
     const result = await put(path, fileBuffer, {
       access: "public",
       contentType: mime,

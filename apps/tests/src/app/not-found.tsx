@@ -1,1 +1,1 @@
-export { default } from '@cfce/pages/not-found';
+export { default } from "@cfce/pages/not-found"

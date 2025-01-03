@@ -1,23 +1,23 @@
-import React from 'react';
+import React from "react"
 
-import { getStories } from '@cfce/database';
-import { StoryCard } from '@cfce/components/story';
-import { Title } from '@cfce/components/ui';
+import { getStories } from "@cfce/database"
+import { StoryCard } from "@cfce/components/story"
+import { Title } from "@cfce/components/ui"
 
 export default async function Impact(props: {
-  searchParams?: Promise<{ initiative?: string }>;
+  searchParams?: Promise<{ initiative?: string }>
 }) {
-  const initid = (await props.searchParams)?.initiative || '';
-  console.log('InitID', initid);
-  let stories = [];
+  const initid = (await props.searchParams)?.initiative || ""
+  console.log("InitID", initid)
+  let stories = []
   if (initid) {
-    stories = (await getStories({ initId: initid })) || [];
+    stories = (await getStories({ initId: initid })) || []
   } else {
-    stories = (await getStories({ recent: 20 })) || [];
+    stories = (await getStories({ recent: 20 })) || []
   }
-  console.log('STORIES', stories.length);
+  console.log("STORIES", stories.length)
   if (stories?.length > 0) {
-    stories.sort((a, b) => (a.created < b.created ? 1 : -1));
+    stories.sort((a, b) => (a.created < b.created ? 1 : -1))
   } // Sort by date desc
 
   return (
@@ -34,7 +34,7 @@ export default async function Impact(props: {
       </p>
       <div className="mx-auto my-4 w-[720px]">
         {stories?.length > 0 ? (
-          stories.map(item => (
+          stories.map((item) => (
             <div className="my-4" key={item.id}>
               <StoryCard key={item.id} story={item} />
             </div>
@@ -44,5 +44,5 @@ export default async function Impact(props: {
         )}
       </div>
     </main>
-  );
+  )
 }

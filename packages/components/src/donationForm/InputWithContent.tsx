@@ -1,13 +1,13 @@
-'use client';
+"use client"
 
-import React from 'react';
+import React from "react"
 
 interface InputWithContentProps {
-  className?: string;
-  type: string;
-  id: string;
-  text: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string
+  type: string
+  id: string
+  text: string
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export function InputWithContent({
@@ -22,5 +22,5 @@ export function InputWithContent({
       <input type={type} id={id} onChange={onChange} />
       <span>{text}</span>
     </div>
-  );
+  )
 }

@@ -17,6 +17,12 @@ import giveTronStaging from "./config/give-tron/appConfig.staging"
 import givingUniverseDev from "./config/giving-universe/appConfig.development"
 import givingUniverseProd from "./config/giving-universe/appConfig.production"
 import givingUniverseStaging from "./config/giving-universe/appConfig.staging"
+
+// Give Arbitrum
+import giveArbitrumDev from "./config/give-arbitrum/appConfig.development"
+import giveArbitrumProd from "./config/give-arbitrum/appConfig.production"
+import giveArbitrumStaging from "./config/give-arbitrum/appConfig.staging"
+
 // partners
 import partnersDev from "./config/partners/appConfig.development"
 import partnersProd from "./config/partners/appConfig.production"
@@ -33,6 +39,7 @@ type AppId =
   | "give-stark"
   | "give-tron"
   | "giving-universe"
+  | "give-arbitrum"
   | "partners"
   | "registry"
   | "tests"
@@ -57,6 +64,11 @@ const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
     development: givingUniverseDev,
     production: givingUniverseProd,
     staging: givingUniverseStaging,
+  },
+  "give-arbitrum": {
+    development: giveArbitrumDev,
+    production: giveArbitrumProd,
+    staging: giveArbitrumStaging,
   },
   partners: {
     development: partnersDev,

@@ -40,4 +40,3 @@ export async function DELETE() {
     { status: 405 },
   ) // Status code 405 for Method Not Allowed
 }
-

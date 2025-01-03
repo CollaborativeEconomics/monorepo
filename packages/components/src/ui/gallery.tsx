@@ -1,16 +1,16 @@
-'use client';
-import appConfig from '@cfce/app-config';
-import React from 'react';
+"use client"
+import appConfig from "@cfce/app-config"
+import React from "react"
 interface Props {
-  images?: string[];
+  images?: string[]
 }
 
-const IPFSURL = appConfig.apis.ipfs.gateway;
+const IPFSURL = appConfig.apis.ipfs.gateway
 
 export default function Gallery(props: Props) {
-  let image = props.images?.[0] ?? '/nopic.png';
-  if (image.startsWith('ipfs:')) {
-    image = IPFSURL + image.substr(5);
+  let image = props.images?.[0] ?? "/nopic.png"
+  if (image.startsWith("ipfs:")) {
+    image = IPFSURL + image.substr(5)
   }
   return (
     <div className="grid gap-1">
@@ -23,27 +23,27 @@ export default function Gallery(props: Props) {
       </div>
       {getGridDiv(props.images?.slice(1))}
     </div>
-  );
+  )
 }
 
 function getGridDiv(images: string[] | undefined): React.ReactElement {
   if (!images) {
-    return <div />;
+    return <div />
   }
   // must contain at least three images to fill to width, overflows to new row after 4
-  let gridClass: string;
+  let gridClass: string
   if (images.length <= 3) {
-    gridClass = 'grid grid-cols-3 gap-1';
+    gridClass = "grid grid-cols-3 gap-1"
   } else {
-    gridClass = 'grid grid-cols-4 gap-1';
+    gridClass = "grid grid-cols-4 gap-1"
   }
   return (
-    <div className={gridClass}>{images.map(image => getImageDiv(image))}</div>
-  );
+    <div className={gridClass}>{images.map((image) => getImageDiv(image))}</div>
+  )
 }
 
 function getImageDiv(image: string): React.ReactElement {
-  const imgsrc = image.startsWith('ipfs:') ? IPFSURL + image.substr(5) : image;
+  const imgsrc = image.startsWith("ipfs:") ? IPFSURL + image.substr(5) : image
   return (
     <div key={image}>
       <img
@@ -52,5 +52,5 @@ function getImageDiv(image: string): React.ReactElement {
         alt=""
       />
     </div>
-  );
+  )
 }

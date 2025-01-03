@@ -1,27 +1,27 @@
-import Image from 'next/image';
-import * as React from 'react';
-import type { InputProps } from '~/ui/input';
+import Image from "next/image"
+import * as React from "react"
+import type { InputProps } from "~/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '~/ui/select';
+} from "~/ui/select"
 
 interface SelectOption {
-  value: string;
-  label: string;
-  icon: string;
+  value: string
+  label: string
+  icon: string
 }
 
 export interface SelectInputProps<T extends string, U extends SelectOption>
   extends InputProps {
-  className?: string;
-  currentOption: T;
-  handleChange: (item: T) => void;
-  options: U[];
-  placeHolderText: string;
+  className?: string
+  currentOption: T
+  handleChange: (item: T) => void
+  options: U[]
+  placeHolderText: string
 }
 
 const DonationFormSelect = <T extends string, U extends SelectOption>({
@@ -35,7 +35,7 @@ const DonationFormSelect = <T extends string, U extends SelectOption>({
   return (
     <Select onValueChange={handleChange} defaultValue={currentOption}>
       <SelectTrigger
-        className={`dark:border-none h-10 text-lg w-full rounded-full border border-slate-300 bg-white dark:bg-slate-500 ring-offset-background focus-within:border-blue-700 focus-within:ring-1 ${className || ''}`}
+        className={`dark:border-none h-10 text-lg w-full rounded-full border border-slate-300 bg-white dark:bg-slate-500 ring-offset-background focus-within:border-blue-700 focus-within:ring-1 ${className || ""}`}
       >
         <SelectValue
           className="dark:border-none bg-white placeholder-gray-600"
@@ -44,7 +44,7 @@ const DonationFormSelect = <T extends string, U extends SelectOption>({
       </SelectTrigger>
 
       <SelectContent className="bg-white">
-        {options.map(option => (
+        {options.map((option) => (
           <SelectItem
             className="dark:bg-slate-500 bg-white text-black dark:text-white"
             value={option.value}
@@ -63,9 +63,9 @@ const DonationFormSelect = <T extends string, U extends SelectOption>({
         ))}
       </SelectContent>
     </Select>
-  );
-};
+  )
+}
 
-DonationFormSelect.displayName = 'DonationFormSelect';
+DonationFormSelect.displayName = "DonationFormSelect"
 
-export { DonationFormSelect };
+export { DonationFormSelect }

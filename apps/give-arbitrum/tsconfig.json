@@ -1,0 +1,29 @@
+{
+  "extends": "@cfce/typescript-config/nextjs.json",
+  "strictNullChecks": true,
+  "declaration": false,
+  "include": [
+    "src",
+    "next-env.d.ts",
+    "next-auth.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "public",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist", "work"],
+  "compilerOptions": {
+    "module": "esnext",
+    "esModuleInterop": true,
+    "target": "es6",
+    "sourceMap": true,
+    "inlineSources": true,
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "rootDirs": ["src", "."],
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  }
+}

@@ -1,24 +1,24 @@
-import React from 'react';
+import React from "react"
 
-import appConfig from '@cfce/app-config';
-import { getCoinRate } from '@cfce/blockchain-tools/server';
-import { getInitiativeById, getInitiatives } from '@cfce/database';
-import { DonationForm, NFTReceipt } from '@cfce/components/donationForm';
-import { InitiativeCardCompact } from '@cfce/components/initiative';
-import { OrganizationAvatar } from '@cfce/components/organization';
-import { Separator } from '@cfce/components/ui';
-import Image from 'next/image';
-import Link from 'next/link';
-import NotFound from '../../not-found';
+import appConfig from "@cfce/app-config"
+import { getCoinRate } from "@cfce/blockchain-tools/server"
+import { getInitiativeById, getInitiatives } from "@cfce/database"
+import { DonationForm, NFTReceipt } from "@cfce/components/donationForm"
+import { InitiativeCardCompact } from "@cfce/components/initiative"
+import { OrganizationAvatar } from "@cfce/components/organization"
+import { Separator } from "@cfce/components/ui"
+import Image from "next/image"
+import Link from "next/link"
+import NotFound from "../../not-found"
 
 export default async function Initiative(props: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }) {
-  const params = await props.params;
-  const initiative = (await getInitiativeById(params?.id)) || null;
+  const params = await props.params
+  const initiative = (await getInitiativeById(params?.id)) || null
   //console.log('INIT', initiative)
   if (!initiative) {
-    return <NotFound />;
+    return <NotFound />
   }
 
   // Restore credits contract
@@ -28,24 +28,24 @@ export default async function Initiative(props: {
   //  console.log('RESTORED', result);
   //});
 
-  const organization = initiative.organization;
-  const initiatives = (await getInitiatives({ orgId: organization.id })) ?? [];
-  const stories = initiative.stories;
-  console.log('STORIES', stories.length);
+  const organization = initiative.organization
+  const initiatives = (await getInitiatives({ orgId: organization.id })) ?? []
+  const stories = initiative.stories
+  console.log("STORIES", stories.length)
   // TODO: use default chain
-  const { chainDefaults } = appConfig;
+  const { chainDefaults } = appConfig
   const rate = await getCoinRate({
     symbol: chainDefaults.coin,
     chain: chainDefaults.chain,
-  });
+  })
   // TODO: use carbon only if initiative has credits
   //const carbon = await getCarbon();
-  let carbon = '0';
+  let carbon = "0"
   if (initiative.credits.length > 0) {
-    carbon = `${initiative.credits[0].value}`;
+    carbon = `${initiative.credits[0].value}`
   }
-  console.log('RATE', rate);
-  console.log('CARBON', carbon);
+  console.log("RATE", rate)
+  console.log("CARBON", carbon)
   //console.log('INITIATIVE', initiative);
 
   return (
@@ -55,11 +55,11 @@ export default async function Initiative(props: {
           <div className="relative w-full md:w-[45%] h-[200px] md:h-[300px] mb-12 md:mb-2">
             <Image
               className="h-[300px] rounded-lg"
-              src={initiative.defaultAsset || 'noimage.png'}
+              src={initiative.defaultAsset || "noimage.png"}
               alt="IMG BG"
               fill
               style={{
-                objectFit: 'cover',
+                objectFit: "cover",
               }}
             />
           </div>
@@ -68,7 +68,7 @@ export default async function Initiative(props: {
               <OrganizationAvatar
                 name={organization.name}
                 image={organization.image}
-                avatarProps={{ size: 'md' }}
+                avatarProps={{ size: "md" }}
               />
             </div>
             <h1 className="px-[5%] text-2xl font-medium pb-4">
@@ -112,15 +112,15 @@ export default async function Initiative(props: {
           <div className="flex flex-wrap md:flex-nowrap justify-center gap-9 xl:max-w-screen-xl">
             {initiatives.length > 1 && (
               <div className="flex flex-col gap-5 w-full min-w-[400px]">
-                {' '}
+                {" "}
                 {/* md:w-2/6 */}
                 <p className="text-3xl font-semibold">
                   <span id="more">Other Initiatives</span>
                 </p>
                 {initiatives?.length > 0 ? (
-                  initiatives.map(otherInitiative => {
+                  initiatives.map((otherInitiative) => {
                     if (otherInitiative.id === initiative.id) {
-                      return;
+                      return
                     }
                     return (
                       <InitiativeCardCompact
@@ -129,7 +129,7 @@ export default async function Initiative(props: {
                         name={organization.name}
                         avatarImg={organization.image ?? undefined}
                       />
-                    );
+                    )
                   })
                 ) : (
                   <h1 className="m-4">No initiatives found</h1>
@@ -156,5 +156,5 @@ export default async function Initiative(props: {
         </div>
       </div>
     </main>
-  );
+  )
 }

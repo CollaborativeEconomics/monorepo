@@ -1,22 +1,22 @@
-import appConfig from '@cfce/app-config';
-import Image from 'next/image';
-import Link from 'next/link';
-import React, { type PropsWithChildren } from 'react';
+import appConfig from "@cfce/app-config"
+import Image from "next/image"
+import Link from "next/link"
+import React, { type PropsWithChildren } from "react"
 
 interface PageProps {
-  noPadding?: boolean;
-  footer?: React.ElementType;
-  className?: string;
+  noPadding?: boolean
+  footer?: React.ElementType
+  className?: string
 }
 
 export const PageWrapper = (props: PropsWithChildren) => {
-  const children = props?.children;
+  const children = props?.children
   return (
     <div className="min-h-screen flex flex-col align-middle justify-center bg-slate-300">
       {children}
     </div>
-  );
-};
+  )
+}
 
 const Page = ({ children, className }: PropsWithChildren<PageProps>) => {
   return (
@@ -38,10 +38,10 @@ const Page = ({ children, className }: PropsWithChildren<PageProps>) => {
       </main>
       <div
         className="fixed top-0 bottom-0 left-0 right-0 bg-cover -z-10 bg-center opacity-60"
-        style={{ backgroundImage: 'url(/bg0.jpg)' }}
+        style={{ backgroundImage: "url(/bg0.jpg)" }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page

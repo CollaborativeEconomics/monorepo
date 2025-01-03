@@ -28,8 +28,23 @@ a {
   }
 }
 
-button:disabled { color: #666; }
-button:disabled:hover { color: #666; background-color: transparent; }
+button:disabled {
+  color: #666;
+}
+button:disabled:hover {
+  color: #666;
+  background-color: transparent;
+}
 
-table.data th { padding: 4px 8px; white-space: nowrap; border: 1px solid #666; background-color: #444; font-weight: normal; }
-table.data td { padding: 4px 8px; white-space: nowrap; border: 1px solid #444; }
+table.data th {
+  padding: 4px 8px;
+  white-space: nowrap;
+  border: 1px solid #666;
+  background-color: #444;
+  font-weight: normal;
+}
+table.data td {
+  padding: 4px 8px;
+  white-space: nowrap;
+  border: 1px solid #444;
+}
