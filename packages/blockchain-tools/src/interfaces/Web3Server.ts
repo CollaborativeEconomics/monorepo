@@ -109,9 +109,10 @@ export default class Web3Server extends InterfaceBaseClass {
       transport: http(process.env.NEXT_PUBLIC_RPC_URL),
     })
 
+
     try {
       const { request } = await publicClient.simulateContract({
-        account,
+        account: account.address,
         address: contractId as `0x${string}`,
         abi: Abi721inc,
         functionName: "safeMint",
