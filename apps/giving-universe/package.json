@@ -62,7 +62,7 @@
     "lucide-react": "0.447.0",
     "mailgun.js": "10.2.3",
     "moment": "^2.29.3",
-    "next": "^15.1.0",
+    "next": "^15.1.2",
     "next-auth": "5.0.0-beta.25",
     "next-themes": "^0.4.3",
     "postinstall-postinstall": "^2.1.0",
