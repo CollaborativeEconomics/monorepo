@@ -462,17 +462,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex justify-between">
-            <DialogClose>
-              <Button
-                variant={'link'}
-                onClick={() => {
-                  window.open('https://changelly.com/buy', '_blank');
-                }}
-                className="bg-blue-600 text-white hover:bg-blue-700"
-              >
-                Buy {selectedToken} on Changelly
-              </Button>
-            </DialogClose>
+            <Button
+              variant={'link'}
+              onClick={() => {
+                window.open('https://changelly.com/buy', '_blank');
+              }}
+              className="bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Buy {selectedToken} on Changelly
+            </Button>
             <DialogClose className="text-white-500 hover:underline">
               Close
             </DialogClose>
