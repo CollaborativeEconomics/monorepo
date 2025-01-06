@@ -20,10 +20,14 @@ async function DonationsData({ userId }: Props) {
   return (
     <div className="w-full border rounded-md p-10 bg-card">
       <TabsContent className="TabsContent" value="tab1">
-        <ReceiptTableSortable receipts={receipts || []} />
+        <ReceiptTableSortable
+          receipts={JSON.parse(JSON.stringify(receipts)) || []}
+        />
       </TabsContent>
       <TabsContent className="TabsContent" value="tab2">
-        <DonationsTableSortable donations={donations || []} />
+        <DonationsTableSortable
+          donations={JSON.parse(JSON.stringify(donations)) || []}
+        />
       </TabsContent>
     </div>
   );

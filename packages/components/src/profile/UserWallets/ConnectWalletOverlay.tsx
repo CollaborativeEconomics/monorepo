@@ -13,7 +13,12 @@ import { revalidatePath } from 'next/cache';
 import { useToast } from '../../hooks/use-toast';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '../../ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from '../../ui/dialog';
 import { Separator } from '../../ui/separator';
 import { connectWallet } from './actions';
 
@@ -56,6 +61,7 @@ export function ConnectWalletOverlay({
 
       onSuccess?.();
     } catch (error) {
+      console.log('toasting error', error);
       toast({
         title: 'Error',
         description:
@@ -73,36 +79,24 @@ export function ConnectWalletOverlay({
           <span>Add Wallet</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">
-              Connect Wallet
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="max-h-80vh overflow-y-scroll">
-            <div className="w-full flex flex-col gap-4">
-              <Separator className="my-4" />
-              {enabledWallets.map(wallet => {
-                const walletConfig = getWalletConfiguration([wallet])[0];
-                return (
-                  <Button
-                    key={wallet}
-                    className="w-full flex items-between gap-2"
-                    onClick={() => handleWalletConnect(wallet)}
-                  >
-                    <img
-                      src={walletConfig.icon}
-                      alt={wallet}
-                      className="w-6 h-6"
-                    />
-                    <span>Connect {walletConfig.name}</span>
-                  </Button>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+      <DialogContent className="sm:max-w-md max-h-80vh overflow-y-scroll">
+        <DialogTitle>Connect Wallet</DialogTitle>
+        <div className="w-full flex flex-col gap-4">
+          <Separator className="my-4" />
+          {enabledWallets.map(wallet => {
+            const walletConfig = getWalletConfiguration([wallet])[0];
+            return (
+              <Button
+                key={wallet}
+                className="w-full flex items-between gap-2"
+                onClick={() => handleWalletConnect(wallet)}
+              >
+                <img src={walletConfig.icon} alt={wallet} className="w-6 h-6" />
+                <span>Connect {walletConfig.name}</span>
+              </Button>
+            );
+          })}
+        </div>
       </DialogContent>
     </Dialog>
   );

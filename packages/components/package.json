@@ -7,6 +7,10 @@
     "build": "rm -rf dist && tsc && tsc-alias"
   },
   "exports": {
+    "./app": {
+      "import": "./dist/app/index.js",
+      "types": "./dist/app/index.d.ts"
+    },
     "./client/auth": {
       "import": "./dist/client/auth/index.js",
       "types": "./dist/client/auth/index.d.ts"
@@ -114,6 +118,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "0.469.0",
     "luxon": "^3.5.0",
+    "next-auth": "5.0.0-beta.25",
     "react-day-picker": "9.4.4",
     "react-hook-form": "^7.54.0",
     "swiper": "^11.1.15",
