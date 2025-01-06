@@ -83,9 +83,9 @@ export function ProfileForm({ user }: Props) {
               name="currentImage"
               value={user?.image || ''}
             />
-            <h2>
+            {/* <h2>
               Wallet: {user?.wallet ? `${user.wallet.substr(0, 10)}...` : '?'}
-            </h2>
+            </h2> */}
           </div>
         </div>
         <div className="mt-4 text-right">

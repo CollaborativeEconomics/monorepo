@@ -4,22 +4,22 @@ import appConfig from "@cfce/app-config"
 import { auth } from "@cfce/auth"
 import {
   type Chain,
-  deleteUserWallet,
+  // deleteUserWallet,
   getUserWalletByAddress,
   newUserWallet,
 } from "@cfce/database"
 import { revalidatePath } from "next/cache"
-export async function removeWallet(id: string) {
-  const session = await auth()
-  const userId = session?.user?.id
+// export async function removeWallet(id: string) {
+//   const session = await auth()
+//   const userId = session?.user?.id
 
-  if (!userId) {
-    throw new Error("User not authenticated")
-  }
+//   if (!userId) {
+//     throw new Error("User not authenticated")
+//   }
 
-  await deleteUserWallet(id)
-  revalidatePath(`/profile/${userId}`)
-}
+//   await deleteUserWallet(id)
+//   revalidatePath(`/profile/${userId}`)
+// }
 
 export async function connectWallet(address: string, chain: string) {
   const session = await auth()

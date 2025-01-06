@@ -1,6 +1,12 @@
 import { ProfileForm } from '@cfce/components/client/profile';
 import { UserDonationsTable, UserWallets } from '@cfce/components/profile';
 import {
+  DonationsTableSkeleton,
+  ProfileFormSkeleton,
+  WalletsSkeleton,
+  WidgetsSkeleton,
+} from '@cfce/components/profile';
+import {
   Badges,
   FavoriteOrganizations,
   RecentStories,
@@ -23,28 +29,26 @@ export default async function Profile({
   return (
     <main className="container min-h-screen flex flex-col items-stretch py-24 mt-24">
       <div className="flex flex-col lg:flex-row justify-between">
-        <Suspense fallback={<div>Loading profile...</div>}>
+        <Suspense fallback={<ProfileFormSkeleton />}>
           <ProfileForm user={JSON.parse(JSON.stringify(user))} />
         </Suspense>
-        <Suspense fallback={<div>Loading wallets...</div>}>
+        <Suspense fallback={<WalletsSkeleton />}>
           <UserWallets wallets={JSON.parse(JSON.stringify(user.wallets))} />
         </Suspense>
       </div>
 
       <div className="mt-12 flex flex-col lg:flex-row justify-between">
         <div className="w-full lg:w-1/4 mr-12">
-          <Suspense fallback={<div>Loading favorites...</div>}>
+          <Suspense fallback={<WidgetsSkeleton />}>
             <FavoriteOrganizations userId={userId} />
-          </Suspense>
-          <Suspense fallback={<div>Loading badges...</div>}>
             <Badges userId={userId} />
-          </Suspense>
-          <Suspense fallback={<div>Loading stories...</div>}>
             <RecentStories userId={userId} />
           </Suspense>
         </div>
 
-        <UserDonationsTable userId={userId} />
+        <Suspense fallback={<DonationsTableSkeleton />}>
+          <UserDonationsTable userId={userId} />
+        </Suspense>
       </div>
     </main>
   );

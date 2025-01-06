@@ -76,8 +76,9 @@ export async function getUserWalletByAddress(address: string, chain: Chain) {
   return result
 }
 
-export async function deleteUserWallet(id: string) {
-  await prismaClient.userWallet.delete({
-    where: { id },
-  })
-}
+// Maybe someday, but for now this raises too many edge cases
+// export async function deleteUserWallet(id: string) {
+//   await prismaClient.userWallet.delete({
+//     where: { id },
+//   })
+// }

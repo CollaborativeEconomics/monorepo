@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@cfce/components/ui';
 import { getDonations, getNftData } from '@cfce/database';
 import { ImageIcon, LayoutList, Newspaper } from 'lucide-react';
 import { Suspense } from 'react';
+import { DonationsTableSkeleton } from './ProfileSkeletons';
 
 type Props = {
   userId: string;
@@ -55,7 +56,7 @@ export function UserDonationsTable({ userId }: Props) {
             <ImageIcon size={32} className="pr-2 cursor-pointer" />
           </div>
         </div>
-        <Suspense fallback={<div>Loading donations data...</div>}>
+        <Suspense fallback={<DonationsTableSkeleton />}>
           <DonationsData userId={userId} />
         </Suspense>
       </Tabs>
