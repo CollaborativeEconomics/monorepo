@@ -3,6 +3,8 @@ import type { User } from '@cfce/database';
 import { imageUrl } from '@cfce/utils';
 import Image from 'next/image';
 import { v7 as uuidv7 } from 'uuid';
+import TextInput from '../../form/textinput';
+import { Input, Label } from '../../ui';
 
 type Props = {
   user: User;
@@ -47,42 +49,41 @@ export function ProfileForm({ user }: Props) {
   return (
     <div className="border rounded-md p-8 w-full lg:w-2/4 bg-card">
       <form action={handleSaveProfile}>
-        <div className="flex flex-row flex-start items-center rounded-full">
-          <div className="flex flex-col flex-start items-center rounded-full">
-            <Image
-              className="mr-8 rounded-full"
-              src={imageUrl(user?.image) || nopic}
-              width={100}
-              height={100}
-              alt="Avatar"
-            />
-            <input
-              type="file"
-              name="file"
-              className="mt-4 mr-4 w-[130px] text-wrap"
-            />
-          </div>
-          <div className="flex flex-col flex-start items-start w-full rounded-full">
-            <input
-              type="text"
+        <div className="flex flex-row flex-start items-start rounded-full">
+          <Image
+            className="mr-8 rounded-full"
+            src={user.image ? imageUrl(user.image) : nopic}
+            width={100}
+            height={100}
+            alt="Avatar"
+          />
+          <div className="flex flex-col flex-start items-start w-full rounded-full gap-4">
+            <Label htmlFor="name">Name</Label>
+            <Input
               className="pl-4 w-full bg-transparent"
               name="name"
               defaultValue={user?.name || ''}
               placeholder="name"
             />
-            <input
-              type="text"
+            <Label htmlFor="email">Email</Label>
+            <Input
               className="pl-4 w-full bg-transparent"
               name="email"
               defaultValue={user?.email || ''}
               placeholder="email"
+            />
+            <Label htmlFor="file">Avatar</Label>
+            <Input
+              type="file"
+              name="file"
+              // className="mt-4 mr-4 w-[130px] text-wrap"
             />
             <input
               type="hidden"
               name="currentImage"
               value={user?.image || ''}
             />
-            <h2 className="mt-4">
+            <h2>
               Wallet: {user?.wallet ? `${user.wallet.substr(0, 10)}...` : '?'}
             </h2>
           </div>

@@ -1,6 +1,6 @@
 import { LogoutButton } from '@cfce/auth';
-import type { Prisma, Wallet } from '@cfce/database';
-import { Divider } from '../../ui';
+import type { Prisma } from '@cfce/database';
+import { Separator } from '../../ui';
 import { ConnectWalletOverlay } from './ConnectWalletOverlay';
 import { WalletRow } from './WalletRow';
 
@@ -20,7 +20,7 @@ export function UserWallets({ wallets }: Props) {
           ))}
           <ConnectWalletOverlay userId={userId} />
         </div>
-        <Divider />
+        <Separator />
         <div className="w-full space-y-3 p-8">
           <LogoutButton className="w-full" />
         </div>

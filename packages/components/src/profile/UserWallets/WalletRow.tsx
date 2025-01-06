@@ -19,13 +19,14 @@ export function WalletRow({ wallet }: WalletRowProps) {
     await copy(address);
   };
 
-  const handleRemoveWallet = async () => {
-    try {
-      await removeWallet(wallet.id);
-    } catch (error) {
-      console.error('Failed to remove wallet:', error);
-    }
-  };
+  // @deprecated, many edge cases
+  // const handleRemoveWallet = async () => {
+  //   try {
+  //     await removeWallet(wallet.id);
+  //   } catch (error) {
+  //     console.error('Failed to remove wallet:', error);
+  //   }
+  // };
 
   return (
     <div className="flex items-center space-x-2 w-full border rounded-lg p-2">
@@ -47,14 +48,14 @@ export function WalletRow({ wallet }: WalletRowProps) {
       >
         <Clipboard size={18} />
       </button>
-      <button
+      {/* <button
         type="button"
         className="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
         title="Remove wallet"
         onClick={handleRemoveWallet}
       >
         <Trash2 size={18} />
-      </button>
+      </button> */}
     </div>
   );
 }

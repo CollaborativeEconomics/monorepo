@@ -35,7 +35,7 @@ export function ScrollBackground({ children }: ScrollBackgroundProps) {
 
   const backgroundClass =
     scrollY > 0
-      ? 'bg-white dark:bg-gradient-to-b py-4 shadow-md'
+      ? 'bg-white dark:bg-gradient-to-b dark:from-accent dark:to-card py-4 shadow-md'
       : 'bg-transparent';
 
   console.log('scrollY', scrollY, backgroundClass);
