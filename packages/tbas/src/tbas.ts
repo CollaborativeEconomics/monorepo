@@ -3,7 +3,7 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { xdc, xdcTestnet } from 'viem/chains'
 import appConfig from '@cfce/app-config'
 import { abi721, abi6551registry as registryABI, BlockchainManager, chainConfig } from '@cfce/blockchain-tools'
-import { newTokenBoundAccount } from '@cfce/database'
+import { newTokenBoundAccount, getTokenBoundAccount } from '@cfce/database'
 import type { EntityType } from '@cfce/types'
 
 /* TBAS - Token Bound Accounts ERC 6551
@@ -13,7 +13,7 @@ import type { EntityType } from '@cfce/types'
   Methods used:
 
   - createAccount(tokenContract, tokenId, chainId, waitForReceipt=false)
-    returns the address of the newaly created TBA
+    returns the address of the newly created TBA
 
   - getAccount(tokenContract, tokenId, chainId)
     returns the address of a TBA generated for an NFT and token Id on any blockchain
@@ -120,12 +120,14 @@ const uuidToUint256 = (uuid: string) => {
 }
 
 /**
- * Given a entity ID, mint a TBA NFT for the entity
+ * Given an entity ID, mint a TBA NFT for the entity
+ * If parentId exists, mint NFT to parent, not to server account
  * @param entityId UUID from registry db
+ * @param parentId UUID from registry db
  */
-export async function mintTBAccountNFT(entityId: string) {
+export async function mintTBAccountNFT(entityId: string, parentAddress?: string) {
   const walletSeed = process.env.XDC_WALLET_SECRET
-  const address    = settings.wallet
+  const address = parentAddress ?? settings.wallet // parent or server wallet
   const contractId = tokenContract
   const tokenId    = uuidToUint256(entityId).toString()
   console.log('MINTER', address)
@@ -201,7 +203,7 @@ export async function createTBAccount(tokenContract:string, tokenId:string, chai
 }
 
 // Get account address from contract
-export async function getTBAccount(tokenContract:string, tokenId:string, chainId:string){
+export async function fetchTBAccount(tokenContract:string, tokenId:string, chainId:string){
   console.log('Getting account...', tokenContract, tokenId, chainId)
   const client = newClient()
   const contract = getContract({
@@ -220,22 +222,32 @@ export async function getTBAccount(tokenContract:string, tokenId:string, chainId
   return address
 }
 
-
-export async function newTBAccount(entity_type:string, entity_id:string){
+/*
+  - Mints NFT to hold the TBA
+  - Prefetches TBA address
+  - Creates TBA contract
+  - Saves TBA to DB
+*/
+export async function newTBAccount(entity_type:string, entity_id:string, parent_id?: string){
   try {
-    const resMint = await mintTBAccountNFT(entity_id) // mint nft for tba in main 721 contract
+    let parent_address = ''
+    if(parent_id){
+      const tbaRec = await getTokenBoundAccount(entity_type, entity_id, chainSlug, network)
+      parent_address = tbaRec?.account_address || ''
+    }
+    const resMint = await mintTBAccountNFT(entity_id, parent_address) // mint nft for tba in main/parent 721 contract
     console.log('NFT', resMint)
     const tokenId = resMint.tokenId
     console.log('TokenID', tokenId)
     // create token bound account for user in xdc
-    const account_address:string = await getTBAccount(tokenContract, tokenId, chainId) // prefetch account address
+    const account_address:string = await fetchTBAccount(tokenContract, tokenId, chainId) // prefetch account address
     console.log('ACCT', account_address)
     const resTBA = await createTBAccount(tokenContract, tokenId, chainId, true)
     console.log('TBA', resTBA)
     //const address = resTBA.address
     // add tba record to db
     if(resTBA){
-      const data = {entity_type, entity_id, account_address, chain: chainSlug, network}
+      const data = {entity_type, entity_id, account_address, parent_address, chain: chainSlug, network}
       const resDB = await newTokenBoundAccount(data)
       console.log('DB', resDB)
     }

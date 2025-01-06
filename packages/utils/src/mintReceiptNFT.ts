@@ -10,13 +10,14 @@ import {
   getInitiativeById,
   getNFTbyTokenId,
   getOrganizationById,
+  getTokenBoundAccount,
   getUserByWallet,
   newNftData,
   newUser,
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
-import { ChainSlugs, DonationStatus, TokenTickerSymbol } from "@cfce/types"
+import { ChainSlugs, DonationStatus, EntityType, TokenTickerSymbol } from "@cfce/types"
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
 import { registryApi } from "./registryApi"
@@ -355,7 +356,28 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Mint NFTCC and attach to TBA for donor
-    // TODO: <<<
+    const tbaRec = await getTokenBoundAccount(EntityType.user, userId, chain, network)
+    const tbAddress = tbaRec?.account_address
+    if(tbAddress){
+      let tokenId2 = ""
+      const args2 = {
+        contractId: receiptContract,
+        address: tbAddress,
+        uri: uriMeta,
+        walletSeed: walletSecret,
+      }
+      const mintResponse2 = await BlockchainManager[chain]?.server.mintNFT(args2)
+      console.log("RESMINT2", mintResponse2)
+      if (!mintResponse2) {
+        throw new Error("Error minting NFT")
+      }
+      if ("error" in mintResponse2 && typeof mintResponse2.error === "string") {
+        throw new Error(mintResponse2.error)
+      }
+      if ("tokenId" in mintResponse2 && typeof mintResponse2.tokenId === "string") {
+        tokenId2 = mintResponse2?.tokenId
+      }
+    }
     // #endregion
 
     // #region: Send email receipt

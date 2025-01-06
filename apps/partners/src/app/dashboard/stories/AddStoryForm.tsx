@@ -103,7 +103,7 @@ export default function AddStoryForm({
         media,
       };
 
-      const storyResponse = await saveStory(storyData);
+      const storyResponse = await saveStory(storyData, false); // TBA
       if ('error' in storyResponse) {
         setMessage(`Error saving story: ${storyResponse.error}`);
         setButtonDisabled(false);

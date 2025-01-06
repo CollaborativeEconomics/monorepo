@@ -5,6 +5,8 @@ import { snakeCase } from "lodash"
 import { randomNumber, randomString } from "~/utils/random"
 import { uploadFile } from "@cfce/utils"
 import { uploadFileToIPFS } from "@cfce/ipfs"
+import { EntityType } from "@cfce/types"
+import { newTBAccount } from "@cfce/tbas"
 
 type FormData = {
   title: string;
@@ -26,7 +28,7 @@ type FormData = {
 //  return resp.json()
 //}
 
-export async function createInitiative(data: FormData, orgId: string) {
+export async function createInitiative(data: FormData, orgId: string, tba = false) {
   console.log('DATA', data)
   if (!data.title || !data.description || !data.image) {
     return { success: false, error: "Missing required fields" }
@@ -90,6 +92,13 @@ export async function createInitiative(data: FormData, orgId: string) {
     // 2. create TBA for that NFT
     // const tab = await createAccount(REGISTRY_NFT_COPY, tokenId, chainId, waitForReceipt=false)
 
+    // Create TBA for initiative
+    if(tba && result?.id){
+      const initId = result.id
+      console.log('TBA will be created for initiative', initId)
+      const account = await newTBAccount(EntityType.initiative, initId, orgId) // Parent org
+      console.log('TBA created', account)
+    }
 
     return { success: true, data: result }
   } catch (ex) {

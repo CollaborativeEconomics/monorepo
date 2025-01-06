@@ -12,6 +12,8 @@ import {
 import { uploadDataToIPFS, uploadFileToIPFS } from "@cfce/ipfs"
 import { put } from "@vercel/blob"
 import { mintStoryNFT } from "./mintStoryNFT"
+import { EntityType } from "@cfce/types"
+//import { newTBAccount } from "@cfce/tbas"
 
 async function processFile(
   file: string | File,
@@ -51,7 +53,7 @@ export default async function createStory({
   categoryId,
   images,
   media,
-}: CreateStoryParams): Promise<Story> {
+}: CreateStoryParams, tba=false): Promise<Story> {
   const imageCIDs: string[] = []
   let mediaCID = ""
   let storyId = ""
@@ -129,7 +131,7 @@ export default async function createStory({
     )
 
     // Mint the NFT
-    const { tokenId } = await mintStoryNFT(storyId, tokenCID)
+    const { tokenId } = await mintStoryNFT(storyId, tokenCID, initiativeId)
     console.log("Minted NFT", tokenCID, nftMetadata)
 
     posthogNodeClient.capture({
