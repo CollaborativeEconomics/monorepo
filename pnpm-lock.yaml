@@ -1492,9 +1492,15 @@ importers:
       '@cfce/database':
         specifier: workspace:*
         version: link:../database
+      '@cfce/state':
+        specifier: workspace:*
+        version: link:../state
       '@cfce/utils':
         specifier: workspace:*
         version: link:../utils
+      jotai:
+        specifier: ^2.10.4
+        version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       lucide-react:
         specifier: 0.469.0
         version: 0.469.0(react@19.0.0)
@@ -1553,6 +1559,9 @@ importers:
       '@cfce/registry-hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@cfce/state':
+        specifier: workspace:*
+        version: link:../state
       '@crossmarkio/sdk':
         specifier: ^0.4.0
         version: 0.4.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1571,6 +1580,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.13
         version: 4.17.13
+      jotai:
+        specifier: ^2.9.1
+        version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1756,6 +1768,9 @@ importers:
       '@cfce/analytics':
         specifier: workspace:*
         version: link:../analytics
+      '@cfce/state':
+        specifier: workspace:*
+        version: link:../state
       '@cfce/types':
         specifier: workspace:*
         version: link:../types
@@ -1957,6 +1972,28 @@ importers:
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       typescript:
         specifier: ^5.7.2
+        version: 5.7.2
+
+  packages/state:
+    dependencies:
+      '@cfce/app-config':
+        specifier: workspace:*
+        version: link:../app-config
+      '@cfce/types':
+        specifier: workspace:*
+        version: link:../types
+      immer:
+        specifier: ^10.0.0
+        version: 10.1.1
+      jotai:
+        specifier: ^2.0.0
+        version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
+      jotai-immer:
+        specifier: ^0.2.0
+        version: 0.2.0(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0))(react@19.0.0)
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
         version: 5.7.2
 
   packages/tbas:
@@ -8673,6 +8710,13 @@ packages:
 
   jose@5.9.6:
     resolution: {integrity: sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==}
+
+  jotai-immer@0.2.0:
+    resolution: {integrity: sha512-hahK8EPiROS9RoNWmX/Z8rY9WkAijspX4BZ1O7umpcwI4kPNkbcCpu/PhiQ8FMcpEcF6KmbpbMpSSj/GFmo8NA==}
+    peerDependencies:
+      immer: '*'
+      jotai: '>=1.11.0'
+      react: '>=17.0.0'
 
   jotai-immer@0.4.1:
     resolution: {integrity: sha512-nQTt1HBKie/5OJDck1qLpV1PeBA6bjJLAczEYAx70PD8R4Mbu7gtexfBUCzJh6W6ecsOfwHksAYAesVth6SN9A==}
@@ -16448,7 +16492,7 @@ snapshots:
 
   '@types/pg-pool@2.0.6':
     dependencies:
-      '@types/pg': 8.6.1
+      '@types/pg': 8.11.6
 
   '@types/pg@8.11.6':
     dependencies:
@@ -21100,6 +21144,12 @@ snapshots:
 
   jose@5.9.6: {}
 
+  jotai-immer@0.2.0(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0))(react@19.0.0):
+    dependencies:
+      immer: 10.1.1
+      jotai: 2.11.0(@types/react@19.0.2)(react@19.0.0)
+      react: 19.0.0
+
   jotai-immer@0.4.1(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0)):
     dependencies:
       immer: 10.1.1
@@ -22886,7 +22936,7 @@ snapshots:
     dependencies:
       debug: 4.4.0
       module-details-from-path: 1.0.3
-      resolve: 1.22.8
+      resolve: 1.22.10
     transitivePeerDependencies:
       - supports-color
 

@@ -1,11 +1,8 @@
-import { BlockchainManager } from "@cfce/blockchain-tools"
+import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
 
 export default async function getTransactionInfo(txid: string) {
   console.log("txid:", txid)
-  if (!BlockchainManager.stellar) {
-    return { error: "Stellar server not initialized" }
-  }
-  const txInfo = await BlockchainManager.stellar.server.fetchLedger(
+  const txInfo = await BlockchainServerInterfaces.stellar.fetchLedger(
     `/transactions/${txid}/operations`,
   )
   if (!txInfo || "error" in txInfo) {

@@ -1,4 +1,10 @@
-import type { AppConfig, ClientInterfaces } from "@cfce/types"
+import type {
+  AppConfig,
+  ChainSlugs,
+  ClientInterfaces,
+  Network,
+  TokenTickerSymbol,
+} from "@cfce/types"
 
 const siteInfo: AppConfig["siteInfo"] = {
   title: "Give Stark",
@@ -30,10 +36,10 @@ const chains: AppConfig["chains"] = {}
 const auth: AppConfig["auth"] = []
 
 const chainDefaults: AppConfig["chainDefaults"] = {
-  network: "mainnet",
-  wallet: "metamask",
-  chain: "xdc",
-  coin: "XDC",
+  network: "mainnet" as Network,
+  wallet: "metamask" as ClientInterfaces,
+  chain: "xdc" as ChainSlugs,
+  coin: "XDC" as TokenTickerSymbol,
 }
 
 const appConfig: AppConfig = {

@@ -1,5 +1,4 @@
-import appConfig from "@cfce/app-config"
-import type { ChainConfig, ChainSlugs, Chains } from "@cfce/types"
+import type { Chains } from "@cfce/types"
 
 const chainConfiguration: Chains = {
   arbitrum: {
@@ -544,22 +543,24 @@ chainConfiguration.stellar.networks.testnet = {
   wallet: "",
   wssurl: "",
 }
-chainConfiguration.stellar.networks.futurenet = {
-  id: 0,
-  name: "Stellar Futurenet",
-  slug: "futurenet",
-  symbol: "XLM",
-  decimals: 6,
-  gasprice: "250000000",
-  explorer: "https://stellarchain.io",
-  networkPassphrase: "Test SDF Future Network ; October 2022",
-  rpcUrls: {
-    main: "https://horizon-futurenet.stellar.org",
-    soroban: "https://horizon-futurenet.stellar.org",
-  },
-  wallet: "",
-  wssurl: "",
-}
+// having more than testnet and mainnet currently makes this more complex, so commenting for now
+// since we don't use it
+// chainConfiguration.stellar.networks.futurenet = {
+//   id: 0,
+//   name: "Stellar Futurenet",
+//   slug: "futurenet",
+//   symbol: "XLM",
+//   decimals: 6,
+//   gasprice: "250000000",
+//   explorer: "https://stellarchain.io",
+//   networkPassphrase: "Test SDF Future Network ; October 2022",
+//   rpcUrls: {
+//     main: "https://horizon-futurenet.stellar.org",
+//     soroban: "https://horizon-futurenet.stellar.org",
+//   },
+//   wallet: "",
+//   wssurl: "",
+// }
 chainConfiguration.tron.networks.mainnet = {
   id: 728126428,
   name: "Tron Mainnet",
@@ -657,43 +658,6 @@ chainConfiguration.xrpl.networks.testnet = {
   },
   wallet: "r3qr25QnANd8RRT9NYtgUrrty3yTfpGx9c",
   wssurl: "wss://s.altnet.rippletest.net:51233",
-}
-
-export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
-  const chainKeys = Object.keys(
-    appConfig.chains,
-  ) as (keyof typeof appConfig.chains)[]
-
-  return chainKeys.reduce(
-    (obj, key) => {
-      obj[key] = chainConfiguration[key]
-      return obj
-    },
-    {} as Record<ChainSlugs, ChainConfig>,
-  )
-}
-
-export const getRpcUrl = (
-  chain: ChainSlugs,
-  network: string,
-  rpcType = "main",
-): string => {
-  const chainConfig = chainConfiguration[chain]
-  if (!chainConfig) {
-    throw new Error(`Chain configuration not found for ${chain}`)
-  }
-
-  const networkConfig = chainConfig.networks[network]
-  if (!networkConfig) {
-    throw new Error(`Network configuration not found for ${chain} ${network}`)
-  }
-
-  const rpcUrl = networkConfig.rpcUrls[rpcType]
-  if (!rpcUrl) {
-    throw new Error(`RPC URL not found for ${chain} ${network} ${rpcType}`)
-  }
-
-  return rpcUrl
 }
 
 export default chainConfiguration

@@ -3,6 +3,7 @@ import type {
   AppConfig,
   AuthTypes,
   ChainSlugs,
+  Network,
 } from "@cfce/types"
 import appConfig from "./appConfig.staging"
 
@@ -20,12 +21,12 @@ const apis = {
 }
 
 const chains = {
-  xdc: appConfig.chains.xdc
+  xdc: appConfig.chains.xdc,
 }
 
 const chainDefaults = {
   ...appConfig.chainDefaults,
-  network: "testnet",
+  network: "testnet" as Network,
 }
 
 const auth = appConfig.auth as AuthTypes[]
