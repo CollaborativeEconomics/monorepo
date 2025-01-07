@@ -10,7 +10,7 @@ import ButtonBlue from '~/components/buttonblue';
 import Dashboard from '~/components/dashboard';
 import Sidebar from '~/components/sidebar';
 import Title from '~/components/title';
-import { DistributorAbi } from '~/utils/DistributorAbi';
+import { abiVolunteersDistributor as DistributorAbi } from '@cfce/blockchain-tools';
 import type { getReportedAddresses } from '~/utils/chainLogs';
 import { config } from '~/utils/wagmiConfig';
 

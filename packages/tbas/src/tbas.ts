@@ -31,6 +31,9 @@ const implementationAddress = (settings.contracts?.tba6551ImplementationAddress 
 const tokenContract = settings.contracts?.tba721TokenContract || '0x0'
 const baseSalt = '0x0000000000000000000000000000000000000000000000000000000000000001' as Address
 
+const serverInterface = BlockchainManager.xdc.server
+//const serverInterface = BlockchainServerInterfaces.evm
+//serverInterface.setChain("xdc")
 
 /*
 interface ChainSettings {
@@ -67,8 +70,6 @@ function getSettings_OLD(net:string){
   return Settings[net]
 }
 */
-
-
 
 function sleep(ms:number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -127,7 +128,7 @@ const uuidToUint256 = (uuid: string) => {
  */
 export async function mintTBAccountNFT(entityId: string, parentAddress?: string) {
   const walletSeed = process.env.XDC_WALLET_SECRET
-  const address = parentAddress ?? settings.wallet // parent or server wallet
+  const address = parentAddress || settings.wallet // parent or server wallet
   const contractId = tokenContract
   const tokenId    = uuidToUint256(entityId).toString()
   console.log('MINTER', address)
@@ -139,7 +140,7 @@ export async function mintTBAccountNFT(entityId: string, parentAddress?: string)
     throw new Error("Missing wallet or contract info")
   }
 
-  const response = await BlockchainManager.xdc.server.mintNFT721({
+  const response = await serverInterface.mintNFT721({
     address,
     tokenId,
     contractId,

@@ -1,4 +1,4 @@
-export const FactoryAbi = [
+export const VolunteersFactoryAbi = [
   {
     "type": "function",
     "name": "deployTokenDistributor",

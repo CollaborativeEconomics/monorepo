@@ -27,7 +27,9 @@ export async function mintAccountNFT(entityId: string) {
     throw new Error("Missing wallet or contract info")
   }
 
-  const response = await BlockchainManager.xdc.server.mintNFT721({
+  const serverInterface = BlockchainManager.xdc.server
+
+  const response = await serverInterface.mintNFT721({
     address,
     tokenId,
     contractId,

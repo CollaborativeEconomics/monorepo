@@ -1,6 +1,7 @@
 'use client';
 
 import type { Contract, Event } from '@cfce/database';
+import { abiVolunteersFactory as FactoryAbi } from '@cfce/blockchain-tools';
 import { newContract } from '~/actions/database';
 import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
 import { useState } from 'react';
@@ -15,7 +16,6 @@ import Sidebar from '~/components/sidebar';
 import Title from '~/components/title';
 import { DateDisplay } from '~/components/ui/date-posted';
 import Gallery from '~/components/ui/gallery';
-import { FactoryAbi } from '~/utils/FactoryAbi';
 import { config } from '~/utils/wagmiConfig';
 
 const arbitrumSepolia = wagmiChains.arbitrumSepolia;

@@ -1,4 +1,4 @@
-export const NFTAbi = [
+export const VolunteersNFTAbi = [
     {
       "type": "constructor",
       "inputs": [

@@ -13,7 +13,7 @@ import * as wagmiChains from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
 import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
-import { NFTAbi } from '~/utils/NFTAbi';
+import { abiVolunteersNFT as NFTAbi } from '@cfce/blockchain-tools';
 import { cleanAddress } from '~/utils/address';
 import { config } from '~/utils/wagmiConfig';
 
