@@ -1,6 +1,6 @@
 'use client';
 
-import { chainAtom, donationFormAtom } from '@cfce/utils';
+import { chainAtom, donationFormAtom } from '@cfce/state';
 import { useAtom } from 'jotai';
 import React from 'react';
 import { Label } from '~/ui/label';
@@ -21,10 +21,14 @@ export function RateMessage({ className }: RateMessageProps) {
     }
     // show token amount under field
     if (showUsd) {
-      return `${(+amount / exchangeRate).toFixed(2)} ${selectedToken} at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
+      return `${(+amount / exchangeRate).toFixed(
+        2,
+      )} ${selectedToken} at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
     }
     // show USD amount under field
-    return `${(+amount * exchangeRate).toFixed(2)} USD at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
+    return `${(+amount * exchangeRate).toFixed(
+      2,
+    )} USD at ${exchangeRate.toFixed(2)} ${selectedToken}/USD`;
   }, [exchangeRate, amount, showUsd, selectedToken]);
 
   return (

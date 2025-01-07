@@ -1,6 +1,7 @@
+import appConfig from "@cfce/app-config"
 import type {
+  Chain,
   ChainConfig,
-  ChainSlugs,
   Network,
   NetworkConfig,
   TokenTickerSymbol,
@@ -9,23 +10,18 @@ import type { Web3 } from "web3"
 import type { Transaction } from "../types/transaction"
 import chainConfiguration from "./chainConfig"
 
-export default abstract class ChainBaseClass {
-  public chain: ChainConfig
-  public network: NetworkConfig
-
-  constructor(chainSlug: ChainSlugs, network: Network) {
-    this.chain = chainConfiguration[chainSlug]
-    this.network = this.chain.networks[network]
-  }
+export default abstract class InterfaceBaseClass {
+  public chain?: ChainConfig
+  public network?: NetworkConfig
 
   // isometric functions, must be defined on all subclasses
   public abstract getTransactionInfo(
-    txId: string
+    txId: string,
   ): Promise<Transaction | { error: string }>
-  
+
   // TODO: improve types
   public abstract fetchLedger(method: unknown, params: unknown): unknown
-  
+
   public async sendPayment?(params: {
     address: string
     amount: number
@@ -37,7 +33,7 @@ export default abstract class ChainBaseClass {
     txid?: string
     walletAddress?: string
   }>
-  
+
   public async sendToken?(params: {
     address: string
     amount: number
@@ -51,15 +47,36 @@ export default abstract class ChainBaseClass {
     walletAddress?: string
   }>
 
-  // client functions, only defined on client subclasses
-  public connect?(): Promise<
-    | { success: boolean; error: string }
-    | { success: boolean; network: Network; walletAddress: string }
+  public async getBalance?(): Promise<
+    | {
+        success: boolean
+        balance: number
+      }
+    | {
+        success: boolean
+        error: string
+      }
   >
+
+  // client functions, only defined on client subclasses
+  public connect?(chainId?: number): Promise<
+    | { success: boolean; error: string }
+    | {
+        success: boolean
+        chain: Chain
+        network: NetworkConfig
+        walletAddress: string
+      }
+  >
+  isConnected() {
+    return (
+      typeof this.chain !== "undefined" && typeof this.network !== "undefined"
+    )
+  }
 
   // server functions, only defined on server subclasses
   public web3?: Web3
-  
+
   public async mintNFT?(params: {
     address: string
     uri: string
@@ -73,7 +90,19 @@ export default abstract class ChainBaseClass {
     tokenId?: string
     error?: string
   }>
-  
+
+  public async mintNFT721?(params: {
+    address: string
+    tokenId: string
+    contractId: string
+    walletSeed: string
+  }): Promise<{
+    success: boolean
+    txId?: string
+    tokenId?: string
+    error?: string
+  }>
+
   public async mintNFT1155?(params: {
     address: string
     tokenId: string
@@ -86,7 +115,7 @@ export default abstract class ChainBaseClass {
     tokenId?: string
     error?: string
   }>
-  
+
   // XRPL only?
   public async createSellOffer?(params: {
     tokenId: string
@@ -96,14 +125,18 @@ export default abstract class ChainBaseClass {
 
   // utility functions
   fromBaseUnit(amount: bigint): number {
+    if (!this.network) {
+      throw new Error("Network not set, connect or setChain first")
+    }
     const wei = 10 ** this.network.decimals
     return Number(amount) / wei
   }
 
   toBaseUnit(amount: number): bigint {
-    console.log('DECS', this.network.decimals)
+    if (!this.network) {
+      throw new Error("Network not set, connect or setChain first")
+    }
     const wei = Math.floor(amount * 10 ** this.network.decimals)
-    console.log('WEI', wei)
     return BigInt(wei)
   }
 
@@ -125,12 +158,15 @@ export default abstract class ChainBaseClass {
     return Buffer.from(hex.substr(2), "hex").toString(encoding)
   }
 
-  sendPaymentWithGas?(address: string, amount: number): Promise<{
-    success: boolean;
+  sendPaymentWithGas?(
+    address: string,
+    amount: number,
+  ): Promise<{
+    success: boolean
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    result?: any;
-    error?: string;
-    txid?: string;
-    walletAddress?: string;
-  }>;
+    result?: any
+    error?: string
+    txid?: string
+    walletAddress?: string
+  }>
 }

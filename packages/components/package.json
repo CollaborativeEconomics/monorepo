@@ -57,6 +57,7 @@
     }
   },
   "devDependencies": {
+    "@cfce/state": "workspace:*",
     "@cfce/analytics": "workspace:*",
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",

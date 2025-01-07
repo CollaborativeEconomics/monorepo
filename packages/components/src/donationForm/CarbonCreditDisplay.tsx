@@ -1,5 +1,5 @@
 import type { Prisma } from '@cfce/database';
-import { amountUSDAtom } from '@cfce/utils';
+import { amountUSDAtom } from '@cfce/state';
 import { useAtomValue } from 'jotai';
 import React from 'react';
 import CarbonChart from '~/CarbonChart';
@@ -38,7 +38,11 @@ export function CarbonCreditDisplay({ initiative }: CarbonCreditDisplayProps) {
 
   const chartTitle = React.useMemo(
     () =>
-      `${perc.toFixed(2)}% of total estimated carbon emissions retired ${tonx.toFixed(2)} out of ${tons} tons`,
+      `${perc.toFixed(
+        2,
+      )}% of total estimated carbon emissions retired ${tonx.toFixed(
+        2,
+      )} out of ${tons} tons`,
     [perc, tonx, tons],
   );
 

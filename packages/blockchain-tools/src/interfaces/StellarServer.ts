@@ -1,5 +1,10 @@
 // import { Transaction } from "../types/transaction"
-import type { ChainSlugs, Network } from "@cfce/types"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
 import { BASE_FEE, rpc } from "@stellar/stellar-sdk"
 import type {
   Transaction as StellarTransaction,
@@ -9,14 +14,20 @@ import type {
   // TransactionBuilder,
 } from "@stellar/stellar-sdk"
 // import Stellar, { StellarNetworks } from "./common"
-import ChainBaseClass from "../chains/ChainBaseClass"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import chainConfig from "../chains/chainConfig"
+import { getNetworkForChain } from "../chains/utils"
 import Contract721 from "../contracts/soroban/nft721/server"
 
-export default class StellarServer extends ChainBaseClass {
+export default class StellarServer extends InterfaceBaseClass {
   sorobanServer: rpc.Server
+  network: NetworkConfig
+  chain: ChainConfig
 
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
+  constructor() {
+    super()
+    this.chain = chainConfig.stellar
+    this.network = getNetworkForChain(this.chain.slug)
     this.sorobanServer = new rpc.Server(this.network.rpcUrls.main)
   }
 
@@ -33,7 +44,14 @@ export default class StellarServer extends ChainBaseClass {
     transfer?: boolean
     walletSeed: string
   }) {
-    console.log(this.chain.name, "minting NFT to", address, uri, "in", this.network.slug)
+    console.log(
+      this.chain.name,
+      "minting NFT to",
+      address,
+      uri,
+      "in",
+      this.network.slug,
+    )
     console.log("CTR", contractId, this.network.rpcUrls.main)
     const contract = new Contract721({
       contractId,

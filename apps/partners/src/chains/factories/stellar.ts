@@ -284,7 +284,8 @@ async function deployCredits(data:CreditsData) {
   console.log('DATA', data)
   try {
     const network = networks[data.network]
-    const wallet = new FreighterWallet(data.chain as ChainSlugs, data.network)
+    const wallet = new FreighterWallet()
+    //const wallet = new FreighterWallet(data.chain as ChainSlugs, data.network)
     await wallet.init()
     const walletInfo = await wallet.connect()
     console.log("WALLET", walletInfo)
@@ -336,8 +337,8 @@ async function deployNFTReceipt(data:ReceiptData) {
   console.log('DATA', data)
   try {
     const network = networks[data.network]
-    //const wallet  = new FreighterWallet()
-    const wallet = new FreighterWallet(data.chain as ChainSlugs, data.network)
+    const wallet  = new FreighterWallet()
+    //const wallet = new FreighterWallet(data.chain as ChainSlugs, data.network)
     await wallet.init()
     const walletInfo = await wallet.connect()
     console.log("WALLET", walletInfo)

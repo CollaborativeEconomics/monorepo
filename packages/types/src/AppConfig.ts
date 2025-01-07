@@ -19,7 +19,7 @@ type ContractType =
 
 export interface AppChainConfig {
   slug: ChainSlugs
-  network: string
+  network: Network
   contracts: Partial<Record<ContractType, string>>
   wallet?: string
   enabledWallets: ClientInterfaces[]

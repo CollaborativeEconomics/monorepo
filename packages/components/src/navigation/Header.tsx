@@ -6,9 +6,9 @@ import NavigationMenu from './NavigationMenu';
 
 export default function Header() {
   return (
-    <ScrollBackground>
-      <header className="w-full py-10 pb-7.5 fixed top-0 z-50 bg-gradient-to-b">
-        <div className="flex justify-between container">
+    <header className="w-full fixed top-0 z-50">
+      <ScrollBackground>
+        <div className="flex justify-between container py-10 pb-7.5">
           <Link href="/">
             <Logo />
           </Link>
@@ -16,7 +16,7 @@ export default function Header() {
             <NavigationMenu />
           </div>
         </div>
-      </header>
-    </ScrollBackground>
+      </ScrollBackground>
+    </header>
   );
 }

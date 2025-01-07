@@ -2,8 +2,8 @@
 // const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
 
 import appConfig from "@cfce/app-config"
-//import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
-import { BlockchainManager } from "@cfce/blockchain-tools"
+import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
+//import { BlockchainManager } from "@cfce/blockchain-tools"
 import { getTokenBoundAccount } from "@cfce/database"
 import { EntityType } from "@cfce/types"
 
@@ -35,9 +35,9 @@ export async function mintStoryNFT(storyId: string, tokenCID: string, initiative
     throw new Error("Missing wallet or contract info")
   }
 
-  const serverInterface = BlockchainManager.xdc.server
-  //const serverInterface = BlockchainServerInterfaces.evm
-  //serverInterface.setChain("xdc")
+  //const serverInterface = BlockchainManager.xdc.server
+  const serverInterface = BlockchainServerInterfaces.evm
+  serverInterface.setChain("xdc")
 
   const response = await serverInterface.mintNFT1155({
     address,

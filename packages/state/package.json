@@ -1,0 +1,22 @@
+{
+  "name": "@cfce/state",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint src/",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@cfce/app-config": "workspace:*",
+    "@cfce/types": "workspace:*",
+    "immer": "^10.0.0",
+    "jotai": "^2.0.0",
+    "jotai-immer": "^0.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

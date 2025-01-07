@@ -5,7 +5,12 @@ import {
   fetchGasTokenPrices,
 } from "@avnu/gasless-sdk"
 import appConfig from "@cfce/app-config"
-import type { ChainSlugs, Network } from "@cfce/types"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
 import {
   constants,
   Account,
@@ -27,11 +32,13 @@ import {
   disconnect,
 } from "starknetkit"
 import { formatEther, parseEther } from "viem"
-import ChainBaseClass from "../chains/ChainBaseClass"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import chainConfiguration from "../chains/chainConfig"
+import { getNetworkForChain } from "../chains/utils"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"
 import { ERC721ABI } from "../contracts/starknet/ERC721Abi"
 
-class StarknetWallet extends ChainBaseClass {
+class StarknetWallet extends InterfaceBaseClass {
   provider: Provider
   account: AccountInterface | null = null
   contract: Contract | null = null
@@ -39,9 +46,14 @@ class StarknetWallet extends ChainBaseClass {
   connectedWallet = ""
   connector: Connector | null = null
   decimals = 18
+  network: NetworkConfig
+  chain: ChainConfig
 
-  constructor(slug: ChainSlugs, network: Network) {
-    super(slug, network)
+  constructor() {
+    super()
+    this.network = getNetworkForChain("starknet")
+    this.chain = chainConfiguration.starknet
+
     this.provider = new Provider({
       nodeUrl: process.env.STARKNET_RPC_URI,
     })
@@ -129,7 +141,8 @@ class StarknetWallet extends ChainBaseClass {
         return {
           success: true,
           walletAddress: this.connectedWallet,
-          network: this.network.slug,
+          chain: this.chain.name,
+          network: this.network,
         }
       }
 
@@ -424,17 +437,21 @@ class StarknetWallet extends ChainBaseClass {
   }
 
   async getBalance() {
-    if (!this.connectedWallet) {
-      await this.getWallet()
+    try {
+      if (!this.connectedWallet) {
+        await this.getWallet()
+      }
+      const balance = await this.contract?.balanceOf(this.connectedWallet)
+      console.log("Balance", balance)
+      const {
+        balance: { low },
+      } = balance
+      console.log("Balance low", low)
+      return { success: true, balance: low }
+    } catch (error) {
+      console.error("Error getting balance", error)
+      return { success: false, error: "Error getting balance" }
     }
-
-    const balance = await this.contract?.balanceOf(this.connectedWallet)
-    console.log("Balance", balance)
-    const {
-      balance: { low },
-    } = balance
-    console.log("Balance low", low)
-    return low
   }
 }
 

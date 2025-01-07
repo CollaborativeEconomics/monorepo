@@ -1,4 +1,9 @@
-import type { ChainSlugs, Network } from "@cfce/types"
+import type {
+  ChainConfig,
+  ChainSlugs,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
 import {
   Client,
   type NFTokenCreateOffer,
@@ -10,13 +15,20 @@ import {
   convertStringToHex,
   isoTimeToRippleTime,
 } from "xrpl"
+import chainConfig from "../chains/chainConfig"
+import { getNetworkForChain } from "../chains/utils"
 import XrplCommon from "./XrplCommon"
 
 export default class XrplServer extends XrplCommon {
-  sourceTag?: number
-  constructor(slug: ChainSlugs, network: Network, sourceTag?: number) {
-    super(slug, network)
-    this.sourceTag = sourceTag
+  sourceTag: number
+  network: NetworkConfig
+  chain: ChainConfig
+
+  constructor() {
+    super()
+    this.chain = chainConfig.xrpl
+    this.network = getNetworkForChain(this.chain.slug)
+    this.sourceTag = 77777777
   }
 
   async mintNFT({
