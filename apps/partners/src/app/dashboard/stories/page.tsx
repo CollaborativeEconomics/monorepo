@@ -1,18 +1,18 @@
-import { auth } from "@cfce/auth"
+import { auth } from '@cfce/auth';
 // /app/dashboard/page.tsx
-import { getCategories, getOrganizationById, getStories } from "@cfce/database"
-import Story from "~/components/story"
-import Title from "~/components/title"
-import styles from "~/styles/dashboard.module.css"
-import AddStoryForm from "./AddStoryForm"
+import { getCategories, getOrganizationById, getStories } from '@cfce/database';
+import Story from '~/components/story';
+import Title from '~/components/title';
+import styles from '~/styles/dashboard.module.css';
+import AddStoryForm from './AddStoryForm';
 
 export default async function DashboardPage() {
-  const session = await auth() // Fetch session
-  const orgId = session?.orgId ?? ""
-  const organization = await getOrganizationById(orgId)
-  const initiatives = organization?.initiative || []
-  const stories = await getStories({ orgId })
-  const categories = await getCategories({})
+  const session = await auth(); // Fetch session
+  const orgId = session?.orgId ?? '';
+  const organization = await getOrganizationById(orgId);
+  const initiatives = organization?.initiative || [];
+  const stories = await getStories({ orgId });
+  const categories = await getCategories({});
 
   return (
     <div className={styles.content}>
@@ -25,14 +25,14 @@ export default async function DashboardPage() {
 
       {/* Pass data to the client-side form */}
       <AddStoryForm
-        userId={session?.user?.id ?? "anonymous"}
+        userId={session?.user?.id ?? 'anonymous'}
         orgId={orgId}
         initiatives={initiatives}
         categories={categories}
       />
 
       {stories.length > 0 ? (
-        stories.map((item) => (
+        stories.map(item => (
           <div className={styles.mainBox} key={item.id}>
             <Story {...item} />
           </div>
@@ -41,5 +41,5 @@ export default async function DashboardPage() {
         <h1 className="text-center text-2xl my-24">No stories found</h1>
       )}
     </div>
-  )
+  );
 }

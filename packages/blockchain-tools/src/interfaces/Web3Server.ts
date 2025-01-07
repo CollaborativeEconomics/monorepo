@@ -13,15 +13,9 @@ import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // mus
 import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
-import {
-  createWalletClient,
-  http,
-  createPublicClient,
-  parseAbi,
-  encodeFunctionData,
-  Abi,
-} from "viem"
-import { privateKeyToAccount } from "viem/accounts"
+import { createWalletClient, http, createPublicClient, parseAbi, encodeFunctionData, Abi } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
+
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 function getObjectValue(obj: any, prop: string) {
@@ -39,14 +33,14 @@ export default class Web3Server extends InterfaceBaseClass {
     this.chain = chainConfig[slug]
     this.network = getNetworkForChain(slug)
     this.web3 = new Web3(this.network.rpcUrls.main)
-
+    
     // Initialize Viem clients
-    // this.publicClient = createPublicClient({
-    //   transport: http(process.env.NEXT_PUBLIC_RPC_URL)
-    // })
-    // this.walletClient = createWalletClient({
-    //   transport: http(process.env.NEXT_PUBLIC_RPC_URL)
-    // })
+    this.publicClient = createPublicClient({
+      transport: http(process.env.NEXT_PUBLIC_RPC_URL)
+    })
+    this.walletClient = createWalletClient({
+      transport: http(process.env.NEXT_PUBLIC_RPC_URL)
+    })
   }
 
   async getGasPrice(minter: string, contractId: string, data: string) {
@@ -100,26 +94,17 @@ export default class Web3Server extends InterfaceBaseClass {
     console.log("GAS", gas)
 
     const account = privateKeyToAccount(walletSeed as `0x${string}`)
-
-    const publicClient = createPublicClient({
-      transport: http(process.env.NEXT_PUBLIC_RPC_URL),
-    })
-
-    const walletClient = createWalletClient({
-      transport: http(process.env.NEXT_PUBLIC_RPC_URL),
-    })
-
-
+    
     try {
-      const { request } = await publicClient.simulateContract({
-        account: account.address,
-        address: contractId as `0x${string}`,
+      const { request } = await this.publicClient.simulateContract({
+        account,
+        address: contractId,
         abi: Abi721inc,
-        functionName: "safeMint",
-        args: [address, uri],
+        functionName: 'safeMint',
+        args: [address, uri]
       })
       console.log("REQUEST", request)
-      const hash = await walletClient.writeContract(request)
+      const hash = await this.walletClient.writeContract(request)
 
       // const hash = await this.walletClient.sendTransaction({
       //   account,
@@ -127,29 +112,24 @@ export default class Web3Server extends InterfaceBaseClass {
       //   data: data,
       // })
 
-      const receipt = await publicClient.waitForTransactionReceipt({ hash })
-
-      if (receipt.status === "success") {
+      const receipt = await this.publicClient.waitForTransactionReceipt({ hash })
+      
+      if (receipt.status === 'success') {
         let tokenNum = ""
-        if (receipt.logs?.length > 0) {
-          console.log(
-            "LOGS.0",
-            JSON.stringify(receipt?.logs[0].topics, null, 2),
-          )
+        if(receipt.logs?.length > 0) {
+          console.log("LOGS.0", JSON.stringify(receipt?.logs[0].topics, null, 2))
           //console.log("LOGS.1", JSON.stringify(info?.logs[1].topics, null, 2))
           //tokenNum = ` #${Number.parseInt(Buffer.from(_get(info, "logs.0.topics.3", Buffer.alloc(0))).toString("hex"), 16)}` // Doesn't work as expected
           //const nftSeq = Number.parseInt((info?.logs[0]?.topics[3] || 0).toString(),16)
           //const nftSex = info?.logs?.[0]?.topics?.[3]
-          const nftSex = getObjectValue(receipt, "logs.0.topics.3")
-          const nftSeq = Number.parseInt(nftSex, 16)
-          console.log("SEQ", nftSeq, nftSex)
+          const nftSex = getObjectValue(receipt, 'logs.0.topics.3')
+          const nftSeq = Number.parseInt(nftSex,16)
+          console.log('SEQ', nftSeq, nftSex)
           tokenNum = ` #${nftSeq}`
         } else {
-          const supply = await instance.methods.totalSupply.call({
-            from: minter,
-          }) // last minted is total nfts
-          console.log("SUPPLY", supply)
-          const nftSeq = Number.parseInt(supply.toString(), 10) - 1
+          const supply = await instance.methods.totalSupply.call({from:minter}) // last minted is total nfts
+          console.log('SUPPLY', supply)
+          const nftSeq = Number.parseInt(supply.toString(),10) - 1
           tokenNum = ` #${nftSeq}`
         }
         const tokenId = contractId + tokenNum
@@ -165,7 +145,7 @@ export default class Web3Server extends InterfaceBaseClass {
       }
       return { success: false, error: "Something went wrong" }
     } catch (error) {
-      console.error("Transaction failed:", error)
+      console.error('Transaction failed:', error)
       return { success: false, error: "Transaction failed" }
     }
   }

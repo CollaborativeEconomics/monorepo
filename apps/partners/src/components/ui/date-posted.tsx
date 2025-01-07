@@ -1,23 +1,23 @@
-"use client"
+'use client';
 
-import { CalendarDays } from "lucide-react"
-import * as React from "react"
-import { cn } from "~/utils/shadCnUtil"
+import { CalendarDays } from 'lucide-react';
+import * as React from 'react';
+import { cn } from '~/utils/shadCnUtil';
 
 interface Props {
-  timestamp: Date | number
-  className?: string
+  timestamp: Date | number;
+  className?: string;
 }
 
 export default function DateDisplay(props: Props) {
   return (
     <DateStyle className={props.className}>
-      <CalendarDays size={17} />{" "}
+      <CalendarDays size={17} />{' '}
       <p className="truncate">
         {convertTimestampToDateString(props.timestamp)}
       </p>
     </DateStyle>
-  )
+  );
 }
 
 const DateStyle = React.forwardRef<
@@ -27,30 +27,30 @@ const DateStyle = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "h-2 inline-flex gap-2 items-center text-slate-500",
+      'h-2 inline-flex gap-2 items-center text-slate-500',
       className,
     )}
     {...props}
   />
-))
-DateStyle.displayName = "DateDisplay"
+));
+DateStyle.displayName = 'DateDisplay';
 
 function convertTimestampToDateString(timestamp: Date | number): string {
-  const timestampDate = new Date(timestamp)
-  return timestampDate.toLocaleString("default", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  })
+  const timestampDate = new Date(timestamp);
+  return timestampDate.toLocaleString('default', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 const TimestampToDateString = React.forwardRef<HTMLParagraphElement, Props>(
   ({ className, timestamp, ...props }, ref) => (
-    <p ref={ref} className={cn("", className)}>
+    <p ref={ref} className={cn('', className)}>
       {convertTimestampToDateString(timestamp)}
     </p>
   ),
-)
-TimestampToDateString.displayName = "TimestampToDateString"
+);
+TimestampToDateString.displayName = 'TimestampToDateString';
 
-export { DateDisplay, TimestampToDateString }
+export { DateDisplay, TimestampToDateString };

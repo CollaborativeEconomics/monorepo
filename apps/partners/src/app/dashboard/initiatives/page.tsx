@@ -1,17 +1,17 @@
-import { auth } from "@cfce/auth"
-import { type Initiative, getOrganizationById } from "@cfce/database"
-import InitiativeCard from "~/components/InitiativeCard"
-import Title from "~/components/title"
-import styles from "~/styles/dashboard.module.css"
-import InitiativeForm from "./InitiativeForm"
+import { auth } from '@cfce/auth';
+import { type Initiative, getOrganizationById } from '@cfce/database';
+import InitiativeCard from '~/components/InitiativeCard';
+import Title from '~/components/title';
+import styles from '~/styles/dashboard.module.css';
+import InitiativeForm from './InitiativeForm';
 
 export default async function Page() {
-  const session = await auth()
-  const orgId = session?.orgId || ""
+  const session = await auth();
+  const orgId = session?.orgId || '';
 
-  const organization = await getOrganizationById(orgId)
+  const organization = await getOrganizationById(orgId);
 
-  const initiatives = organization?.initiative || []
+  const initiatives = organization?.initiative || [];
 
   return (
     <div className={styles.content}>
@@ -35,5 +35,5 @@ export default async function Page() {
         <h1 className="text-center text-2xl my-24">No initiatives found</h1>
       )}
     </div>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-import React from "react"
+import React from 'react';
 
-import { getStoryById } from "@cfce/database"
-import { NotFound } from "@cfce/components/navigation"
-import { OrganizationAvatar } from "@cfce/components/organization"
+import { getStoryById } from '@cfce/database';
+import { NotFound } from '@cfce/components/navigation';
+import { OrganizationAvatar } from '@cfce/components/organization';
 import {
   Card,
   CardContent,
@@ -10,22 +10,22 @@ import {
   DateDisplay,
   Gallery,
   ShareModal,
-} from "@cfce/components/ui"
-import Image from "next/image"
-import Link from "next/link"
+} from '@cfce/components/ui';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function Story(props: {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }) {
-  const storyid = (await props.params).id
-  const story = await getStoryById(storyid)
+  const storyid = (await props.params).id;
+  const story = await getStoryById(storyid);
   if (!story) {
-    return <NotFound />
+    return <NotFound />;
   }
 
-  const media = story.media.map((it) => it.media) // flatten list
-  const image = story.image ? [story.image] : []
-  media.unshift(...image) // main image to the top
+  const media = story.media.map(it => it.media); // flatten list
+  const image = story.image ? [story.image] : [];
+  media.unshift(...image); // main image to the top
 
   return (
     <main className="flex min-h-screen flex-col items-stretch container mt-12 pt-24">
@@ -78,5 +78,5 @@ export default async function Story(props: {
         </CardContent>
       </Card>
     </main>
-  )
+  );
 }

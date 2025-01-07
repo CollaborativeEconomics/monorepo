@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { headers } from "next/headers"
+import { headers } from 'next/headers'
 import { getContracts, newContract } from "@cfce/database"
 import checkApiKey from "../checkApiKey"
 

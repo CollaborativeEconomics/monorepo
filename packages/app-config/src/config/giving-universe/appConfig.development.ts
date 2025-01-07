@@ -134,3 +134,4 @@ const appConfigDevelopment: AppConfig = {
 }
 
 export default appConfigDevelopment
+

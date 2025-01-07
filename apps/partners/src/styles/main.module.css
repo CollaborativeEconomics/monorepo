@@ -16,7 +16,7 @@
   padding: 1.5rem;
   max-width: 48rem;
   border-radius: 1rem;
-  background-color: rgb(23 25 31); /*bg-slate-800*/
+  background-color: rgb(23 25 31);  /*bg-slate-800*/
 }
 
 .mainImage {
@@ -24,3 +24,4 @@
   height: 5rem;
   margin: 1.5rem auto;
 }
+

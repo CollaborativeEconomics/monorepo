@@ -20,8 +20,8 @@ export default async function uploadFileToIPFS(file: File): Promise<string> {
 
   // Convert to bytes
   //const fileBuffer = fs.readFileSync(file.filepath)
-  const buffer = await file.arrayBuffer()
-  const fileBuffer = Buffer.from(buffer)
+  const buffer = await file.arrayBuffer();
+  const fileBuffer = Buffer.from(buffer);
   const bytes = new Uint8Array(fileBuffer)
 
   // uploadDataToIPFS

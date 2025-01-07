@@ -3,17 +3,17 @@ import React, {
   useRef,
   useEffect,
   type MutableRefObject,
-} from "react"
-import type { UseFormRegisterReturn } from "react-hook-form"
+} from 'react';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface FileProps {
-  id?: string
-  source?: string
-  className?: string
-  width?: number
-  height?: number
-  register: UseFormRegisterReturn
-  multiple?: boolean
+  id?: string;
+  source?: string;
+  className?: string;
+  width?: number;
+  height?: number;
+  register: UseFormRegisterReturn;
+  multiple?: boolean;
 }
 
 const FileView: React.FC<FileProps> = ({
@@ -25,40 +25,40 @@ const FileView: React.FC<FileProps> = ({
   register,
   multiple = false,
 }) => {
-  const [previews, setPreviews] = useState<string[]>([source || ""])
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [previews, setPreviews] = useState<string[]>([source || '']);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
+    const files = event.target.files;
     if (files) {
-      const newPreviews = Array.from(files).map((file) =>
+      const newPreviews = Array.from(files).map(file =>
         URL.createObjectURL(file),
-      )
-      setPreviews(newPreviews)
+      );
+      setPreviews(newPreviews);
     }
-  }
+  };
 
   useEffect(() => {
     // Cleanup object URLs on component unmount
     return () => {
       for (const preview of previews) {
-        URL.revokeObjectURL(preview)
+        URL.revokeObjectURL(preview);
       }
-    }
-  }, [previews])
+    };
+  }, [previews]);
 
-  const style = "mx-auto"
-  const size = `w-[${width}px] h-[${height}px]`
+  const style = 'mx-auto';
+  const size = `w-[${width}px] h-[${height}px]`;
 
   return (
-    <div className={`relative ${size} m-4 ${className ?? ""}`}>
+    <div className={`relative ${size} m-4 ${className ?? ''}`}>
       <input
         type="file"
         id={id}
         {...register}
-        ref={(e) => {
-          register.ref(e)
-          fileInputRef.current = e
+        ref={e => {
+          register.ref(e);
+          fileInputRef.current = e;
         }}
         onChange={handleFileChange}
         className="hidden"
@@ -87,9 +87,9 @@ const FileView: React.FC<FileProps> = ({
         <div
           className={`${size} border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer`}
           onClick={() => fileInputRef.current?.click()}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              fileInputRef.current?.click()
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              fileInputRef.current?.click();
             }
           }}
           tabIndex={0}
@@ -99,7 +99,7 @@ const FileView: React.FC<FileProps> = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default FileView
+export default FileView;

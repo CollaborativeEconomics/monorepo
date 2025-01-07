@@ -1,6 +1,6 @@
-import type { Event as EventType } from "@cfce/database"
-import { DateTime } from "luxon"
-import Image from "next/image"
+import type { Event as EventType } from '@cfce/database';
+import { DateTime } from 'luxon';
+import Image from 'next/image';
 
 const Event = (event: EventType) => {
   //console.log('ENV', process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL)
@@ -9,14 +9,14 @@ const Event = (event: EventType) => {
       {event.image ? (
         <Image
           src={
-            event.image.startsWith("ipfs:")
+            event.image.startsWith('ipfs:')
               ? process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL + event.image.substr(5)
               : event.image
           }
           width={100}
           height={100}
           className="w-32 h-32 mr-6 rounded"
-          alt={event.name ?? "Event banner image"}
+          alt={event.name ?? 'Event banner image'}
         />
       ) : null}
       <div>
@@ -29,7 +29,7 @@ const Event = (event: EventType) => {
         <h3 className="text-base">{event.description}</h3>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Event
+export default Event;

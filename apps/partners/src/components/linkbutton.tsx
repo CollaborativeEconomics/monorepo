@@ -1,10 +1,10 @@
 //import React, { HTMLAttributes } from 'react'
-import Link, { type LinkProps } from "next/link"
+import Link, { type LinkProps } from 'next/link';
 
 interface LinkButtonProps {
-  text: string
-  href: string
-  className?: string
+  text: string;
+  href: string;
+  className?: string;
 }
 
 const LinkButton = ({
@@ -19,8 +19,8 @@ const LinkButton = ({
   >
     {text}
   </Link>
-)
+);
 
-LinkButton.displayName = "LinkButton"
+LinkButton.displayName = 'LinkButton';
 
-export default LinkButton
+export default LinkButton;

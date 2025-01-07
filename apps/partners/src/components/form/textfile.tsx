@@ -1,11 +1,11 @@
-import React, { forwardRef, type HTMLProps } from "react"
-import type { UseFormRegisterReturn } from "react-hook-form"
+import React, { forwardRef, type HTMLProps } from 'react';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface TextFileProps {
-  id?: string
-  label?: string
-  className?: string
-  register: UseFormRegisterReturn
+  id?: string;
+  label?: string;
+  className?: string;
+  register: UseFormRegisterReturn;
 }
 
 const TextFile = forwardRef<HTMLInputElement, TextFileProps>(
@@ -19,7 +19,7 @@ const TextFile = forwardRef<HTMLInputElement, TextFileProps>(
     }: TextFileProps & HTMLProps<HTMLInputElement>,
     ref,
   ) => (
-    <label className={`m-0 mt-4 ${className ?? ""}`}>
+    <label className={`m-0 mt-4 ${className ?? ''}`}>
       <span className="text-slate-300 text-sm text-left uppercase">
         {label}
       </span>
@@ -33,8 +33,8 @@ const TextFile = forwardRef<HTMLInputElement, TextFileProps>(
       />
     </label>
   ),
-)
+);
 
-TextFile.displayName = "TextFile"
+TextFile.displayName = 'TextFile';
 
-export default TextFile
+export default TextFile;

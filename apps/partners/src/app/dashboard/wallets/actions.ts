@@ -1,19 +1,13 @@
-"use server"
+'use server'
 
-import { type Chain, newWallet } from "@cfce/database"
+import { type Chain, newWallet } from '@cfce/database';
 
-export async function createWallet(
-  orgId: string,
-  data: { chain: Chain; address: string },
-) {
+export async function createWallet(orgId: string, data: { chain: Chain; address: string }) {
   try {
-    const wallet = await newWallet({
-      ...data,
-      organizations: { connect: { id: orgId } },
-    })
-    return { success: true, wallet }
+    const wallet = await newWallet({ ...data, organizations: { connect: { id: orgId } } });
+    return { success: true, wallet };
   } catch (error) {
-    console.error("Error creating wallet:", error)
-    return { success: false, error: (error as Error).message }
+    console.error('Error creating wallet:', error);
+    return { success: false, error: (error as Error).message };
   }
 }

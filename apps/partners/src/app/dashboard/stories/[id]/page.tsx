@@ -1,43 +1,43 @@
-import { getDonations, getStoryById } from "@cfce/database"
-import { DateTime } from "luxon"
-import Image from "next/image"
-import Link from "next/link"
-import ShareModal from "~/components/ShareModal"
-import OrganizationAvatar from "~/components/organizationavatar"
-import Title from "~/components/title"
-import { Card, CardContent, CardHeader } from "~/components/ui/card"
-import { DateDisplay } from "~/components/ui/date-posted"
-import Gallery from "~/components/ui/gallery"
-import styles from "~/styles/dashboard.module.css"
+import { getDonations, getStoryById } from '@cfce/database';
+import { DateTime } from 'luxon';
+import Image from 'next/image';
+import Link from 'next/link';
+import ShareModal from '~/components/ShareModal';
+import OrganizationAvatar from '~/components/organizationavatar';
+import Title from '~/components/title';
+import { Card, CardContent, CardHeader } from '~/components/ui/card';
+import { DateDisplay } from '~/components/ui/date-posted';
+import Gallery from '~/components/ui/gallery';
+import styles from '~/styles/dashboard.module.css';
 
 async function getStoryData(id: string) {
-  const story = await getStoryById(id)
-  if (!story) throw new Error("Story not found")
-  const media = story.media.map((it) => it.media) // flatten list
+  const story = await getStoryById(id);
+  if (!story) throw new Error('Story not found');
+  const media = story.media.map(it => it.media); // flatten list
   if (story.image) {
-    media.unshift(story.image) // main image to the top, if it exists
+    media.unshift(story.image); // main image to the top, if it exists
   }
-  const donations = (await getDonations({ storyId: id })) || []
+  const donations = (await getDonations({ storyId: id })) || [];
   const total = donations.length
     ? donations.reduce((sum, curr) => sum + Number(curr.usdvalue), 0)
-    : 0
-  return { story, media, donations, total }
+    : 0;
+  return { story, media, donations, total };
 }
 
 export default async function Story({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = await params
-  const { story, media, donations, total } = await getStoryData(id)
+  const { id } = await params;
+  const { story, media, donations, total } = await getStoryData(id);
 
   function formatDate(dateString: string) {
     return DateTime.fromISO(dateString).toLocaleString({
-      year: "2-digit",
-      month: "numeric",
-      day: "2-digit",
-    })
+      year: '2-digit',
+      month: 'numeric',
+      day: '2-digit',
+    });
   }
 
   return (
@@ -79,7 +79,7 @@ export default async function Story({
                       {story.initiative.category?.title}
                     </h1>
                     <Image
-                      src={story.initiative.category?.image || ""}
+                      src={story.initiative.category?.image || ''}
                       width={96}
                       height={96}
                       alt="Category"
@@ -94,7 +94,7 @@ export default async function Story({
               <h1 className="my-2">Donations</h1>
               <table className="w-full">
                 <tbody className="border-t-2">
-                  {donations?.map((item) => (
+                  {donations?.map(item => (
                     <tr key={item.id}>
                       <td>{formatDate(item.created.toISOString())}</td>
                       <td>{item.wallet?.substr(0, 10)}</td>
@@ -119,5 +119,5 @@ export default async function Story({
         </Card>
       </div>
     </div>
-  )
+  );
 }

@@ -1,14 +1,14 @@
-import Image from "next/image"
-import Link from "next/link"
-import type { PropsWithChildren } from "react"
-import styles from "~/styles/main.module.css"
+import Image from 'next/image';
+import Link from 'next/link';
+import type { PropsWithChildren } from 'react';
+import styles from '~/styles/main.module.css';
 
 interface PageProps {
-  className?: string
+  className?: string;
 }
 
 const Main = ({ className, children }: PropsWithChildren<PageProps>) => {
-  const mainClass = `${styles.mainArea} container ${className}`
+  const mainClass = `${styles.mainArea} container ${className}`;
   return (
     <div className={styles.mainBox}>
       <main className={mainClass}>
@@ -24,7 +24,7 @@ const Main = ({ className, children }: PropsWithChildren<PageProps>) => {
         {children}
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Main
+export default Main;

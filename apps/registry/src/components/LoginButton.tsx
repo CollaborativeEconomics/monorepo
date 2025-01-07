@@ -1,8 +1,8 @@
-import { auth, githubLogin, signIn, signOutAction } from "@cfce/auth"
-import React from "react"
+import { auth, githubLogin, signIn, signOutAction } from '@cfce/auth';
+import React from 'react';
 
 export default async function LoginButton() {
-  const session = await auth()
+  const session = await auth();
   if (session) {
     return (
       <>
@@ -11,7 +11,7 @@ export default async function LoginButton() {
           <button type="submit">Sign out</button>
         </form>
       </>
-    )
+    );
   }
   return (
     <>
@@ -20,5 +20,5 @@ export default async function LoginButton() {
         <button type="submit">Sign in</button>
       </form>
     </>
-  )
+  );
 }

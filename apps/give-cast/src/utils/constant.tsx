@@ -1,6 +1,6 @@
 /** @jsxImportSource frog/jsx */
 
-import { Button, TextInput } from "frog"
+import { Button, TextInput } from 'frog';
 
 const IntentStory = {
   intents: [
@@ -11,7 +11,7 @@ const IntentStory = {
       Donate
     </Button>,
   ],
-}
+};
 
 const IntentNext = {
   intents: [
@@ -22,7 +22,7 @@ const IntentNext = {
       Donate
     </Button>,
   ],
-}
+};
 
 const IntentFirst = {
   intents: [
@@ -33,7 +33,7 @@ const IntentFirst = {
       Donate
     </Button>,
   ],
-}
+};
 
 const DonateIntent = {
   intents: [
@@ -45,7 +45,7 @@ const DonateIntent = {
       Go Back
     </Button>,
   ],
-}
+};
 
 const ConfirmIntent = {
   intents: [
@@ -57,6 +57,6 @@ const ConfirmIntent = {
       Donate
     </Button.Transaction>,
   ],
-}
+};
 
-export { IntentStory, IntentNext, IntentFirst, DonateIntent, ConfirmIntent }
+export { IntentStory, IntentNext, IntentFirst, DonateIntent, ConfirmIntent };

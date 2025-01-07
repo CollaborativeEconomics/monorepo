@@ -1,6 +1,6 @@
-"use client"
-import React from "react"
-import type { EIP1193Provider } from "viem"
+'use client';
+import React from 'react';
+import type { EIP1193Provider } from 'viem';
 
 const MintPage: React.FC = () => {
   return (
@@ -12,29 +12,29 @@ const MintPage: React.FC = () => {
       </button>
       <div id="status" />
     </div>
-  )
-}
+  );
+};
 
 declare global {
   interface Window {
-    ethereum: EIP1193Provider // source: https://ethereum.stackexchange.com/questions/94439/trying-to-use-window-ethereum-request-in-typescript-errors-out-with-property-re
+    ethereum: EIP1193Provider; // source: https://ethereum.stackexchange.com/questions/94439/trying-to-use-window-ethereum-request-in-typescript-errors-out-with-property-re
   }
 }
 
 async function addNFT() {
-  const address = process.env.MINTER_CONTRACT
-  const image = "https://give-cast.vercel.app/givecast.jpg"
-  const symbol = "GIVE"
-  const decimals = 0
-  const tokenId = "1"
+  const address = process.env.MINTER_CONTRACT;
+  const image = 'https://give-cast.vercel.app/givecast.jpg';
+  const symbol = 'GIVE';
+  const decimals = 0;
+  const tokenId = '1';
 
-  if (typeof window.ethereum !== "undefined") {
+  if (typeof window.ethereum !== 'undefined') {
     try {
       const wasAdded = await window.ethereum.request({
-        method: "wallet_watchAsset",
+        method: 'wallet_watchAsset',
         // @ts-expect-error doesn't infer 721 support
         params: {
-          type: "ERC721",
+          type: 'ERC721',
           options: {
             address,
             image,
@@ -43,16 +43,16 @@ async function addNFT() {
             tokenId,
           },
         },
-      })
+      });
       if (wasAdded) {
-        console.log("Thanks for your interest!")
+        console.log('Thanks for your interest!');
       } else {
-        console.log("Your loss!")
+        console.log('Your loss!');
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 }
 
-export default MintPage
+export default MintPage;

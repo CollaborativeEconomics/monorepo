@@ -1,20 +1,20 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import appConfig from "@cfce/app-config"
-import type { Contract } from "@cfce/database"
-import ButtonBlue from "~/components/buttonblue"
-import Title from "~/components/title"
-import TextInput from "~/components/form/textinput"
-import styles from "~/styles/dashboard.module.css"
-import { apiFetch } from "~/utils/api"
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form'
+import appConfig from '@cfce/app-config';
+import type { Contract } from '@cfce/database';
+import ButtonBlue from '~/components/buttonblue';
+import Title from '~/components/title';
+import TextInput from '~/components/form/textinput'
+import styles from '~/styles/dashboard.module.css';
+import { apiFetch } from '~/utils/api';
 
 interface PageProps {
-  chain?: string
-  network?: string
-  wallet?: string
-  organizationId?: string
+  chain?: string;
+  network?: string;
+  wallet?: string;
+  organizationId?: string;
 }
 
 interface FormProps {
@@ -37,23 +37,23 @@ export default function ContractCreditsClient({
   //const contract_type = 'Credits'
 
   // TODO: Componentize button state
-  const [buttonText, setButtonText] = useState("NEW CONTRACT")
+  const [buttonText, setButtonText] = useState('NEW CONTRACT')
   const [buttonDisabled, setButtonDisabled] = useState(false)
-  const [message, showMessage] = useState("Enter contract options")
+  const [message, showMessage] = useState('Enter contract options')
   const ButtonState = { READY: 0, WAIT: 1, DONE: 2 }
-
-  function setButtonState(state: number) {
+  
+  function setButtonState(state:number) {
     switch (state) {
       case ButtonState.READY:
-        setButtonText("NEW CONTRACT")
+        setButtonText('NEW CONTRACT')
         setButtonDisabled(false)
         break
       case ButtonState.WAIT:
-        setButtonText("WAIT")
+        setButtonText('WAIT')
         setButtonDisabled(true)
         break
       case ButtonState.DONE:
-        setButtonText("DONE")
+        setButtonText('DONE')
         setButtonDisabled(true)
         break
     }
@@ -63,32 +63,45 @@ export default function ContractCreditsClient({
     defaultValues: {
       chain: chain,
       wallet: wallet,
-      vendor: "",
-      vendor_fees: "90",
-      provider: "",
-      provider_fees: "10",
-      minimum: "1",
-      bucket: "20",
-    },
+      vendor: '',
+      vendor_fees: '90',
+      provider: '',
+      provider_fees: '10',
+      minimum: '1',
+      bucket: '20'
+    }
   })
-  const [vendor, vendor_fees, provider, provider_fees, minimum, bucket] = watch(
-    ["vendor", "vendor_fees", "provider", "provider_fees", "minimum", "bucket"],
-  )
+  const [
+    vendor,
+    vendor_fees,
+    provider,
+    provider_fees,
+    minimum,
+    bucket
+  ] = watch([
+    'vendor',
+    'vendor_fees',
+    'provider',
+    'provider_fees',
+    'minimum',
+    'bucket'
+  ])
+
 
   async function onSubmit(data: FormProps) {
-    console.log("SUBMIT", data)
+    console.log('SUBMIT', data)
 
     if (!data.chain) {
-      showMessage("Chain is required")
+      showMessage('Chain is required')
       return
     }
     if (!data.wallet) {
-      showMessage("Wallet is required")
+      showMessage('Wallet is required')
       return
     }
-    showMessage("Not ready...")
+    showMessage('Not ready...')
 
-    /*
+/*
     try {
       showMessage('Deploying contract, please sign transaction...')
       setButtonState(ButtonState.WAIT)
@@ -127,6 +140,7 @@ export default function ContractCreditsClient({
 */
   }
 
+
   return (
     <div className={styles.vbox}>
       <Title text="Credits Contract" />
@@ -135,27 +149,12 @@ export default function ContractCreditsClient({
         <div className="flex flex-row justify-center w-[640px] mx-auto">
           {/* PAGE */}
           <div className="w-full">
-            <TextInput
-              label="Credit Vendor (Wallet address)"
-              register={register("vendor")}
-            />
-            <TextInput
-              label="Vendor Fees (percentage)"
-              register={register("vendor_fees")}
-            />
-            <TextInput
-              label="Credit Provider (Wallet address)"
-              register={register("provider")}
-            />
-            <TextInput
-              label="Provider Fees (percentage)"
-              register={register("provider_fees")}
-            />
-            <TextInput label="Bucket Size" register={register("bucket")} />
-            <TextInput
-              label="Minimum Donation"
-              register={register("minimum")}
-            />
+            <TextInput label="Credit Vendor (Wallet address)" register={register('vendor')} />
+            <TextInput label="Vendor Fees (percentage)" register={register('vendor_fees')} />
+            <TextInput label="Credit Provider (Wallet address)" register={register('provider')} />
+            <TextInput label="Provider Fees (percentage)" register={register('provider_fees')} />
+            <TextInput label="Bucket Size" register={register('bucket')} />
+            <TextInput label="Minimum Donation" register={register('minimum')} />
           </div>
         </div>
         <ButtonBlue
@@ -168,5 +167,5 @@ export default function ContractCreditsClient({
         {message}
       </p>
     </div>
-  )
+  );
 }

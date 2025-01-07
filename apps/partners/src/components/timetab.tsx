@@ -1,10 +1,10 @@
-import React, { type HTMLProps } from "react"
-import styles from "../styles/dashboard.module.css"
+import React, { type HTMLProps } from 'react';
+import styles from '../styles/dashboard.module.css';
 
 interface TimeTabProps {
-  className?: string
-  setTimeframe: (timeframe: "year" | "month" | "week") => void
-  timeframe: "year" | "month" | "week"
+  className?: string;
+  setTimeframe: (timeframe: 'year' | 'month' | 'week') => void;
+  timeframe: 'year' | 'month' | 'week';
 }
 
 const TimeTab = ({
@@ -13,18 +13,18 @@ const TimeTab = ({
   timeframe,
 }: TimeTabProps & HTMLProps<HTMLDivElement>) => {
   function onYear() {
-    console.log("onYear")
-    setTimeframe("year")
+    console.log('onYear');
+    setTimeframe('year');
   }
 
   function onMonth() {
-    console.log("onMonth")
-    setTimeframe("month")
+    console.log('onMonth');
+    setTimeframe('month');
   }
 
   function onWeek() {
-    console.log("onWeek")
-    setTimeframe("week")
+    console.log('onWeek');
+    setTimeframe('week');
   }
 
   return (
@@ -33,7 +33,7 @@ const TimeTab = ({
         type="button"
         id="timeYear"
         className={`${styles.buttonTime} ${
-          timeframe === "year" ? "selected" : ""
+          timeframe === 'year' ? 'selected' : ''
         }`}
         onClick={onYear}
       >
@@ -43,7 +43,7 @@ const TimeTab = ({
         type="button"
         id="timeMonth"
         className={`${styles.buttonTime} ${
-          timeframe === "month" ? "selected" : ""
+          timeframe === 'month' ? 'selected' : ''
         }`}
         onClick={onMonth}
       >
@@ -53,14 +53,14 @@ const TimeTab = ({
         type="button"
         id="timeWeek"
         className={`${styles.buttonTime} ${
-          timeframe === "week" ? "selected" : ""
+          timeframe === 'week' ? 'selected' : ''
         }`}
         onClick={onWeek}
       >
         Week
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default TimeTab
+export default TimeTab;

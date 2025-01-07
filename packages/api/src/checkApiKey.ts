@@ -12,11 +12,10 @@ const checkApiKey = async (
     devOnly?: boolean
   },
 ): Promise<boolean> => {
+
   const { userId, orgId, adminOnly, devOnly } = options || {}
 
-  if (!apiKey) {
-    return false
-  } // Make it required?
+  if(!apiKey) { return false } // Make it required?
 
   if (apiKey === officialApiKey) {
     return true
@@ -27,7 +26,7 @@ const checkApiKey = async (
   }
 
   const user = await prismaClient.user.findUnique({
-    where: { api_key: apiKey },
+    where: { api_key: apiKey }
   })
 
   if (adminOnly && user?.type !== UserType.admin) {

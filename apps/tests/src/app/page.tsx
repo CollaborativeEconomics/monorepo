@@ -1,19 +1,15 @@
-import React from "react"
-import Link from "next/link"
-import type { Metadata, Viewport } from "next"
+import React from 'react'
+import Link from 'next/link'
+import type { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
   title: "TEST",
 }
 
-export const viewport: Viewport = { initialScale: 1.0, width: "device-width" }
+export const viewport: Viewport = { initialScale: 1.0, width: 'device-width' };
 
-function Linked({ href, title }: { href: string; title: string }) {
-  return (
-    <Link href={href} className="block w-[400px] mt-4 px-4 py-2 border rounded">
-      {title}
-    </Link>
-  )
+function Linked({href, title}:{href:string, title:string}){
+  return <Link href={href} className="block w-[400px] mt-4 px-4 py-2 border rounded">{title}</Link>
 }
 
 export default async function Home() {
@@ -29,5 +25,6 @@ export default async function Home() {
         </div>
       </div>
     </>
-  )
+  );
 }
+

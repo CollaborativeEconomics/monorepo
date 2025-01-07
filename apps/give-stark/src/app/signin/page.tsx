@@ -1,2 +1,2 @@
-export { default } from "@cfce/pages/signin"
-export const dynamic = "force-dynamic"
+export { default } from '@cfce/pages/signin';
+export const dynamic = 'force-dynamic';

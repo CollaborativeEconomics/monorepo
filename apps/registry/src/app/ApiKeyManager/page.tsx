@@ -1,9 +1,9 @@
-import { auth } from "@cfce/auth"
-import { getUserByEmail } from "@cfce/database"
-import LoginButton from "../../components/LoginButton"
-import { generateApiKey } from "./actions"
+import { auth } from '@cfce/auth';
+import { getUserByEmail } from '@cfce/database';
+import LoginButton from '../../components/LoginButton';
+import { generateApiKey } from './actions';
 
-const APIKeyManager = async () => null
+const APIKeyManager = async () => null;
 
 // const APIKeyManager = async () => {
 //   const session = await auth();
@@ -37,4 +37,4 @@ const APIKeyManager = async () => null
 //   );
 // };
 
-export default APIKeyManager
+export default APIKeyManager;

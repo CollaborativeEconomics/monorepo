@@ -1,19 +1,19 @@
-import React, { type HTMLProps } from "react"
-import type { UseFormRegisterReturn } from "react-hook-form"
+import React, { type HTMLProps } from 'react';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface Option {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 interface SelectProps {
-  id?: string
-  label?: string
-  name?: string
-  selected?: string
-  options?: Option[]
-  register?: UseFormRegisterReturn
-  handler?: (val: string) => void
+  id?: string;
+  label?: string;
+  name?: string;
+  selected?: string;
+  options?: Option[];
+  register?: UseFormRegisterReturn;
+  handler?: (val: string)=>void;
 }
 
 const Select = ({
@@ -28,29 +28,21 @@ const Select = ({
 }: SelectProps & HTMLProps<HTMLSelectElement>) => (
   <label className="my-4">
     <span className="text-slate-300 text-sm text-left uppercase">{label}</span>
-    <select
-      id={id}
-      {...register}
-      {...rest}
-      name={name}
-      onChange={(e) => {
-        return handler ? handler(e.target.value) : null
-      }}
-    >
+    <select id={id} {...register} {...rest} name={name} onChange={(e) => { return handler ? handler(e.target.value) : null }} >
       {options ? (
-        options.map((item) => {
+        options.map(item => {
           if (item.id === selected) {
             return (
               <option value={item.id} key={item.id} selected>
                 {item.name}
               </option>
-            )
+            );
           }
           return (
             <option value={item.id} key={item.id}>
               {item.name}
             </option>
-          )
+          );
         })
       ) : (
         <option value="0" key={0}>
@@ -59,6 +51,6 @@ const Select = ({
       )}
     </select>
   </label>
-)
+);
 
-export default Select
+export default Select;

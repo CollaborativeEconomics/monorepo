@@ -1,23 +1,7 @@
-import {
-  connect,
-  disconnect,
-  type Connector,
-  type StarknetWindowObject,
-} from "starknetkit"
-import {
-  Account,
-  constants,
-  Contract,
-  num,
-  Provider,
-  RpcProvider,
-  TransactionFinalityStatus,
-} from "starknet"
-import type {
-  GetTransactionReceiptResponse,
-  Call,
-  AccountInterface,
-} from "starknet"
+import type { ChainSlugs, Network } from "@cfce/types"
+import { connect, disconnect, type Connector, type StarknetWindowObject } from "starknetkit"
+import {Account, constants, Contract, num, Provider, RpcProvider, TransactionFinalityStatus } from "starknet"
+import type { GetTransactionReceiptResponse, Call, AccountInterface } from "starknet"
 import {
   type GaslessOptions,
   SEPOLIA_BASE_URL,
@@ -31,6 +15,26 @@ import type {
   Network,
   NetworkConfig,
 } from "@cfce/types"
+import {
+  constants,
+  Account,
+  Contract,
+  Provider,
+  RpcProvider,
+  TransactionFinalityStatus,
+  num,
+} from "starknet"
+import type {
+  AccountInterface,
+  Call,
+  GetTransactionReceiptResponse,
+} from "starknet"
+import {
+  type Connector,
+  type StarknetWindowObject,
+  connect,
+  disconnect,
+} from "starknetkit"
 import { formatEther, parseEther } from "viem"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
@@ -69,7 +73,7 @@ class StarknetWallet extends InterfaceBaseClass {
 
   async init() {
     const starknet = await connect({
-      modalMode: "alwaysAsk",
+        modalMode: "alwaysAsk"
     })
     if (starknet?.wallet) {
       return { success: true }
@@ -90,10 +94,9 @@ class StarknetWallet extends InterfaceBaseClass {
     const envChain = appConfig.chains.starknet?.network
 
     // Determine target network based on environment
-    const targetChainId =
-      envChain === "mainnet"
-        ? constants.StarknetChainId.SN_MAIN // Mainnet for production
-        : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
+    const targetChainId = envChain === "mainnet"
+      ? constants.StarknetChainId.SN_MAIN // Mainnet for production
+      : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
 
     // Switch network if needed
     if (currentChain !== targetChainId) {
@@ -135,7 +138,7 @@ class StarknetWallet extends InterfaceBaseClass {
       let wallet = this.wallet
 
       if (!wallet) {
-        ;({ wallet } = await this.getWallet())
+        ({ wallet } = await this.getWallet())
       }
 
       if (this.connectedWallet) {
@@ -157,7 +160,7 @@ class StarknetWallet extends InterfaceBaseClass {
   public async sendPaymentWithGas(address: string, amount: number) {
     try {
       if (!this.connector) {
-        ;({ connector: this.connector } = await this.getWallet())
+        ({ connector: this.connector } = await this.getWallet())
       }
 
       const account = await this.connector?.account(this.provider)
@@ -269,7 +272,7 @@ class StarknetWallet extends InterfaceBaseClass {
       console.log("GasTokenPrice", gasTokenPrice)
 
       if (!account) {
-        throw new Error("Account not found")
+        throw new Error("Account not found");
       }
 
       let txid: string
@@ -348,28 +351,28 @@ class StarknetWallet extends InterfaceBaseClass {
       }
       return { error: "Unknown error" }
     }
-  }
+}
 
-  async fetchLedger(method: unknown, params: unknown): Promise<unknown> {
-    const data = { id: "1", jsonrpc: "2.0", method, params }
-    const body = JSON.stringify(data)
-    const opt = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
-    }
-    try {
-      const res = await fetch(this.network.rpcUrls.main, opt)
-      const inf = await res.json()
-      return inf?.result
-    } catch (ex) {
-      console.error(ex)
-      if (ex instanceof Error) {
-        return { error: ex.message }
-      }
-      return { error: "Error fetching from ledger" }
-    }
+async fetchLedger(method: unknown, params: unknown): Promise<unknown> {
+  const data = { id: "1", jsonrpc: "2.0", method, params }
+  const body = JSON.stringify(data)
+  const opt = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
   }
+  try {
+    const res = await fetch(this.network.rpcUrls.main, opt)
+    const inf = await res.json()
+    return inf?.result
+  } catch (ex) {
+    console.error(ex)
+    if (ex instanceof Error) {
+      return { error: ex.message }
+    }
+    return { error: "Error fetching from ledger" }
+  }
+}
 
   async mintNFT({
     address,

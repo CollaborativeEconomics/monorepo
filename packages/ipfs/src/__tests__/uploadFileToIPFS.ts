@@ -20,12 +20,12 @@ const file: File = {
   name: "newFileName.jpg", // Formidable not being used anymore
   type: "image/jpeg", // MIME type of the file
   lastModified: 0,
-  webkitRelativePath: "",
-  arrayBuffer: async () => new ArrayBuffer(),
-  bytes: async () => new Uint8Array(),
-  slice: (start, end, contentType) => new Blob([]),
-  stream: () => new ReadableStream(),
-  text: async () => await "",
+  webkitRelativePath: '',
+  arrayBuffer: async ()=> new ArrayBuffer(),
+  bytes: async ()=> new Uint8Array(),
+  slice: (start, end, contentType)=> new Blob([]),
+  stream: ()=> new ReadableStream(),
+  text: async ()=> await ''
 
   //filepath: "/path/to/temporary/file", // Temporary file path
   //originalFilename: "originalName.jpg", // Original name of the file

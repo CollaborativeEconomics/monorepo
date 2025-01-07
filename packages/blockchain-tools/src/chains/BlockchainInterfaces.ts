@@ -1,4 +1,7 @@
-import type { ClientInterfaces, ServerInterfaces } from "@cfce/types"
+import type {
+  ClientInterfaces,
+  ServerInterfaces,
+} from "@cfce/types"
 import { keys as _keys } from "lodash"
 import { get as _get } from "lodash"
 import type { Interface } from "../interfaces"
@@ -35,4 +38,7 @@ const BlockchainServerInterfaces = {
   xrpl: new XrplServer(),
 } satisfies Record<ServerInterfaces, InterfaceBaseClass>
 
-export { BlockchainClientInterfaces, BlockchainServerInterfaces }
+export {
+  BlockchainClientInterfaces,
+  BlockchainServerInterfaces,
+}

@@ -1,8 +1,8 @@
-import React, { type HTMLProps } from "react"
+import React, { type HTMLProps } from 'react';
 
 interface LabelProps {
-  text: string
-  className?: string
+  text: string;
+  className?: string;
 }
 
 const Label = ({
@@ -11,11 +11,11 @@ const Label = ({
   ...rest
 }: LabelProps & HTMLProps<HTMLLabelElement>) => (
   <label
-    className={`mb-6 uppercase text-slate-300 ${className ?? ""}`}
+    className={`mb-6 uppercase text-slate-300 ${className ?? ''}`}
     {...rest}
   >
     {text}
   </label>
-)
+);
 
-export default Label
+export default Label;

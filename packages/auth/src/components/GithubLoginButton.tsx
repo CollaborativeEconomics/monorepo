@@ -1,8 +1,8 @@
-import { githubLogin } from "../actions"
-import { BaseLoginButton } from "./BaseLoginButton"
+import { githubLogin } from '../actions';
+import { BaseLoginButton } from './BaseLoginButton';
 
 interface GithubLoginButtonProps {
-  className?: string
+  className?: string;
 }
 
 export function GithubLoginButton({ className }: GithubLoginButtonProps) {
@@ -15,5 +15,5 @@ export function GithubLoginButton({ className }: GithubLoginButtonProps) {
         className={className}
       />
     </form>
-  )
+  );
 }

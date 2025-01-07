@@ -1,5 +1,10 @@
-import type { AppConfig, AuthTypes, ChainSlugs } from "@cfce/types"
+import type {
+  AppConfig,
+  AuthTypes,
+  ChainSlugs,
+} from "@cfce/types"
 import appConfig from "./appConfig.staging"
+
 
 const siteInfo = {
   ...appConfig.siteInfo,

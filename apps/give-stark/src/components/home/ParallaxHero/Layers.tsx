@@ -1,17 +1,17 @@
-import React from "react"
+import React from 'react';
 
 interface ParallaxLayerProps {
-  speed: number
-  blurMultiplier: number // Added blurMultiplier to control the amount of blur
-  children: React.ReactNode
+  speed: number;
+  blurMultiplier: number; // Added blurMultiplier to control the amount of blur
+  children: React.ReactNode;
 }
 
 interface ParallaxLayerProps {
-  speed: number
-  blurMultiplier: number
-  offset: number // Added offset as a prop
-  blur: number // Added blur as a prop
-  children: React.ReactNode
+  speed: number;
+  blurMultiplier: number;
+  offset: number; // Added offset as a prop
+  blur: number; // Added blur as a prop
+  children: React.ReactNode;
 }
 
 const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
@@ -31,8 +31,8 @@ const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         {children}
       </div>
     </div>
-  )
-}
+  );
+};
 
 const TitleComponent = () => {
   return (
@@ -42,8 +42,8 @@ const TitleComponent = () => {
         Make tax-deductible donations of carbon credits to worthy non-profits
       </p>
     </div>
-  )
-}
+  );
+};
 
-export { TitleComponent }
-export default ParallaxLayer
+export {TitleComponent}
+export default ParallaxLayer;
