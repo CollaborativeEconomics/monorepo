@@ -619,7 +619,7 @@ chainConfiguration.xdc.networks.testnet = {
   gasprice: "12500000000",
   explorer: "https://testnet.xdcscan.com",
   rpcUrls: {
-    main: "https://erpc.apothem.network",
+    main: "https://erpc.apothem.network",  // https://testnet.xdcscan.com/
   },
   contracts: {
     tba6551RegistryAddress: "0x000000006551c19487814612e58fe06813775758",

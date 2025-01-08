@@ -4,7 +4,8 @@ import type { Category, Initiative } from '@cfce/database';
 import { useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
-import Checkbox from '~/components/form/checkbox';
+//import Checkbox from '~/components/form/checkbox';
+import { Checkbox, CheckboxWithText } from '@cfce/components/ui';
 import FileView from '~/components/form/fileview';
 import Select from '~/components/form/select';
 import TextArea from '~/components/form/textarea';
@@ -64,6 +65,7 @@ export default function AddStoryForm({
 
   const imageFields = watch(['image1', 'image2', 'image3', 'image4', 'image5']);
   const mediaFile = watch('media');
+  const imgSource = '/media/upload.jpg'
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     if (!data.name || !data.desc || !data.image1 || !data.initiativeId) {
@@ -103,7 +105,7 @@ export default function AddStoryForm({
         media,
       };
 
-      const storyResponse = await saveStory(storyData, false); // TBA
+      const storyResponse = await saveStory(storyData, true); // TBA
       if ('error' in storyResponse) {
         setMessage(`Error saving story: ${storyResponse.error}`);
         setButtonDisabled(false);
@@ -127,36 +129,43 @@ export default function AddStoryForm({
         // onSubmit={data => console.log('submit', data)}
       >
         {/* Image Upload Inputs */}
-        <FileView
-          id="image1"
-          register={register('image1')}
-          width={250}
-          height={250}
-        />
+        <div className={`${styles.hbox} justify-center`}>
+          <FileView
+            id="image1"
+            register={register('image1')}
+            width={250}
+            height={250}
+            source={imgSource}
+          />
+        </div>
         <div className={`${styles.hbox} justify-center`}>
           <FileView
             id="image2"
             register={register('image2')}
             width={128}
             height={128}
+            source={imgSource}
           />
           <FileView
             id="image3"
             register={register('image3')}
             width={128}
             height={128}
+            source={imgSource}
           />
           <FileView
             id="image4"
             register={register('image4')}
             width={128}
             height={128}
+            source={imgSource}
           />
           <FileView
             id="image5"
             register={register('image5')}
             width={128}
             height={128}
+            source={imgSource}
           />
         </div>
 
@@ -191,20 +200,31 @@ export default function AddStoryForm({
           label="Estimated Amount Spent"
           register={register('amount', { required: true })}
         />
+{/*
         <Checkbox
           label="Mint Story NFT"
           register={register('yesNFT')}
           check={true}
         />
+*/}
 
-        <button
+{/*
+        <CheckboxWithText
+          id="receipt-check"
+          text="Mint Story NFT"
+          label="Mint Story NFT"
+          className="mb-2"
+          register={register('yesNFT')}
+          checked={true}
+        />
+*/}
+
+        <ButtonBlue
           type="submit"
-          // text={buttonText}
+          text={buttonText}
           disabled={buttonDisabled}
           // onClick={handleSubmit(onSubmit)}
-        >
-          {buttonText}
-        </button>
+        />
 
         {/* Validation error handling */}
         {errors.name && <p className="error">Title is required</p>}

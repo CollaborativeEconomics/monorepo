@@ -13,7 +13,7 @@ import { uploadDataToIPFS, uploadFileToIPFS } from "@cfce/ipfs"
 import { put } from "@vercel/blob"
 import { mintStoryNFT } from "./mintStoryNFT"
 import { EntityType } from "@cfce/types"
-//import { newTBAccount } from "@cfce/tbas"
+import { newTBAccount } from "@cfce/tbas"
 
 async function processFile(
   file: string | File,
@@ -129,6 +129,13 @@ export default async function createStory({
       nftMetadataBytes,
       "text/plain",
     )
+
+    // Create TBA for initiative
+    if(tba){
+      console.log('TBA will be created for initiative', storyId)
+      const account = await newTBAccount(EntityType.story, storyId, initiativeId) // Parent initiative
+      console.log('TBA created', account)
+    }
 
     // Mint the NFT
     const { tokenId } = await mintStoryNFT(storyId, tokenCID, initiativeId)

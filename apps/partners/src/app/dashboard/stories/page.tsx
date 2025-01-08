@@ -11,8 +11,10 @@ export default async function DashboardPage() {
   const orgId = session?.orgId ?? '';
   const organization = await getOrganizationById(orgId);
   const initiatives = organization?.initiative || [];
+  const initiativesPlain = JSON.parse(JSON.stringify(initiatives))
   const stories = await getStories({ orgId });
   const categories = await getCategories({});
+  const categoriesPlain = JSON.parse(JSON.stringify(categories))
 
   return (
     <div className={styles.content}>
@@ -27,8 +29,8 @@ export default async function DashboardPage() {
       <AddStoryForm
         userId={session?.user?.id ?? 'anonymous'}
         orgId={orgId}
-        initiatives={initiatives}
-        categories={categories}
+        initiatives={initiativesPlain}
+        categories={categoriesPlain}
       />
 
       {stories.length > 0 ? (

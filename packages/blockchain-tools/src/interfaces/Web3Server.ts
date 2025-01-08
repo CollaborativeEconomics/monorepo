@@ -219,7 +219,12 @@ export default class Web3Server extends InterfaceBaseClass {
     contractId: string
     walletSeed: string
   }) {
-    console.log(this.chain, "server minting NFT to", address, uri)
+    //console.log(this.chain, "server minting NFT to", address, uri)
+    console.log("Server minting NFT 1155")
+    console.log('Address', address)
+    console.log('TokenId', tokenId)
+    console.log('Contract', contractId)
+    console.log('URI', uri)
     if (!this.web3 || !walletSeed) {
       console.error("Web3 or wallet not available")
       return { success: false, error: "Web3 or wallet not available" }
@@ -233,8 +238,12 @@ export default class Web3Server extends InterfaceBaseClass {
     console.log("NONCE", nonce)
     //contract.mint(address account, uint256 id, uint256 amount, bytes memory data)
     //const bytes = Buffer.from(uri, 'utf8')
-    const bytes = this.web3.utils.toHex(uri)
-    const data = instance.methods.mint(address, tokenId, 1, bytes).encodeABI()
+    //const bytes = this.web3.utils.toHex(uri)
+    const bytes = new TextEncoder().encode(uri);
+    // biome-ignore lint/style/useTemplate: unreadable
+    const hex = '0x'+Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+    const tokenInt = BigInt(tokenId)
+    const data = instance.methods.mint(address, tokenInt, 1, hex).encodeABI()
     console.log("DATA", data)
     const { gasPrice, gasLimit } = await this.getGasPrice(
       minter,
@@ -249,7 +258,7 @@ export default class Web3Server extends InterfaceBaseClass {
       data: data, // encoded method and params
       gas: gasLimit,
       gasPrice: gasPrice,
-      nonce,
+      //nonce,
     }
     console.log("TX", tx)
 
@@ -268,7 +277,8 @@ export default class Web3Server extends InterfaceBaseClass {
       tokenNum = `${contractId} #${txt}`
       //tokenNum = contract + ' #'+Number.parseInt(num)
     }
-    if (info.status === 1) {
+    console.log("LOGS", info.logs?.[0]?.topics)
+    if (info.status === 1n) {
       const result = {
         success: true,
         txId: Buffer.from(info?.transactionHash).toString("hex"),

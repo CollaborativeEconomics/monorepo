@@ -25,11 +25,17 @@ export async function mintStoryNFT(storyId: string, tokenCID: string, initiative
   const chainSlug = 'xdc'
   const network = 'testnet'
   const uint256 = uuidToUint256(storyId)
-  const tbaRec = await getTokenBoundAccount(EntityType.initiative, initiativeId, chainSlug, network)
-  const address = tbaRec?.account_address // || appConfig.chains?.xdc?.wallet // mint to initiative TBA address
+  const tokenId = uint256.toString()
+  const uri = tokenCID
+  //const uri = new TextEncoder().encode(tokenCID).buffer;
+
+  //const tbaRec = await getTokenBoundAccount(EntityType.initiative, initiativeId, chainSlug, network)
+  const tbaRec = await getTokenBoundAccount(EntityType.story, storyId, chainSlug, network)
+  const address = tbaRec?.account_address // || appConfig.chains?.xdc?.wallet // mint to story TBA address
+  //const address = '0x878528f2eb64b5eb47faecf5909d476e2cbda55f' // TEST
   const contractId = appConfig.chains?.xdc?.contracts?.storyERC1155
   const walletSeed = process.env.XDC_WALLET_SECRET
-  console.log({ uint256, tokenCID, contractId, address })
+  console.log({ tokenId, tokenCID, contractId, address })
 
   if (!address || !contractId || !walletSeed) {
     throw new Error("Missing wallet or contract info")
@@ -41,11 +47,12 @@ export async function mintStoryNFT(storyId: string, tokenCID: string, initiative
 
   const response = await serverInterface.mintNFT1155({
     address,
-    uri: `${uint256}`,
-    tokenId: tokenCID,
+    uri,
+    tokenId,
     contractId,
     walletSeed,
   })
+  console.log('MINTED', response)
   if ("error" in response) {
     throw new Error(response.error)
   }

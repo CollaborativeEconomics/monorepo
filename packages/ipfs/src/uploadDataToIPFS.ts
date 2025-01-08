@@ -48,7 +48,7 @@ action.middlewareStack.add(
     (next) => async (args) => {
       // Check if request is incoming as middleware works both ways
       const response = await next(args);
-      console.log("Response", response)
+      //console.log("Response", response)
       if (!isHttpResponse(response.response)) return response;
 
       cid = response.response.headers["x-amz-meta-cid"];
