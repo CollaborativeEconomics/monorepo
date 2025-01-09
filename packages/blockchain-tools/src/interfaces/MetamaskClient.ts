@@ -28,6 +28,7 @@ import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
 import { formatUnits, parseEther } from "viem"
+import appConfig from "@cfce/app-config"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
   // neturl = ""
@@ -42,96 +43,10 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     chains: [arbitrumSepolia],
     transports: {
       [arbitrumSepolia.id]: http(
-        process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL,
+        appConfig.networkConfig?.rpcUrls?.main || "",
       ),
     },
   })
-
-  // async connect(newChainId?: number) {
-  //   console.log("Wallet starting...", newChainId)
-  //   //console.log('window.ethereum')
-  //   try {
-
-  //     const result = await connect(this.config, { connector: injected() })
-  //     console.log("Result", result)
-  //     this.connectedWallet = result.accounts[0]
-  //     this.metamask = window.ethereum
-  //     // this.setListeners()
-  //     // this.wallets = await this.metamask?.enable()
-  //     const metamaskChainId = await window.ethereum?.chainId
-  //    // // this.wallets = [...result.accounts]
-  //     // //console.log('Accounts', this.wallets)
-  //     // this.connectedWallet = this.wallets ? this.wallets[0] : "" // TODO: handle multiple addresses
-  //     //this.connectedWallet = this.metamask.selectedAddress
-  //     //this.setNetwork(window.ethereum.chainId)
-  //     //this.loadWallet(window))
-  //     const newChainIsSameAsConnectedChain =
-  //     Number(newChainId) === Number(this.network?.id)
-
-  //   const metamaskChainIsSameAsConnectedChain =
-  //     Number(metamaskChainId) === Number(this.network?.id)
-  //   // early return if chainId and wallet are already set correctly
-  //   console.log(
-  //     "newChainIsSameAsConnectedChain",
-  //     newChainIsSameAsConnectedChain,
-  //     newChainId,
-  //     this.network?.id,
-  //   )
-  //   console.log(
-  //     "metamaskChainIsSameAsConnectedChain",
-  //     metamaskChainIsSameAsConnectedChain,
-  //     metamaskChainId,
-  //     this.network?.id,
-  //   )
-  //   console.log("this.connectedWallet", this.network)
-  //     if (
-  //       newChainId
-  //         ? newChainIsSameAsConnectedChain && this.connectedWallet
-  //         : metamaskChainIsSameAsConnectedChain && this.connectedWallet
-  //     ) {
-  //       if (!this.chain) {
-  //         throw new Error("Already connected, but chain not set")
-  //       }
-  //       if (!this.network) {
-  //         throw new Error("Already connected, but network not set")
-  //       }
-  //       return {
-  //         success: true,
-  //         network: this.network,
-  //         walletAddress: this.connectedWallet,
-  //         chain: this.chain.name,
-  //       }
-  //     }
-  //     if (
-  //       typeof newChainId === "undefined" &&
-  //       typeof metamaskChainId === "undefined"
-  //     ) {
-  //       throw new Error("No chain ID provided or inferred")
-  //     }
-  //     const chainId = newChainId ?? Number(metamaskChainId)
-  //     if (typeof chainId !== "number") {
-  //       throw new Error(`Invalid chain ID type: ${typeof chainId}`)
-  //     }
-  //     this.setNetwork(chainId)
-  //     if (!this.network) {
-  //       throw new Error("Error getting network")
-  //     }
-  //     if (!this.chain) {
-  //       throw new Error("Error getting chain")
-  //     }
-  //     this.web3 = new Web3(this.network.rpcUrls.main)
-  //     return {
-  //       success: true,
-  //       network: this.network,
-  //       walletAddress: this.connectedWallet,
-  //       chain: this.chain.name,
-  //     }
-  //   } catch (ex) {
-  //     const error = ex instanceof Error ? ex.message : ""
-  //     console.error("Error", error)
-  //     return { success: false, error }
-  //   }
-  // }
 
   async connect(newChainId?: number) {
     console.log("Wallet starting...", newChainId)
@@ -141,8 +56,6 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       this.wallets = await this.metamask?.enable()
       const metamaskChainId = window.ethereum?.chainId
 
-      //console.log('Accounts', this.wallets)
-      // this.connectedWallet = this.wallets ? this.wallets[0] : ""
       const connection = await connect(this.config, { connector: injected() })
       this.connectedWallet = connection.accounts[0]
       const newChainIsSameAsConnectedChain =
@@ -465,41 +378,12 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
 
   async getBalance() {
     console.log("Get balance...")
-    // try {
-    //   const result = await connect(this.config, { connector: injected() })
-    //   console.log("Connect result:", result)
-    //   this.connectedWallet = result.accounts[0]
-    //   this.metamask = window.ethereum
-    // } catch (error) {
-    //   console.error("Error connecting to wallet:", error)
-    // }
 
     if (!this.metamask) {
       console.error("Error getting balance, Metamask not available")
       return { success: false, error: "Metamask not available" }
     }
 
-    // try {
-    //     // Get native token balance
-    //     // const balance = await this.metamask.request<string>({
-    //     //   method: "eth_getBalance",
-    //     //   params: [this.connectedWallet, "latest"],
-    //     // })
-    //     // if (!balance) {
-    //     //   console.error("Error fetching balance, balance is null")
-    //     //   return null
-    //     // }
-    //     const balance = await getBalance(this.config, {
-    //       address: this.connectedWallet as `0x${string}`,
-    //       blockTag: 'latest',
-    //     })
-    //     const balanceInETH = formatUnits(balance.value, balance.decimals)
-    //     console.log("Balance", balanceInETH)
-    //     return balanceInETH;
-    // } catch (error) {
-    //   console.error("Error fetching balance:", error)
-    //   return null
-    // }
     try {
       const balance = await getBalance(this.config, {
         address: this.connectedWallet as `0x${string}`,
@@ -556,40 +440,6 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     }
   }
 
-  // TODO: is this used?
-  // async callContract(
-  //   provider: any,
-  //   abi: any,
-  //   address: string,
-  //   method: string,
-  //   value: string,
-  // ) {
-  //   if (!this.metamask) {
-  //     console.error("Error calling contract, Metamask not available")
-  //     return
-  //   }
-  //   if (!this.web3) {
-  //     console.error("Error calling contract, web3 not available")
-  //     return
-  //   }
-  //   console.log("Call", address, method)
-  //   const contract = new this.web3.eth.Contract(abi, address)
-  //   const gas = { gasPrice: 1000000000, gasLimit: 275000 }
-  //   //const res = contract.methods[method].call(gas)
-  //   const data = contract.methods[method]().encodeABI()
-  //   const tx = {
-  //     from: this.connectedWallet, // my wallet
-  //     to: address, // contract address
-  //     value: value, // this is the value in wei to send
-  //     data: data, // encoded method and params
-  //   }
-  //   const txHash = await this.metamask.request({
-  //     method: "eth_sendTransaction",
-  //     params: [tx],
-  //   })
-  //   console.log({ txHash })
-  // }
-
   async sendPayment({
     address,
     amount,
@@ -611,17 +461,6 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       if (!this.connectedWallet) {
         throw new Error("Wallet not connected")
       }
-
-      // // Connect first to ensure we have an active connection
-      // try {
-      //   const result = await connect(this.config, { connector: injected() })
-      //   console.log("Connect result:", result)
-      //   this.connectedWallet = result.accounts[0]
-      //   this.metamask = window.ethereum
-      // } catch (error) {
-      //   console.error("Error connecting to wallet:", error)
-      //   throw error
-      // }
 
       // Convert amount to wei using parseEther
       const value = parseEther(amount.toString())
@@ -697,8 +536,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     const ctr = new this.web3.eth.Contract(erc20Abi, contract)
     const data = ctr.methods.transfer(address, wei).encodeABI()
     console.log("Data", data)
-    //const count = await this.web3.eth.getTransactionCount(this.connectedWallet)
-    //const nonce = this.web3.utils.toHex(count)
+
     const tx = {
       from: this.connectedWallet,
       to: contract,

@@ -1,4 +1,4 @@
-import type { AppConfig, AuthTypes } from "@cfce/types"
+import type { AppConfig, AuthTypes, NetworkConfig } from "@cfce/types"
 import appConfig from "./appConfig.staging"
 
 const siteInfo: AppConfig["siteInfo"] = {
@@ -25,16 +25,6 @@ const apis: AppConfig["apis"] = {
 }
 
 const chains: AppConfig["chains"] = {
-  xdc: {
-    slug: "xdc",
-    network: "testnet",
-    contracts: {
-      receiptMintbotERC721: "0xfeceaea75565961b805e2dbe58e00488f5bc1495",
-    },
-    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
-    enabledWallets: ["metamask"],
-    tokens: ["XDC"],
-  },
   arbitrum: {
     slug: "arbitrum",
     network: "testnet",
@@ -57,12 +47,15 @@ const chainDefaults: AppConfig["chainDefaults"] = {
 
 const auth = appConfig.auth as AuthTypes[]
 
+const networkConfig = appConfig.networkConfig
+
 const appConfigDevelopment: AppConfig = {
   apis,
   auth,
   chains,
   chainDefaults,
   siteInfo,
+  networkConfig,
 }
 
 export default appConfigDevelopment

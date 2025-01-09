@@ -76,7 +76,7 @@ export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
             <NFTReceiptText>Donation amount</NFTReceiptText>
             <div className="flex border-dotted border-t-2 border-gray-300 w-full" />
             <NFTReceiptText>
-              {localizedNumber(coinAmount, 2)} {selectedToken}*
+              {localizedNumber(coinAmount, 6)} {selectedToken}*
             </NFTReceiptText>
           </div>
           <NFTReceiptText className="font-normal whitespace-normal">

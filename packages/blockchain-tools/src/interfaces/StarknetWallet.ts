@@ -157,7 +157,7 @@ class StarknetWallet extends InterfaceBaseClass {
   public async sendPaymentWithGas(address: string, amount: number) {
     try {
       if (!this.connector) {
-        ;({ connector: this.connector } = await this.getWallet())
+        ({ connector: this.connector } = await this.getWallet())
       }
 
       const account = await this.connector?.account(this.provider)

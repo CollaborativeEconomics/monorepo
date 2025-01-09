@@ -3,6 +3,7 @@ import type {
   ChainSlugs,
   ClientInterfaces,
   Network,
+  NetworkConfig,
   TokenTickerSymbol,
 } from "./BlockchainTools"
 
@@ -12,6 +13,7 @@ export interface AppChainConfig {
   slug: ChainSlugs
   network: Network
   contracts: Partial<Record<ContractType, string>>
+  rpcUrl?: string
   wallet?: string
   enabledWallets: ClientInterfaces[]
   tokens: TokenTickerSymbol[]
@@ -56,4 +58,5 @@ export interface AppConfig {
     coin: TokenTickerSymbol
     defaultAddress?: string
   }
+  networkConfig: NetworkConfig
 }

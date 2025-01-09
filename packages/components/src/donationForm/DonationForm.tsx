@@ -91,7 +91,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const coinAmount = useAtomValue(amountCoinAtom)
   const chain = chainConfig[selectedChain]
   const network = chain.networks[appConfig.chainDefaults.network]
-  //console.log('STATE', chainState, exchangeRate)
+  console.log("Coin amount", coinAmount)
 
   const chainInterface = BlockchainClientInterfaces[selectedWallet]
 

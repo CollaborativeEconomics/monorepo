@@ -4,7 +4,7 @@ import { type Prisma, type Donation, newDonation } from "@cfce/database"
 
 export default async function createDonation(
   data: Prisma.DonationCreateInput,
-): Promise<Donation> {
+) {
   try {
     const record = await newDonation(data)
     console.log("CREATE DONATION", record)

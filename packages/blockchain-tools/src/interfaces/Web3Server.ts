@@ -22,6 +22,7 @@ import {
   Abi,
 } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
+import appConfig from "@cfce/app-config"
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 function getObjectValue(obj: any, prop: string) {
@@ -38,15 +39,7 @@ export default class Web3Server extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {
     this.chain = chainConfig[slug]
     this.network = getNetworkForChain(slug)
-    this.web3 = new Web3(this.network.rpcUrls.main)
-
-    // Initialize Viem clients
-    // this.publicClient = createPublicClient({
-    //   transport: http(process.env.NEXT_PUBLIC_RPC_URL)
-    // })
-    // this.walletClient = createWalletClient({
-    //   transport: http(process.env.NEXT_PUBLIC_RPC_URL)
-    // })
+    this.web3 = new Web3(this.network?.rpcUrls?.main)
   }
 
   async getGasPrice(minter: string, contractId: string, data: string) {
@@ -102,11 +95,11 @@ export default class Web3Server extends InterfaceBaseClass {
     const account = privateKeyToAccount(walletSeed as `0x${string}`)
 
     const publicClient = createPublicClient({
-      transport: http(process.env.NEXT_PUBLIC_RPC_URL),
+      transport: http(appConfig.networkConfig?.rpcUrls?.main || ""),
     })
 
     const walletClient = createWalletClient({
-      transport: http(process.env.NEXT_PUBLIC_RPC_URL),
+      transport: http(appConfig.networkConfig?.rpcUrls?.main || ""),
     })
 
     try {
@@ -117,14 +110,8 @@ export default class Web3Server extends InterfaceBaseClass {
         functionName: "safeMint",
         args: [address, uri],
       })
-      console.log("REQUEST", request)
+      
       const hash = await walletClient.writeContract(request)
-
-      // const hash = await this.walletClient.sendTransaction({
-      //   account,
-      //   to: contractId,
-      //   data: data,
-      // })
 
       const receipt = await publicClient.waitForTransactionReceipt({ hash })
 
@@ -135,10 +122,7 @@ export default class Web3Server extends InterfaceBaseClass {
             "LOGS.0",
             JSON.stringify(receipt?.logs[0].topics, null, 2),
           )
-          //console.log("LOGS.1", JSON.stringify(info?.logs[1].topics, null, 2))
-          //tokenNum = ` #${Number.parseInt(Buffer.from(_get(info, "logs.0.topics.3", Buffer.alloc(0))).toString("hex"), 16)}` // Doesn't work as expected
-          //const nftSeq = Number.parseInt((info?.logs[0]?.topics[3] || 0).toString(),16)
-          //const nftSex = info?.logs?.[0]?.topics?.[3]
+
           const nftSex = getObjectValue(receipt, "logs.0.topics.3")
           const nftSeq = Number.parseInt(nftSex, 16)
           console.log("SEQ", nftSeq, nftSex)
@@ -154,8 +138,6 @@ export default class Web3Server extends InterfaceBaseClass {
         const tokenId = contractId + tokenNum
         const result = {
           success: true,
-          //txId: Buffer.from(info?.transactionHash).toString("hex"),
-          //txId: info?.transactionHash,
           txId: receipt?.transactionHash.toString(),
           tokenId,
         }
@@ -164,7 +146,15 @@ export default class Web3Server extends InterfaceBaseClass {
       }
       return { success: false, error: "Something went wrong" }
     } catch (error) {
-      console.error("Transaction failed:", error)
+      // Improved error logging
+      console.error("Detailed error:", {
+        error,
+        contractId,
+        address,
+        uri,
+        chain: this.chain,
+        wallet: account.address
+      })
       return { success: false, error: "Transaction failed" }
     }
   }
@@ -422,7 +412,7 @@ export default class Web3Server extends InterfaceBaseClass {
       console.error("Chain not set, run setChain first")
       return { success: false, error: "Chain not set" }
     }
-    console.log("FETCH", this.network.rpcUrls.main)
+    console.log("FETCH", this?.network?.rpcUrls?.main)
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)
     const opt = {
@@ -431,7 +421,7 @@ export default class Web3Server extends InterfaceBaseClass {
       body,
     }
     try {
-      const res = await fetch(this.network.rpcUrls.main, opt)
+      const res = await fetch(this?.network?.rpcUrls?.main || "", opt)
       const inf = await res.json()
       return inf?.result
     } catch (ex) {
