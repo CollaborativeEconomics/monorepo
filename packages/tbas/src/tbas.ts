@@ -2,7 +2,7 @@ import { type Address, getContract, createPublicClient, createWalletClient, http
 import { privateKeyToAccount } from 'viem/accounts'
 import { xdc, xdcTestnet } from 'viem/chains'
 import appConfig from '@cfce/app-config'
-import { abi721, abi6551registry as registryABI, BlockchainServerInterfaces, chainConfig } from '@cfce/blockchain-tools'
+import { abi6551registry as registryABI, BlockchainServerInterfaces, chainConfig } from '@cfce/blockchain-tools'
 import { newTokenBoundAccount, getTokenBoundAccount } from '@cfce/database'
 import type { EntityType } from '@cfce/types'
 
@@ -130,7 +130,7 @@ const uuidToUint256 = (uuid: string) => {
  * @param entityId UUID from registry db
  * @param parentId UUID from registry db
  */
-export async function mintTBAccountNFT(entityId: string, parentAddress?: string) {
+export async function mintTBAccountNFT(entityId: string, parentAddress = '', metadataUri = '') {
   const walletSeed = process.env.XDC_WALLET_SECRET
   const address = parentAddress || settings.wallet // parent or server wallet
   const contractId = tokenContract
@@ -139,16 +139,18 @@ export async function mintTBAccountNFT(entityId: string, parentAddress?: string)
   console.log("CONTRACT", contractId)
   console.log("ENTITY", entityId)
   console.log("TOKEN", tokenId)
+  console.log("METADATA", metadataUri)
 
   if (!address || !contractId || !walletSeed) {
     throw new Error("Missing wallet or contract info")
   }
 
-  const response = await serverInterface.mintNFT721({
+  const response = await serverInterface.mintNFT721TBA({
     address,
     tokenId,
     contractId,
     walletSeed,
+    metadataUri
   })
   if ("error" in response) {
     throw new Error(response.error)
@@ -247,19 +249,25 @@ export async function fetchTBAccount(tokenContract:string, tokenId:string, chain
 }
 
 /*
+  - takes metadata as JSON stringified
   - Mints NFT to hold the TBA
   - Prefetches TBA address
   - Creates TBA contract
   - Saves TBA to DB
 */
-export async function newTBAccount(entity_type:string, entity_id:string, parent_id?: string){
+export async function newTBAccount(entity_type:string, entity_id:string, parent_id?: string, metadata?: string){
   try {
     let parent_address = ''
+    let metadata_uri = ''
     if(parent_id){
       const tbaRec = await getTokenBoundAccount(entity_type, entity_id, chainSlug, network)
       parent_address = tbaRec?.account_address || ''
     }
-    const resMint = await mintTBAccountNFT(entity_id, parent_address) // mint nft for tba in main/parent 721 contract
+    if(metadata){
+      // TODO: upload to ipfs, get URI
+      metadata_uri = 'ipfs:test'
+    }
+    const resMint = await mintTBAccountNFT(entity_id, parent_address, metadata_uri) // mint nft for tba in main/parent 721 contract
     console.log('NFT', resMint)
     const tokenId = resMint.tokenId
     console.log("TokenID", tokenId)

@@ -133,7 +133,8 @@ export default async function createStory({
     // Create TBA for initiative
     if(tba){
       console.log('TBA will be created for initiative', storyId)
-      const account = await newTBAccount(EntityType.story, storyId, initiativeId) // Parent initiative
+      const metadata = JSON.stringify(nftMetadata)
+      const account = await newTBAccount(EntityType.story, storyId, initiativeId, metadata) // Parent initiative
       console.log('TBA created', account)
     }
 

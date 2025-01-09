@@ -9,8 +9,8 @@ import Web3 from "web3"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfig from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
-import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // must pass tokenid
 import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
+import Abi721tba from "../contracts/solidity/erc721/erc721tba-abi.json" // must pass tokenid and metadatauri
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
 
@@ -129,20 +129,25 @@ export default class Web3Server extends InterfaceBaseClass {
     return { success: false, error: "Something went wrong" }
   }
 
-  // Base erc721 passing token id as uuid instead of auto-incrementing id
-  async mintNFT721({
+  // Base erc721 passing metadatauri and token id as uuid instead of auto-incrementing id
+  async mintNFT721TBA({
     address,
     tokenId,
+    metadataUri,
     contractId,
-    walletSeed,
+    walletSeed
   }: {
     address: string
     tokenId: string
+    metadataUri: string
     contractId: string
     walletSeed: string
   }) {
-    console.log("Server minting NFT721 to", address, "tokenID", tokenId)
-    console.log("Chain", this.chain)
+    console.log("Server minting NFT721")
+    console.log("ADDRESS", address)
+    console.log("TOKENID", tokenId)
+    console.log("METADATA", metadataUri)
+    //console.log("Chain", this.chain)
     if (!this.web3) {
       console.error("Web3 not available")
       return { success: false, error: "Web3 not available" }
@@ -153,13 +158,13 @@ export default class Web3Server extends InterfaceBaseClass {
     }
     const acct = this.web3.eth.accounts.privateKeyToAccount(walletSeed)
     const minter = acct.address
-    const instance = new this.web3.eth.Contract(Abi721base, contractId)
+    const instance = new this.web3.eth.Contract(Abi721tba, contractId)
     const noncex = await this.web3.eth.getTransactionCount(minter, "latest")
     const nonce = Number(noncex)
     //const tokenInt = Number(tokenId)
     console.log("MINTER", minter)
     console.log("NONCE", nonce)
-    const data = instance.methods.safeMint(address, tokenId).encodeABI()
+    const data = instance.methods.mint(address, tokenId, metadataUri).encodeABI()
     console.log("DATA", data)
     //const gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice is not returning updated prices

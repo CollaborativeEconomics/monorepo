@@ -16,7 +16,11 @@ export async function createOrganizationAction(
   // Create TBA for organization
   if(tba && savedOrganization?.id){
     console.log('TBA will be created for organization ', savedOrganization.id)
-    const account = await newTBAccount(EntityType.organization, savedOrganization.id)
+    const metadata = JSON.stringify({
+      name: organization.name,
+      description: organization.description
+    })
+    const account = await newTBAccount(EntityType.organization, savedOrganization.id, '', metadata)
     console.log('TBA created', account)
   }
 

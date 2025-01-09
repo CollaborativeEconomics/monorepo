@@ -96,6 +96,7 @@ export default abstract class InterfaceBaseClass {
     tokenId: string
     contractId: string
     walletSeed: string
+    metadataUri: string
   }): Promise<{
     success: boolean
     txId?: string

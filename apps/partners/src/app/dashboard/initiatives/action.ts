@@ -85,18 +85,19 @@ export async function createInitiative(data: FormData, orgId: string, tba = fals
       return { success: false, error: "Unknown error" }
     }
 
-    // TODO: create TBA 6551 for initiative
-    // 1. mint 1155 NFT using REGISTRY_NFT_COPY env var
-    // get tokenId
-    // chainId = 51 // xdc testnet
-    // 2. create TBA for that NFT
-    // const tab = await createAccount(REGISTRY_NFT_COPY, tokenId, chainId, waitForReceipt=false)
+    const metadata = JSON.stringify({
+      name: record.title,
+      description: record.description,
+      start: record.start,
+      finish: record.finish,
+      image: record.imageUri
+    })
 
     // Create TBA for initiative
     if(tba && result?.id){
       const initId = result.id
       console.log('TBA will be created for initiative', initId)
-      const account = await newTBAccount(EntityType.initiative, initId, orgId) // Parent org
+      const account = await newTBAccount(EntityType.initiative, initId, orgId, metadata) // Parent org
       console.log('TBA created', account)
     }
 
