@@ -45,7 +45,7 @@ export function LogoutButton({ className }: { className?: string }) {
     console.log('SIGNOUT');
     signOutAction();
     window.location.href = '/';
-    revalidatePath('/');
+    // revalidatePath('/');
     //redirect('/')
   }
   return (
