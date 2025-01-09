@@ -38,7 +38,7 @@ const chainSlug = "xdc"
 const network = appConfig.chainDefaults.network
 const settings = chainConfig.xdc.networks[network]
 //console.log('SET', settings)
-const chainId = settings.id.toString()
+const chainId = settings.id?.toString() || ""
 const registryAddress = (settings.contracts?.tba6551RegistryAddress ||
   "0x0") as Address
 const implementationAddress = (settings.contracts
