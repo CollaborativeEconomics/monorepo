@@ -304,11 +304,6 @@ export default function Profile({
                   </TabsTrigger>
                 </TabsList>
               </div>
-              {/* <div className="flex flex-row">
-                <Newspaper size={32} className="pr-2 cursor-pointer" />
-                <LayoutList size={32} className="pr-2 cursor-pointer" />
-                <ImageIcon size={32} className="pr-2 cursor-pointer" />
-              </div> */}
             </div>
             <div className="w-full border rounded-md p-10 bg-card">
               {/* NFT card view */}
