@@ -1,33 +1,38 @@
 'use client';
 import { LogoutButton } from '@cfce/auth';
-import type {
-  Prisma,
-  DonationWithRelations as Donations,
-  NFTDataWithRelations as Receipts,
-  StoryWithRelations as Stories,
-} from '@cfce/database';
+import { chainConfig } from '@cfce/blockchain-tools';
 import { StoryCardCompactVert } from '@cfce/components/story';
 import {
   DonationsTableSortable,
   ReceiptTableSortable,
 } from '@cfce/components/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@cfce/components/ui';
-import { chainConfig } from '@cfce/blockchain-tools';
+import type {
+  DonationWithRelations as Donations,
+  Prisma,
+  NFTDataWithRelations as Receipts,
+  StoryWithRelations as Stories,
+} from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
 import { uploadFile } from '@cfce/utils';
-import { v7 as uuidv7 } from 'uuid';
 import { imageUrl } from '@cfce/utils';
 import { ImageIcon, LayoutList, Newspaper, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
+import { v7 as uuidv7 } from 'uuid';
+import { ReceiptNFTCard } from './ReceiptNFTCard';
 //import { setUser } from '@cfce/database';
 
 // TODO: move to database package?
 type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
 type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>;
 //type Receipts = Prisma.NFTDataGetPayload<{ include: { organization: true; initiative: true; user: true } }>
-type DonationsByUser = Prisma.DonationGetPayload<{ include: { organization: true; initiative: true } }>;
-type FavoriteOrganizations = Prisma.DonationGetPayload<{ include: { organization: true } }>;
+type DonationsByUser = Prisma.DonationGetPayload<{
+  include: { organization: true; initiative: true };
+}>;
+type FavoriteOrganizations = Prisma.DonationGetPayload<{
+  include: { organization: true };
+}>;
 //type Stories = Prisma.StoryGetPayload<{ include: { organization: true } }>
 
 interface UserData {
@@ -92,11 +97,14 @@ export default function Profile({
     //  throw new Error('Error updating user data');
     //}
 
-    const data = { name, email, image }
-    console.log('USER', data)
-    const res = await fetch(`/api/profile/${userId}`,{method:'post', body:JSON.stringify(data)})
-    const inf = await res.json()
-    console.log('INF', inf)
+    const data = { name, email, image };
+    console.log('USER', data);
+    const res = await fetch(`/api/profile/${userId}`, {
+      method: 'post',
+      body: JSON.stringify(data),
+    });
+    const inf = await res.json();
+    console.log('INF', inf);
     //redirect(`/profile/${userId}`);
   }
 
@@ -286,26 +294,37 @@ export default function Profile({
               <div className="mb-2">
                 <TabsList className="TabsList" aria-label="Donations data">
                   <TabsTrigger className="TabsTrigger" value="tab1">
-                    NFTs Receipts
+                    Donation Receipt NFTs
                   </TabsTrigger>
                   <TabsTrigger className="TabsTrigger" value="tab2">
-                    My Donations
+                    Receipt List
+                  </TabsTrigger>
+                  <TabsTrigger className="TabsTrigger" value="tab3">
+                    Donations List
                   </TabsTrigger>
                 </TabsList>
               </div>
-              <div className="flex flex-row">
+              {/* <div className="flex flex-row">
                 <Newspaper size={32} className="pr-2 cursor-pointer" />
                 <LayoutList size={32} className="pr-2 cursor-pointer" />
                 <ImageIcon size={32} className="pr-2 cursor-pointer" />
-              </div>
+              </div> */}
             </div>
             <div className="w-full border rounded-md p-10 bg-card">
-              {/* NFT Receipts */}
+              {/* NFT card view */}
               <TabsContent className="TabsContent" value="tab1">
+                <div className="grid grid-cols-3 gap-10">
+                  {receipts.map(receipt => {
+                    return <ReceiptNFTCard key={receipt.id} {...receipt} />;
+                  })}
+                </div>
+              </TabsContent>
+              {/* NFT Receipts */}
+              <TabsContent className="TabsContent" value="tab2">
                 <ReceiptTableSortable receipts={receipts} />
               </TabsContent>
               {/* Donations */}
-              <TabsContent className="TabsContent" value="tab2">
+              <TabsContent className="TabsContent" value="tab3">
                 <DonationsTableSortable donations={donations} />
               </TabsContent>
             </div>

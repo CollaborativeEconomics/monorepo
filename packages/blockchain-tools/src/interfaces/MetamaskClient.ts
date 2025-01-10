@@ -74,7 +74,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       ) {
         throw new Error("No chain ID provided or inferred")
       }
-      const chainId = newChainId ?? metamaskChainId
+      const chainId = newChainId ?? Number(metamaskChainId)
       if (typeof chainId !== "number") {
         throw new Error(`Invalid chain ID type: ${typeof chainId}`)
       }

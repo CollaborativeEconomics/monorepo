@@ -1,1 +1,2 @@
-export { default as ProfileForm } from './ProfileForm'
+export * from "./ReceiptNFTCard"
+export { default as ProfileForm } from "./ProfileForm"
