@@ -16,6 +16,7 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/state": "workspace:*",
+    "@cfce/tbas": "workspace:*",
     "@cfce/utils": "workspace:*",
     "jotai": "^2.10.4",
     "lucide-react": "0.469.0",

@@ -1495,6 +1495,9 @@ importers:
       '@cfce/state':
         specifier: workspace:*
         version: link:../state
+      '@cfce/tbas':
+        specifier: workspace:*
+        version: link:../tbas
       '@cfce/utils':
         specifier: workspace:*
         version: link:../utils
@@ -2007,12 +2010,18 @@ importers:
       '@cfce/database':
         specifier: workspace:*
         version: link:../database
+      '@cfce/ipfs':
+        specifier: workspace:*
+        version: link:../ipfs
       '@cfce/types':
         specifier: workspace:*
         version: link:../types
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
+      uuid:
+        specifier: 11.0.3
+        version: 11.0.3
       viem:
         specifier: ^2.21.54
         version: 2.21.57(bufferutil@4.0.8)(typescript@5.7.2)(utf-8-validate@5.0.10)(zod@3.24.1)

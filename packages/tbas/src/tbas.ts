@@ -4,7 +4,9 @@ import { xdc, xdcTestnet } from 'viem/chains'
 import appConfig from '@cfce/app-config'
 import { abi6551registry as registryABI, BlockchainServerInterfaces, chainConfig } from '@cfce/blockchain-tools'
 import { newTokenBoundAccount, getTokenBoundAccount } from '@cfce/database'
+import { uploadDataToIPFS } from "@cfce/ipfs"
 import type { EntityType } from '@cfce/types'
+import { v7 as uuidv7 } from 'uuid'
 
 /* TBAS - Token Bound Accounts ERC 6551
 
@@ -26,13 +28,10 @@ const network = appConfig.chainDefaults.network
 const settings = chainConfig.xdc.networks[network]
 //console.log('SET', settings)
 const chainId = settings.id.toString()
-const registryAddress = (settings.contracts?.tba6551RegistryAddress ||
-  "0x0") as Address
-const implementationAddress = (settings.contracts
-  ?.tba6551ImplementationAddress || "0x0") as Address
+const registryAddress = (settings.contracts?.tba6551RegistryAddress || "0x0") as Address
+const implementationAddress = (settings.contracts?.tba6551ImplementationAddress || "0x0") as Address
 const tokenContract = settings.contracts?.tba721TokenContract || "0x0"
-const baseSalt =
-  "0x0000000000000000000000000000000000000000000000000000000000000001" as Address
+const baseSalt = "0x0000000000000000000000000000000000000000000000000000000000000001" as Address
 
 
 //const serverInterface = BlockchainManager.xdc.server
@@ -264,8 +263,7 @@ export async function newTBAccount(entity_type:string, entity_id:string, parent_
       parent_address = tbaRec?.account_address || ''
     }
     if(metadata){
-      // TODO: upload to ipfs, get URI
-      metadata_uri = 'ipfs:test'
+      metadata_uri = await uploadDataToIPFS('meta-'+uuidv7(), Buffer.from(metadata), 'text/plain')
     }
     const resMint = await mintTBAccountNFT(entity_id, parent_address, metadata_uri) // mint nft for tba in main/parent 721 contract
     console.log('NFT', resMint)

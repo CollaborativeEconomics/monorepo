@@ -12,8 +12,10 @@
     "@cfce/app-config": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
+    "@cfce/ipfs": "workspace:*",
     "@cfce/types": "workspace:*",
     "server-only": "^0.0.1",
+    "uuid": "11.0.3",
     "viem": "^2.21.54"
   },
   "devDependencies": {
