@@ -9,6 +9,6 @@
       "~/*": ["./*"]
     }
   },
-  "include": ["src", "**/*.ts", "**/*.tsx"],
+  "include": ["src", "**/*.ts", "**/*.tsx", "../typescript-config/css.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
