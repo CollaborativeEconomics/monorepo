@@ -1,3 +1,4 @@
+import appConfig from '@cfce/app-config';
 import {
   chainConfig,
   getChainConfigurationByName,
@@ -53,18 +54,14 @@ export const ReceiptNFTCard: React.FC<
     return null;
   }
   const chainDetails = getChainConfigurationByName(coinLabel);
+  const network = chainDetails.networks[appConfig.chainDefaults.network];
   return (
     <div>
       <span className="text-sm text-muted-foreground">
         {format(created, 'MMM d, yyyy')}
       </span>
-      <Card className="w-full max-w-[400px] border-1 shadow-xl">
+      <Card className="w-full max-w-[400px] border-1 bg-background shadow-xl">
         <CardContent className="p-4 space-y-4">
-          {/* Header */}
-          <div className="flex justify-between items-center">
-            <h3 className="font-semibold text-lg">{initiative?.title}</h3>
-          </div>
-
           {/* Initiative Image */}
           {initiative?.defaultAsset && (
             <div className="relative w-full h-[200px]">
@@ -76,6 +73,10 @@ export const ReceiptNFTCard: React.FC<
               />
             </div>
           )}
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <h3 className="font-semibold text-md">{initiative?.title}</h3>
+          </div>
 
           {/* Organization Info */}
           <div className="flex items-center gap-2">
@@ -89,7 +90,7 @@ export const ReceiptNFTCard: React.FC<
                 />
               </div>
             )}
-            <div className="flex flex-col align-start">
+            <div className="flex flex-col items-start">
               <span className="text-sm">{organization?.name}</span>
               <Badge variant="secondary" className="text-xs">
                 501(c)(3)
@@ -121,14 +122,21 @@ export const ReceiptNFTCard: React.FC<
           </div>
         </CardContent>
 
-        {/* <CardFooter className="p-4 pt-0 gap-2">
-        <Button variant="default" className="flex-1" onClick={onViewNFT}>
-          View NFT
-        </Button>
-        <Button variant="outline" className="flex-1" onClick={onViewDetails}>
-          Receipt Details
-        </Button>
-      </CardFooter> */}
+        <CardFooter className="p-4 pt-0 gap-2">
+          <Button
+            variant="default"
+            className="flex-1"
+            onClick={() => {
+              const url = `${network.explorer}/token/${tokenId}`;
+              window.open(url, '_blank');
+            }}
+          >
+            View NFT
+          </Button>
+          {/* <Button variant="outline" className="flex-1" onClick={}>
+            Receipt Details
+          </Button> */}
+        </CardFooter>
       </Card>
     </div>
   );
