@@ -35,12 +35,6 @@ const chains: AppConfig["chains"] = {}
 
 const auth: AppConfig["auth"] = []
 
-const networkConfig: AppConfig["networkConfig"] = {
-  rpcUrls: {
-    main: "",
-  },
-}
-
 const chainDefaults: AppConfig["chainDefaults"] = {
   network: "mainnet" as Network,
   wallet: "metamask" as ClientInterfaces,
@@ -54,7 +48,6 @@ const appConfig: AppConfig = {
   chains,
   chainDefaults,
   siteInfo,
-  networkConfig,
 }
 
 export default appConfig

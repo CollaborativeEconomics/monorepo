@@ -138,7 +138,7 @@ chainConfiguration.arbitrum.networks.testnet = {
   gasprice: "250000000",
   explorer: "https://sepolia.arbiscan.io",
   rpcUrls: {
-    main: "https://sepolia-rollup.arbitrum.io/rpc",
+    main: process.env.NEXT_PUBLIC_RPC_URL || "",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",

@@ -94,13 +94,17 @@ export default class Web3Server extends InterfaceBaseClass {
 
     const account = privateKeyToAccount(walletSeed as `0x${string}`)
 
+    const RPC_URL = this.network?.rpcUrls?.main
+    console.log("RPC_URL", RPC_URL)
+
     const publicClient = createPublicClient({
-      transport: http(appConfig.networkConfig?.rpcUrls?.main || ""),
+      transport: http(RPC_URL),
     })
 
     const walletClient = createWalletClient({
-      transport: http(appConfig.networkConfig?.rpcUrls?.main || ""),
+      transport: http(RPC_URL),
     })
+
 
     try {
       const { request } = await publicClient.simulateContract({

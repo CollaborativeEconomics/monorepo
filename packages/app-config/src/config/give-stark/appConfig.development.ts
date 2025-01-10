@@ -23,15 +23,12 @@ const chainDefaults = {
 
 const auth = appConfig.auth as AuthTypes[]
 
-const networkConfig = appConfig.networkConfig
-
 const appConfigStaging: AppConfig = {
   apis,
   auth,
   chains: appConfig.chains,
   chainDefaults,
   siteInfo,
-  networkConfig,
 }
 
 export default appConfigStaging

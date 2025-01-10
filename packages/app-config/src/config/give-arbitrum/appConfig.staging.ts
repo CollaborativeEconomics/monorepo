@@ -44,13 +44,6 @@ const chainDefaults = {
 
 const auth = appConfig.auth as AuthTypes[]
 
-const networkConfig: AppConfig["networkConfig"] = {
-  rpcUrls: {
-    main: process.env.NEXT_PUBLIC_RPC_URL
-      ? process.env.NEXT_PUBLIC_RPC_URL
-      : "https://arbitrum-sepolia.g.alchemy.com/v2/demo",
-  },
-}
 
 const appConfigStaging: AppConfig = {
   apis,
@@ -58,7 +51,6 @@ const appConfigStaging: AppConfig = {
   chains,
   chainDefaults,
   siteInfo,
-  networkConfig,
 }
 
 export default appConfigStaging

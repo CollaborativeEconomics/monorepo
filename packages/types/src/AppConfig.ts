@@ -58,5 +58,4 @@ export interface AppConfig {
     coin: TokenTickerSymbol
     defaultAddress?: string
   }
-  networkConfig: NetworkConfig
 }

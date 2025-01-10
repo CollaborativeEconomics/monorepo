@@ -1,4 +1,4 @@
-import type { AppConfig, AuthTypes, NetworkConfig } from "@cfce/types"
+import type { AppConfig, AuthTypes } from "@cfce/types"
 import appConfig from "./appConfig.staging"
 
 const siteInfo: AppConfig["siteInfo"] = {
@@ -47,15 +47,12 @@ const chainDefaults: AppConfig["chainDefaults"] = {
 
 const auth = appConfig.auth as AuthTypes[]
 
-const networkConfig = appConfig.networkConfig
-
 const appConfigDevelopment: AppConfig = {
   apis,
   auth,
   chains,
   chainDefaults,
   siteInfo,
-  networkConfig,
 }
 
 export default appConfigDevelopment

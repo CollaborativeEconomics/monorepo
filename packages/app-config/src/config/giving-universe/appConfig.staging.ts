@@ -49,8 +49,6 @@ const chainDefaults = {
   network: "testnet" as Network,
 }
 
-const networkConfig = appConfig.networkConfig
-
 const auth = appConfig.auth as AuthTypes[]
 
 const appConfigStaging: AppConfig = {
@@ -59,7 +57,6 @@ const appConfigStaging: AppConfig = {
   chains,
   chainDefaults,
   siteInfo,
-  networkConfig,
 }
 
 export default appConfigStaging

@@ -29,12 +29,14 @@ import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
 import { formatUnits, parseEther } from "viem"
 import appConfig from "@cfce/app-config"
+import chainConfig from "../chains/chainConfig"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
-  // neturl = ""
-  // explorer = ""
-  // network = "testnet"
-  // provider?: NetworkConfig
+  setChain(slug: ChainSlugs) {
+    this.chain = chainConfig[slug]
+    this.network = getNetworkForChain(slug)
+    this.web3 = new Web3(this.network?.rpcUrls?.main)
+  }
   connectedWallet? = ""
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
@@ -42,9 +44,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   config = createConfig({
     chains: [arbitrumSepolia],
     transports: {
-      [arbitrumSepolia.id]: http(
-        appConfig.networkConfig?.rpcUrls?.main || "",
-      ),
+      [arbitrumSepolia.id]: http(this.network?.rpcUrls?.main),
     },
   })
 
