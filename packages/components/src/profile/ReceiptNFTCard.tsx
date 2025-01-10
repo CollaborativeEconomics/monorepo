@@ -17,33 +17,17 @@ import { Button } from '~/ui/button';
 import { Card, CardContent, CardFooter } from '~/ui/card';
 import { Separator } from '../ui';
 
-// interface ReceiptNFTCardProps {
-// onViewNFT: () => void;
-// onViewDetails: () => void;
-// }
-
-export const ReceiptNFTCard: React.FC<
-  NFTDataWithRelations
-  //  & ReceiptNFTCardProps
-> = ({
+export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
   created,
   donorAddress,
-  metadataUri,
-  imageUri,
   coinNetwork,
   coinLabel, // TODO: I think this is wrong sometimes (at least it is in the DB), find out why
   coinSymbol,
   coinValue,
   usdValue,
   tokenId,
-  offerId,
-  status,
-  donationId,
-  user,
   initiative,
   organization,
-  // onViewNFT,
-  // onViewDetails,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
