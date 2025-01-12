@@ -41,7 +41,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
 
-  config = createConfig({
+  config: ReturnType<typeof createConfig> = createConfig({
     chains: [arbitrumSepolia],
     transports: {
       [arbitrumSepolia.id]: http(this.network?.rpcUrls?.main),
@@ -76,24 +76,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         this.network?.id,
       )
       console.log("this.connectedWallet", this.network)
-      if (
-        newChainId
-          ? newChainIsSameAsConnectedChain && this.connectedWallet
-          : metamaskChainIsSameAsConnectedChain && this.connectedWallet
-      ) {
-        if (!this.chain) {
-          throw new Error("Already connected, but chain not set")
-        }
-        if (!this.network) {
-          throw new Error("Already connected, but network not set")
-        }
-        return {
-          success: true,
-          network: this.network,
-          walletAddress: this.connectedWallet,
-          chain: this.chain.name,
-        }
-      }
+
       if (
         typeof newChainId === "undefined" &&
         typeof metamaskChainId === "undefined"
@@ -101,16 +84,24 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         throw new Error("No chain ID provided or inferred")
       }
       const chainId = newChainId ?? Number(metamaskChainId)
+
       if (typeof chainId !== "number") {
         throw new Error(`Invalid chain ID type: ${typeof chainId}`)
       }
+
       this.setNetwork(chainId)
+
       if (!this.network) {
         throw new Error("Error getting network")
       }
       if (!this.chain) {
         throw new Error("Error getting chain")
       }
+
+      if (!this.connectedWallet) {
+        throw new Error("Error getting wallet")
+      }
+
       this.web3 = new Web3(this.network.rpcUrls.main)
       return {
         success: true,
