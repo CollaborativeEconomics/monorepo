@@ -30,7 +30,7 @@
     "@vercel/blob": "0.27.0",
     "form-data": "^4.0.1",
     "immer": "^10.1.1",
-    "jotai": "^2.10.4",
+    "jotai": "^2.10.3",
     "jotai-immer": "^0.4.1",
     "luxon": "^3.5.0",
     "mailgun.js": "10.3.0",

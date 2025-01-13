@@ -63,8 +63,8 @@ class StarknetWallet extends InterfaceBaseClass {
       "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
       this.provider,
     )
-    // console.log("STARKNET INIT")
-    // console.log("RPC provider", this.provider)
+    console.log("STARKNET INIT")
+    console.log("RPC provider", this.provider)
   }
 
   async init() {
@@ -90,10 +90,9 @@ class StarknetWallet extends InterfaceBaseClass {
     const envChain = appConfig.chains.starknet?.network
 
     // Determine target network based on environment
-    const targetChainId =
-      envChain === "mainnet"
-        ? constants.StarknetChainId.SN_MAIN // Mainnet for production
-        : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
+    const targetChainId = envChain === "mainnet"
+      ? constants.StarknetChainId.SN_MAIN // Mainnet for production
+      : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
 
     // Switch network if needed
     if (currentChain !== targetChainId) {
@@ -135,7 +134,7 @@ class StarknetWallet extends InterfaceBaseClass {
       let wallet = this.wallet
 
       if (!wallet) {
-        ;({ wallet } = await this.getWallet())
+        ({ wallet } = await this.getWallet())
       }
 
       if (this.connectedWallet) {
@@ -157,7 +156,7 @@ class StarknetWallet extends InterfaceBaseClass {
   public async sendPaymentWithGas(address: string, amount: number) {
     try {
       if (!this.connector) {
-        ;({ connector: this.connector } = await this.getWallet())
+        ({ connector: this.connector } = await this.getWallet())
       }
 
       const account = await this.connector?.account(this.provider)

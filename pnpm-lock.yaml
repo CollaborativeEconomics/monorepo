@@ -6,6 +6,7 @@ settings:
 
 overrides:
   hono: ^4.6.7
+  tough-cookie: ^4.1.3
 
 patchedDependencies:
   frog:
@@ -437,7 +438,7 @@ importers:
         version: 1.1.0
       flowbite:
         specifier: ^2.5.2
-        version: 2.5.2(rollup@4.29.1)
+        version: 2.5.2(rollup@3.29.5)
       form-data:
         specifier: ^4.0.1
         version: 4.0.1
@@ -886,7 +887,7 @@ importers:
         version: 1.1.0
       flowbite:
         specifier: ^2.5.2
-        version: 2.5.2(rollup@3.29.5)
+        version: 2.5.2(rollup@4.29.1)
       form-data:
         specifier: ^4.0.1
         version: 4.0.1
@@ -1574,7 +1575,7 @@ importers:
         specifier: ^4.17.13
         version: 4.17.13
       jotai:
-        specifier: ^2.10.4
+        specifier: ^2.9.1
         version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       lodash:
         specifier: ^4.17.21
@@ -1725,7 +1726,7 @@ importers:
         specifier: 4.1.0
         version: 4.1.0
       jotai:
-        specifier: ^2.10.4
+        specifier: ^2.10.3
         version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       lodash:
         specifier: ^4.17.21
@@ -1927,7 +1928,7 @@ importers:
         specifier: 0.27.0
         version: 0.27.0
       jotai:
-        specifier: ^2.10.4
+        specifier: ^2.10.3
         version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       lucide-react:
         specifier: 0.469.0
@@ -1976,17 +1977,17 @@ importers:
         specifier: workspace:*
         version: link:../types
       immer:
-        specifier: ^10.1.1
+        specifier: ^10.0.0
         version: 10.1.1
       jotai:
-        specifier: ^2.10.4
+        specifier: ^2.0.0
         version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       jotai-immer:
-        specifier: ^0.4.1
-        version: 0.4.1(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0))
+        specifier: ^0.2.0
+        version: 0.2.0(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0))(react@19.0.0)
     devDependencies:
       typescript:
-        specifier: ^5.7.2
+        specifier: ^5.0.0
         version: 5.7.2
 
   packages/tbas:
@@ -2091,7 +2092,7 @@ importers:
         specifier: ^10.1.1
         version: 10.1.1
       jotai:
-        specifier: ^2.10.4
+        specifier: ^2.10.3
         version: 2.11.0(@types/react@19.0.2)(react@19.0.0)
       jotai-immer:
         specifier: ^0.4.1
@@ -8704,6 +8705,13 @@ packages:
   jose@5.9.6:
     resolution: {integrity: sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==}
 
+  jotai-immer@0.2.0:
+    resolution: {integrity: sha512-hahK8EPiROS9RoNWmX/Z8rY9WkAijspX4BZ1O7umpcwI4kPNkbcCpu/PhiQ8FMcpEcF6KmbpbMpSSj/GFmo8NA==}
+    peerDependencies:
+      immer: '*'
+      jotai: '>=1.11.0'
+      react: '>=17.0.0'
+
   jotai-immer@0.4.1:
     resolution: {integrity: sha512-nQTt1HBKie/5OJDck1qLpV1PeBA6bjJLAczEYAx70PD8R4Mbu7gtexfBUCzJh6W6ecsOfwHksAYAesVth6SN9A==}
     peerDependencies:
@@ -11033,13 +11041,6 @@ packages:
     resolution: {integrity: sha512-eb+F6NabSnjbLwNoC+2o5ItbmP1kg7HliWue71JgLegQt6A5mTN8YbvTLCazdlg6e5SV6A+r8OGvZYskdlmhqQ==}
     engines: {node: '>=6.0.0'}
 
-  tldts-core@6.1.71:
-    resolution: {integrity: sha512-LRbChn2YRpic1KxY+ldL1pGXN/oVvKfCVufwfVzEQdFYNo39uF7AJa/WXdo+gYO7PTvdfkCPCed6Hkvz/kR7jg==}
-
-  tldts@6.1.71:
-    resolution: {integrity: sha512-LQIHmHnuzfZgZWAf2HzL83TIIrD8NhhI0DVxqo9/FdOd4ilec+NTNZOlDZf7EwrTNoutccbsHjvWHYXLAtvxjw==}
-    hasBin: true
-
   tmpl@1.0.5:
     resolution: {integrity: sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==}
 
@@ -11061,10 +11062,6 @@ packages:
   tough-cookie@4.1.4:
     resolution: {integrity: sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==}
     engines: {node: '>=6'}
-
-  tough-cookie@5.1.0:
-    resolution: {integrity: sha512-rvZUv+7MoBYTiDmFPBrhL7Ujx9Sk+q9wwm22x8c8T5IJaR+Wsyc7TNxbVxo84kZoRJZZMazowFLqpankBEQrGg==}
-    engines: {node: '>=16'}
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
@@ -19944,7 +19941,7 @@ snapshots:
   fetch-cookie@3.1.0:
     dependencies:
       set-cookie-parser: 2.7.1
-      tough-cookie: 5.1.0
+      tough-cookie: 4.1.4
 
   fetch-ponyfill@7.1.0(encoding@0.1.12):
     dependencies:
@@ -21140,6 +21137,12 @@ snapshots:
       '@sideway/pinpoint': 2.0.0
 
   jose@5.9.6: {}
+
+  jotai-immer@0.2.0(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0))(react@19.0.0):
+    dependencies:
+      immer: 10.1.1
+      jotai: 2.11.0(@types/react@19.0.2)(react@19.0.0)
+      react: 19.0.0
 
   jotai-immer@0.4.1(immer@10.1.1)(jotai@2.11.0(@types/react@19.0.2)(react@19.0.0)):
     dependencies:
@@ -23801,12 +23804,6 @@ snapshots:
       elliptic: 6.6.1
       nan: 2.22.0
 
-  tldts-core@6.1.71: {}
-
-  tldts@6.1.71:
-    dependencies:
-      tldts-core: 6.1.71
-
   tmpl@1.0.5: {}
 
   to-fast-properties@1.0.3: {}
@@ -23825,10 +23822,6 @@ snapshots:
       punycode: 2.3.1
       universalify: 0.2.0
       url-parse: 1.5.10
-
-  tough-cookie@5.1.0:
-    dependencies:
-      tldts: 6.1.71
 
   tr46@0.0.3: {}
 

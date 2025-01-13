@@ -66,7 +66,7 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@vercel/blob": "0.27.0",
-    "jotai": "^2.10.4",
+    "jotai": "^2.10.3",
     "lucide-react": "0.469.0",
     "uuid": "11.0.3"
   },

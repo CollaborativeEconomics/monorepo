@@ -35,16 +35,6 @@ export default async function walletLogin(
     throw new Error("User not found or created")
   }
 
-  console.log("SIGN IN ARGS", method, {
-    redirect: false,
-    callbackUrl: `/profile/${user.id}`,
-    address: walletAddress,
-    // chainName,
-    // chainId,
-    network,
-    // currency,
-  })
-
   const res = await signIn(method, {
     redirect: false,
     callbackUrl: `/profile/${user.id}`,
