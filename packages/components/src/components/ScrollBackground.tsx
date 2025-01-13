@@ -5,8 +5,11 @@ interface ScrollBackgroundProps {
   children: React.ReactNode;
 }
 
+const headerClass = 'backdrop-blur-lg bg-white/90 py-4 shadow-md';
+
 export function ScrollBackground({ children }: ScrollBackgroundProps) {
   const [scrollY, setScrollY] = useState(0);
+  const [backgroundClass, setBackgroundClass] = useState('');
 
   const handleScroll = useCallback(() => {
     const frameId = requestAnimationFrame(() => {
@@ -33,12 +36,13 @@ export function ScrollBackground({ children }: ScrollBackgroundProps) {
     };
   }, [handleScroll]);
 
-  const backgroundClass =
-    scrollY > 0
-      ? 'backdrop-blur-lg bg-white/90 py-4 shadow-md'
-      : 'bg-transparent';
-
-  console.log('scrollY', scrollY, backgroundClass);
+  useEffect(() => {
+    if (scrollY > 0) {
+      setBackgroundClass(headerClass);
+    } else {
+      setBackgroundClass('bg-transparent');
+    }
+  }, [scrollY]);
 
   return (
     <div className={`w-full h-full transition-all ${backgroundClass}`}>

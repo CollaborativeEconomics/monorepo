@@ -30,7 +30,7 @@ import {
 export default async function NavMenu() {
   const session = await auth();
   const status = session?.user ? 'authenticated' : 'unauthenticated';
-  console.log('Header Session', session, status)
+  console.log('Header Session', session, status, session);
   const avatar = session?.user?.image || '/media/nopic.png';
   // @ts-ignore - module augmentation is hard
   const userurl = session?.user.id ? `/profile/${session?.user.id}` : '';

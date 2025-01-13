@@ -3,7 +3,6 @@ import { Footer, Header } from '@cfce/components/navigation';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
-import { ToastProvider } from '../ui/toast';
 import { Toaster } from '../ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });

@@ -12,6 +12,7 @@
   "aliases": {
     "components": "/components",
     "ui": "/ui",
-    "utils": "/libs/shadCnUtil"
+    "hooks": "/hooks",
+    "utils": "/shadCnUtil"
   }
 }

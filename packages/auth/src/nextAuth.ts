@@ -20,6 +20,7 @@ const authOptions: NextAuthConfig = {
   // },
   callbacks: {
     async jwt(args) {
+      console.log("AUTH JWT ARGS", args)
       //console.log('AUTH JWT ARGS', args)
       const { token, user, account, profile, isNewUser, trigger, session } =
         args
@@ -97,6 +98,7 @@ const authOptions: NextAuthConfig = {
       return token
     },
     async session(args) {
+      console.log("AUTH SESSION ARGS", args)
       // console.log("AUTH SESSION ARGS", args)
       const { session, token, user, trigger, newSession } = args
       //session.authId = token.authId

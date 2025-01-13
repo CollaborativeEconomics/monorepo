@@ -44,6 +44,7 @@ export default async function walletLogin(
     network,
     // currency,
   })
+  console.log("RES", res)
 
   if (!res?.error) {
     // Instead of redirecting, return the URL
