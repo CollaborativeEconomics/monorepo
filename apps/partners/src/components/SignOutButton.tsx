@@ -1,7 +1,6 @@
 "use client"
-import React from 'react';
-import { signOutAction } from '@cfce/auth';
-import { redirect } from 'next/navigation'
+import { signOut } from "next-auth/react"
+import { revalidatePath } from "next/cache"
 
 interface SignOutButtonProps {
   className?: string;
@@ -10,9 +9,8 @@ interface SignOutButtonProps {
 export default function SignOutButton({ className }: SignOutButtonProps) {
   async function onSignout(){
     console.log('SIGNOUT')
-    await signOutAction()
-    window.location.href='/'
-    redirect('/')
+    await signOut({ callbackUrl: '/' })
+    revalidatePath('/')
   }
 
   return (
