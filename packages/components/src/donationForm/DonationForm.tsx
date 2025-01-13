@@ -368,8 +368,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         }),
         userId,
         network,
-        chain: (chainName.charAt(0).toUpperCase() +
-          chainName.slice(1)) as Chain,
+        chain: chainName as Chain,
         wallet: sender,
         amount: coinValue,
         usdvalue: usdValue,

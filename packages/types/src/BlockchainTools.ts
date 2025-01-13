@@ -58,22 +58,22 @@ export const ChainNames: Chain[] = [
 
 export type Network = "mainnet" | "testnet"
 export interface NetworkConfig {
-  id?: number
-  name?: string
-  slug?: Network
-  symbol?: string
-  decimals?: number
-  gasprice?: string
-  explorer?: string
+  id: number
+  name: string
+  slug: Network
+  symbol: string
+  decimals: number
+  gasprice: string
+  explorer: string
   rpcUrls: {
     main: string
     [key: string]: string
   }
-  wssurl?: string
-  tokens?: Partial<Record<TokenTickerSymbol, TokenConfig>>
-  networkPassphrase?: string
-  contracts?: Record<string, string>
-  wallet?: string
+  wssurl: string
+  tokens: Partial<Record<TokenTickerSymbol, TokenConfig>>
+  networkPassphrase: string
+  contracts: Record<string, string>
+  wallet: string
 }
 
 export const TokenTickerSymbol = [

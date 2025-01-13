@@ -39,7 +39,7 @@ export default class Web3Server extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {
     this.chain = chainConfig[slug]
     this.network = getNetworkForChain(slug)
-    this.web3 = new Web3(this.network?.rpcUrls?.main)
+    this.web3 = new Web3(this.network.rpcUrls.main)
   }
 
   async getGasPrice(minter: string, contractId: string, data: string) {
@@ -425,7 +425,7 @@ export default class Web3Server extends InterfaceBaseClass {
       body,
     }
     try {
-      const res = await fetch(this?.network?.rpcUrls?.main || "", opt)
+      const res = await fetch(this.network.rpcUrls.main, opt)
       const inf = await res.json()
       return inf?.result
     } catch (ex) {

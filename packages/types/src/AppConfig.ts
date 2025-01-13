@@ -13,7 +13,6 @@ export interface AppChainConfig {
   slug: ChainSlugs
   network: Network
   contracts: Partial<Record<ContractType, string>>
-  rpcUrl?: string
   wallet?: string
   enabledWallets: ClientInterfaces[]
   tokens: TokenTickerSymbol[]
