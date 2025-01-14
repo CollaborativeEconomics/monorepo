@@ -1,35 +1,35 @@
 /// <reference path="./metamask.d.ts" />
 
 import appConfig from "@cfce/app-config"
-import appConfig from "@cfce/app-config"
-imChainSlugspConfig from "@cfce/app-config"
-imNetworkpe {
-  Network,
+import type {
+  ChainSlugs,
   Network,
   NetworkConfig,
   TokenTickerSymbol,
-} from "
-} httprumSepolia, mainnet, sepolia } from "@wagmi/core/chains"
-} connect "@wagmi/core"om "web3"
-import { injected import type {
-  estimateGasarbitrumSepolia, rConnectInfo,
-  Provideerc20Abi } from "viem"
-import { formatUnits, parseEther,viem
-} from "@wagmi/core"3
-import { injected } from typew{
-  ProvidearbitrumSepolia, rConnectInfo,
-  Provideerc20Abi } from "viem"
-import { formatUnits, parseEtherviem
-  ProviWeb3web3
-}from"wtypeb{
+} from "@cfce/types"
+import type { MetaMaskInpageProvider } from "@metamask/providers"
+import {
+  http,
+  connect,
+  createConfig,
+  estimateGas,
+  getBalance,
+  sendTransaction,
+} from "@wagmi/core"
+import { injected } from "@wagmi/core"
+import { arbitrumSepolia, mainnet, sepolia } from "@wagmi/core/chains"
+import { erc20Abi } from "viem"
+import { formatUnits, parseEther } from "viem"
+import Web3 from "web3"
+import type {
   ProviderConnectInfo,
-  ProviderMessage
+  ProviderMessage,
   ProviderRpcError,
-}from"web3"
-import InterfaceBaseClassInterfaceBaseClass
-import chainConfigterfaceBaschainsschainConfig
-import chgetChainByChainIdm getNetworkForChainnsIchainC../chains/utilsgeClass"
-import typen{aTransaction }saction }stypes transactionnsactionnsaction"
+} from "web3"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import chainConfig from "../chains/chainConfig"
+import { getChainByChainId, getNetworkForChain } from "../chains/utils"
+import type { Transaction } from "../types/transaction"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {

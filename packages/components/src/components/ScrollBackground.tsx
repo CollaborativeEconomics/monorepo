@@ -3,13 +3,18 @@ import { useCallback, useEffect, useState } from 'react';
 
 interface ScrollBackgroundProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-const headerClass = 'backdrop-blur-lg bg-white/90 py-4 shadow-md';
+const headerClass =
+  'backdrop-blur-lg bg-white/90 dark:bg-background/90 py-4 shadow-md';
 
-export function ScrollBackground({ children }: ScrollBackgroundProps) {
+export function ScrollBackground({
+  children,
+  className,
+}: ScrollBackgroundProps) {
   const [scrollY, setScrollY] = useState(0);
-  const [backgroundClass, setBackgroundClass] = useState('');
+  const [backgroundClass, setBackgroundClass] = useState('bg-transparent');
 
   const handleScroll = useCallback(() => {
     const frameId = requestAnimationFrame(() => {
@@ -44,5 +49,11 @@ export function ScrollBackground({ children }: ScrollBackgroundProps) {
     }
   }, [scrollY]);
 
-  return <div className={`transition-all ${backgroundClass}`}>{children}</div>;
+  console.log({ backgroundClass });
+
+  return (
+    <div className={`transition-all ${backgroundClass} ${className}`}>
+      {children}
+    </div>
+  );
 }
