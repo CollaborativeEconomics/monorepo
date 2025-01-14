@@ -1,8 +1,8 @@
-import React, { type HTMLProps } from 'react';
+import React, { type HTMLProps } from "react"
 
 interface IconProps {
-  icon: string;
-  className?: string;
+  icon: string
+  className?: string
 }
 
 const Icon = ({
@@ -13,6 +13,6 @@ const Icon = ({
   <span className={`material-icons ${className}`} {...props}>
     {icon}
   </span>
-);
+)
 
-export default Icon;
+export default Icon

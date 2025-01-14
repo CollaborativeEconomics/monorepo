@@ -1,17 +1,17 @@
-'use client';
-import Image from 'next/image';
-import React, { type HTMLAttributes } from 'react';
+"use client"
+import Image from "next/image"
+import React, { type HTMLAttributes } from "react"
 
 interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
-  text: string;
-  icon?: string;
-  className?: string;
-  disabled?: boolean;
-  onClick?: () => void;
+  text: string
+  icon?: string
+  className?: string
+  disabled?: boolean
+  onClick?: () => void
 }
 
 const style =
-  'flex flex-col justify-center items-center border rounded-md text-xs p-4';
+  "flex flex-col justify-center items-center border rounded-md text-xs p-4"
 
 // @deprecated nothing specific to chain here, we should use a general purpose button
 const ButtonChain = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -21,7 +21,7 @@ const ButtonChain = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => (
     <button
       disabled={disabled}
-      className={`${style} ${className || ''}`}
+      className={`${style} ${className || ""}`}
       {...{ onClick, ref }}
       {...props}
     >
@@ -37,8 +37,8 @@ const ButtonChain = React.forwardRef<HTMLButtonElement, ButtonProps>(
       {text}
     </button>
   ),
-);
+)
 
-ButtonChain.displayName = 'ButtonChain';
+ButtonChain.displayName = "ButtonChain"
 
-export default ButtonChain;
+export default ButtonChain

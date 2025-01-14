@@ -1,8 +1,9 @@
-// 'use client';
+"use client"
 
-import { signOutAction } from '../actions';
-import { Button } from './Button';
-import { redirect } from 'next/navigation'
+import { signOutAction } from "../actions"
+import { Button } from "./Button"
+import { redirect } from "next/navigation"
+import type { FC } from "react"
 // note sure why all this csrf stuff was needed? \/\/\/
 // Note: Logout works with a direct link to NextAuth's unbranded /api/auth/signout
 // however signOut does not appear to work consistently (e.g. doesn't clear session) and may cause redirect loops
@@ -39,12 +40,14 @@ import { redirect } from 'next/navigation'
 //   }
 // }
 
-export function LogoutButton() {
-  function goHome(){
-    console.log('SIGNOUT')
-    signOutAction()
-    window.location.href = '/';
-    //redirect('/')
+export const LogoutButton: FC = () => {
+  async function goHome() {
+    console.log("SIGNOUT")
+    await signOutAction()
+    window.location.href = "/"
+    console.log("REDIRECTING TO HOME")
+    // redirect('/');
   }
-  return <Button onClick={goHome}>Log Out</Button>;
+
+  return <Button onClick={goHome}>Log Out</Button>
 }

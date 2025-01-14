@@ -38,7 +38,7 @@ const chainSlug = "xdc"
 const network = appConfig.chainDefaults.network
 const settings = chainConfig.xdc.networks[network]
 //console.log('SET', settings)
-const chainId = settings.id.toString()
+const chainId = settings?.id?.toString()
 const registryAddress = (settings.contracts?.tba6551RegistryAddress ||
   "0x0") as Address
 const implementationAddress = (settings.contracts
@@ -265,6 +265,10 @@ export async function newTBAccount(entity_type: string, entity_id: string) {
     console.log("NFT", resMint)
     const tokenId = resMint.tokenId
     console.log("TokenID", tokenId)
+
+    if (!chainId) {
+      throw new Error("Chain id not found")
+    }
     // create token bound account for user in xdc
     const account_address: string = await getTBAccount(
       tokenContract,
