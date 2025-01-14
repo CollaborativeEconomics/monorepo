@@ -2,13 +2,13 @@ import type { Prisma } from "@cfce/database"
 import type { Chain, User } from "@cfce/database/types"
 import type { AuthTypes } from "@cfce/types"
 import { registryApi } from "@cfce/utils"
-import fetchUserByWallet from "./actions/fetchUserByWallet"
-import { createNewUser } from "./actions/createNewUser"
 //import type { User } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import type { Provider } from "next-auth/providers/index"
 import { v7 as uuidv7 } from "uuid"
+import { createNewUser } from "./actions/createNewUser"
+import fetchUserByWallet from "./actions/fetchUserByWallet"
 interface Credentials {
   id: string
   address: string
@@ -17,7 +17,6 @@ interface Credentials {
   network: string
   currency: string
 }
-
 
 async function getUserByCredentials(
   { id: userId, address, chain, chainId, network, currency }: Credentials,
@@ -75,8 +74,6 @@ async function getUserByCredentials(
     return null
   }
 }
-
-
 
 /*
 async function getUserByCredentials(
@@ -168,21 +165,21 @@ const authorizeChain = async (
 
 const authProviders: Record<AuthTypes, Provider> = {
   argent: {
-    id: "Argent",
+    id: "argent",
     name: "Argent",
     type: "credentials",
     credentials: credentialsDefinition,
     authorize: authorizeChain,
   },
   crossmark: {
-    id: "Crossmark",
+    id: "crossmark",
     name: "XRPL - Crossmark",
     type: "credentials",
     credentials: credentialsDefinition,
     authorize: authorizeChain,
   },
   gemwallet: {
-    id: "GemWallet",
+    id: "gemwallet",
     name: "XRPL - Gem Wallet",
     type: "credentials",
     credentials: credentialsDefinition,
@@ -195,14 +192,14 @@ const authProviders: Record<AuthTypes, Provider> = {
   //   authorize: authorizeChain,
   // }),
   freighter: {
-    id: "Freighter",
+    id: "freighter",
     name: "Stellar - Freighter",
     type: "credentials",
     credentials: credentialsDefinition,
     authorize: authorizeChain,
   },
   xaman: {
-    id: "Xaman",
+    id: "xaman",
     name: "XRPL - Xaman",
     type: "credentials",
     credentials: credentialsDefinition,
