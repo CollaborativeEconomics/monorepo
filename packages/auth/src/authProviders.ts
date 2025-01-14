@@ -165,7 +165,7 @@ const authorizeChain = async (
 
 const authProviders: Record<AuthTypes, Provider> = {
   argent: {
-    id: "argentasdfasdfasdf2asd",
+    id: "argent",
     name: "Argent",
     type: "credentials",
     credentials: credentialsDefinition,
