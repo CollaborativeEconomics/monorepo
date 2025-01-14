@@ -87,7 +87,7 @@ export default async function Initiative(props: {
             {stories?.length > 0 && (
               <Link
                 className="px-[5%] font-bold hover:underline"
-                href="#stories"
+                href={`/stories?initiative=${initiative.id}`}
               >
                 See impact storyline
               </Link>

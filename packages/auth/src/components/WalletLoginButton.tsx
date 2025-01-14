@@ -44,6 +44,10 @@ export function WalletLoginButton({
       throw new Error(`No wallet address found: ${walletAddress}`);
     }
     //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
+    if (!network.slug) {
+      throw new Error("Slug not found");
+    }
+
     const redirectUrl = await walletLogin(method, {
       walletAddress,
       network: network.slug,

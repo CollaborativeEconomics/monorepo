@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import React from 'react';
-import Logo from '~/home/Logo';
+import Link from "next/link"
+import React from "react"
+import Logo from "~/home/Logo"
 
 export default function Footer() {
   return (
-    <footer className={'w-full mt-10 py-20 bg-white dark:bg-accent'}>
+    <footer className={"w-full mt-10 py-20 bg-white dark:bg-accent"}>
       <div className="flex flex-col lg:flex-row justify-between container">
         <div className="text-center lg:text-left">
           <Link href="/" className="block text-center">
@@ -44,5 +44,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

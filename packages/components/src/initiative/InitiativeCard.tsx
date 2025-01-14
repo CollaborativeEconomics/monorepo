@@ -1,29 +1,29 @@
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-import OrganizationAvatar from '~/organization/OrganizationAvatar';
-import { Button } from '~/ui/button';
-import { Card, CardContent, CardHeader } from '~/ui/card';
-import { DateDisplay } from '~/ui/date-posted';
-import { OrgStats } from '~/ui/org-stats';
-import { Progress } from '~/ui/progress';
-import { Separator } from '~/ui/separator';
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+import OrganizationAvatar from "~/organization/OrganizationAvatar"
+import { Button } from "~/ui/button"
+import { Card, CardContent, CardHeader } from "~/ui/card"
+import { DateDisplay } from "~/ui/date-posted"
+import { OrgStats } from "~/ui/org-stats"
+import { Progress } from "~/ui/progress"
+import { Separator } from "~/ui/separator"
 
 const dummyImgSrc: string =
-  'https://partners.cfce.io/_next/image?url=https%3A%2F%2Fipfs.filebase.io%2Fipfs%2FQmcS3rZdEzNkYxSd79AJVgjkDpK7sBd1ej99i4sBXD1mkQ&w=256&q=75';
+  "https://partners.cfce.io/_next/image?url=https%3A%2F%2Fipfs.filebase.io%2Fipfs%2FQmcS3rZdEzNkYxSd79AJVgjkDpK7sBd1ej99i4sBXD1mkQ&w=256&q=75"
 
 export default function InitiativeCard({ ...props }) {
-  const initiative = props?.data || {};
-  const initurl = `/initiatives/${initiative?.id || 0}`;
-  let image = dummyImgSrc;
+  const initiative = props?.data || {}
+  const initurl = `/initiatives/${initiative?.id || 0}`
+  let image = dummyImgSrc
   if (initiative?.defaultAsset) {
-    image = initiative?.defaultAsset.startsWith('ipfs')
+    image = initiative?.defaultAsset.startsWith("ipfs")
       ? `https://ipfs.filebase.io/ipfs/${initiative.defaultAsset.substr(5)}`
-      : initiative.defaultAsset;
+      : initiative.defaultAsset
   }
-  const startDate = new Date(initiative?.start).getTime();
-  const progress = (initiative.donations / initiative.goal) * 100;
+  const startDate = new Date(initiative?.start).getTime()
+  const progress = (initiative.donations / initiative.goal) * 100
 
   return (
     <Card className="flex flex-col overflow-hidden h-auto">
@@ -34,7 +34,7 @@ export default function InitiativeCard({ ...props }) {
             alt="IMG BG"
             fill
             style={{
-              objectFit: 'cover',
+              objectFit: "cover",
             }}
           />
         </Link>
@@ -42,11 +42,11 @@ export default function InitiativeCard({ ...props }) {
       <CardContent className="flex flex-col pb-8 pt-3 gap-3 px-0">
         <Link href={initurl}>
           <h3 className="px-5 pt-2 text-xl font-semibold uppercase text-ellipsis overflow-scroll">
-            {initiative.title ?? 'no title'}
+            {initiative.title ?? "no title"}
           </h3>
         </Link>
         <DateDisplay className="pl-5" timestamp={startDate} />
-        <p className="px-6">{initiative.description ?? 'no description'}</p>
+        <p className="px-6">{initiative.description ?? "no description"}</p>
         <Separator />
         <div className="px-6 pt-3">
           <Progress value={progress} />
@@ -74,5 +74,5 @@ export default function InitiativeCard({ ...props }) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

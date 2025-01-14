@@ -1,4 +1,24 @@
 import {
+  connect,
+  disconnect,
+  type Connector,
+  type StarknetWindowObject,
+} from "starknetkit"
+import {
+  Account,
+  constants,
+  Contract,
+  num,
+  Provider,
+  RpcProvider,
+  TransactionFinalityStatus,
+} from "starknet"
+import type {
+  GetTransactionReceiptResponse,
+  Call,
+  AccountInterface,
+} from "starknet"
+import {
   type GaslessOptions,
   SEPOLIA_BASE_URL,
   executeCalls,
@@ -11,26 +31,6 @@ import type {
   Network,
   NetworkConfig,
 } from "@cfce/types"
-import {
-  constants,
-  Account,
-  Contract,
-  Provider,
-  RpcProvider,
-  TransactionFinalityStatus,
-  num,
-} from "starknet"
-import type {
-  AccountInterface,
-  Call,
-  GetTransactionReceiptResponse,
-} from "starknet"
-import {
-  type Connector,
-  type StarknetWindowObject,
-  connect,
-  disconnect,
-} from "starknetkit"
 import { formatEther, parseEther } from "viem"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
@@ -90,9 +90,10 @@ class StarknetWallet extends InterfaceBaseClass {
     const envChain = appConfig.chains.starknet?.network
 
     // Determine target network based on environment
-    const targetChainId = envChain === "mainnet"
-      ? constants.StarknetChainId.SN_MAIN // Mainnet for production
-      : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
+    const targetChainId =
+      envChain === "mainnet"
+        ? constants.StarknetChainId.SN_MAIN // Mainnet for production
+        : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
 
     // Switch network if needed
     if (currentChain !== targetChainId) {
@@ -134,7 +135,7 @@ class StarknetWallet extends InterfaceBaseClass {
       let wallet = this.wallet
 
       if (!wallet) {
-        ({ wallet } = await this.getWallet())
+        ;({ wallet } = await this.getWallet())
       }
 
       if (this.connectedWallet) {
