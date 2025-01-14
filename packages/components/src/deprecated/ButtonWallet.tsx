@@ -1,7 +1,7 @@
-'use client'
-import React, { HTMLAttributes } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
+"use client"
+import React, { HTMLAttributes } from "react"
+import Image from "next/image"
+import Link from "next/link"
 
 interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   href: string
@@ -11,35 +11,34 @@ interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   disabled?: boolean
 }
 
-const style = 'flex flex-col justify-center items-center border rounded-md text-xs p-4 text-center'
+const style =
+  "flex flex-col justify-center items-center border rounded-md text-xs p-4 text-center"
 
 // @deprecated nothing specific to wallet here, we should use a general purpose button
 const ButtonWallet = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      href,
-      text,
-      icon,
-      className,
-      disabled,
-      ...props
-    }: ButtonProps,
-    ref
-  ) => (
-    <button 
+  ({ href, text, icon, className, disabled, ...props }: ButtonProps, ref) => (
+    <button
       disabled={disabled}
-      className={`${style} ${className||''}`}
+      className={`${style} ${className || ""}`}
       {...{ ref }}
       {...props}
     >
       <Link href={href} target="_blank">
-        {icon ? (<Image src={'/wallets/'+icon} className="mb-2" width={64} height={64} alt="Chain icon" />) : null}
+        {icon ? (
+          <Image
+            src={"/wallets/" + icon}
+            className="mb-2"
+            width={64}
+            height={64}
+            alt="Chain icon"
+          />
+        ) : null}
         {text}
       </Link>
     </button>
-  )
-);
+  ),
+)
 
-ButtonWallet.displayName = 'ButtonWallet'
+ButtonWallet.displayName = "ButtonWallet"
 
 export default ButtonWallet

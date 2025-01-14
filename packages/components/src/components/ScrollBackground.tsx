@@ -44,9 +44,5 @@ export function ScrollBackground({ children }: ScrollBackgroundProps) {
     }
   }, [scrollY]);
 
-  return (
-    <div className={`w-full h-full transition-all ${backgroundClass}`}>
-      {children}
-    </div>
-  );
+  return <div className={`transition-all ${backgroundClass}`}>{children}</div>;
 }

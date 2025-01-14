@@ -1,18 +1,18 @@
-'use client';
-import type { Category } from '@cfce/database';
-import { CheckCircledIcon, ChevronDownIcon } from '@radix-ui/react-icons';
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { cn } from '~/shadCnUtil';
-import { Button } from '~/ui/button';
+"use client"
+import type { Category } from "@cfce/database"
+import { CheckCircledIcon, ChevronDownIcon } from "@radix-ui/react-icons"
+import React from "react"
+import { useEffect, useState } from "react"
+import { cn } from "~/shadCnUtil"
+import { Button } from "~/ui/button"
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '~/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '~/ui/popover';
+} from "~/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover"
 
 /*
 const categories = [
@@ -37,43 +37,43 @@ const categories = [
 */
 
 interface CategoryOption {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }
 
 interface CategorySelectProps {
-  onChange?: (category: string) => void;
+  onChange?: (category: string) => void
 }
 
 export default function CategorySelect(props: CategorySelectProps) {
-  const onChange = props?.onChange;
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
-  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const onChange = props?.onChange
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState("")
+  const [categories, setCategories] = useState<CategoryOption[]>([])
   // TODO: get from properties
-  const distinct = 'initiatives'; // organizations
+  const distinct = "initiatives" // organizations
 
   useEffect(() => {
     async function loadCategories() {
-      const res = await fetch(`/api/categories?distinct=${distinct}`);
-      let list = await res.json();
-      console.log('CATS', list);
+      const res = await fetch(`/api/categories?distinct=${distinct}`)
+      let list = await res.json()
+      console.log("CATS", list)
       if (list.success) {
         list = list.map((category: Category) => ({
           value: category.slug,
           label: category.title,
-        }));
-        setCategories(list);
+        }))
+        setCategories(list)
       }
     }
-    loadCategories();
-  }, []);
+    loadCategories()
+  }, [])
 
   function findCategory(value: string) {
     const found = categories.find(
       (item: CategoryOption) => item?.value === value,
-    );
-    return found ? found.label : '';
+    )
+    return found ? found.label : ""
   }
 
   return (
@@ -85,7 +85,7 @@ export default function CategorySelect(props: CategorySelectProps) {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {value ? findCategory(value) : 'Select category...'}
+          {value ? findCategory(value) : "Select category..."}
           <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -97,19 +97,19 @@ export default function CategorySelect(props: CategorySelectProps) {
             {categories.map((item: CategoryOption) => (
               <CommandItem
                 key={item?.value}
-                onSelect={currentValue => {
-                  console.log('CAT', currentValue, 'OLD', value || '?');
-                  setValue(item?.value);
+                onSelect={(currentValue) => {
+                  console.log("CAT", currentValue, "OLD", value || "?")
+                  setValue(item?.value)
                   if (onChange) {
-                    onChange(item?.value);
+                    onChange(item?.value)
                   }
-                  setOpen(false);
+                  setOpen(false)
                 }}
               >
                 <CheckCircledIcon
                   className={cn(
-                    'mr-2 h-4 w-4',
-                    value === item?.value ? 'opacity-100' : 'opacity-0',
+                    "mr-2 h-4 w-4",
+                    value === item?.value ? "opacity-100" : "opacity-0",
                   )}
                 />
                 {item?.label}
@@ -119,5 +119,5 @@ export default function CategorySelect(props: CategorySelectProps) {
         </Command>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

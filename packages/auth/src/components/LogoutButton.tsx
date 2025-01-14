@@ -1,6 +1,5 @@
 'use client';
 
-import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signOutAction } from '../actions';
 import { Button } from './Button';
@@ -45,7 +44,6 @@ export function LogoutButton({ className }: { className?: string }) {
     console.log('SIGNOUT');
     signOutAction();
     window.location.href = '/';
-    // revalidatePath('/');
     //redirect('/')
   }
   return (

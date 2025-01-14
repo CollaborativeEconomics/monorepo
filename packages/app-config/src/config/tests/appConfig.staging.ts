@@ -35,6 +35,7 @@ const chainDefaults = {
 const auth = appConfig.auth as AuthTypes[]
 
 const appConfigStaging: AppConfig = {
+  ...appConfig,
   apis,
   auth,
   chains,

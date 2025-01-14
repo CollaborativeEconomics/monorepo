@@ -1,26 +1,52 @@
 /// <reference path="./metamask.d.ts" />
 
-import type { NetworkConfig, TokenTickerSymbol } from "@cfce/types"
-import type { MetaMaskInpageProvider } from "@metamask/providers"
-import { erc20Abi } from "viem"
-import Web3 from "web3"
-import type {
+import appConfig from "@cfce/app-config"
+import appConfig from "@cfce/app-config"
+imChainSlugspConfig from "@cfce/app-config"
+imNetworkpe {
+  Network,
+  Network,
+  NetworkConfig,
+  TokenTickerSymbol,
+} from "
+} httprumSepolia, mainnet, sepolia } from "@wagmi/core/chains"
+} connect "@wagmi/core"om "web3"
+import { injected import type {
+  estimateGasarbitrumSepolia, rConnectInfo,
+  Provideerc20Abi } from "viem"
+import { formatUnits, parseEther,viem
+} from "@wagmi/core"3
+import { injected } from typew{
+  ProvidearbitrumSepolia, rConnectInfo,
+  Provideerc20Abi } from "viem"
+import { formatUnits, parseEtherviem
+  ProviWeb3web3
+}from"wtypeb{
   ProviderConnectInfo,
-  ProviderMessage,
+  ProviderMessage
   ProviderRpcError,
-} from "web3"
-import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import { getChainByChainId, getNetworkForChain } from "../chains/utils"
-import type { Transaction } from "../types/transaction"
+}from"web3"
+import InterfaceBaseClassInterfaceBaseClass
+import chainConfigterfaceBaschainsschainConfig
+import chgetChainByChainIdm getNetworkForChainnsIchainC../chains/utilsgeClass"
+import typen{aTransaction }saction }stypes transactionnsactionnsaction"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
-  // neturl = ""
-  // explorer = ""
-  // network = "testnet"
-  // provider?: NetworkConfig
+  setChain(slug: ChainSlugs) {
+    this.chain = chainConfig[slug]
+    this.network = getNetworkForChain(slug)
+    this.web3 = new Web3(this.network?.rpcUrls?.main)
+  }
   connectedWallet? = ""
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
+
+  config: ReturnType<typeof createConfig> = createConfig({
+    chains: [arbitrumSepolia],
+    transports: {
+      [arbitrumSepolia.id]: http(this.network?.rpcUrls?.main),
+    },
+  })
 
   async connect(newChainId?: number) {
     console.log("Wallet starting...", newChainId)
@@ -28,14 +54,14 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     try {
       this.metamask = window.ethereum
       this.wallets = await this.metamask?.enable()
-      const metamaskChainId = await window.ethereum?.chainId
+      const metamaskChainId = window.ethereum?.chainId
 
       // This uses the latest wallet connected
       this.connectedWallet = this.wallets ? this.wallets[0] : ""
-      const newChainIsSameAsConnectedChain =
-        Number(newChainId) === Number(this.network?.id)
-      const metamaskChainIsSameAsConnectedChain =
-        Number(metamaskChainId) === Number(this.network?.id)
+      // const newChainIsSameAsConnectedChain =
+      //   Number(newChainId) === Number(this.network?.id)
+      // const metamaskChainIsSameAsConnectedChain =
+      //   Number(metamaskChainId) === Number(this.network?.id)
       // early return if chainId and wallet are already set correctly
       // TODO: do this properly with multiple wallet checks
       // console.log(
@@ -79,13 +105,20 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       if (typeof chainId !== "number") {
         throw new Error(`Invalid chain ID type: ${typeof chainId}`)
       }
+
       this.setNetwork(chainId)
+
       if (!this.network) {
         throw new Error("Error getting network")
       }
       if (!this.chain) {
         throw new Error("Error getting chain")
       }
+
+      if (!this.connectedWallet) {
+        throw new Error("Error getting wallet")
+      }
+
       this.web3 = new Web3(this.network.rpcUrls.main)
       return {
         success: true,
@@ -353,27 +386,28 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
 
   async getBalance() {
     console.log("Get balance...")
+
     if (!this.metamask) {
       console.error("Error getting balance, Metamask not available")
       return { success: false, error: "Metamask not available" }
     }
+
     try {
-      const balance = await this.metamask.request<string>({
-        method: "eth_getBalance",
-        params: [this.connectedWallet, "latest"],
+      const balance = await getBalance(this.config, {
+        address: this.connectedWallet as `0x${string}`,
+        blockTag: "latest",
       })
+      const balanceInETH = formatUnits(balance.value, balance.decimals)
+      console.log("Balance", balanceInETH)
+
       console.log("Balance:", balance)
-      //web3.eth.getBalance(address, (err,res) => {
-      //  console.log('Balance', address.substr(0,8), res);
-      //  let bal = (parseInt(res)/10**18).toLocaleString('en-US', { useGrouping: true, minimumFractionDigits: 4, maximumFractionDigits: 4});
-      //  //$('user-address').innerHTML = address.substr(0,10);
-      //  //$('user-balance').innerHTML = bal+' BNB';
-      //});
+      console.log("BalanceInETH:", balanceInETH)
+
       if (!balance) {
         console.error("Error getting balance, no balance returned")
         return { success: false, error: "No balance returned" }
       }
-      return { success: true, balance: Number(balance) }
+      return { success: true, balance: Number(balanceInETH) }
     } catch (error) {
       console.error("Error getting balance", error)
       return { success: false, error: "Error getting balance" }
@@ -414,40 +448,6 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     }
   }
 
-  // TODO: is this used?
-  // async callContract(
-  //   provider: any,
-  //   abi: any,
-  //   address: string,
-  //   method: string,
-  //   value: string,
-  // ) {
-  //   if (!this.metamask) {
-  //     console.error("Error calling contract, Metamask not available")
-  //     return
-  //   }
-  //   if (!this.web3) {
-  //     console.error("Error calling contract, web3 not available")
-  //     return
-  //   }
-  //   console.log("Call", address, method)
-  //   const contract = new this.web3.eth.Contract(abi, address)
-  //   const gas = { gasPrice: 1000000000, gasLimit: 275000 }
-  //   //const res = contract.methods[method].call(gas)
-  //   const data = contract.methods[method]().encodeABI()
-  //   const tx = {
-  //     from: this.connectedWallet, // my wallet
-  //     to: address, // contract address
-  //     value: value, // this is the value in wei to send
-  //     data: data, // encoded method and params
-  //   }
-  //   const txHash = await this.metamask.request({
-  //     method: "eth_sendTransaction",
-  //     params: [tx],
-  //   })
-  //   console.log({ txHash })
-  // }
-
   async sendPayment({
     address,
     amount,
@@ -464,45 +464,38 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       return `0x${Buffer.from(str.toString(), "utf8").toString("hex")}`
     }
     console.log(`Sending ${amount} to ${address}...`)
-    const gasPrice = await this.getGasPrice() //numHex(20000000000)
-    if (!gasPrice) {
-      console.error("Payment error: Error getting gas price")
-      return { success: false, error: "Error getting gas price" }
-    }
-    console.log("GAS", Number.parseInt(gasPrice), gasPrice)
-    const gas = numHex(210000)
-    const wei = numHex(Math.floor(amount * 10 ** this.network.decimals))
-    const method = "eth_sendTransaction"
-    const tx = {
-      from: this.connectedWallet,
-      to: address,
-      value: wei,
-      gasPrice,
-      gas,
-      data: "",
-    }
-    if (memo) {
-      tx.data = strHex(memo)
-    }
-    const params = [tx]
-    console.log("TX", params)
+
     try {
-      if (!this.metamask) {
-        console.error("Error sending payment, Metamask not available")
-        return {
-          success: false,
-          error: "Metamask not available",
-        }
+      if (!this.connectedWallet) {
+        throw new Error("Wallet not connected")
       }
-      const result = await this.metamask.request({ method, params })
+
+      // Convert amount to wei using parseEther
+      const value = parseEther(amount.toString())
+
+      // Prepare transaction parameters
+      const transaction = {
+        account: this.connectedWallet as `0x${string}`,
+        to: address as `0x${string}`,
+        value,
+        data: memo
+          ? (`0x${Buffer.from(memo, "utf8").toString("hex")}` as `0x${string}`)
+          : undefined,
+        gas:
+          (await estimateGas(this.config, {
+            account: this.connectedWallet as `0x${string}`,
+            to: address as `0x${string}`,
+            value,
+            data: memo
+              ? (`0x${Buffer.from(memo, "utf8").toString("hex")}` as `0x${string}`)
+              : undefined,
+          })) * BigInt(2),
+      }
+
+      const result = await sendTransaction(this.config, transaction)
+
       console.log("TXID:", result)
-      if (typeof result !== "string") {
-        console.error("Error sending payment, bad result")
-        return {
-          success: false,
-          error: "Metamask not available",
-        }
-      }
+
       return {
         success: true,
         txid: result,
@@ -551,8 +544,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     const ctr = new this.web3.eth.Contract(erc20Abi, contract)
     const data = ctr.methods.transfer(address, wei).encodeABI()
     console.log("Data", data)
-    //const count = await this.web3.eth.getTransactionCount(this.connectedWallet)
-    //const nonce = this.web3.utils.toHex(count)
+
     const tx = {
       from: this.connectedWallet,
       to: contract,

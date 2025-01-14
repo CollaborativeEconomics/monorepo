@@ -123,6 +123,10 @@ export type ClientInterfaces =
   | "gemwallet"
   | "metamask"
   | "xaman"
+  // | "xrpl"
+  // | "web3"
+  // | "stellar"
+  // | "argent"
 
 export type ServerInterfaces = "evm" | "xrpl" | "stellar"
 
