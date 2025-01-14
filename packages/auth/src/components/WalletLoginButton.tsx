@@ -39,7 +39,6 @@ export function WalletLoginButton({
     }
 
     const { walletAddress, network, chain } = connection;
-    console.log('WALLET LOGIN', walletAddress, network, chain);
 
     if (!walletAddress) {
       throw new Error(`No wallet address found: ${walletAddress}`);
