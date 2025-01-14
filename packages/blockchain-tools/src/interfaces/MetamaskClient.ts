@@ -1,35 +1,35 @@
 /// <reference path="./metamask.d.ts" />
 
-import appConfig from "@cfce/app-config"
 import type {
-  ChainSlugs,
   Network,
+  ChainSlugs,
   NetworkConfig,
   TokenTickerSymbol,
 } from "@cfce/types"
 import type { MetaMaskInpageProvider } from "@metamask/providers"
-import {
-  http,
-  connect,
-  createConfig,
-  estimateGas,
-  getBalance,
-  sendTransaction,
-} from "@wagmi/core"
-import { injected } from "@wagmi/core"
-import { arbitrumSepolia, mainnet, sepolia } from "@wagmi/core/chains"
 import { erc20Abi } from "viem"
-import { formatUnits, parseEther } from "viem"
 import Web3 from "web3"
 import type {
   ProviderConnectInfo,
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
+import {
+  http,
+  createConfig,
+  connect,
+  getBalance,
+  sendTransaction,
+  estimateGas,
+} from "@wagmi/core"
+import { mainnet, sepolia, arbitrumSepolia } from "@wagmi/core/chains"
+import { injected } from "@wagmi/core"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import chainConfig from "../chains/chainConfig"
 import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
+import { formatUnits, parseEther } from "viem"
+import appConfig from "@cfce/app-config"
+import chainConfig from "../chains/chainConfig"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {
@@ -56,45 +56,27 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       this.wallets = await this.metamask?.enable()
       const metamaskChainId = window.ethereum?.chainId
 
-      // This uses the latest wallet connected
-      this.connectedWallet = this.wallets ? this.wallets[0] : ""
-      // const newChainIsSameAsConnectedChain =
-      //   Number(newChainId) === Number(this.network?.id)
-      // const metamaskChainIsSameAsConnectedChain =
-      //   Number(metamaskChainId) === Number(this.network?.id)
+      const connection = await connect(this.config, { connector: injected() })
+      this.connectedWallet = connection.accounts[0]
+      const newChainIsSameAsConnectedChain =
+        Number(newChainId) === Number(this.network?.id)
+      const metamaskChainIsSameAsConnectedChain =
+        Number(metamaskChainId) === Number(this.network?.id)
       // early return if chainId and wallet are already set correctly
-      // TODO: do this properly with multiple wallet checks
-      // console.log(
-      //   "newChainIsSameAsConnectedChain",
-      //   newChainIsSameAsConnectedChain,
-      //   newChainId,
-      //   this.network?.id,
-      // )
-      // console.log(
-      //   "metamaskChainIsSameAsConnectedChain",
-      //   metamaskChainIsSameAsConnectedChain,
-      //   metamaskChainId,
-      //   this.network?.id,
-      // )
-      // console.log("this.connectedWallet", this.network)
-      // if (
-      //   newChainId
-      //     ? newChainIsSameAsConnectedChain && this.connectedWallet
-      //     : metamaskChainIsSameAsConnectedChain && this.connectedWallet
-      // ) {
-      //   if (!this.chain) {
-      //     throw new Error("Already connected, but chain not set")
-      //   }
-      //   if (!this.network) {
-      //     throw new Error("Already connected, but network not set")
-      //   }
-      //   return {
-      //     success: true,
-      //     network: this.network,
-      //     walletAddress: this.connectedWallet,
-      //     chain: this.chain.name,
-      //   }
-      // }
+      console.log(
+        "newChainIsSameAsConnectedChain",
+        newChainIsSameAsConnectedChain,
+        newChainId,
+        this.network?.id,
+      )
+      console.log(
+        "metamaskChainIsSameAsConnectedChain",
+        metamaskChainIsSameAsConnectedChain,
+        metamaskChainId,
+        this.network?.id,
+      )
+      console.log("this.connectedWallet", this.network)
+
       if (
         typeof newChainId === "undefined" &&
         typeof metamaskChainId === "undefined"
@@ -102,6 +84,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         throw new Error("No chain ID provided or inferred")
       }
       const chainId = newChainId ?? Number(metamaskChainId)
+
       if (typeof chainId !== "number") {
         throw new Error(`Invalid chain ID type: ${typeof chainId}`)
       }
