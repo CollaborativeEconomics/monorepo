@@ -1,6 +1,6 @@
 // copy of database/src/prisma/schema.prisma Chain enum
 // importing here would cause a circular dependency
-export type Chain =
+type Chain =
   | "Arbitrum"
   | "Avalanche"
   | "Base"
@@ -56,9 +56,9 @@ export const ChainNames: Chain[] = [
   "XRPL",
 ] as const
 
-export type Network = "mainnet" | "testnet"
+export type Network = "mainnet" | "testnet" | "horizon" | string
 export interface NetworkConfig {
-  id: number
+  id: number | string
   name: string
   slug: Network
   symbol: string
@@ -70,10 +70,10 @@ export interface NetworkConfig {
     [key: string]: string
   }
   wssurl: string
-  tokens: Partial<Record<TokenTickerSymbol, TokenConfig>>
-  networkPassphrase: string
-  contracts: Record<string, string>
-  wallet: string
+  tokens?: Partial<Record<TokenTickerSymbol, TokenConfig>>
+  networkPassphrase?: string
+  contracts?: Record<string, string>
+  wallet?: string
 }
 
 export const TokenTickerSymbol = [
@@ -116,14 +116,15 @@ export interface ChainConfig {
   networks: Record<string, NetworkConfig>
 }
 
-export type ClientInterfaces =
-  | "argent"
-  | "crossmark"
+export type Interfaces =
   | "freighter"
-  | "gemwallet"
   | "metamask"
   | "xaman"
+  | "xrpl"
+  | "web3"
+  | "stellar"
+  | "argent"
 
-export type ServerInterfaces = "evm" | "xrpl" | "stellar"
+export type ClientInterfaces = Exclude<Interfaces, "web3" | "xrpl" | "stellar">
 
 export type Chains = Record<ChainSlugs, ChainConfig>

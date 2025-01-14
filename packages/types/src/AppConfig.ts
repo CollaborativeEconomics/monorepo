@@ -3,7 +3,6 @@ import type {
   ChainSlugs,
   ClientInterfaces,
   Network,
-  NetworkConfig,
   TokenTickerSymbol,
 } from "./BlockchainTools"
 
