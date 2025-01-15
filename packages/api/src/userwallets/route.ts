@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       chain,
       network,
       address,
-      userId,
+      users: { connect: { id: userId } },
     })
     return NextResponse.json({ success: true, data: result }, { status: 201 }) // Status code 201 for successful POST request
   } catch (error) {

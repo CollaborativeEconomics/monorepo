@@ -132,11 +132,7 @@ class StarknetWallet extends InterfaceBaseClass {
     try {
       console.log("CONNECT...")
 
-      let wallet = this.wallet
-
-      if (!wallet) {
-        ;({ wallet } = await this.getWallet())
-      }
+      await this.getWallet()
 
       if (this.connectedWallet) {
         return {

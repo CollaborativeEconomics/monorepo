@@ -52,7 +52,10 @@ export async function getUserByWallet(walletAddress: string) {
     where: {
       wallets: {
         some: {
-          address: walletAddress,
+          address: {
+            equals: walletAddress,
+            mode: "insensitive",
+          },
         },
       },
     },
