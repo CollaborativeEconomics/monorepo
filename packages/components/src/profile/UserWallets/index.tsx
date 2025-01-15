@@ -11,7 +11,7 @@ type Props = {
 export function UserWallets({ wallets }: Props) {
   const userId = wallets[0].userId;
   return (
-    <div className="w-full lg:w-1/3">
+    <div className="w-full lg:w-1/3 lg:pt-8">
       <h2 className="font-semibold mb-2">Connected Wallets</h2>
       <div className="flex flex-col items-center border rounded-md mt-4 lg:mt-0 w-full bg-card">
         <div className="w-full space-y-3 p-8">
