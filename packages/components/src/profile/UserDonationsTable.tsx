@@ -7,25 +7,39 @@ import { getDonations, getNftData } from '@cfce/database';
 import { ImageIcon, LayoutList, Newspaper } from 'lucide-react';
 import { Suspense } from 'react';
 import { DonationsTableSkeleton } from './ProfileSkeletons';
+import { ReceiptNFTCard } from './ReceiptNFTCard';
 
 type Props = {
   userId: string;
 };
 
 async function DonationsData({ userId }: Props) {
-  const [receipts, donations] = await Promise.all([
+  let [receipts, donations] = await Promise.all([
     getNftData({ userId }),
     getDonations({ userId }),
   ]);
 
+  receipts = JSON.parse(JSON.stringify(receipts)) || [];
+  donations = JSON.parse(JSON.stringify(donations)) || [];
+
   return (
     <div className="w-full border rounded-md p-10 bg-card">
+      {/* NFT card view */}
       <TabsContent className="TabsContent" value="tab1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xxl:grid-cols-3 gap-10">
+          {receipts.map(receipt => {
+            return <ReceiptNFTCard key={receipt.id} {...receipt} />;
+          })}
+        </div>
+      </TabsContent>
+      {/* NFT Receipts */}
+      <TabsContent className="TabsContent" value="tab2">
         <ReceiptTableSortable
           receipts={JSON.parse(JSON.stringify(receipts)) || []}
         />
       </TabsContent>
-      <TabsContent className="TabsContent" value="tab2">
+      {/* Donations */}
+      <TabsContent className="TabsContent" value="tab3">
         <DonationsTableSortable
           donations={JSON.parse(JSON.stringify(donations)) || []}
         />
@@ -43,17 +57,15 @@ export function UserDonationsTable({ userId }: Props) {
           <div className="mb-2">
             <TabsList className="TabsList" aria-label="Donations data">
               <TabsTrigger className="TabsTrigger" value="tab1">
-                NFTs Receipts
+                Donation Receipt NFTs
               </TabsTrigger>
               <TabsTrigger className="TabsTrigger" value="tab2">
+                NFTs Receipts
+              </TabsTrigger>
+              <TabsTrigger className="TabsTrigger" value="tab3">
                 My Donations
               </TabsTrigger>
             </TabsList>
-          </div>
-          <div className="flex flex-row">
-            <Newspaper size={32} className="pr-2 cursor-pointer" />
-            <LayoutList size={32} className="pr-2 cursor-pointer" />
-            <ImageIcon size={32} className="pr-2 cursor-pointer" />
           </div>
         </div>
         <Suspense fallback={<DonationsTableSkeleton />}>
