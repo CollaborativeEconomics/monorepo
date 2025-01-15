@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import appConfig from '@cfce/app-config';
 import {
   BlockchainClientInterfaces,
+  chainConfig,
   getChainConfiguration,
   getWalletConfiguration,
   walletConfig,
@@ -20,7 +22,9 @@ import {
   DialogTrigger,
 } from '../../ui/dialog';
 import { Separator } from '../../ui/separator';
+import { useAtom } from 'jotai';
 import { connectWallet } from './actions';
+import { chainAtom } from '@cfce/state';
 
 type ConnectWalletOverlayProps = {
   userId: string;
@@ -31,6 +35,7 @@ export function ConnectWalletOverlay({
   userId,
   onSuccess,
 }: ConnectWalletOverlayProps) {
+  const [chainState, setChainState] = useAtom(chainAtom);
   const { toast } = useToast();
   // const chainConfig = getChainConfiguration();
   const enabledWallets = appConfig.auth.filter(
@@ -38,21 +43,38 @@ export function ConnectWalletOverlay({
   ) as ClientInterfaces[];
   // ClientInterfaces is a subset of AuthTypes
 
+  const [open, setOpen] = useState(false);
+
   const handleWalletConnect = async (wallet: ClientInterfaces) => {
+    setOpen(false);
+    const { selectedChain } = chainState;
+    const chain = chainConfig[selectedChain];
+    const chainNetwork = chain.networks[appConfig.chainDefaults.network];
+
     try {
       const walletInterface = BlockchainClientInterfaces[wallet];
       if (!walletInterface?.connect) {
         throw new Error('Wallet interface not found');
       }
 
-      const walletResponse = await walletInterface.connect();
+      const walletResponse = await walletInterface.connect(chainNetwork.id);
       if ('error' in walletResponse) {
         throw new Error(walletResponse.error);
       }
 
       const { walletAddress, chain } = walletResponse;
 
-      await connectWallet(walletAddress, chain);
+      try {
+        await connectWallet(walletAddress, chain);
+      } catch (error) {
+        console.log('toasting error', error);
+        toast({
+          title: 'Error',
+          description:
+            error instanceof Error ? error.message : 'Failed to connect wallet',
+          variant: 'destructive',
+        });
+      }
 
       toast({
         title: 'Wallet connected',
@@ -72,7 +94,7 @@ export function ConnectWalletOverlay({
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full">
           <Plus size={20} />
