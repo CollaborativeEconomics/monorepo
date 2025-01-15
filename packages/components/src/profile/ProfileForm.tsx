@@ -1,92 +1,91 @@
-"use client"
-import { LogoutButton } from "@cfce/auth"
-import nchainConfig  NFTDataWithRblockchain-tools as Receipts,
+'use client';
+import { LogoutButton } from '@cfce/auth';
+import { chainConfig } from '@cfce/blockchain-tools';
+import { StoryCardCompactVert } from '@cfce/components/story';
+import {
+  DonationsTableSortable,
+  ReceiptTableSortable,
+} from '@cfce/components/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@cfce/components/ui';
+import type {
+  DonationWithRelations as Donations,
+  Prisma,
+  NFTDataWithRelations as Receipts,
   StoryWithRelations as Stories,
-} from type "
-  DonationWithRelations as Donations,
-  Prisma,
-  NFTDataWithRelations as@Receipts,
-  StoryWithRelationssas Stories,
-e"databtype a
-  DonationWithRelations as Donations,
-  Prisma,
-  NFTDataWithRelations assReceipts,
-  StoryWithRelationsas Stories,
-database
-import type { ChainSlugs } from "@cfce/types"
-import { uploadFile } from "@cfce/utilstspaper, Plus } from "lucide-react"
-import Image from "next/image"
-import { redirect } from "next/navigation"
-import { v7 as uuidv7 } from "uuid"
-import { v7 as uuidv7 } from "uuid"
-import { v7 as uuidv7 } from "uuid"
+} from '@cfce/database';
+import type { ChainSlugs } from '@cfce/types';
+import { uploadFile } from '@cfce/utils';
+import { imageUrl } from '@cfce/utils';
+import { Plus } from 'lucide-react';
+import Image from 'next/image';
+import { v7 as uuidv7 } from 'uuid';
 //import { setUser } from '@cfce/database';
 
 // TODO: move to database package?
-type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>
-type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>
+type UserRecord = Prisma.UserGetPayload<{ include: { wallets: true } }>;
+type UserBadges = Prisma.DonationGetPayload<{ include: { category: true } }>;
 //type Receipts = Prisma.NFTDataGetPayload<{ include: { organization: true; initiative: true; user: true } }>
 type DonationsByUser = Prisma.DonationGetPayload<{
-  include: { organization: true; initiative: true }
-}>
+  include: { organization: true; initiative: true };
+}>;
 type FavoriteOrganizations = Prisma.DonationGetPayload<{
-  include: { organization: true }
-}>
+  include: { organization: true };
+}>;
 //type Stories = Prisma.StoryGetPayload<{ include: { organization: true } }>
 
 interface UserData {
-  user: UserRecord
-  receipts: Receipts[]
-  donations: Donations[]
-  favoriteOrganizations: FavoriteOrganizations[]
-  badges: UserBadges[]
-  stories: Stories[]
+  user: UserRecord;
+  receipts: Receipts[];
+  donations: Donations[];
+  favoriteOrganizations: FavoriteOrganizations[];
+  badges: UserBadges[];
+  stories: Stories[];
 }
 
 export default function Profile({
   userId,
   userData,
 }: {
-  userId: string
-  userData: UserData
+  userId: string;
+  userData: UserData;
 }) {
-  console.log("User ID", userId)
-  console.log("User DATA", userData)
-  const user = userData.user
-  const receipts = userData.receipts
-  const donations = userData.donations
-  const favoriteOrganizations = userData.favoriteOrganizations
-  const badges = userData.badges
-  const stories = userData.stories
-  const nopic = "/media/nopic.png"
+  console.log('User ID', userId);
+  console.log('User DATA', userData);
+  const user = userData.user;
+  const receipts = userData.receipts;
+  const donations = userData.donations;
+  const favoriteOrganizations = userData.favoriteOrganizations;
+  const badges = userData.badges;
+  const stories = userData.stories;
+  const nopic = '/media/nopic.png';
 
   async function saveImage(file: File) {
-    console.log("IMAGE", file)
+    console.log('IMAGE', file);
     //if(file){ return {error:'no image provided'} }
-    const name = uuidv7()
-    const body = new FormData()
-    body.append("name", name)
-    body.append("folder", "avatars")
-    body.append("file", file)
-    const resp = await fetch("/api/upload", { method: "POST", body })
-    const result = await resp.json()
-    return result
+    const name = uuidv7();
+    const body = new FormData();
+    body.append('name', name);
+    body.append('folder', 'avatars');
+    body.append('file', file);
+    const resp = await fetch('/api/upload', { method: 'POST', body });
+    const result = await resp.json();
+    return result;
   }
 
   // Action to handle form submission
   async function handleSaveProfile(formData: FormData, userId: string) {
-    const file = formData.get("file") as File | null
-    const name = formData.get("name") as string
-    const email = formData.get("email") as string
+    const file = formData.get('file') as File | null;
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
 
-    console.log(name, email)
-    console.log({ file })
-    let image = (formData.get("currentImage") as string) ?? ""
+    console.log(name, email);
+    console.log({ file });
+    let image = (formData.get('currentImage') as string) ?? '';
     if (file) {
       //const fileUploadResponse = await uploadFile({ file, name, folder: 'avatars' });
-      const fileUploadResponse = await saveImage(file)
+      const fileUploadResponse = await saveImage(file);
       if (fileUploadResponse.success) {
-        image = fileUploadResponse.url ?? ""
+        image = fileUploadResponse.url ?? '';
       }
     }
     //const updatePayload = { name, email, image };
@@ -96,14 +95,14 @@ export default function Profile({
     //  throw new Error('Error updating user data');
     //}
 
-    const data = { name, email, image }
-    console.log("USER", data)
+    const data = { name, email, image };
+    console.log('USER', data);
     const res = await fetch(`/api/profile/${userId}`, {
-      method: "post",
+      method: 'post',
       body: JSON.stringify(data),
-    })
-    const inf = await res.json()
-    console.log("INF", inf)
+    });
+    const inf = await res.json();
+    console.log('INF', inf);
     //redirect(`/profile/${userId}`);
   }
 
@@ -112,7 +111,7 @@ export default function Profile({
       <div className="flex flex-col lg:flex-row justify-between">
         {/* Avatar */}
         <div className="border rounded-md p-8 w-full lg:w-2/4 bg-card">
-          <form action={(formData) => handleSaveProfile(formData, userId)}>
+          <form action={formData => handleSaveProfile(formData, userId)}>
             <div className="flex flex-row flex-start items-center rounded-full">
               <div className="flex flex-col flex-start items-center rounded-full">
                 <Image
@@ -133,24 +132,24 @@ export default function Profile({
                   type="text"
                   className="pl-4 w-full bg-transparent"
                   name="name"
-                  defaultValue={user?.name || ""}
+                  defaultValue={user?.name || ''}
                   placeholder="name"
                 />
                 <input
                   type="text"
                   className="pl-4 w-full bg-transparent"
                   name="email"
-                  defaultValue={user?.email || ""}
+                  defaultValue={user?.email || ''}
                   placeholder="email"
                 />
                 <input
                   type="hidden"
                   name="currentImage"
-                  value={user?.image || ""}
+                  value={user?.image || ''}
                 />
                 <h2 className="mt-4">
-                  Wallet:{" "}
-                  {user?.wallet ? `${user.wallet.substr(0, 10)}...` : "?"}
+                  Wallet:{' '}
+                  {user?.wallet ? `${user.wallet.substr(0, 10)}...` : '?'}
                 </h2>
               </div>
             </div>
@@ -173,7 +172,7 @@ export default function Profile({
             <>
               <h1>Active Chains</h1>
               <div className="mt-4 pb-4 w-full border-b">
-                {user?.wallets.map((item) => {
+                {user?.wallets.map(item => {
                   return (
                     <span
                       key={item.id}
@@ -189,7 +188,7 @@ export default function Profile({
                         alt="Chain"
                       />
                     </span>
-                  )
+                  );
                 })}
                 <span key={0} className="inline-block border rounded-full p-1">
                   <Plus size={48} className="text-gray-400" />
@@ -215,10 +214,10 @@ export default function Profile({
           <h1 className="text-2xl font-medium mb-4">Favorite Organizations</h1>
           <div className="grid grid-cols-2 gap-2 mb-8">
             {favoriteOrganizations?.length > 0 ? (
-              favoriteOrganizations.map((donation) => {
-                const org = donation.organization
+              favoriteOrganizations.map(donation => {
+                const org = donation.organization;
                 if (!org) {
-                  return null
+                  return null;
                 }
                 return (
                   <div
@@ -236,7 +235,7 @@ export default function Profile({
                     )}
                     <h1 className="text-sm text-center">{org.name}</h1>
                   </div>
-                )
+                );
               })
             ) : (
               <div className="text-gray-300">None</div>
@@ -247,10 +246,10 @@ export default function Profile({
           <h1 className="text-2xl font-medium mb-4">Badges</h1>
           <div className="grid grid-cols-4 gap-2 mb-8">
             {badges?.length > 0 ? (
-              badges.map((donation) => {
-                const badge = donation.category
+              badges.map(donation => {
+                const badge = donation.category;
                 if (!badge || !badge?.image) {
-                  return null
+                  return null;
                 }
                 return (
                   <Image
@@ -261,7 +260,7 @@ export default function Profile({
                     height={72}
                     alt="Badge"
                   />
-                )
+                );
               })
             ) : (
               <div className="text-gray-300">None</div>
@@ -272,12 +271,12 @@ export default function Profile({
           <h1 className="text-2xl font-medium mb-4">Recent Stories</h1>
           <div className="">
             {stories?.length > 0 ? (
-              stories.map((story) => {
+              stories.map(story => {
                 return (
                   <div className="my-4" key={story.id}>
                     <StoryCardCompactVert story={story} />
                   </div>
-                )
+                );
               })
             ) : (
               <div className="text-gray-300">None</div>
@@ -293,32 +292,21 @@ export default function Profile({
               <div className="mb-2">
                 <TabsList className="TabsList" aria-label="Donations data">
                   <TabsTrigger className="TabsTrigger" value="tab1">
-                    Donation Receipt NFTs
+                    NFTs Receipts
                   </TabsTrigger>
                   <TabsTrigger className="TabsTrigger" value="tab2">
-                    Receipt List
-                  </TabsTrigger>
-                  <TabsTrigger className="TabsTrigger" value="tab3">
-                    Donations List
+                    My Donations
                   </TabsTrigger>
                 </TabsList>
               </div>
             </div>
             <div className="w-full border rounded-md p-10 bg-card">
-              {/* NFT card view */}
-              <TabsContent className="TabsContent" value="tab1">
-                <div className="grid grid-cols-3 gap-10">
-                  {receipts.map(receipt => {
-                    return <ReceiptNFTCard key={receipt.id} {...receipt} />;
-                  })}
-                </div>
-              </TabsContent>
               {/* NFT Receipts */}
-              <TabsContent className="TabsContent" value="tab2">
+              <TabsContent className="TabsContent" value="tab1">
                 <ReceiptTableSortable receipts={receipts} />
               </TabsContent>
               {/* Donations */}
-              <TabsContent className="TabsContent" value="tab3">
+              <TabsContent className="TabsContent" value="tab2">
                 <DonationsTableSortable donations={donations} />
               </TabsContent>
             </div>
@@ -326,5 +314,5 @@ export default function Profile({
         </div>
       </div>
     </>
-  )
+  );
 }

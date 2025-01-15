@@ -1,35 +1,35 @@
 /// <reference path="./metamask.d.ts" />
 
-import appConfig from "@cfce/app-config"
-import appConfig from "@cfce/app-config"
-imChainSlugspConfig from "@cfce/app-config"
-imNetworkpe {
+import type {
   Network,
-  Network,
+  ChainSlugs,
   NetworkConfig,
   TokenTickerSymbol,
-} from "
-} httprumSepolia, mainnet, sepolia } from "@wagmi/core/chains"
-} connect "@wagmi/core"om "web3"
-import { injected import type {
-  estimateGasarbitrumSepolia, rConnectInfo,
-  Provideerc20Abi } from "viem"
-import { formatUnits, parseEther,viem
-} from "@wagmi/core"3
-import { injected } from typew{
-  ProvidearbitrumSepolia, rConnectInfo,
-  Provideerc20Abi } from "viem"
-import { formatUnits, parseEtherviem
-  ProviWeb3web3
-}from"wtypeb{
+} from "@cfce/types"
+import type { MetaMaskInpageProvider } from "@metamask/providers"
+import { erc20Abi } from "viem"
+import Web3 from "web3"
+import type {
   ProviderConnectInfo,
-  ProviderMessage
+  ProviderMessage,
   ProviderRpcError,
-}from"web3"
-import InterfaceBaseClassInterfaceBaseClass
-import chainConfigterfaceBaschainsschainConfig
-import chgetChainByChainIdm getNetworkForChainnsIchainC../chains/utilsgeClass"
-import typen{aTransaction }saction }stypes transactionnsactionnsaction"
+} from "web3"
+import {
+  http,
+  createConfig,
+  connect,
+  getBalance,
+  sendTransaction,
+  estimateGas,
+} from "@wagmi/core"
+import { mainnet, sepolia, arbitrumSepolia } from "@wagmi/core/chains"
+import { injected } from "@wagmi/core"
+import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import { getChainByChainId, getNetworkForChain } from "../chains/utils"
+import type { Transaction } from "../types/transaction"
+import { formatUnits, parseEther } from "viem"
+import appConfig from "@cfce/app-config"
+import chainConfig from "../chains/chainConfig"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {
@@ -84,6 +84,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         throw new Error("No chain ID provided or inferred")
       }
       const chainId = newChainId ?? Number(metamaskChainId)
+
       if (typeof chainId !== "number") {
         throw new Error(`Invalid chain ID type: ${typeof chainId}`)
       }
