@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import appConfig from '@cfce/app-config';
 import {
   BlockchainClientInterfaces,
@@ -9,9 +8,12 @@ import {
   getWalletConfiguration,
   walletConfig,
 } from '@cfce/blockchain-tools';
+import { chainAtom } from '@cfce/state';
 import type { AuthTypes, ChainSlugs, ClientInterfaces } from '@cfce/types';
+import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import { revalidatePath } from 'next/cache';
+import { useCallback, useState } from 'react';
 import { useToast } from '../../hooks/use-toast';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
@@ -22,9 +24,7 @@ import {
   DialogTrigger,
 } from '../../ui/dialog';
 import { Separator } from '../../ui/separator';
-import { useAtom } from 'jotai';
 import { connectWallet } from './actions';
-import { chainAtom } from '@cfce/state';
 
 type ConnectWalletOverlayProps = {
   userId: string;
@@ -45,27 +45,46 @@ export function ConnectWalletOverlay({
 
   const [open, setOpen] = useState(false);
 
-  const handleWalletConnect = async (wallet: ClientInterfaces) => {
-    setOpen(false);
-    const { selectedChain } = chainState;
-    const chain = chainConfig[selectedChain];
-    const chainNetwork = chain.networks[appConfig.chainDefaults.network];
-
-    try {
-      const walletInterface = BlockchainClientInterfaces[wallet];
-      if (!walletInterface?.connect) {
-        throw new Error('Wallet interface not found');
-      }
-
-      const walletResponse = await walletInterface.connect(chainNetwork.id);
-      if ('error' in walletResponse) {
-        throw new Error(walletResponse.error);
-      }
-
-      const { walletAddress, chain } = walletResponse;
+  const handleWalletConnect = useCallback(
+    async (wallet: ClientInterfaces) => {
+      setOpen(false);
+      const { selectedChain } = chainState;
+      const chain = chainConfig[selectedChain];
+      const chainNetwork = chain.networks[appConfig.chainDefaults.network];
 
       try {
-        await connectWallet(walletAddress, chain);
+        const walletInterface = BlockchainClientInterfaces[wallet];
+        if (!walletInterface?.connect) {
+          throw new Error('Wallet interface not found');
+        }
+
+        const walletResponse = await walletInterface.connect(chainNetwork.id);
+        if ('error' in walletResponse) {
+          throw new Error(walletResponse.error);
+        }
+
+        const { walletAddress, chain } = walletResponse;
+
+        try {
+          await connectWallet(walletAddress, chain);
+        } catch (error) {
+          console.log('toasting error', error);
+          toast({
+            title: 'Error',
+            description:
+              error instanceof Error
+                ? error.message
+                : 'Failed to connect wallet',
+            variant: 'destructive',
+          });
+        }
+
+        toast({
+          title: 'Wallet connected',
+          description: 'Your wallet has been successfully connected.',
+        });
+
+        onSuccess?.();
       } catch (error) {
         console.log('toasting error', error);
         toast({
@@ -75,23 +94,9 @@ export function ConnectWalletOverlay({
           variant: 'destructive',
         });
       }
-
-      toast({
-        title: 'Wallet connected',
-        description: 'Your wallet has been successfully connected.',
-      });
-
-      onSuccess?.();
-    } catch (error) {
-      console.log('toasting error', error);
-      toast({
-        title: 'Error',
-        description:
-          error instanceof Error ? error.message : 'Failed to connect wallet',
-        variant: 'destructive',
-      });
-    }
-  };
+    },
+    [onSuccess, toast, chainState],
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
