@@ -1,102 +1,102 @@
-'use client';
+"use client"
 
-import appConfig from '@cfce/app-config';
+import appConfig from "@cfce/app-config"
 import {
   BlockchainClientInterfaces,
   chainConfig,
   getChainConfiguration,
   getWalletConfiguration,
   walletConfig,
-} from '@cfce/blockchain-tools';
-import { chainAtom } from '@cfce/state';
-import type { AuthTypes, ChainSlugs, ClientInterfaces } from '@cfce/types';
-import { useAtom } from 'jotai';
-import { Plus } from 'lucide-react';
-import { revalidatePath } from 'next/cache';
-import { useCallback, useState } from 'react';
-import { useToast } from '../../hooks/use-toast';
-import { Button } from '../../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+} from "@cfce/blockchain-tools"
+import { chainAtom } from "@cfce/state"
+import type { AuthTypes, ChainSlugs, ClientInterfaces } from "@cfce/types"
+import { useAtom } from "jotai"
+import { Plus } from "lucide-react"
+import { revalidatePath } from "next/cache"
+import { useCallback, useState } from "react"
+import { useToast } from "../../hooks/use-toast"
+import { Button } from "../../ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card"
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from '../../ui/dialog';
-import { Separator } from '../../ui/separator';
-import { connectWallet } from './actions';
+} from "../../ui/dialog"
+import { Separator } from "../../ui/separator"
+import { connectWallet } from "./actions"
 
 type ConnectWalletOverlayProps = {
-  userId: string;
-  onSuccess?: () => void;
-};
+  userId: string
+  onSuccess?: () => void
+}
 
 export function ConnectWalletOverlay({
   userId,
   onSuccess,
 }: ConnectWalletOverlayProps) {
-  const [chainState, setChainState] = useAtom(chainAtom);
-  const { toast } = useToast();
+  const [chainState, setChainState] = useAtom(chainAtom)
+  const { toast } = useToast()
   // const chainConfig = getChainConfiguration();
   const enabledWallets = appConfig.auth.filter(
-    w => !['github', 'google'].includes(w),
-  ) as ClientInterfaces[];
+    (w) => !["github", "google"].includes(w),
+  ) as ClientInterfaces[]
   // ClientInterfaces is a subset of AuthTypes
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const handleWalletConnect = useCallback(
     async (wallet: ClientInterfaces) => {
-      setOpen(false);
-      const { selectedChain } = chainState;
-      const chain = chainConfig[selectedChain];
-      const chainNetwork = chain.networks[appConfig.chainDefaults.network];
+      setOpen(false)
+      const { selectedChain } = chainState
+      const chain = chainConfig[selectedChain]
+      const chainNetwork = chain.networks[appConfig.chainDefaults.network]
 
       try {
-        const walletInterface = BlockchainClientInterfaces[wallet];
+        const walletInterface = BlockchainClientInterfaces[wallet]
         if (!walletInterface?.connect) {
-          throw new Error('Wallet interface not found');
+          throw new Error("Wallet interface not found")
         }
 
-        const walletResponse = await walletInterface.connect(chainNetwork.id);
-        if ('error' in walletResponse) {
-          throw new Error(walletResponse.error);
+        const walletResponse = await walletInterface.connect(chainNetwork.id)
+        if ("error" in walletResponse) {
+          throw new Error(walletResponse.error)
         }
 
-        const { walletAddress, chain } = walletResponse;
+        const { walletAddress, chain } = walletResponse
 
         try {
-          await connectWallet(walletAddress, chain);
+          await connectWallet(walletAddress, chain)
         } catch (error) {
-          console.log('toasting error', error);
+          console.log("toasting error", error)
           toast({
-            title: 'Error',
+            title: "Error",
             description:
               error instanceof Error
                 ? error.message
-                : 'Failed to connect wallet',
-            variant: 'destructive',
-          });
+                : "Failed to connect wallet",
+            variant: "destructive",
+          })
         }
 
         toast({
-          title: 'Wallet connected',
-          description: 'Your wallet has been successfully connected.',
-        });
+          title: "Wallet connected",
+          description: "Your wallet has been successfully connected.",
+        })
 
-        onSuccess?.();
+        onSuccess?.()
       } catch (error) {
-        console.log('toasting error', error);
+        console.log("toasting error", error)
         toast({
-          title: 'Error',
+          title: "Error",
           description:
-            error instanceof Error ? error.message : 'Failed to connect wallet',
-          variant: 'destructive',
-        });
+            error instanceof Error ? error.message : "Failed to connect wallet",
+          variant: "destructive",
+        })
       }
     },
     [onSuccess, toast, chainState],
-  );
+  )
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -110,8 +110,8 @@ export function ConnectWalletOverlay({
         <DialogTitle>Connect Wallet</DialogTitle>
         <div className="w-full flex flex-col gap-4">
           <Separator className="my-4" />
-          {enabledWallets.map(wallet => {
-            const walletConfig = getWalletConfiguration([wallet])[0];
+          {enabledWallets.map((wallet) => {
+            const walletConfig = getWalletConfiguration([wallet])[0]
             return (
               <Button
                 key={wallet}
@@ -121,10 +121,10 @@ export function ConnectWalletOverlay({
                 <img src={walletConfig.icon} alt={wallet} className="w-6 h-6" />
                 <span>Connect {walletConfig.name}</span>
               </Button>
-            );
+            )
           })}
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
