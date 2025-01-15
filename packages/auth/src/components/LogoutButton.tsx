@@ -43,7 +43,7 @@ export function LogoutButton({ className }: { className?: string }) {
   function goHome() {
     console.log('SIGNOUT');
     signOutAction();
-    window.location.href = '/';
+    // window.location.href = '/';
     //redirect('/')
   }
   return (
