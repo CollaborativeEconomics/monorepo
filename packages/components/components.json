@@ -11,6 +11,8 @@
   },
   "aliases": {
     "components": "/",
+    "ui": "/ui",
+    "hooks": "/hooks",
     "utils": "/shadCnUtil"
   }
 }
