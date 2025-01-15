@@ -5,7 +5,7 @@ import { signOut } from "../nextAuth"
 
 export default async function signOutAction() {
   try {
-    await signOut()
+    await signOut({ redirectTo: "/" })
     revalidatePath("/")
   } catch (error) {
     console.error("Error signing out:", error)
