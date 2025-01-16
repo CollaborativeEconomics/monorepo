@@ -2,13 +2,22 @@
   "name": "@cfce/app-config",
   "version": "0.0.1",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./sharedNextConfig": {
+      "types": "./dist/sharedNextConfig.d.ts",
+      "default": "./dist/sharedNextConfig.js"
+    }
+  },
   "scripts": {
     "test": "jest",
     "build": "rm -rf dist && tsc"
   },
   "devDependencies": {
+    "next": "^15.1.0",
     "@cfce/types": "workspace:*",
     "@types/node": "^22.10.1",
     "ts-node": "^10.9.2",

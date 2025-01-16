@@ -1,78 +1,82 @@
-//const { withSentryConfig } = require('@sentry/nextjs');
-const { default: next } = require('next');
-const path = require('node:path');
+import path from "node:path"
+import type { NextConfig } from "next"
 
-const webpackConfig = (config, { isServer }) => {
+// @ts-ignore
+const webpackConfig: NextConfig["webpack"] = (config, { isServer }) => {
   if (isServer) {
     config.ignoreWarnings = [
       { module: /opentelemetry/ }, // remove annoying warnings in terminal - ref: https://github.com/open-telemetry/opentelemetry-js/issues/4173
-    ];
+    ]
   } else {
-    config.externals = config.externals || [];
-    config.externals.push(({ context, request }, callback) => {
+    config.externals = config.externals || []
+    // @ts-ignore
+    config.externals.push(({ request }, callback) => {
       if (/^node:/.test(request)) {
-        return callback(null, `commonjs ${request}`);
+        return callback(null, `commonjs ${request}`)
       }
-      callback();
-    });
+      callback()
+    })
   }
-  return config;
-};
+  return config
+}
 
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
+const sharedNextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'localhost',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "localhost",
+        port: "",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'givecredit.cfce.io',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "cfce.io",
+        port: "",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'ipfs.filebase.io',
-        port: '',
-        pathname: '/ipfs/**',
+        protocol: "https",
+        hostname: "partners.cfce.io",
+        port: "",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'v8tqm1jlovjfn4gd.public.blob.vercel-storage.com',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "ipfs.filebase.io",
+        port: "",
+        pathname: "/ipfs/**",
       },
       {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "v8tqm1jlovjfn4gd.public.blob.vercel-storage.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
-  outputFileTracingRoot: path.join(process.cwd(), '../../'),
+  outputFileTracingRoot: path.join(process.cwd(), "../../"),
   experimental: {
     //esmExternals: true,  //The "esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
     optimizePackageImports: [
-      '@cfce/components',
-      '@cfce/blockchain-tools',
-      '@cfce/utils',
-      '@cfce/pages',
-      '@cfce/api',
+      "@cfce/components",
+      "@cfce/blockchain-tools",
+      "@cfce/utils",
+      "@cfce/pages",
+      "@cfce/api",
     ],
   },
   webpack: webpackConfig,
-};
+}
 
 /*
-const sentryfulConfig = withSentryConfig(nextConfig, {
+const sentryfulConfig = withSentryConfig(sharedNextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
   unstable_sentryWebpackPluginOptions: webpackConfig,
@@ -119,4 +123,4 @@ const sentryfulConfig = withSentryConfig(nextConfig, {
 
 // TODO: sentry is timing out, so I disabled it for now
 // module.exports = sentryfulConfig;
-module.exports = nextConfig;
+export default sharedNextConfig
