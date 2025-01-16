@@ -6,10 +6,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./sharedNextConfig": {
-      "types": "./dist/sharedNextConfig.d.ts",
-      "default": "./dist/sharedNextConfig.js"
     }
   },
   "scripts": {

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { getOrganizationById, getStories } from '@cfce/database';
 import { InitiativeCard } from '@cfce/components/initiative';
 import { OrganizationAvatar } from '@cfce/components/organization';
 import { StoryCard } from '@cfce/components/story';
@@ -13,6 +12,11 @@ import {
   TabsList,
   TabsTrigger,
 } from '@cfce/components/ui';
+import {
+  type OrganizationData,
+  getOrganizationById,
+  getStories,
+} from '@cfce/database';
 import Image from 'next/image';
 import Link from 'next/link';
 import NotFound from '../../not-found';
@@ -24,12 +28,18 @@ export default async function Home(props: {
   if (!orgId) {
     return <NotFound />;
   }
-  const organization = (await getOrganizationById(orgId)) || null;
+
+  let organization = (await getOrganizationById(orgId)) || null;
   if (!organization) {
     return <NotFound />;
   }
-  const stories = (await getStories({ orgId })) || [];
-  const initiatives = organization.initiative;
+  organization = JSON.parse(JSON.stringify(organization)) as OrganizationData;
+
+  let stories = (await getStories({ orgId })) || [];
+  stories = JSON.parse(JSON.stringify(stories));
+
+  let initiatives = organization.initiative;
+  initiatives = JSON.parse(JSON.stringify(initiatives));
 
   return (
     <main className="w-full bg-gradient-to-t from-slate-200">
