@@ -97,7 +97,7 @@ export async function createInitiative(data: FormData, orgId: string, tba = fals
     if(tba && result?.id){
       const initId = result.id
       console.log('TBA will be created for initiative', initId)
-      const account = await newTBAccount(EntityType.initiative, initId, orgId, metadata) // Parent org
+      const account = await newTBAccount(EntityType.initiative, initId, EntityType.organization, orgId, metadata) // Parent org
       console.log('TBA created', account)
     }
 

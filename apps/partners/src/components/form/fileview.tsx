@@ -8,16 +8,18 @@ import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface FileProps {
   id?: string;
+  name?: string;
   source?: string;
   className?: string;
   width?: number;
   height?: number;
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn;
   multiple?: boolean;
 }
 
 const FileView: React.FC<FileProps> = ({
   id,
+  name,
   source,
   className,
   width = 250,
@@ -55,15 +57,14 @@ const FileView: React.FC<FileProps> = ({
       <input
         type="file"
         id={id}
-        {...register}
-        ref={e => {
-          register.ref(e);
-          fileInputRef.current = e;
-        }}
+        name={name||id}
         onChange={handleFileChange}
         className="hidden"
-        multiple={multiple}
         accept="image/*"
+        ref={e => {
+          register?.ref(e);
+          fileInputRef.current = e;
+        }}
       />
       <div className="flex flex-wrap gap-2">
         {previews.map((preview, index) => (

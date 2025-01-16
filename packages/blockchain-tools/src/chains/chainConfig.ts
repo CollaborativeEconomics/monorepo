@@ -624,7 +624,7 @@ chainConfiguration.xdc.networks.testnet = {
   contracts: {
     tba6551RegistryAddress: "0x000000006551c19487814612e58fe06813775758",
     tba6551ImplementationAddress: "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",
-    tba721TokenContract: "0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7",
+    tba721TokenContract: "0x88Bb2D04f180631BdC4Cd6129106665A0B6790D8", // 0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7
     nft721TokenContract: "0xa3a3d70Ec57bC30472CD687F3D530b3431292989",
     nft1155TokenContract: "0xc917ff4128525a65639d18f1d240a788081f022d",
   },

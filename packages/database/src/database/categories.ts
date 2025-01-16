@@ -42,7 +42,7 @@ export async function getCategories(
     filter.skip = start
     filter.take = size
   }
-  console.log({ filter })
+  //console.log({ filter })
 
   const data = await prismaClient.category.findMany(filter)
   return data

@@ -20,7 +20,7 @@ export async function createOrganizationAction(
       name: organization.name,
       description: organization.description
     })
-    const account = await newTBAccount(EntityType.organization, savedOrganization.id, '', metadata)
+    const account = await newTBAccount(EntityType.organization, savedOrganization.id, '', '', metadata) // No parent TBA
     console.log('TBA created', account)
   }
 

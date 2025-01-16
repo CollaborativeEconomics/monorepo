@@ -1,7 +1,7 @@
 'use client';
 
 import type { Category, Initiative } from '@cfce/database';
-import { useState } from 'react';
+import React, { useState, type FormEvent } from 'react'
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
 //import Checkbox from '~/components/form/checkbox';
@@ -20,19 +20,18 @@ interface AddStoryFormProps {
   categories: Category[];
 }
 
-interface FormData {
+interface DataForm {
   initiativeId: string;
+  categoryId: string;
   name: string;
-  desc: string;
+  description: string;
   amount: string;
   image1: File[];
   image2: File[];
   image3: File[];
   image4: File[];
   image5: File[];
-  media: File[];
-  yesNFT: boolean;
-  categoryId: string;
+  media:  File[];
 }
 
 export default function AddStoryForm({
@@ -51,7 +50,7 @@ export default function AddStoryForm({
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<DataForm>();
 
   const initiativesOptions = initiatives.map(initiative => ({
     id: initiative.id,
@@ -67,43 +66,61 @@ export default function AddStoryForm({
   const mediaFile = watch('media');
   const imgSource = '/media/upload.jpg'
 
-  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    if (!data.name || !data.desc || !data.image1 || !data.initiativeId) {
-      setMessage('All required fields must be filled');
-      return;
+  //const onSubmit: SubmitHandler<DataForm> = async (data: DataForm) => {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const form = event.target as HTMLFormElement
+    const fields = new FormData(form) // simpler but files get passed even if empty
+    const data = Object.fromEntries(fields.entries())
+    //const data = {
+    //  initiativeId: form.initiativeId.value || '',
+    //  categoryId: form.categoryId.value || '',
+    //  name: form.name.value || '',
+    //  description: form.description.value || '',
+    //  amount: form.amount.value || '',
+    //  image1: form.image1.files || null,
+    //  image2: form.image2.files || null,
+    //  image3: form.image3.files || null,
+    //  image4: form.image4.files || null,
+    //  image5: form.image5.files || null,
+    //  media : form.media.files  || null,
+    //}
+    console.log('FORM DATA:', data)
+    //return
+    if (!data.name || !data.description || !data.image1 || !data.initiativeId) {
+      //setMessage('All required fields must be filled');
+      //return;
     }
 
-    setButtonDisabled(true);
-    setButtonText('WAIT');
-    setMessage('Uploading files...');
+    //setButtonDisabled(true);
+    //setButtonText('WAIT');
+    //setMessage('Uploading files...');
 
     try {
-      const images = [
-        data.image1,
-        data.image2,
-        data.image3,
-        data.image4,
-        data.image5,
-      ]
-        .filter(img => img && img.length > 0)
-        .map(img => img[0]);
-
-      const media =
-        data.media && data.media.length > 0 ? data.media[0] : undefined;
+      const images:File[] = [
+        data.image1 as File,
+        data.image2 as File,
+        data.image3 as File,
+        data.image4 as File,
+        data.image5 as File,
+      ].filter(img => img && img.size > 0)
+      const mediaFile = data.media as File || undefined
+      const media = mediaFile && mediaFile.size > 0 ? mediaFile : undefined
 
       const storyData = {
         userId: userId,
         story: {
-          name: data.name,
-          description: data.desc,
-          amount: Number.parseInt(data.amount),
+          name: data.name as string,
+          description: data.description as string,
+          amount: data.amount as string,
         },
-        categoryId: data.categoryId,
+        categoryId: data.categoryId as string,
         organizationId: orgId,
-        initiativeId: data.initiativeId,
+        initiativeId: data.initiativeId as string,
         images,
         media,
       };
+      console.log('STORY:', storyData)
 
       const storyResponse = await saveStory(storyData, true); // TBA
       if ('error' in storyResponse) {
@@ -123,49 +140,45 @@ export default function AddStoryForm({
 
   return (
     <div className={styles.mainBox}>
-      <form
-        className={styles.vbox}
-        onSubmit={handleSubmit(onSubmit)}
-        // onSubmit={data => console.log('submit', data)}
-      >
+      <form className={styles.vbox} onSubmit={onSubmit}>
         {/* Image Upload Inputs */}
         <div className={`${styles.hbox} justify-center`}>
           <FileView
             id="image1"
-            register={register('image1')}
             width={250}
             height={250}
             source={imgSource}
+            register={register("image1")}
           />
         </div>
         <div className={`${styles.hbox} justify-center`}>
           <FileView
             id="image2"
-            register={register('image2')}
             width={128}
             height={128}
             source={imgSource}
+            register={register("image2")}
           />
           <FileView
             id="image3"
-            register={register('image3')}
             width={128}
             height={128}
             source={imgSource}
+            register={register("image3")}
           />
           <FileView
             id="image4"
-            register={register('image4')}
             width={128}
             height={128}
             source={imgSource}
+            register={register("image4")}
           />
           <FileView
             id="image5"
-            register={register('image5')}
             width={128}
             height={128}
             source={imgSource}
+            register={register("image5")}
           />
         </div>
 
@@ -191,44 +204,23 @@ export default function AddStoryForm({
           register={register('categoryId', { required: true })}
           options={categoriesOptions}
         />
-        <TextInput label="Title" register={register('name', { required: true })} />
+        <TextInput label="Title" name="name" register={register('name', { required: true })} />
         <TextArea
           label="Description"
-          {...register('desc', { required: true })}
+          {...register('description', { required: true })}
         />
         <TextInput
           label="Estimated Amount Spent"
           register={register('amount', { required: true })}
         />
-{/*
-        <Checkbox
-          label="Mint Story NFT"
-          register={register('yesNFT')}
-          check={true}
-        />
-*/}
-
-{/*
-        <CheckboxWithText
-          id="receipt-check"
-          text="Mint Story NFT"
-          label="Mint Story NFT"
-          className="mb-2"
-          register={register('yesNFT')}
-          checked={true}
-        />
-*/}
-
         <ButtonBlue
           type="submit"
           text={buttonText}
           disabled={buttonDisabled}
-          // onClick={handleSubmit(onSubmit)}
         />
-
         {/* Validation error handling */}
         {errors.name && <p className="error">Title is required</p>}
-        {errors.desc && <p className="error">Description is required</p>}
+        {errors.description && <p className="error">Description is required</p>}
         {errors.amount && <p className="error">Amount is required</p>}
       </form>
 

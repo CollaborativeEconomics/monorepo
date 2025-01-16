@@ -61,8 +61,8 @@ export default async function uploadDataToIPFS(fileId: string, bytes: Uint8Array
   );
 
   const result = await client.send(action)
-  console.log("Result", result)
-  console.log("Cid", cid)
+  //console.log("Result", result)
+  console.log("CID", cid)
   return cid
   //   console.log("Result", result)
 

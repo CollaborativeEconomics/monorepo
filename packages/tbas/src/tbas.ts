@@ -254,13 +254,19 @@ export async function fetchTBAccount(tokenContract:string, tokenId:string, chain
   - Creates TBA contract
   - Saves TBA to DB
 */
-export async function newTBAccount(entity_type:string, entity_id:string, parent_id?: string, metadata?: string){
+export async function newTBAccount(entity_type:string, entity_id:string, parent_type?: string, parent_id?: string, metadata?: string){
+  console.log("-- NEW TBA")
+  console.log("ENTITY TYPE", entity_type)
+  console.log("ENTITY ID", entity_id)
+  console.log("PARENT TYPE", parent_type)
+  console.log("PARENT ID", parent_id)
   try {
     let parent_address = ''
     let metadata_uri = ''
-    if(parent_id){
-      const tbaRec = await getTokenBoundAccount(entity_type, entity_id, chainSlug, network)
+    if(parent_type && parent_id){
+      const tbaRec = await getTokenBoundAccount(parent_type, parent_id, chainSlug, network)
       parent_address = tbaRec?.account_address || ''
+      console.log("PARENT ADDRESS", parent_address)
     }
     if(metadata){
       metadata_uri = await uploadDataToIPFS('meta-'+uuidv7(), Buffer.from(metadata), 'text/plain')
