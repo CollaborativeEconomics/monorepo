@@ -26,6 +26,8 @@ interface DataForm {
   name: string;
   description: string;
   amount: string;
+  unitvalue: string;
+  unitlabel: string;
   image1: File[];
   image2: File[];
   image3: File[];
@@ -72,29 +74,15 @@ export default function AddStoryForm({
     const form = event.target as HTMLFormElement
     const fields = new FormData(form) // simpler but files get passed even if empty
     const data = Object.fromEntries(fields.entries())
-    //const data = {
-    //  initiativeId: form.initiativeId.value || '',
-    //  categoryId: form.categoryId.value || '',
-    //  name: form.name.value || '',
-    //  description: form.description.value || '',
-    //  amount: form.amount.value || '',
-    //  image1: form.image1.files || null,
-    //  image2: form.image2.files || null,
-    //  image3: form.image3.files || null,
-    //  image4: form.image4.files || null,
-    //  image5: form.image5.files || null,
-    //  media : form.media.files  || null,
-    //}
     console.log('FORM DATA:', data)
-    //return
     if (!data.name || !data.description || !data.image1 || !data.initiativeId) {
-      //setMessage('All required fields must be filled');
-      //return;
+      setMessage('All required fields must be filled');
+      return;
     }
 
-    //setButtonDisabled(true);
-    //setButtonText('WAIT');
-    //setMessage('Uploading files...');
+    setButtonDisabled(true);
+    setButtonText('WAIT');
+    setMessage('Uploading files and saving story...');
 
     try {
       const images:File[] = [
@@ -113,12 +101,14 @@ export default function AddStoryForm({
           name: data.name as string,
           description: data.description as string,
           amount: data.amount as string,
+          unitvalue: data.unitvalue as string,
+          unitlabel: data.unitlabel as string
         },
         categoryId: data.categoryId as string,
         organizationId: orgId,
         initiativeId: data.initiativeId as string,
         images,
-        media,
+        media
       };
       console.log('STORY:', storyData)
 
@@ -133,8 +123,9 @@ export default function AddStoryForm({
       setButtonText('DONE');
     } catch (error) {
       console.error('Error saving story:', error);
-      setMessage('An error occurred while saving the story.');
-      setButtonDisabled(false);
+      setMessage('An error occurred while saving the story');
+      setButtonText('ERROR');
+      setButtonDisabled(true);
     }
   };
 
@@ -195,11 +186,13 @@ export default function AddStoryForm({
 
         {/* Additional form inputs */}
         <Select
+          name="initiativeId"
           label="Initiative"
           register={register('initiativeId', { required: true })}
           options={initiativesOptions}
         />
         <Select
+          name="categoryId"
           label="Category"
           register={register('categoryId', { required: true })}
           options={categoriesOptions}
@@ -212,6 +205,14 @@ export default function AddStoryForm({
         <TextInput
           label="Estimated Amount Spent"
           register={register('amount', { required: true })}
+        />
+        <TextInput
+          label="Dollars per unit ($20 per tree, $5 per meal, $150 per wheelchair)"
+          register={register('unitvalue')}
+        />
+        <TextInput
+          label="Unit label (tree, meal, wheelchair)"
+          register={register('unitlabel')}
         />
         <ButtonBlue
           type="submit"

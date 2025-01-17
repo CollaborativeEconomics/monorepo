@@ -379,11 +379,12 @@ model Story {
 }
 
 model StoryMedia {
-  id      String  @id(map: "storypics_pkey") @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  storyId String  @db.Uuid
-  media   String  @db.VarChar(255)
-  mime    String? @db.VarChar(60)
-  story   Story   @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  id      String   @id(map: "storypics_pkey") @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created DateTime @default(now()) @db.Timestamptz(6)
+  storyId String   @db.Uuid
+  media   String   @db.VarChar(255)
+  mime    String?  @db.VarChar(60)
+  story   Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
 
   @@map("storymedia")
 }

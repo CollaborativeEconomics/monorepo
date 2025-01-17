@@ -9,6 +9,9 @@ import {
   newStory,
   prismaClient,
   updateStory,
+  addStoryMedia,
+  updateImpactLink,
+  updateStoryLink,
 } from "@cfce/database"
 import { uploadDataToIPFS, uploadFileToIPFS } from "@cfce/ipfs"
 import { put } from "@vercel/blob"
@@ -46,6 +49,8 @@ interface CreateStoryParams {
     name:string
     description:string
     amount:string
+    unitlabel:string
+    unitvalue:string
   }
   userId: string
   organizationId: string
@@ -75,7 +80,8 @@ export default async function createStory({
   const gateway = appConfig.apis.ipfs.gateway
 
   try {
-    const allMedia: Omit<StoryMedia, "id" | "storyId">[] = []
+    //const allMedia: Omit<StoryMedia, "id" | "storyId" | "created">[] = []
+    const allMedia: MediaRecord[] = []
     let image = '' // main image
     const imageCIDs = []
     let mediaCID = ''
@@ -97,7 +103,7 @@ export default async function createStory({
 
     // Process media
     if (media) {
-      const mime = media?.type || ''
+      const mime = media?.type || 'application/octet-stream' // any file
       const cid = await processFile(media, "stories")
       mediaCID = `ipfs:${cid}`
       console.log("Uploaded media to IPFS, CID", cid)
@@ -119,10 +125,9 @@ export default async function createStory({
       organization: { connect: { id: organizationId } },
       initiative: { connect: { id: initiativeId } },
       category: categoryId ? { connect: { id: categoryId } } : undefined,
+      unitvalue: Number(story.unitvalue),
+      unitlabel: story.unitlabel,
       image,
-      media: allMedia.length > 0 ? { create: allMedia } : {},
-      //unitValue ?
-      //unitLabel ?
     }
     console.log('STORY', storyData)
     const dbStory = await newStory(storyData)
@@ -157,6 +162,23 @@ export default async function createStory({
 */
     storyId = dbStory.id
     console.log("Created story in DB", dbStory.id, dbStory.name)
+    if(allMedia.length > 0){
+      const dbMedia = await addStoryMedia(storyId, allMedia)
+      console.log("Media added", dbMedia)
+    }
+
+    // IMPACT LINK
+    if(storyId && storyData.amount > 0){
+      const link = {
+        initiativeId,
+        storyId,
+        amount: storyData.amount
+      }
+      const impact = await updateImpactLink(link)
+      console.log('IMPACT', impact?.rowCount)
+      const linked = await updateStoryLink(link)
+      console.log('LINKED', linked?.rowCount)
+    }
 
     // Create and upload the NFT metadata
     const nftMetadata = {
@@ -167,6 +189,9 @@ export default async function createStory({
       initiative: initiative?.title,
       event: story.name,
       description: story.description,
+      amount: story.amount,
+      unitValue: story.unitvalue,
+      unitLabel: story.unitlabel,
       image: imageCIDs,
       media: mediaCID,
     }
