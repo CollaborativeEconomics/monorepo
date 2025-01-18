@@ -1,7 +1,7 @@
 import React, { forwardRef, type HTMLProps } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
-interface TextInputProps {
+interface TextInputProps extends HTMLProps<HTMLInputElement> {
   label?: string;
   className?: string;
   onChange?: (event: any) => void;

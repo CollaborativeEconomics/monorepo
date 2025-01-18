@@ -55,10 +55,9 @@ const FileView = forwardRef(
     }, [previews]);
 
     const style = 'mx-auto';
-    const size = `w-[${width}px] h-[${height}px]`;
 
     return (
-      <div className={`relative ${size} m-4 ${className ?? ''}`}>
+      <div className={`relative m-4 ${className ?? ''}`}>
         <input
           type="file"
           id={id}
@@ -88,21 +87,22 @@ const FileView = forwardRef(
               onClick={() => localRef.current?.click()}
               className="p-0 border-0 bg-transparent"
             >
-              <Image
-                className={style}
-                src={preview}
-                width={width}
-                height={height}
-                objectFit="cover"
-                alt={`preview ${index + 1}`}
-              />
+              <div style={{ width: width, height: height }}>
+                <Image
+                  className={`${style} object-cover`}
+                  src={preview}
+                  alt={`preview ${index + 1}`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
             </button>
           ))}
         </div>
         {previews.length === 0 && (
           <button
             type="button"
-            className={`${size} border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer`}
+            className={`w-[${width}px] h-[${height}px] border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer`}
             onClick={() => localRef.current?.click()}
             onKeyDown={e => {
               if (e.key === 'Enter' || e.key === ' ') {

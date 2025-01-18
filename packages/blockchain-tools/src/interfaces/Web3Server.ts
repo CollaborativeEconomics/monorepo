@@ -41,7 +41,7 @@ export default class Web3Server extends InterfaceBaseClass {
       ])) || "0x1e8480" // 2000000
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
     const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
-    return { gasPrice, gasLimit }
+    return { gasPrice: gasPrice * 1.5, gasLimit }
   }
 
   // Autoincrementing NFT
@@ -76,9 +76,9 @@ export default class Web3Server extends InterfaceBaseClass {
     console.log("DATA", data)
     let gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice in XDC is not returning updated prices
-    if (this.chain.slug === "xdc") {
-      gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
-    }
+    // if (this.chain.slug === "xdc") {
+    //   gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
+    // }
     console.log("GAS", gas)
 
     const tx = {
@@ -168,9 +168,9 @@ export default class Web3Server extends InterfaceBaseClass {
       .mint(address, tokenId, metadataUri)
       .encodeABI()
     console.log("DATA", data)
-    //const gas = await this.getGasPrice(minter, contractId, data)
+    const gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice is not returning updated prices
-    const gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
+    // const gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
     console.log("GAS", gas)
 
     const tx = {

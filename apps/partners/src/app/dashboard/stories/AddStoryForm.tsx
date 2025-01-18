@@ -8,6 +8,7 @@ import React, { useState, type FormEvent } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import FileView from '~/components/form/fileview';
 import styles from '~/styles/dashboard.module.css';
+import ButtonBlue from '../../../components/buttonblue';
 import Select from '../../../components/form/select';
 import TextArea from '../../../components/form/textarea';
 import TextInput from '../../../components/form/textinput';
@@ -32,6 +33,8 @@ interface DataForm {
   image4: FileList;
   image5: FileList;
   media: FileList;
+  unitvalue: string;
+  unitlabel: string;
 }
 
 export default function AddStoryForm({
@@ -89,7 +92,7 @@ export default function AddStoryForm({
 
     setButtonDisabled(true);
     setButtonText('WAIT');
-    setMessage('Uploading files...');
+    setMessage('Uploading files and saving story...');
 
     try {
       const images: File[] = [
@@ -109,6 +112,8 @@ export default function AddStoryForm({
           name: data.name,
           description: data.description,
           amount: data.amount,
+          unitvalue: data.unitvalue,
+          unitlabel: data.unitlabel,
         },
         categoryId: data.categoryId,
         organizationId: orgId,
@@ -132,8 +137,9 @@ export default function AddStoryForm({
       setButtonText('DONE');
     } catch (error) {
       console.error('Error saving story:', error);
-      setMessage('An error occurred while saving the story.');
-      setButtonDisabled(false);
+      setMessage('An error occurred while saving the story');
+      setButtonText('ERROR');
+      setButtonDisabled(true);
     }
   };
 
@@ -147,7 +153,7 @@ export default function AddStoryForm({
             width={250}
             height={250}
             source={imgSource}
-            register={register('image1', { required: true })}
+            {...register('image1', { required: true })}
           />
         </div>
         <div className={`${styles.hbox} justify-center`}>
@@ -156,28 +162,28 @@ export default function AddStoryForm({
             width={128}
             height={128}
             source={imgSource}
-            register={register('image2')}
+            {...register('image2')}
           />
           <FileView
             id="image3"
             width={128}
             height={128}
             source={imgSource}
-            register={register('image3')}
+            {...register('image3')}
           />
           <FileView
             id="image4"
             width={128}
             height={128}
             source={imgSource}
-            register={register('image4')}
+            {...register('image4')}
           />
           <FileView
             id="image5"
             width={128}
             height={128}
             source={imgSource}
-            register={register('image5')}
+            {...register('image5')}
           />
         </div>
 
@@ -194,13 +200,14 @@ export default function AddStoryForm({
 
         {/* Additional form inputs */}
         <Select
-          handler={(value: string) => setValue('initiativeId', value)}
+          label="Initiative"
+          {...register('initiativeId', { required: true })}
           options={initiativesOptions}
         />
 
         <Select
-          handler={value => setValue('categoryId', value)}
-          defaultValue={categories[0]?.id}
+          label="Category"
+          {...register('categoryId', { required: true })}
           options={categoriesOptions}
         />
 
@@ -219,12 +226,16 @@ export default function AddStoryForm({
         <TextInput
           label="Estimated Amount Spent"
           {...register('amount', { required: true })}
-          className={errors.amount ? 'border-red-500' : ''}
         />
-
-        <Button type="submit" disabled={buttonDisabled} className="w-full">
-          {buttonText}
-        </Button>
+        <TextInput
+          label="Dollars per unit ($20 per tree, $5 per meal, $150 per wheelchair)"
+          {...register('unitvalue')}
+        />
+        <TextInput
+          label="Unit label (tree, meal, wheelchair)"
+          {...register('unitlabel')}
+        />
+        <ButtonBlue type="submit" text={buttonText} disabled={buttonDisabled} />
 
         {/* Validation error handling */}
         {errors.name && <p className="error">Title is required</p>}

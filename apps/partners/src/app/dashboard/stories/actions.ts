@@ -15,6 +15,8 @@ interface StoryData {
     name: string
     description: string
     amount: string
+    unitvalue: string
+    unitlabel: string
   }
   categoryId?: string
   organizationId: string

@@ -1,5 +1,6 @@
 'use client';
 
+import { abiVolunteersNFT as NFTAbi } from '@cfce/blockchain-tools';
 import type { Contract, Event } from '@cfce/database';
 import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
 import { BrowserQRCodeReader } from '@zxing/library';
@@ -7,13 +8,12 @@ import clipboard from 'clipboardy';
 import { LucideClipboardPaste, LucideQrCode } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import styles from '~/styles/dashboard.module.css';
 import { useAccount, useWriteContract } from 'wagmi';
 import * as wagmiChains from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
 import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
-import { abiVolunteersNFT as NFTAbi } from '@cfce/blockchain-tools';
+import styles from '~/styles/dashboard.module.css';
 import { cleanAddress } from '~/utils/address';
 import { config } from '~/utils/wagmiConfig';
 
@@ -186,9 +186,8 @@ export default function RegisterClient({
         <div className="w-[90%] text-center">
           <TextInput
             label=""
-            id="address"
             className="text-center"
-            register={register('address')}
+            {...register('address')}
             renderRight={
               <LucideClipboardPaste
                 onClick={async () => {
@@ -197,7 +196,7 @@ export default function RegisterClient({
                 }}
               />
             }
-            value={address}
+            // value={address}
           />
         </div>
         <div className="w-full mb-2 flex flex-row justify-between">
