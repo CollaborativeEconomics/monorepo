@@ -12,11 +12,11 @@ interface StoryData {
   //  "organization" | "initiative" | "category"
   //>
   story: {
-    name:string
-    description:string
-    amount:string
-    unitvalue:string
-    unitlabel:string
+    name: string
+    description: string
+    amount: string
+    unitvalue: string
+    unitlabel: string
   }
   categoryId?: string
   organizationId: string
@@ -25,24 +25,30 @@ interface StoryData {
   media?: File
 }
 
-export async function saveStory({
-  userId,
-  story,
-  categoryId,
-  organizationId,
-  initiativeId,
-  images,
-  media,
-}: StoryData, tba=false) {
-  const response = await createStory({
+export async function saveStory(
+  {
     userId,
     story,
+    categoryId,
     organizationId,
     initiativeId,
-    categoryId,
     images,
     media,
-  }, tba)
+  }: StoryData,
+  tba = false,
+) {
+  const response = await createStory(
+    {
+      userId,
+      story,
+      organizationId,
+      initiativeId,
+      categoryId,
+      images,
+      media,
+    },
+    tba,
+  )
   revalidatePath("/dashboard/stories")
   return response
 }

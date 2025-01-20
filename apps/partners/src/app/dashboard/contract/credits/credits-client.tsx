@@ -172,25 +172,22 @@ export default function ContractCreditsClient({
           <div className="w-full">
             <TextInput
               label="Credit Vendor (Wallet address)"
-              register={register('vendor')}
+              {...register('vendor')}
             />
             <TextInput
               label="Vendor Fees (percentage)"
-              register={register('vendor_fees')}
+              {...register('vendor_fees')}
             />
             <TextInput
               label="Credit Provider (Wallet address)"
-              register={register('provider')}
+              {...register('provider')}
             />
             <TextInput
               label="Provider Fees (percentage)"
-              register={register('provider_fees')}
+              {...register('provider_fees')}
             />
-            <TextInput label="Bucket Size" register={register('bucket')} />
-            <TextInput
-              label="Minimum Donation"
-              register={register('minimum')}
-            />
+            <TextInput label="Bucket Size" {...register('bucket')} />
+            <TextInput label="Minimum Donation" {...register('minimum')} />
           </div>
         </div>
         <ButtonBlue

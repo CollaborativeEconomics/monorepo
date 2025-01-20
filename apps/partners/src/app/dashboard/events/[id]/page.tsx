@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import EventClient from './event-client';
 
 interface PageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
   //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
@@ -30,10 +30,10 @@ export default async function EventPage({ params }: PageProps) {
     <Suspense fallback={<div>Loading...</div>}>
       <EventClient
         id={id}
-        event={event}
+        event={JSON.parse(JSON.stringify(event))}
         media={media}
-        contractNFT={contractNFT}
-        contractV2E={contractV2E}
+        contractNFT={JSON.parse(JSON.stringify(contractNFT))}
+        contractV2E={JSON.parse(JSON.stringify(contractV2E))}
       />
     </Suspense>
   );

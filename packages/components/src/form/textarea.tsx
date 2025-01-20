@@ -6,7 +6,7 @@ interface TextareaProps {
   register: UseFormRegisterReturn;
 }
 
-const Textarea = ({
+export const Textarea = ({
   label,
   register,
   ...rest
@@ -16,5 +16,3 @@ const Textarea = ({
     <textarea {...rest} {...register} />
   </label>
 );
-
-export default Textarea;

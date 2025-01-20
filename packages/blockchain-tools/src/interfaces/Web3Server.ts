@@ -41,7 +41,7 @@ export default class Web3Server extends InterfaceBaseClass {
       ])) || "0x1e8480" // 2000000
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
     const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
-    return { gasPrice, gasLimit }
+    return { gasPrice: gasPrice, gasLimit }
   }
 
   // Autoincrementing NFT
@@ -76,9 +76,9 @@ export default class Web3Server extends InterfaceBaseClass {
     console.log("DATA", data)
     let gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice in XDC is not returning updated prices
-    if (this.chain.slug === "xdc") {
-      gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
-    }
+    // if (this.chain.slug === "xdc") {
+    //   gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
+    // }
     console.log("GAS", gas)
 
     const tx = {
@@ -135,7 +135,7 @@ export default class Web3Server extends InterfaceBaseClass {
     tokenId,
     metadataUri,
     contractId,
-    walletSeed
+    walletSeed,
   }: {
     address: string
     tokenId: string
@@ -164,11 +164,13 @@ export default class Web3Server extends InterfaceBaseClass {
     //const tokenInt = Number(tokenId)
     console.log("MINTER", minter)
     console.log("NONCE", nonce)
-    const data = instance.methods.mint(address, tokenId, metadataUri).encodeABI()
+    const data = instance.methods
+      .mint(address, tokenId, metadataUri)
+      .encodeABI()
     console.log("DATA", data)
-    //const gas = await this.getGasPrice(minter, contractId, data)
+    const gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice is not returning updated prices
-    const gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
+    // const gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
     console.log("GAS", gas)
 
     const tx = {
@@ -226,10 +228,10 @@ export default class Web3Server extends InterfaceBaseClass {
   }) {
     //console.log(this.chain, "server minting NFT to", address, uri)
     console.log("Server minting NFT 1155")
-    console.log('Address', address)
-    console.log('TokenId', tokenId)
-    console.log('Contract', contractId)
-    console.log('URI', uri)
+    console.log("Address", address)
+    console.log("TokenId", tokenId)
+    console.log("Contract", contractId)
+    console.log("URI", uri)
     if (!this.web3 || !walletSeed) {
       console.error("Web3 or wallet not available")
       return { success: false, error: "Web3 or wallet not available" }
@@ -238,15 +240,17 @@ export default class Web3Server extends InterfaceBaseClass {
     const minter = acct.address
     const instance = new this.web3.eth.Contract(Abi1155, contractId)
     const noncex = await this.web3.eth.getTransactionCount(minter, "latest")
-    const nonce = Number(noncex)
+    const nonce = Number(noncex) + 1
     console.log("MINTER", minter)
     console.log("NONCE", nonce)
     //contract.mint(address account, uint256 id, uint256 amount, bytes memory data)
     //const bytes = Buffer.from(uri, 'utf8')
     //const bytes = this.web3.utils.toHex(uri)
-    const bytes = new TextEncoder().encode(uri);
+    const bytes = new TextEncoder().encode(uri)
     // biome-ignore lint/style/useTemplate: unreadable
-    const hex = '0x'+Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+    const hex = `0x${Array.from(bytes)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("")}`
     const tokenInt = BigInt(tokenId)
     const data = instance.methods.mint(address, tokenInt, 1, hex).encodeABI()
     console.log("DATA", data)
@@ -263,7 +267,7 @@ export default class Web3Server extends InterfaceBaseClass {
       data: data, // encoded method and params
       gas: gasLimit,
       gasPrice: gasPrice,
-      //nonce,
+      nonce,
     }
     console.log("TX", tx)
 

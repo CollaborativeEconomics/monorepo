@@ -1,11 +1,11 @@
 'use client';
 
-import { revalidatePath } from 'next/cache'
+import appConfig from '@cfce/app-config';
 import type { Chain } from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
+import { revalidatePath } from 'next/cache';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import appConfig from '@cfce/app-config';
 import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
 import TextInput from '~/components/form/textinput';
@@ -18,9 +18,9 @@ type WalletFormProps = {
 };
 
 type DataForm = {
-  chain: string
-  address: string
-}
+  chain: string;
+  address: string;
+};
 
 export default function WalletForm({ orgId, chains }: WalletFormProps) {
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -33,14 +33,14 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
     defaultValues: {
       chain: 'Arbitrum',
       address: '',
-      network: ''
-    }
-  })
-  const { register, handleSubmit, reset } = formMethods
+      network: '',
+    },
+  });
+  const { register, handleSubmit, reset } = formMethods;
   const [selectedChain, setSelectedChain] = useState('Arbitrum');
 
   const onSubmit = async (form: DataForm) => {
-    console.log('DATA', form)
+    console.log('DATA', form);
     if (!selectedChain) {
       setMessage('Chain is required');
       return;
@@ -53,8 +53,8 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
       const data = {
         address: form.address,
         chain: selectedChain as Chain,
-        network: appConfig.chainDefaults.network || 'testnet'
-      }
+        network: appConfig.chainDefaults.network || 'testnet',
+      };
       setMessage('Saving wallet to database...');
       setButtonDisabled(true);
       setButtonText('WAIT');
@@ -66,7 +66,7 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
         // You might want to add some logic here to refresh the list of wallets
         // Pass new wallet back to server page component
         // Or refresh server page component
-        revalidatePath('/dashboard/wallets')
+        revalidatePath('/dashboard/wallets');
         //window.location.reload()
       } else {
         throw new Error(result.error);
@@ -79,15 +79,20 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
     }
   };
 
-  function handleChain(val: string){
-    console.log('CHAIN', val)
-    setSelectedChain(val)
+  function handleChain(val: string) {
+    console.log('CHAIN', val);
+    setSelectedChain(val);
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.vbox}>
-      <Select label="Chain" register={register('chain')} options={chains} handler={handleChain}/>
-      <TextInput label="Address" register={register('address')} />
+      <Select
+        label="Chain"
+        {...register('chain')}
+        options={chains}
+        handler={handleChain}
+      />
+      <TextInput label="Address" {...register('address')} />
       <ButtonBlue
         id="buttonSubmit"
         text={buttonText}

@@ -13,12 +13,12 @@ import {
   Keypair,
   Networks,
   Operation,
-  rpc,
-  SorobanDataBuilder,
   //SorobanRpc, // <<<<<<<<< replace with new rpc.Server(url)
   type Transaction,
   TransactionBuilder,
   nativeToScVal,
+  rpc,
+  rpc,
   scValToNative,
   xdr,
 } from "@stellar/stellar-sdk"

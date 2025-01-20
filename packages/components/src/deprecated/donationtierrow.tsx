@@ -77,8 +77,11 @@ const DonationTierRow = ({
             disabled={disabled}
             onChange={updateOffset}
           />
-          <label className="mr-4 mb-0">{currency ?? 'XLM'}</label>
-          <div
+          <label className="mr-4 mb-0" htmlFor={title}>
+            {currency ?? 'XLM'}
+          </label>
+          <button
+            type="button"
             onClick={() => {
               if (amount < minimum) {
                 setMessage('Minimum amount of 10 XLM required');
@@ -86,10 +89,19 @@ const DonationTierRow = ({
               }
               onClick(amount, credit);
             }}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                if (amount < minimum) {
+                  setMessage('Minimum amount of 10 XLM required');
+                  return;
+                }
+                onClick(amount, credit);
+              }
+            }}
             className="bg-green-700 self-stretch rounded-r-xl flex basis-24 flex-grow-0 justify-center items-center"
           >
             <Icon icon="arrow_forward" className="cursor-pointer" />
-          </div>
+          </button>
         </div>
       </Card>
       <p className="my-2 text-center text-yellow-300">{message}</p>

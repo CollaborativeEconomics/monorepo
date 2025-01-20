@@ -1,5 +1,4 @@
-import React, { type HTMLProps } from 'react';
-import type { UseFormRegisterReturn } from 'react-hook-form';
+import React, { type HTMLProps, forwardRef } from 'react';
 
 interface Option {
   id: string;
@@ -12,23 +11,24 @@ interface SelectProps {
   name?: string;
   selected?: string;
   options?: Option[];
-  register?: UseFormRegisterReturn;
-  handler?: (val: string)=>void;
+  handler?: (val: string) => void;
 }
 
-const Select = ({
-  id,
-  label,
-  name,
-  options,
-  register,
-  selected,
-  handler,
-  ...rest
-}: SelectProps & HTMLProps<HTMLSelectElement>) => (
+const Select = forwardRef<
+  HTMLSelectElement,
+  SelectProps & HTMLProps<HTMLSelectElement>
+>(({ id, label, name, options, selected, handler, ...props }, ref) => (
   <label className="my-4">
     <span className="text-slate-300 text-sm text-left uppercase">{label}</span>
-    <select id={id} {...register} {...rest} name={name} onChange={(e) => { return handler ? handler(e.target.value) : null }} >
+    <select
+      id={id}
+      {...props}
+      name={name}
+      ref={ref}
+      onChange={e => {
+        return handler ? handler(e.target.value) : null;
+      }}
+    >
       {options ? (
         options.map(item => {
           if (item.id === selected) {
@@ -51,6 +51,8 @@ const Select = ({
       )}
     </select>
   </label>
-);
+));
+
+Select.displayName = 'Select';
 
 export default Select;
