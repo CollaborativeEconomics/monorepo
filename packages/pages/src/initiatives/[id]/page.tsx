@@ -55,7 +55,7 @@ export default async function Initiative(props: {
           <div className="relative w-full md:w-[45%] h-[200px] md:h-[300px] mb-12 md:mb-2">
             <Image
               className="h-[300px] rounded-lg"
-              src={initiative.defaultAsset || 'noimage.png'}
+              src={initiative.defaultAsset || 'noimage.svg'}
               alt="IMG BG"
               fill
               style={{
