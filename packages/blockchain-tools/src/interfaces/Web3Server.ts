@@ -41,7 +41,7 @@ export default class Web3Server extends InterfaceBaseClass {
       ])) || "0x1e8480" // 2000000
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
     const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
-    return { gasPrice: gasPrice * 1.5, gasLimit }
+    return { gasPrice: gasPrice, gasLimit }
   }
 
   // Autoincrementing NFT
