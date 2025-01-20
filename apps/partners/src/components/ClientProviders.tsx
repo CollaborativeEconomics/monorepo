@@ -1,6 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SessionProvider } from 'next-auth/react';
 import { WagmiProvider } from 'wagmi';
 
 import { metaMask } from '@wagmi/connectors';
@@ -23,7 +24,9 @@ export default function ClientProviders({
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={wagmiConfig}>{children}</WagmiProvider>
+      <SessionProvider>
+        <WagmiProvider config={wagmiConfig}>{children}</WagmiProvider>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }
