@@ -29,7 +29,9 @@ const DonateButton = (organization: OrganizationData) => {
   return (
     <div className="flex flex-col items-center ml-4 mt-4 md:mt-0 z-20">
       <Button className="text-white bg-green-500 md:bg-white md:text-black w-48">
-        Donate
+        <Link href={`/initiatives/${organization.initiative[0].id}`}>
+          Donate
+        </Link>
       </Button>
       {organization.url ? (
         <p className="text-sm font-semibold text-foreground md:text-white text-center mt-4">
@@ -69,7 +71,7 @@ export default async function Home(props: {
   console.log({ organization });
 
   return (
-    <main className="w-full bg-gradient-to-t from-slate-200">
+    <main className="w-full">
       <div className="relative flex flex-col px-[5%] lg:container pt-24 w-full h-full">
         {/* Banner */}
         <div className="relative md:h-96 -z-1 p-8 flex flex-col items-end rounded-md overflow-hidden">
@@ -84,7 +86,7 @@ export default async function Home(props: {
           )}
           {/* Organization Info */}
           <div className="flex flex-col md:flex-row justify-center items-end gap-y-5 w-full h-full w-max-full z-10">
-            <div className="hidden md:flex w-full justify-between items-center gap-4 z-20">
+            <div className="hidden md:flex w-full justify-between items-end gap-4 z-20">
               <>
                 <Avatar size="lg">
                   {organization.image ? (
@@ -149,7 +151,7 @@ export default async function Home(props: {
         {/* Tabs */}
         <div className="pt-8">
           <Tabs defaultValue="about">
-            <TabsList className="bg-slate-100">
+            <TabsList>
               <TabsTrigger value="about" className="font-semibold text-md">
                 About
               </TabsTrigger>
@@ -157,7 +159,7 @@ export default async function Home(props: {
                 Stats
               </TabsTrigger>
             </TabsList>
-            <div className="mt-4 py-5 px-7 rounded-md bg-white text-black gap-3">
+            <div className="mt-4 py-5 px-7 rounded-md bg-card text-foreground gap-3">
               <TabsContent value="about">
                 {organization.description}
               </TabsContent>
