@@ -4,6 +4,10 @@ import { InitiativeCard } from '@cfce/components/initiative';
 import { OrganizationAvatar } from '@cfce/components/organization';
 import { StoryCard } from '@cfce/components/story';
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  AvatarTitle,
   Button,
   OrgSocials,
   OrgStats,
@@ -20,6 +24,28 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import NotFound from '../../not-found';
+
+const DonateButton = (organization: OrganizationData) => {
+  return (
+    <div className="flex flex-col items-center ml-4 mt-4 md:mt-0 z-20">
+      <Button className="text-white bg-green-500 md:bg-white md:text-black w-48">
+        Donate
+      </Button>
+      {organization.url ? (
+        <p className="text-sm font-semibold text-foreground md:text-white text-center mt-4">
+          to{' '}
+          <span className="underline">
+            <Link href={organization?.url ?? 'https://example.com'}>
+              {organization.name}
+            </Link>
+          </span>
+        </p>
+      ) : (
+        <></>
+      )}
+    </div>
+  );
+};
 
 export default async function Home(props: {
   params: Promise<{ organizationId: string }>;
@@ -40,71 +66,88 @@ export default async function Home(props: {
 
   let initiatives = organization.initiative;
   initiatives = JSON.parse(JSON.stringify(initiatives));
+  console.log({ organization });
 
   return (
     <main className="w-full bg-gradient-to-t from-slate-200">
-      <div className="relative flex flex-col px-[5%] lg:container mt-12 pt-24 w-full h-full">
-        <div className="relative h-96">
-          {organization.image && (
+      <div className="relative flex flex-col px-[5%] lg:container pt-24 w-full h-full">
+        {/* Banner */}
+        <div className="relative h-96 -z-1 p-8 flex flex-col items-end rounded-md overflow-hidden">
+          <div className="absolute left-0 right-0 top-0 bottom-0 h-full w-full bg-gradient-to-t from-black to-transparent opacity-70 z-10" />
+          {organization.background && (
             <Image
-              className="hidden md:block absolute -z-1"
-              src={organization.image}
+              src={organization.background}
               alt="organization image"
               fill
               style={{ objectFit: 'cover' }}
             />
           )}
-
-          <div className="hidden md:block md:h-full bg-gradient-to-t from-slate-800 to-transparent opacity-50 w-full z-5" />
-
-          <div className="flex flex-col md:flex-row absolute justify-center md:justify-between items-center justify-between gap-y-5 w-full w-max-full px-[5%]">
-            <div className="hidden md:block">
-              <OrganizationAvatar
-                name={organization.name}
-                image={organization.image}
-                avatarProps={{ size: 'lg', title: organization.name }}
-                className="text-black md:text-white"
-              />
+          {/* Organization Info */}
+          <div className="flex flex-col md:flex-row justify-center items-end gap-y-5 w-full h-full w-max-full z-10">
+            <div className="hidden md:flex w-full justify-between items-center gap-4 z-20">
+              <>
+                <Avatar size="lg">
+                  {organization.image ? (
+                    <AvatarImage
+                      src={organization.image}
+                      alt={organization.name}
+                    />
+                  ) : (
+                    <AvatarFallback>
+                      {organization.name.slice(0, 2)}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                <div className="flex flex-col items-start z-20">
+                  <AvatarTitle
+                    className="line-clamp-3"
+                    size="lg"
+                    title={organization.name}
+                  />
+                  <OrgSocials
+                    className="gap-1 md:gap-3"
+                    twitterLabel={organization.twitter || ''}
+                    twitterAddress={organization.twitter || ''}
+                    facebookLabel={organization.facebook || ''}
+                    facebookAddress={organization.facebook || ''}
+                    websiteLabel={organization.url || ''}
+                    websiteAddress={organization.url || ''}
+                  />
+                </div>
+              </>
+              <DonateButton {...organization} />
             </div>
-            <div className="md:hidden">
-              <OrganizationAvatar
-                name={organization.name}
-                image={organization.image}
-                avatarProps={{ size: 'md', title: organization.name }}
-                // className="text-black md:text-white"
-              />
-            </div>
-            <div className="flex flex-col items-center pb-5 ml-4 mt-4 md:mt-0">
-              <Button className="text-white bg-green-500 md:bg-white md:text-black w-48">
-                Donate
-              </Button>
-              {organization.url ? (
-                <p className="text-sm font-semibold text-black md:text-white text-center mb-24 md:mb-0">
-                  to{' '}
-                  <span className="underline">
-                    <Link href={organization?.url ?? 'https://example.com'}>
-                      {organization.name}
-                    </Link>
-                  </span>
-                </p>
+          </div>
+
+          {/* Small */}
+          <div className="md:hidden flex flex-col items-center justify-stretch z-20">
+            <Avatar size="lg">
+              {organization.image ? (
+                <AvatarImage src={organization.image} alt={organization.name} />
               ) : (
-                <></>
+                <AvatarFallback>{organization.name.slice(0, 2)}</AvatarFallback>
               )}
-            </div>
+            </Avatar>
+            <AvatarTitle
+              className="line-clamp-3 text-center mt-4"
+              size="md"
+              title={organization.name}
+            />
+            <OrgSocials
+              className="gap-1 md:gap-3 md:hidden"
+              twitterLabel={organization.twitter || ''}
+              twitterAddress={organization.twitter || ''}
+              facebookLabel={organization.facebook || ''}
+              facebookAddress={organization.facebook || ''}
+              websiteLabel={organization.url || ''}
+              websiteAddress={organization.url || ''}
+            />
+            <DonateButton {...organization} />
           </div>
         </div>
 
-        <OrgSocials
-          className="pt-[25rem] md:ml-56 pl-[5%] gap-1 md:gap-3"
-          twitterLabel={organization.twitter || ''}
-          twitterAddress={organization.twitter || ''}
-          facebookLabel={organization.facebook || ''}
-          facebookAddress={organization.facebook || ''}
-          websiteLabel={organization.url || ''}
-          websiteAddress={organization.url || ''}
-        />
-
-        <div className="pt-20">
+        {/* Tabs */}
+        <div className="pt-8">
           <Tabs defaultValue="about">
             <TabsList className="bg-slate-100">
               <TabsTrigger value="about" className="font-semibold text-md">
