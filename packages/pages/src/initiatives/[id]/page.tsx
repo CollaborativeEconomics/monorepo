@@ -52,53 +52,61 @@ export default async function Initiative(props: {
   //console.log('INITIATIVE', initiative);
 
   return (
-    <main className="w-full mt-12">
+    <main className="w-full">
       <div className="relative flex flex-col px-[5%] container pt-24 w-full h-full">
-        <div className="flex overflow-hidden mb-4 flex-col md:flex-row">
-          <div className="relative w-full md:w-[45%] h-[200px] md:h-[300px] mb-12 md:mb-2">
-            <Image
-              className="h-[300px] rounded-lg"
-              src={initiative.defaultAsset || 'noimage.png'}
-              alt="IMG BG"
-              fill
-              style={{
-                objectFit: 'cover',
-              }}
+        <div className="relative h-96 rounded-lg overflow-hidden mb-4">
+          <div className="absolute left-0 right-0 top-0 bottom-0 h-full w-full bg-gradient-to-t from-black to-transparent opacity-50 z-10" />
+
+          <Image
+            src={initiative.defaultAsset || 'noimage.png'}
+            alt="Initiative background"
+            fill
+            style={{
+              objectFit: 'cover',
+              objectPosition: '50% top',
+            }}
+          />
+
+          <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+            <OrganizationAvatar
+              name={organization.name}
+              image={organization.image}
+              avatarProps={{ size: 'md' }}
+              className="mb-4"
             />
-          </div>
-          <div className="flex flex-col w-full h-auto">
-            <div className="w-auto w-max-full px-[5%] pb-6">
-              <OrganizationAvatar
-                name={organization.name}
-                image={organization.image}
-                avatarProps={{ size: 'md' }}
-              />
-            </div>
-            <h1 className="px-[5%] text-2xl font-medium pb-4">
+
+            <h1 className="text-2xl md:text-3xl font-medium text-white mb-3">
               {initiative.title}
             </h1>
-            <div className="flex mx-[5%] pb-3 overflow-hidden h-max-[40px]">
-              <span className="text-sm overflow-hidden line-clamp-6">
+
+            <div className="text-white/90 mb-4">
+              <span className="text-sm md:text-base line-clamp-2">
                 {initiative.description}
               </span>
             </div>
-            {initiatives?.length > 1 && (
-              <Link className="px-[5%] font-bold hover:underline" href="#more">
-                See more initiatives
-              </Link>
-            )}
-            {stories?.length > 0 && (
-              <Link
-                className="px-[5%] font-bold hover:underline"
-                href={`/stories?initiative=${initiative.id}`}
-              >
-                See impact storyline
-              </Link>
-            )}
+
+            <div className="flex gap-4 flex-wrap">
+              {initiatives?.length > 1 && (
+                <Link
+                  className="text-white font-bold hover:underline"
+                  href="#more"
+                >
+                  See more initiatives
+                </Link>
+              )}
+              {stories?.length > 0 && (
+                <Link
+                  className="text-white font-bold hover:underline"
+                  href={`/stories?initiative=${initiative.id}`}
+                >
+                  See impact storyline
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 
-        <Separator className="mb-6" />
+        <Separator className="mb-4" />
 
         <div className="md:flex md:flex-col items-center">
           <div className="flex flex-col lg:flex-row flex-nowrap gap-10 items-start">
