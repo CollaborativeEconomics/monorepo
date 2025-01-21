@@ -72,7 +72,7 @@ export default async function Home(props: {
     <main className="w-full bg-gradient-to-t from-slate-200">
       <div className="relative flex flex-col px-[5%] lg:container pt-24 w-full h-full">
         {/* Banner */}
-        <div className="relative h-96 -z-1 p-8 flex flex-col items-end rounded-md overflow-hidden">
+        <div className="relative md:h-96 -z-1 p-8 flex flex-col items-end rounded-md overflow-hidden">
           <div className="absolute left-0 right-0 top-0 bottom-0 h-full w-full bg-gradient-to-t from-black to-transparent opacity-70 z-10" />
           {organization.background && (
             <Image
