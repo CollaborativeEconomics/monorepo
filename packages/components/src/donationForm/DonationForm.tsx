@@ -59,7 +59,7 @@ interface DonationData {
   categoryId?: string;
   userId?: string;
   sender: string;
-  chainName: string;
+  chainName: Chain;
   network: string;
   coinValue: number;
   usdValue: number;
@@ -287,7 +287,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       if (!user) {
         user = await createAnonymousUser({
           walletAddress: paymentResult.walletAddress ?? '',
-          chain: selectedChain as Chain,
+          chain: chain.name,
           network: appConfig.chainDefaults.network,
         });
       }
@@ -299,7 +299,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         categoryId: undefined,
         userId: user.id,
         sender: paymentResult.walletAddress ?? '',
-        chainName: selectedChain,
+        chainName: chain.name,
         network: appConfig.chains[selectedChain]?.network ?? '',
         coinValue: coinAmount,
         usdValue: coinAmount * exchangeRate,
@@ -370,7 +370,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         }),
         userId,
         network,
-        chain: chainName as Chain,
+        chain: chainName,
         wallet: sender,
         amount: coinValue,
         usdvalue: usdValue,
