@@ -175,6 +175,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       };
       const result = await chainInterface.sendPayment(data);
       console.log('PAYMENT RESULT', result);
+      if (!result.success) {
+        throw new Error(result.error || 'Payment failed');
+      }
       return result;
     },
     [chainInterface, selectedChain],
@@ -334,6 +337,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     organization,
     initiative,
     exchangeRate,
+    chain.name,
   ]);
 
   function validateForm({ email }: { email: string }) {
