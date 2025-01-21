@@ -63,7 +63,7 @@ export default async function Initiative(props: {
             fill
             style={{
               objectFit: 'cover',
-              objectPosition: '50% top',
+              objectPosition: '50% 10%',
             }}
           />
 
