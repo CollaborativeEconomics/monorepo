@@ -1,3 +1,3 @@
-import { sharedNextConfig } from '@cfce/app-config';
+import sharedNextConfig from "@cfce/next-config"
 
-export default sharedNextConfig;
+export default sharedNextConfig

@@ -56,6 +56,9 @@ importers:
       '@cfce/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@cfce/next-config':
+        specifier: workspace:*
+        version: link:../../packages/next-config
       '@cfce/pages':
         specifier: workspace:*
         version: link:../../packages/pages
@@ -334,6 +337,9 @@ importers:
       '@cfce/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@cfce/next-config':
+        specifier: workspace:*
+        version: link:../../packages/next-config
       '@cfce/pages':
         specifier: workspace:*
         version: link:../../packages/pages
@@ -563,6 +569,9 @@ importers:
       '@cfce/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@cfce/next-config':
+        specifier: workspace:*
+        version: link:../../packages/next-config
       '@cfce/pages':
         specifier: workspace:*
         version: link:../../packages/pages
@@ -795,6 +804,9 @@ importers:
       '@cfce/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@cfce/next-config':
+        specifier: workspace:*
+        version: link:../../packages/next-config
       '@cfce/pages':
         specifier: workspace:*
         version: link:../../packages/pages
