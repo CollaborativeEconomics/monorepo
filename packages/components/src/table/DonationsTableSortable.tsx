@@ -115,6 +115,8 @@ function downloadPDF(data: Donation[]) {
     "Impact",
   ]
 
+  console.log("DATA", data);
+
   // Convert data to table format
   const tableData = data.map((row) => [
     new Date(row.created).toLocaleString(),
