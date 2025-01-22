@@ -2,7 +2,7 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "inputs": ["$TURBO_DEFAULT$", ".env", ".process.env.local"],
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
       "env": [
         "PROVIDER_URL",
         "MINTER_CONTRACT",
