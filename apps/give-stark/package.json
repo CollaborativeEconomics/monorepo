@@ -17,6 +17,7 @@
     "@cfce/app-config": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
+    "@cfce/next-config": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
     "@cfce/api": "workspace:*",
     "@cfce/components": "workspace:*",

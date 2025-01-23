@@ -145,7 +145,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       return fallbackAddress;
     }
 
-    handleError(new Error('No wallet found for chain'));
+    handleError(new Error(`No wallet found for chain ${chain?.name}`));
     return '';
   }, [organization, initiative, chain, handleError]);
 
