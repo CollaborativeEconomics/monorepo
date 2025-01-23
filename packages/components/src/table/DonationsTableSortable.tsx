@@ -1,5 +1,8 @@
 "use client"
-import type { DonationWithRelations } from "@cfce/database"
+import type {
+  DonationWithRelations,
+  NFTDataWithRelations,
+} from "@cfce/database"
 import {
   type SortingState,
   createColumnHelper,
@@ -54,6 +57,9 @@ type Donation = {
   impactScore?: string
   impactLabel?: string
   impact?: string
+  coinAmount?: number
+  asset?: string
+  wallet?: string
 }
 
 function money(amount: number) {
@@ -65,9 +71,11 @@ function downloadCSV(data: Donation[]) {
     "Date",
     "Initiative",
     "Organization",
-    "Amount",
+    "USD Amount",
     "Chain",
     "Impact",
+    "Coin Amount",
+    "Asset",
   ]
   const csvContent = [
     headers.join(","),
@@ -79,6 +87,8 @@ function downloadCSV(data: Donation[]) {
         row.amount,
         row.chain,
         `"${row.impact}"`,
+        row.coinAmount,
+        row.asset,
       ].join(","),
     ),
   ].join("\n")
@@ -94,12 +104,16 @@ function downloadCSV(data: Donation[]) {
 }
 
 function downloadPDF(data: Donation[]) {
-  // Create PDF document
   const doc = new jsPDF()
 
-  // Add title
+  // Format wallet address: first 6 chars + "..." + last 5 chars
+  const wallet = data[0].wallet
+  const formattedWallet = wallet
+    ? `${wallet.slice(0, 6)}...${wallet.slice(-5)}`
+    : ""
+
   doc.setFontSize(16)
-  doc.text("Donations Report", 20, 20)
+  doc.text(`Donations Report for ${formattedWallet}`, 20, 20)
 
   // Add date
   doc.setFontSize(11)
@@ -110,12 +124,14 @@ function downloadPDF(data: Donation[]) {
     "Date",
     "Initiative",
     "Organization",
-    "Amount",
+    "USD Amount",
     "Chain",
     "Impact",
+    "Coin Amount",
+    "Asset",
   ]
 
-  console.log("DATA", data);
+  console.log("DATA", data)
 
   // Convert data to table format
   const tableData = data.map((row) => [
@@ -125,6 +141,8 @@ function downloadPDF(data: Donation[]) {
     `$${row.amount.toFixed(2)}`,
     row.chain,
     row.impact,
+    row.coinAmount,
+    row.asset,
   ])
 
   // Add table
@@ -151,6 +169,7 @@ export default function DonationsTableSortable(
   const donations = props?.donations || []
 
   const recs: Donation[] = donations.map((rec) => {
+    console.log("REC", rec)
     const unitValue =
       rec.impactlinks.length > 0 ? rec.impactlinks[0].story?.unitvalue || 0 : 0
     let impactScore = ""
@@ -167,6 +186,7 @@ export default function DonationsTableSortable(
     }
     //console.log('UNITS', unitValue, unitLabel)
     console.log("IMPACT", impactScore, impactLabel)
+
     const item = {
       id: rec.id,
       created: rec.created,
@@ -179,6 +199,9 @@ export default function DonationsTableSortable(
       impactScore,
       impactLabel,
       impact: `${impactScore} ${impactLabel}`,
+      coinAmount: Number(rec.amount),
+      asset: rec.asset || "",
+      wallet: rec.wallet || "",
     }
     return item
   })
@@ -186,6 +209,8 @@ export default function DonationsTableSortable(
   const [data, setData] = useState(recs)
   const [order, setOrder] = useState("")
   const [sorting, setSorting] = useState<SortingState>([])
+
+  console.log("DATA", data)
 
   //const columnHelper = createColumnHelper<DonationWithRelations>();
   const columnHelper = createColumnHelper<Donation>()

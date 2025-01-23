@@ -150,7 +150,7 @@ class StarknetWallet extends InterfaceBaseClass {
     }
   }
 
-  public async sendPaymentWithGas(address: string, amount: number) {
+  public async sendPayment({ address, amount, memo }: { address: string; amount: number; memo?: string }) {
     try {
       if (!this.connector) {
         ({ connector: this.connector } = await this.getWallet())
@@ -172,7 +172,6 @@ class StarknetWallet extends InterfaceBaseClass {
       if (txResult.statusReceipt === "success") {
         return {
           success: true,
-          result: txResult,
           txid: tx,
           walletAddress: this.connectedWallet,
         }
@@ -181,7 +180,6 @@ class StarknetWallet extends InterfaceBaseClass {
       return {
         success: false,
         error: "Transaction failed",
-        result: txResult,
         txid: tx,
       }
     } catch (gasErr) {
@@ -230,7 +228,7 @@ class StarknetWallet extends InterfaceBaseClass {
     ]
   }
 
-  async sendPayment({
+  async sendGaslessPayment({
     address,
     amount,
     memo,
@@ -241,7 +239,7 @@ class StarknetWallet extends InterfaceBaseClass {
         !process.env.NEXT_PUBLIC_AVNU_PUBLIC_KEY ||
         !process.env.NEXT_PUBLIC_AVNU_KEY
       ) {
-        return this.sendPaymentWithGas(address, amount)
+        return this.sendPayment({address, amount})
       }
 
       let connector = this.connector
@@ -291,7 +289,6 @@ class StarknetWallet extends InterfaceBaseClass {
       if (result.statusReceipt === "success") {
         return {
           success: true,
-          result,
           txid: tx,
           walletAddress: this.connectedWallet,
         }
@@ -300,7 +297,6 @@ class StarknetWallet extends InterfaceBaseClass {
       return {
         success: false,
         error: "Transaction failed",
-        result,
         txid: tx,
       }
     } catch (err) {
