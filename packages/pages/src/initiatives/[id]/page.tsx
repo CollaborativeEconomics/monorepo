@@ -2,11 +2,11 @@ import React from 'react';
 
 import appConfig from '@cfce/app-config';
 import { getCoinRate } from '@cfce/blockchain-tools/server';
-import { getInitiativeById, getInitiatives } from '@cfce/database';
 import { DonationForm, NFTReceipt } from '@cfce/components/donationForm';
 import { InitiativeCardCompact } from '@cfce/components/initiative';
 import { OrganizationAvatar } from '@cfce/components/organization';
 import { Separator } from '@cfce/components/ui';
+import { getInitiativeById, getInitiatives } from '@cfce/database';
 import Image from 'next/image';
 import Link from 'next/link';
 import NotFound from '../../not-found';
@@ -15,7 +15,7 @@ export default async function Initiative(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const initiative = (await getInitiativeById(params?.id)) || null;
+  const initiative = await getInitiativeById(params?.id);
   //console.log('INIT', initiative)
   if (!initiative) {
     return <NotFound />;
@@ -29,7 +29,7 @@ export default async function Initiative(props: {
   //});
 
   const organization = initiative.organization;
-  const initiatives = (await getInitiatives({ orgId: organization.id })) ?? [];
+  const initiatives = await getInitiatives({ orgId: organization.id });
   const stories = initiative.stories;
   console.log('STORIES', stories.length);
   // TODO: use default chain
@@ -66,8 +66,7 @@ export default async function Initiative(props: {
           <div className="flex flex-col w-full h-auto">
             <div className="w-auto w-max-full px-[5%] pb-6">
               <OrganizationAvatar
-                name={organization.name}
-                image={organization.image}
+                organization={organization}
                 avatarProps={{ size: 'md' }}
               />
             </div>
@@ -125,9 +124,7 @@ export default async function Initiative(props: {
                     return (
                       <InitiativeCardCompact
                         key={`other-${otherInitiative.id}`}
-                        {...otherInitiative}
-                        name={organization.name}
-                        avatarImg={organization.image ?? undefined}
+                        initiative={otherInitiative}
                       />
                     );
                   })

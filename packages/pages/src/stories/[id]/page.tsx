@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { getStoryById } from '@cfce/database';
-import { NotFound } from '@cfce/components/navigation';
 import { OrganizationAvatar } from '@cfce/components/organization';
 import {
   Card,
@@ -11,8 +9,9 @@ import {
   Gallery,
   ShareModal,
 } from '@cfce/components/ui';
+import { getStoryById } from '@cfce/database';
 import Image from 'next/image';
-import Link from 'next/link';
+import NotFound from '../../not-found';
 
 export default async function Story(props: {
   params: Promise<{ id: string }>;
@@ -50,12 +49,7 @@ export default async function Story(props: {
                   </a>
                 </span>
               </p>
-              <Link href={`/organizations/${story.organization.id}`}>
-                <OrganizationAvatar
-                  name={story.organization.name}
-                  image={story.organization.image}
-                />
-              </Link>
+              <OrganizationAvatar organization={story.organization} />
             </div>
             <div className="flex flex-col items-center">
               {story.initiative.category ? (

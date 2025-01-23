@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { getOrganizationById, getStories } from '@cfce/database';
 import { InitiativeCard } from '@cfce/components/initiative';
 import { OrganizationAvatar } from '@cfce/components/organization';
 import { StoryCard } from '@cfce/components/story';
@@ -13,6 +12,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@cfce/components/ui';
+import { getOrganizationById, getStories } from '@cfce/database';
 import Image from 'next/image';
 import Link from 'next/link';
 import NotFound from '../../not-found';
@@ -29,7 +29,11 @@ export default async function Home(props: {
     return <NotFound />;
   }
   const stories = (await getStories({ orgId })) || [];
-  const initiatives = organization.initiative;
+  // append organization to each initiative
+  const initiatives = organization.initiative.map(i => ({
+    ...i,
+    organization,
+  }));
 
   return (
     <main className="w-full bg-gradient-to-t from-slate-200">
@@ -49,9 +53,8 @@ export default async function Home(props: {
 
           <div className="flex flex-col lg:flex-row absolute justify-center lg:justify-between items-center justify-between gap-y-5 w-full w-max-full px-[5%] -translate-y-[0%] lg:-translate-y-[80%]">
             <OrganizationAvatar
-              name={organization.name}
-              image={organization.image}
-              avatarProps={{ size: 'lg', title: organization.name }}
+              organization={organization}
+              avatarProps={{ size: 'lg' }}
               className="text-black lg:text-white"
             />
             <div className="flex flex-col items-center pb-5 ml-4 mt-4 lg:mt-0">
@@ -119,8 +122,9 @@ export default async function Home(props: {
             <div className="flex flex-col gap-5 w-full md:w-2/6 min-w-[350px]">
               <p className="text-3xl font-semibold">Initiatives</p>
               {initiatives.map(initiative => {
-                //initiative.organization = organization
-                return <InitiativeCard key={initiative.id} data={initiative} />;
+                return (
+                  <InitiativeCard key={initiative.id} initiative={initiative} />
+                );
               })}
             </div>
             <div className="flex flex-col gap-5 md:w-4/6">

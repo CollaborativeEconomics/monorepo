@@ -6,7 +6,12 @@ import {
   BlockchainClientInterfaces,
   chainConfig,
 } from '@cfce/blockchain-tools';
-import type { Chain, Prisma, User } from '@cfce/database';
+import type {
+  Chain,
+  InitiativeWithRelations,
+  Prisma,
+  User,
+} from '@cfce/database';
 import {
   PAYMENT_STATUS,
   amountCoinAtom,
@@ -43,13 +48,7 @@ import { RateMessage } from './RateMessage';
 import { WalletSelect } from './WalletSelect';
 
 interface DonationFormProps {
-  initiative: Prisma.InitiativeGetPayload<{
-    include: {
-      organization: { include: { wallets: true } };
-      credits: true;
-      wallets: true;
-    };
-  }>;
+  initiative: InitiativeWithRelations;
   rate: number;
 }
 

@@ -1,35 +1,29 @@
-"use client"
-import type { Prisma } from "@cfce/database"
+'use client';
+import type { InitiativeWithRelations, Prisma } from '@cfce/database';
 import {
   amountCoinAtom,
   amountUSDAtom,
   chainAtom,
   donationFormAtom,
-} from "@cfce/state"
-import { localizedNumber } from "@cfce/utils"
-import { useAtomValue } from "jotai"
-import Image from "next/image"
-import React from "react"
-import { TimestampToDateString } from "~/ui/date-posted"
-import { ReceiptStatus } from "~/ui/receipt-status"
-import { NFTReceiptText } from "./NFTReceiptText"
+} from '@cfce/state';
+import { localizedNumber } from '@cfce/utils';
+import { useAtomValue } from 'jotai';
+import Image from 'next/image';
+import React from 'react';
+import { TimestampToDateString } from '~/ui/date-posted';
+import { ReceiptStatus } from '~/ui/receipt-status';
+import { NFTReceiptText } from './NFTReceiptText';
 
 interface ReceiptNFTProps {
-  initiative: Prisma.InitiativeGetPayload<{
-    include: {
-      organization: { include: { wallets: true } }
-      credits: true
-      wallets: true
-    }
-  }>
+  initiative: InitiativeWithRelations;
 }
 
 export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
-  const organization = initiative.organization
-  const donationForm = useAtomValue(donationFormAtom)
-  const { selectedToken } = useAtomValue(chainAtom)
-  const usdAmount = useAtomValue(amountUSDAtom)
-  const coinAmount = useAtomValue(amountCoinAtom)
+  const organization = initiative.organization;
+  const donationForm = useAtomValue(donationFormAtom);
+  const { selectedToken } = useAtomValue(chainAtom);
+  const usdAmount = useAtomValue(amountUSDAtom);
+  const coinAmount = useAtomValue(amountCoinAtom);
   // const [disabled, setDisabled] = useState(true);
   //console.log('Receipt:', receipt)
   //console.log('Donation', donation)
@@ -38,7 +32,7 @@ export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
     <div
       className="flex min-h-full w-full"
       style={{
-        mask: "conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/20px 100%",
+        mask: 'conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/20px 100%',
       }}
     >
       <div className="relative bg-card p-6 h-auto shadow-2xl border dark:border-slate-600">
@@ -50,12 +44,10 @@ export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
         <div className="relative my-4 w-full h-48">
           <Image
             // TODO: provide fallback
-            src={initiative.defaultAsset ?? ""}
+            src={initiative.defaultAsset ?? ''}
             alt="IMG BG"
             fill
-            style={{
-              objectFit: "cover",
-            }}
+            className="rounded-sm object-cover"
           />
         </div>
         <ReceiptStatus status={donationForm.paymentStatus} />
@@ -111,5 +103,5 @@ export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

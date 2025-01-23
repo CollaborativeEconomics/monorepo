@@ -11,6 +11,7 @@ import type {
 import { type Chain, ChainNames } from '@cfce/types';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { Badge } from '~/ui/badge';
 import { Button } from '~/ui/button';
@@ -117,15 +118,14 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
             </CardContent>
 
             <CardFooter className="p-4 pt-0 gap-2 shrink-0">
-              <Button
-                variant="default"
-                className="flex-1"
-                onClick={() => {
-                  const url = `${network.explorer}/token/${tokenId}`;
-                  window.open(url, '_blank');
-                }}
-              >
-                View NFT
+              <Button variant="default" className="flex-1">
+                <Link
+                  target="_blank"
+                  // TODO: why do we include lastId in the tokenId?
+                  href={`${network.explorer}/token/${tokenId.split(' ')[0]}`}
+                >
+                  View NFT
+                </Link>
               </Button>
               <Button
                 variant="outline"

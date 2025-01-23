@@ -1,10 +1,10 @@
 import React from 'react';
 
 import appConfig from '@cfce/app-config';
-import { chainConfig, getChainConfiguration } from '@cfce/blockchain-tools';
-import { getNFTById } from '@cfce/database';
+import { chainConfig } from '@cfce/blockchain-tools';
 import { OrganizationAvatar } from '@cfce/components/organization';
 import { Card, CardContent } from '@cfce/components/ui';
+import { getNFTById } from '@cfce/database';
 import Image from 'next/image';
 import Link from 'next/link';
 import NotFound from '../../not-found';
@@ -51,14 +51,7 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
               </>
             )}
             <div className="flex flex-row justify-between border-t mt-4 pt-4">
-              <div>
-                <Link href={`/organizations/${nft.organization.id}`}>
-                  <OrganizationAvatar
-                    name={nft.organization.name}
-                    image={nft.organization.image}
-                  />
-                </Link>
-              </div>
+              <OrganizationAvatar organization={nft.organization} />
               {nft.initiative?.category && (
                 <div className="flex flex-col items-center">
                   {nft.initiative.category ? (
@@ -90,53 +83,53 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
             <h1 className="mt-4 text-4xl">NFT Info</h1>
             <div className="flex flex-col justify-start border-t mt-4 pt-4">
               <p className="mt-4">
-                <label className="inline-block w-32 text-slate-400 font-semibold">
+                <span className="inline-block w-32 text-slate-400 font-semibold">
                   Minted:
-                </label>{' '}
+                </span>{' '}
                 <span>{new Date(nft.created).toLocaleString()}</span>
               </p>
               <p className="mt-4">
-                <label className="inline-block w-32 text-slate-400 font-semibold">
+                <span className="inline-block w-32 text-slate-400 font-semibold">
                   Chain:
-                </label>{' '}
+                </span>{' '}
                 <span>{nft.coinLabel}</span>
               </p>
               <p className="mt-4">
-                <label className="inline-block w-32 text-slate-400 font-semibold">
+                <span className="inline-block w-32 text-slate-400 font-semibold">
                   Network:
-                </label>{' '}
+                </span>{' '}
                 <span>{nft.coinNetwork}</span>
               </p>
               <p className="mt-4">
-                <label className="inline-block w-32 text-slate-400 font-semibold">
+                <span className="inline-block w-32 text-slate-400 font-semibold">
                   Wallet:
-                </label>{' '}
+                </span>{' '}
                 <span>{`${nft.donorAddress.substr(0, 12)}...`}</span>
               </p>
               <p className="mt-4">
-                <label className="inline-block w-32 text-slate-400 font-semibold">
+                <span className="inline-block w-32 text-slate-400 font-semibold">
                   Amount:
-                </label>{' '}
+                </span>{' '}
                 <span>
                   {`${nft.coinValue}`} {nft.coinSymbol}
                 </span>
               </p>
               <p className="mt-4">
-                <label className="inline-block w-32 text-slate-400 font-semibold">
+                <span className="inline-block w-32 text-slate-400 font-semibold">
                   USD Value:
-                </label>{' '}
+                </span>{' '}
                 <span>{`${nft.usdValue}`}</span>
               </p>
               <p className="mt-4">
-                <label className="inline-block w-32 text-slate-400 font-semibold">
+                <span className="inline-block w-32 text-slate-400 font-semibold">
                   Token ID:
-                </label>{' '}
+                </span>{' '}
                 <span className="text-xl">{tokenId}</span>
               </p>
               <p className="mt-4">
-                <label className="inline-block w-32 text-slate-400 font-semibold">
+                <span className="inline-block w-32 text-slate-400 font-semibold">
                   Contract:
-                </label>{' '}
+                </span>{' '}
                 <span>
                   <a href={explorer}>{`${contract.substr(0, 12)}...`}</a>
                 </span>

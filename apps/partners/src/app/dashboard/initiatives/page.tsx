@@ -11,7 +11,8 @@ export default async function Page() {
 
   const organization = await getOrganizationById(orgId);
 
-  const initiatives = organization?.initiative || [];
+  const initiatives =
+    organization?.initiative.map(i => ({ ...i, organization })) || [];
 
   return (
     <div className={styles.content}>
@@ -28,7 +29,7 @@ export default async function Page() {
       {initiatives.length > 0 ? (
         initiatives.map((item: Initiative) => (
           <div className={styles.mainBox} key={item.id}>
-            <InitiativeCard key={item.id} {...item} />
+            <InitiativeCard key={item.id} initiative={item} />
           </div>
         ))
       ) : (

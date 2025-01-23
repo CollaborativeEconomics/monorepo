@@ -1,6 +1,6 @@
 'use client';
 import type { User } from '@cfce/database';
-import { imageUrl } from '@cfce/utils';
+import { ipfsCIDToUrl } from '@cfce/utils';
 import Image from 'next/image';
 import { v7 as uuidv7 } from 'uuid';
 import TextInput from '../../form/textinput';
@@ -52,7 +52,7 @@ export function ProfileForm({ user }: Props) {
         <div className="flex flex-row flex-start items-start rounded-full">
           <Image
             className="mr-8 rounded-full"
-            src={user.image ? imageUrl(user.image) : nopic}
+            src={user.image ? ipfsCIDToUrl(user.image) : nopic}
             width={100}
             height={100}
             alt="Avatar"
