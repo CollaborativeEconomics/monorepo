@@ -19,7 +19,6 @@ async function DonationsData({ userId }: Props) {
     getDonations({ userId }),
   ])
 
-
   return (
     <div className="w-full border rounded-md p-10 bg-card">
       {/* NFT card view */}
