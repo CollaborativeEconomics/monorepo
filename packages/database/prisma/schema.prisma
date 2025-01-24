@@ -248,6 +248,8 @@ model NFTData {
   coinSymbol     String?      @db.VarChar(20)
   coinValue      Decimal      @default(0) @db.Decimal(14, 4)
   usdValue       Decimal      @default(0) @db.Decimal(14, 4)
+  transactionId  String?      @db.VarChar(255)
+  contractId     String?      @db.VarChar(255)
   tokenId        String       @db.VarChar(255)
   offerId        String?      @db.VarChar(255)
   status         Int          @default(0)
@@ -379,11 +381,12 @@ model Story {
 }
 
 model StoryMedia {
-  id      String  @id(map: "storypics_pkey") @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  storyId String  @db.Uuid
-  media   String  @db.VarChar(255)
-  mime    String? @db.VarChar(60)
-  story   Story   @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  id      String   @id(map: "storypics_pkey") @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created DateTime @default(now()) @db.Timestamptz(6)
+  storyId String   @db.Uuid
+  media   String   @db.VarChar(255)
+  mime    String?  @db.VarChar(60)
+  story   Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
 
   @@map("storymedia")
 }
