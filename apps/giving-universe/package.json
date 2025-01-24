@@ -16,6 +16,7 @@
     "@aws-sdk/client-s3": "^3.709.0",
     "@cfce/analytics": "workspace:*",
     "@cfce/app-config": "workspace:*",
+    "@cfce/next-config": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",

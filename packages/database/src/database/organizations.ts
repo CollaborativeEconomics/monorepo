@@ -13,10 +13,11 @@ interface OrganizationQuery extends ListQuery {
   featured?: boolean
 }
 
-const includePayload = {
+const includePayload: Prisma.OrganizationInclude = {
   category: true,
   wallets: true,
   initiative: {
+    orderBy: { created: "desc" },
     include: { credits: true },
   },
   stories: {
@@ -32,7 +33,9 @@ const includePayload = {
   },
 }
 
-export type OrganizationData = Prisma.OrganizationGetPayload<{ include: typeof includePayload }>
+export type OrganizationData = Prisma.OrganizationGetPayload<{
+  include: typeof includePayload
+}>
 
 export async function getOrganizations(
   query: OrganizationQuery,
@@ -140,19 +143,23 @@ export async function getOrganizations(
   return data
 }
 
-export async function getOrganizationById(id: string): Promise<OrganizationData | null> {
+export async function getOrganizationById(
+  id: string,
+): Promise<OrganizationData | null> {
   const organization = await prismaClient.organization.findUnique({
     where: { id },
-    include: includePayload
+    include: includePayload,
   })
   return organization
 }
 
-export async function getOrganizationByEmail(email: string): Promise<OrganizationData | null> {
+export async function getOrganizationByEmail(
+  email: string,
+): Promise<OrganizationData | null> {
   //console.log('EMAIL', email)
   const organization = await prismaClient.organization.findFirst({
     where: { email },
-    include: includePayload
+    include: includePayload,
   })
   //console.log('ORG', organization)
   return organization
@@ -161,7 +168,7 @@ export async function getOrganizationByEmail(email: string): Promise<Organizatio
 export async function getFeaturedOrganization(): Promise<OrganizationData | null> {
   const organizations = await prismaClient.organization.findMany({
     where: { featured: true },
-    include: includePayload
+    include: includePayload,
   })
   const organization = organizations.length
     ? (organizations[0] as OrganizationData)

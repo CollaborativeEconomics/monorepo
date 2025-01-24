@@ -18,6 +18,7 @@
     "@cfce/api": "workspace:*",
     "@cfce/components": "workspace:*",
     "@cfce/pages": "workspace:*",
+    "@cfce/next-config": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@contentful/rich-text-react-renderer": "^16.0.1",
     "@contentful/rich-text-types": "17.0.0",
