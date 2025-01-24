@@ -1,29 +1,28 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import React from "react"
-import { Button } from "~/ui/button"
-import { Card, CardContent, CardHeader } from "~/ui/card"
-import { OrgStats } from "~/ui/org-stats"
-import { Separator } from "~/ui/separator"
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import { Button } from '~/ui/button';
+import { Card, CardContent, CardHeader } from '~/ui/card';
+import { OrgStats } from '~/ui/org-stats';
+import { Separator } from '~/ui/separator';
 
 const dummyImgSrc: string =
-  "https://partners.cfce.io/_next/image?url=https%3A%2F%2Fipfs.filebase.io%2Fipfs%2FQmcS3rZdEzNkYxSd79AJVgjkDpK7sBd1ej99i4sBXD1mkQ&w=256&q=75"
+  'https://partners.cfce.io/_next/image?url=https%3A%2F%2Fipfs.filebase.io%2Fipfs%2FQmcS3rZdEzNkYxSd79AJVgjkDpK7sBd1ej99i4sBXD1mkQ&w=256&q=75';
 
 export default function OrganizationCard({ ...props }) {
-  const organization = props?.data || {}
+  const organization = props?.data || {};
   if (!organization.id) {
-    return <></>
+    return <></>;
   }
-  const orgurl = `/organizations/${organization.id}`
-  let image = dummyImgSrc
+  const orgurl = `/organizations/${organization.id}`;
+  let image = dummyImgSrc;
   if (organization.image) {
-    image = organization.image.startsWith("ipfs")
+    image = organization.image.startsWith('ipfs')
       ? `https://ipfs.filebase.io/ipfs/${organization.image.substr(5)}`
-      : organization.image
+      : organization.image;
   }
   //const startDate = new Date(organization?.start).getTime()
-  const progress = (organization.donations / organization.goal) * 100
+  const progress = (organization.donations / organization.goal) * 100;
 
   return (
     <Card className="flex flex-col overflow-hidden h-auto">
@@ -34,7 +33,7 @@ export default function OrganizationCard({ ...props }) {
             alt="IMG BG"
             fill
             style={{
-              objectFit: "cover",
+              objectFit: 'cover',
             }}
           />
         </Link>
@@ -71,5 +70,5 @@ export default function OrganizationCard({ ...props }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

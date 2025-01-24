@@ -153,9 +153,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       return fallbackAddress
     }
 
-    handleError(new Error("No wallet found for chain"))
-    return ""
-  }, [organization, initiative, chain, handleError])
+    handleError(new Error(`No wallet found for chain ${chain?.name}`));
+    return '';
+  }, [organization, initiative, chain, handleError]);
 
   const checkBalance = useCallback(async () => {
     if (!chainInterface?.connect) {

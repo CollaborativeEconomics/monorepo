@@ -1,0 +1,16 @@
+{
+  "name": "@cfce/next-config",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "types": "index.d.ts",
+  "dependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "devDependencies": {
+    "next": "^15.1.0"
+  },
+  "peerDependencies": {
+    "next": "^15.1.0"
+  }
+}

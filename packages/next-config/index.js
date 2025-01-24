@@ -1,9 +1,21 @@
 const path = require('node:path');
 
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
+const webpackConfig = (config, { isServer }) => {
+  if (isServer) {
+    config.ignoreWarnings = [{ module: /opentelemetry/ }];
+  } else {
+    config.externals = config.externals || [];
+    config.externals.push(({ request }, callback) => {
+      if (/^node:/.test(request)) {
+        return callback(null, `commonjs ${request}`);
+      }
+      callback();
+    });
+  }
+  return config;
+};
+
+const sharedNextConfig = {
   images: {
     remotePatterns: [
       {
@@ -14,13 +26,13 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
+        hostname: 'cfce.io',
         port: '',
-        pathname: '/a/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'givecredit.cfce.io',
+        hostname: 'partners.cfce.io',
         port: '',
         pathname: '/**',
       },
@@ -36,30 +48,25 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
-    // instrumentationHook: true,
     optimizePackageImports: [
       '@cfce/components',
+      '@cfce/blockchain-tools',
       '@cfce/utils',
       '@cfce/pages',
-      '@cfce/blockchain-tools',
+      '@cfce/api',
     ],
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.externals = config.externals || [];
-      config.externals.push(({ context, request }, callback) => {
-        if (/^node:/.test(request)) {
-          return callback(null, `commonjs ${request}`);
-        }
-        callback();
-      });
-    }
-    return config;
-  },
+  webpack: webpackConfig,
 };
 
-module.exports = nextConfig;
+module.exports = sharedNextConfig;

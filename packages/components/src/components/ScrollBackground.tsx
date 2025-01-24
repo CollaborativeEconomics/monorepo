@@ -6,15 +6,12 @@ interface ScrollBackgroundProps {
   className?: string;
 }
 
-const headerClass =
-  'backdrop-blur-lg bg-white/90 dark:bg-background/90 py-4 shadow-md';
-
 export function ScrollBackground({
   children,
   className,
 }: ScrollBackgroundProps) {
   const [scrollY, setScrollY] = useState(0);
-  const [backgroundClass, setBackgroundClass] = useState('bg-transparent');
+  const [backgroundTransparent, setBackgroundTransparent] = useState(true);
 
   const handleScroll = useCallback(() => {
     const frameId = requestAnimationFrame(() => {
@@ -43,16 +40,20 @@ export function ScrollBackground({
 
   useEffect(() => {
     if (scrollY > 0) {
-      setBackgroundClass(headerClass);
+      setBackgroundTransparent(false);
     } else {
-      setBackgroundClass('bg-transparent');
+      setBackgroundTransparent(true);
     }
   }, [scrollY]);
 
-  console.log({ backgroundClass });
-
   return (
-    <div className={`transition-all ${backgroundClass} ${className}`}>
+    <div
+      className={`transition-all ${
+        backgroundTransparent
+          ? 'bg-transparent'
+          : 'backdrop-blur-lg bg-white/70 dark:bg-background/70 shadow-md'
+      } ${className}`}
+    >
       {children}
     </div>
   );
