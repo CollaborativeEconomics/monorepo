@@ -14,7 +14,7 @@ export default function ImpactCarousel(props: { initiatives: Initiative[] }) {
   return (
     <div className="relative left-0 right-0">
       <Swiper
-        slidesPerView={3}
+        // slidesPerView={3}
         spaceBetween={30}
         pagination={{ clickable: true }}
         className="impactCarousel"

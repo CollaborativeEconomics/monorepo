@@ -66,15 +66,6 @@ export default async function Initiative(props: {
               objectPosition: '50% 10%',
             }}
           />
-
-          <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-            <OrganizationAvatar
-              name={organization.name}
-              image={organization.image}
-              avatarProps={{ size: 'md' }}
-              className="mb-4"
-            />
-          </div>
           <div className="flex flex-col w-full h-auto">
             <div className="w-auto w-max-full px-[5%] pb-6">
               <OrganizationAvatar
@@ -82,7 +73,7 @@ export default async function Initiative(props: {
                 avatarProps={{ size: 'md' }}
               />
             </div>
-            <h1 className="px-[5%] text-2xl font-medium pb-4">
+            <h1 className="text-2xl md:text-3xl font-medium text-white mb-3">
               {initiative.title}
             </h1>
 

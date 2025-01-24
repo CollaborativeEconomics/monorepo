@@ -1,6 +1,6 @@
 export { default as ActionBar } from "./ActionBar"
 export { default as ImpactCarousel } from "./ImpactCarousel"
 export { default as InstructionPanes } from "./InstructionPanes"
-export * from "./OverlayHandler"
+export * from "./InstructionPanes/OverlayHandler"
 export { default as RiveAnimation } from "./RiveAnimation"
 export { default as VideoBackground } from "./VideoBackground"
