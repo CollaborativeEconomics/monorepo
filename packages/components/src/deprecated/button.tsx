@@ -1,13 +1,13 @@
-import React, { HTMLAttributes } from 'react';
-import Icon from '~/ui/icon';
+import React, { HTMLAttributes } from "react"
+import Icon from "~/ui/icon"
 
 interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
-  text: string;
-  icon?: string;
-  loading?: boolean;
-  iconClassStyle?: string;
-  iconColor?: string;
-  disabled?: boolean;
+  text: string
+  icon?: string
+  loading?: boolean
+  iconClassStyle?: string
+  iconColor?: string
+  disabled?: boolean
 }
 
 // @deprecated use ui/button
@@ -42,8 +42,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       {props.children}
     </button>
   ),
-);
+)
 
-Button.displayName = 'Button';
+Button.displayName = "Button"
 
-export default Button;
+export default Button

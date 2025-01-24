@@ -1,19 +1,19 @@
-import type { Organization } from '@cfce/database';
-import Image from 'next/image';
-import React from 'react';
+import type { Organization } from "@cfce/database"
+import Image from "next/image"
+import React from "react"
 
 export default function OrganizationList({
   organizations,
   onOrgPress,
 }: {
-  organizations: Organization[];
-  onOrgPress: (org: Organization) => void;
+  organizations: Organization[]
+  onOrgPress: (org: Organization) => void
 }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 auto-rows-max">
-      {organizations.map(organization => {
+      {organizations.map((organization) => {
         if (organization.inactive) {
-          return null;
+          return null
         }
         return (
           <div
@@ -38,8 +38,8 @@ export default function OrganizationList({
             </button>
             <div className="bg-gradient-to-b from-transparent to-black absolute top-2/3 left-0 right-0 bottom-0 z-0" />
           </div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

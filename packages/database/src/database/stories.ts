@@ -6,6 +6,7 @@ interface StoryQuery extends ListQuery {
   orgId?: string
   initId?: string
   recent?: number
+  userId?: string // filter by user's donations
 }
 
 export type StoryWithRelations = Prisma.StoryGetPayload<{
@@ -33,20 +34,34 @@ export async function getStories(
   const take = 100
   const orderBy = { created: "desc" } as Prisma.StoryOrderByWithRelationInput
 
-  if (query?.recent) {
-    const qty = query.recent || 10
-    const result = await prismaClient.story.findMany({
-      include,
-      take: qty,
-      orderBy: { created: "desc" },
-    })
-    return result
-  }
-
   if (query?.orgId) {
     where = { organizationId: query.orgId }
   } else if (query?.initId) {
     where = { initiativeId: query.initId }
+  }
+
+  if (query?.userId) {
+    const userDonations = await prismaClient.donation.findMany({
+      where: { userId: query.userId },
+      select: { initiativeId: true },
+    })
+
+    where = {
+      ...where,
+      initiativeId: {
+        in: userDonations.map((d) => d.initiativeId),
+      },
+    }
+  }
+
+  if (query?.recent) {
+    const qty = query.recent || 10
+    return prismaClient.story.findMany({
+      where,
+      include,
+      take: qty,
+      orderBy: { created: "desc" },
+    })
   }
 
   const filter = { where, include, skip, take, orderBy }
@@ -65,10 +80,9 @@ export async function getStories(
     const start = page * size
     filter.skip = start
     filter.take = size
-    //filter.orderBy = { name: 'asc' }
   }
-  const result = await prismaClient.story.findMany(filter)
-  return result
+
+  return prismaClient.story.findMany(filter)
 }
 
 export async function getStoryById(

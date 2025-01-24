@@ -1,14 +1,12 @@
-import type { Chain, UserWallet } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
+import type { Chain, Prisma, UserWallet } from "@prisma/client"
 import { prismaClient } from ".."
 
 interface UserWalletQuery extends ListQuery {
   userId?: string
 }
 // @deprecated looks like
-export async function getUserWallets(
-  query: UserWalletQuery,
-): Promise<UserWallet | Array<UserWallet>> {
+export async function getUserWallets(query: UserWalletQuery) {
   let where = {}
   const skip = 0
   const take = 100
@@ -45,9 +43,7 @@ export async function getUserWallets(
 }
 
 // @deprecated looks like
-export async function newUserWallet(
-  data: Omit<UserWallet, "id">,
-): Promise<UserWallet> {
+export async function newUserWallet(data: Prisma.UserWalletCreateInput) {
   console.log("DATA", data)
   const result = await prismaClient.userWallet.create({ data })
   console.log("NEWUSERWALLET", result)
@@ -55,9 +51,7 @@ export async function newUserWallet(
 }
 
 // @deprecated looks like
-export async function getUserWalletById(
-  id: string,
-): Promise<UserWallet | null> {
+export async function getUserWalletById(id: string) {
   const result = await prismaClient.userWallet.findUnique({
     where: { id },
     include: { users: true },
@@ -66,10 +60,7 @@ export async function getUserWalletById(
 }
 
 // @deprecated looks like
-export async function getUserWalletByAddress(
-  address: string,
-  chain: Chain,
-): Promise<UserWallet | null> {
+export async function getUserWalletByAddress(address: string, chain: Chain) {
   const result = await prismaClient.userWallet.findFirst({
     where: {
       chain,
@@ -84,3 +75,10 @@ export async function getUserWalletByAddress(
   })
   return result
 }
+
+// Maybe someday, but for now this raises too many edge cases
+// export async function deleteUserWallet(id: string) {
+//   await prismaClient.userWallet.delete({
+//     where: { id },
+//   })
+// }

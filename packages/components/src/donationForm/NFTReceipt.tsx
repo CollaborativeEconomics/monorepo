@@ -55,6 +55,7 @@ export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
             fill
             style={{
               objectFit: 'cover',
+              objectPosition: '50% 10%',
             }}
           />
         </div>

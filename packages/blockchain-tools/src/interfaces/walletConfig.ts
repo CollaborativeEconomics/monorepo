@@ -1,4 +1,4 @@
-import type { ClientInterfaces } from "@cfce/types"
+import type { AuthTypes, ClientInterfaces } from "@cfce/types"
 
 interface WalletConfig {
   icon: string
