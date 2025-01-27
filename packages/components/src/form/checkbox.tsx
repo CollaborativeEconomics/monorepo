@@ -1,10 +1,10 @@
-import React, { type ChangeEvent, type HTMLProps, useState } from 'react';
-import type { UseFormRegisterReturn } from 'react-hook-form';
+import React, { type ChangeEvent, type HTMLProps, useState } from "react"
+import type { UseFormRegisterReturn } from "react-hook-form"
 
 interface CheckboxProps {
-  label: string;
-  check?: boolean;
-  register: UseFormRegisterReturn;
+  label: string
+  check?: boolean
+  register: UseFormRegisterReturn
 }
 
 // const mergeRefs = (...refs) => {
@@ -38,14 +38,14 @@ const Checkbox = ({
         className="hidden"
         hidden
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
-          onChange(event);
-          setChecked(event.target.checked);
+          onChange(event)
+          setChecked(event.target.checked)
         }}
         {...rest}
         {...register}
       />
     </label>
-  );
-};
+  )
+}
 
-export default Checkbox;
+export default Checkbox

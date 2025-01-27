@@ -6,9 +6,9 @@ export default function Footer() {
   return (
     <footer className={'w-full mt-10 py-20 bg-white dark:bg-accent'}>
       <div className="flex flex-col lg:flex-row justify-between container">
-        <div className="text-center lg:text-left">
+        <div className="text-left">
           <Link href="/" className="block text-center">
-            <Logo />
+            <Logo className="w-40 lg:w-60 h-15" />
           </Link>
           <p className="ml-0 lg:ml-16">by Center For Collaborative Economics</p>
         </div>

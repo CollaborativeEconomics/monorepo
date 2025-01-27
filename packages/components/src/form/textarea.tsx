@@ -1,9 +1,9 @@
-import React, { type HTMLProps } from 'react';
-import type { UseFormRegisterReturn } from 'react-hook-form';
+import React, { type HTMLProps } from "react"
+import type { UseFormRegisterReturn } from "react-hook-form"
 
 interface TextareaProps {
-  label: string;
-  register: UseFormRegisterReturn;
+  label: string
+  register: UseFormRegisterReturn
 }
 
 export const Textarea = ({

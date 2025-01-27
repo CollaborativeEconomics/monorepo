@@ -129,7 +129,7 @@ export default abstract class InterfaceBaseClass {
     if (!this.network) {
       throw new Error("Network not set, connect or setChain first")
     }
-    const wei = 10 ** this.network.decimals
+    const wei = 10 ** (this.network.decimals ?? 18)
     return Number(amount) / wei
   }
 
@@ -137,7 +137,7 @@ export default abstract class InterfaceBaseClass {
     if (!this.network) {
       throw new Error("Network not set, connect or setChain first")
     }
-    const wei = Math.floor(amount * 10 ** this.network.decimals)
+    const wei = Math.floor(amount * 10 ** (this.network.decimals ?? 18))
     return BigInt(wei)
   }
 

@@ -6,17 +6,17 @@ import NavigationMenu from './NavigationMenu';
 
 export default function Header() {
   return (
-    <header className="w-full fixed top-0 z-50">
-      <ScrollBackground>
-        <div className="flex justify-between container py-10 pb-7.5">
-          <Link href="/">
+    <>
+      <ScrollBackground className="w-full fixed top-0 z-50">
+        <header className="flex justify-between items-center container mx-auto px-4">
+          <Link href="/" className="flex items-center">
             <Logo />
           </Link>
           <div className="flex flex-row items-center">
             <NavigationMenu />
           </div>
-        </div>
+        </header>
       </ScrollBackground>
-    </header>
+    </>
   );
 }

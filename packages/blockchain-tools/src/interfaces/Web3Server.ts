@@ -13,6 +13,16 @@ import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoi
 import Abi721tba from "../contracts/solidity/erc721/erc721tba-abi.json" // must pass tokenid and metadatauri
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
+import {
+  createWalletClient,
+  http,
+  createPublicClient,
+  parseAbi,
+  encodeFunctionData,
+  Abi,
+} from "viem"
+import { privateKeyToAccount } from "viem/accounts"
+import appConfig from "@cfce/app-config"
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 function getObjectValue(obj: any, prop: string) {
@@ -72,7 +82,8 @@ export default class Web3Server extends InterfaceBaseClass {
     const nonce = Number(noncex)
     console.log("MINTER", minter)
     console.log("NONCE", nonce)
-    const data = instance.methods.mint(address, uri).encodeABI()
+    const ABI = instance.methods
+    const data = instance.methods.safeMint(address, uri).encodeABI()
     console.log("DATA", data)
     let gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice in XDC is not returning updated prices
@@ -81,52 +92,75 @@ export default class Web3Server extends InterfaceBaseClass {
     // }
     console.log("GAS", gas)
 
-    const tx = {
-      from: minter, // minter wallet
-      to: contractId, // contract address
-      value: "0", // this is the value in wei to send
-      data: data, // encoded method and params
-      gas: gas.gasLimit,
-      gasPrice: gas.gasPrice,
-      //nonce, // let the chain use the latest
-    }
-    console.log("TX", tx)
+    const account = privateKeyToAccount(walletSeed as `0x${string}`)
 
-    const sign = await this.web3.eth.accounts.signTransaction(tx, walletSeed)
-    const info = await this.web3.eth.sendSignedTransaction(sign.rawTransaction)
-    console.log("INFO", info)
-    //const hasLogs = info.logs?.length > 0
-    //const hasTopics = hasLogs && info.logs[0]?.topics?.length > 0
-    let tokenNum = ""
-    if (info.logs?.length > 0) {
-      console.log("LOGS.0", JSON.stringify(info?.logs[0].topics, null, 2))
-      //console.log("LOGS.1", JSON.stringify(info?.logs[1].topics, null, 2))
-      //tokenNum = ` #${Number.parseInt(Buffer.from(_get(info, "logs.0.topics.3", Buffer.alloc(0))).toString("hex"), 16)}` // Doesn't work as expected
-      //const nftSeq = Number.parseInt((info?.logs[0]?.topics[3] || 0).toString(),16)
-      //const nftSex = info?.logs?.[0]?.topics?.[3]
-      const nftSex = getObjectValue(info, "logs.0.topics.3")
-      const nftSeq = Number.parseInt(nftSex, 16)
-      console.log("SEQ", nftSeq, nftSex)
-      tokenNum = ` #${nftSeq}`
-    } else {
-      const supply = await instance.methods.totalSupply.call({ from: minter }) // last minted is total nfts
-      console.log("SUPPLY", supply)
-      const nftSeq = Number.parseInt(supply.toString(), 10) - 1
-      tokenNum = ` #${nftSeq}`
-    }
-    if (info.status === 1n) {
-      const tokenId = contractId + tokenNum
-      const result = {
-        success: true,
-        //txId: Buffer.from(info?.transactionHash).toString("hex"),
-        //txId: info?.transactionHash,
-        txId: info?.transactionHash.toString(),
-        tokenId,
+    const RPC_URL = this.network?.rpcUrls?.main
+    console.log("RPC_URL", RPC_URL)
+
+    const publicClient = createPublicClient({
+      transport: http(RPC_URL),
+    })
+
+    const walletClient = createWalletClient({
+      transport: http(RPC_URL),
+    })
+
+
+    try {
+      const { request } = await publicClient.simulateContract({
+        account,
+        address: contractId as `0x${string}`,
+        abi: Abi721inc,
+        functionName: "safeMint",
+        args: [address, uri],
+      })
+      
+      const hash = await walletClient.writeContract(request)
+
+      const receipt = await publicClient.waitForTransactionReceipt({ hash })
+
+      if (receipt.status === "success") {
+        let tokenNum = ""
+        if (receipt.logs?.length > 0) {
+          console.log(
+            "LOGS.0",
+            JSON.stringify(receipt?.logs[0].topics, null, 2),
+          )
+
+          const nftSex = getObjectValue(receipt, "logs.0.topics.3")
+          const nftSeq = Number.parseInt(nftSex, 16)
+          console.log("SEQ", nftSeq, nftSex)
+          tokenNum = ` #${nftSeq}`
+        } else {
+          const supply = await instance.methods.totalSupply.call({
+            from: minter,
+          }) // last minted is total nfts
+          console.log("SUPPLY", supply)
+          const nftSeq = Number.parseInt(supply.toString(), 10) - 1
+          tokenNum = ` #${nftSeq}`
+        }
+        const tokenId = contractId + tokenNum
+        const result = {
+          success: true,
+          txId: receipt?.transactionHash.toString(),
+          tokenId,
+        }
+        console.log("RESULT", result)
+        return result
       }
-      console.log("RESULT", result)
-      return result
+      return { success: false, error: "Something went wrong" }
+    } catch (error) {
+      // Improved error logging
+      console.error("Detailed error:", {
+        error,
+        contractId,
+        address,
+        uri,
+        chain: this.chain,
+        wallet: account.address
+      })
+      return { success: false, error: "Transaction failed" }
     }
-    return { success: false, error: "Something went wrong" }
   }
 
   // Base erc721 passing metadatauri and token id as uuid instead of auto-incrementing id
@@ -401,7 +435,7 @@ export default class Web3Server extends InterfaceBaseClass {
       console.error("Chain not set, run setChain first")
       return { success: false, error: "Chain not set" }
     }
-    console.log("FETCH", this.network.rpcUrls.main)
+    console.log("FETCH", this?.network?.rpcUrls?.main)
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)
     const opt = {

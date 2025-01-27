@@ -1,0 +1,30 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
+      "env": [
+        "PROVIDER_URL",
+        "MINTER_CONTRACT",
+        "MINTER_ADDRESS",
+        "MINTER_PRIVATE",
+        "TICKER_API_KEY",
+        "OFFICIAL_CFCE_API_KEY",
+        "CFCE_REGISTRY_API_URL",
+        "CFCE_REGISTRY_API_KEY",
+        "IPFS_API_ENDPOINT",
+        "IPFS_API_PINNING",
+        "IPFS_API_KEY",
+        "IPFS_API_SECRET",
+        "IPFS_DEFAULT_REGION",
+        "IPFS_DEFAULT_BUCKET",
+        "IPFS_AVATARS_BUCKET",
+        "IPFS_BUCKET_TOKEN",
+        "IPFS_GATEWAY_URL",
+        "CFCE_SECRET_KEY",
+        "MAILGUN_API_KEY"
+      ],
+      "dependsOn": ["^build"]
+    }
+  }
+}

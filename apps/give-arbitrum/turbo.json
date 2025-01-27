@@ -1,0 +1,15 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
+      "env": [
+        "POSTGRES_PRISMA_URL",
+        "NEXT_PUBLIC_APP_ENV",
+        "NEXT_PUBLIC_APP_ID",
+        "MOBULA_API_KEY"
+      ],
+      "dependsOn": ["^build"]
+    }
+  }
+}

@@ -3,10 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 
 interface ScrollBackgroundProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-export function ScrollBackground({ children }: ScrollBackgroundProps) {
+export function ScrollBackground({
+  children,
+  className,
+}: ScrollBackgroundProps) {
   const [scrollY, setScrollY] = useState(0);
+  const [backgroundTransparent, setBackgroundTransparent] = useState(true);
 
   const handleScroll = useCallback(() => {
     const frameId = requestAnimationFrame(() => {
@@ -33,13 +38,22 @@ export function ScrollBackground({ children }: ScrollBackgroundProps) {
     };
   }, [handleScroll]);
 
-  const backgroundClass =
-    scrollY > 0
-      ? 'bg-white dark:bg-gradient-to-b py-4 shadow-md'
-      : 'bg-transparent';
+  useEffect(() => {
+    if (scrollY > 0) {
+      setBackgroundTransparent(false);
+    } else {
+      setBackgroundTransparent(true);
+    }
+  }, [scrollY]);
 
   return (
-    <div className={`w-full h-full transition-all ${backgroundClass}`}>
+    <div
+      className={`transition-all ${
+        backgroundTransparent
+          ? 'bg-transparent'
+          : 'backdrop-blur-lg bg-white/70 dark:bg-background/70 shadow-md'
+      } ${className}`}
+    >
       {children}
     </div>
   );

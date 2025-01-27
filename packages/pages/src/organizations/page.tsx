@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { getOrganizations, type OrganizationData } from '@cfce/database';
 import { OrganizationCard } from '@cfce/components/organization';
 import { SearchBar } from '@cfce/components/search';
 import { Card } from '@cfce/components/ui';
+import { type OrganizationData, getOrganizations } from '@cfce/database';
 
 export default async function Organizations(props: {
   searchParams: Promise<{
@@ -14,8 +14,15 @@ export default async function Organizations(props: {
 }) {
   const { query, category, location } = await props.searchParams;
   console.log('SEARCH', query, category, location);
-  const data = (await getOrganizations({ search: query, category, location })) as OrganizationData[] || [];
-  const organizations = data.filter(org => !org.inactive);
+  const data =
+    ((await getOrganizations({
+      search: query,
+      category,
+      location,
+    })) as OrganizationData[]) || [];
+  const organizations = JSON.parse(
+    JSON.stringify(data.filter(org => !org.inactive)),
+  ) as OrganizationData[];
   console.log('ORGS', organizations.length);
 
   return (
