@@ -9,6 +9,8 @@ interface EventQuery extends ListQuery {
   initid?: string
 }
 
+export type EventType = Omit<Event, "id" | "created" | "status" | "inactive">
+
 export async function getEvents(query:EventQuery) {
   let where = {}
   const skip = 0

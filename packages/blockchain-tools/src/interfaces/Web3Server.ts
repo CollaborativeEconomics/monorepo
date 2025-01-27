@@ -21,6 +21,10 @@ function getObjectValue(obj: any, prop: string) {
   }, obj)
 }
 
+function bytesToHex(bytes:Uint8Array){
+  return `0x${Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("")}`
+}
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -33,15 +37,23 @@ export default class Web3Server extends InterfaceBaseClass {
   }
 
   async getGasPrice(minter: string, contractId: string, data: string) {
-    const gasPrice = await this.fetchLedger("eth_gasPrice", [])
+    let gasPrice = await this.fetchLedger("eth_gasPrice", [])
+    // FIX: gasPrice in XDC is not returning updated prices
+    // Increment 20% to XDC gas price to avoid tx in limbo
+    if (this.chain?.slug === "xdc") {
+      console.log("OLD", Number.parseInt(gasPrice, 16), gasPrice)
+      const newGas = Number.parseInt(gasPrice) * 1.2
+      gasPrice = `0x${newGas.toString(16)}`
+    }
     console.log("GAS", Number.parseInt(gasPrice, 16), gasPrice)
-    const checkGas =
-      (await this.fetchLedger("eth_estimateGas", [
-        { from: minter, to: contractId, data },
-      ])) || "0x1e8480" // 2000000
+    const params = [{ from: minter, to: contractId, data }]
+    let checkGas = await this.fetchLedger("eth_estimateGas", params)
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
+    if(!checkGas){
+      checkGas = "0x1e8480" // 2000000
+    }
     const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
-    return { gasPrice: gasPrice, gasLimit }
+    return { gasPrice, gasLimit }
   }
 
   // Autoincrementing NFT
@@ -74,11 +86,7 @@ export default class Web3Server extends InterfaceBaseClass {
     console.log("NONCE", nonce)
     const data = instance.methods.mint(address, uri).encodeABI()
     console.log("DATA", data)
-    let gas = await this.getGasPrice(minter, contractId, data)
-    // FIX: getGasPrice in XDC is not returning updated prices
-    // if (this.chain.slug === "xdc") {
-    //   gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
-    // }
+    const gas = await this.getGasPrice(minter, contractId, data)
     console.log("GAS", gas)
 
     const tx = {
@@ -247,10 +255,7 @@ export default class Web3Server extends InterfaceBaseClass {
     //const bytes = Buffer.from(uri, 'utf8')
     //const bytes = this.web3.utils.toHex(uri)
     const bytes = new TextEncoder().encode(uri)
-    // biome-ignore lint/style/useTemplate: unreadable
-    const hex = `0x${Array.from(bytes)
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("")}`
+    const hex = bytesToHex(bytes)
     const tokenInt = BigInt(tokenId)
     const data = instance.methods.mint(address, tokenInt, 1, hex).encodeABI()
     console.log("DATA", data)
@@ -259,7 +264,6 @@ export default class Web3Server extends InterfaceBaseClass {
       contractId,
       data,
     )
-
     const tx = {
       from: minter, // minter wallet
       to: contractId, // contract address
@@ -267,7 +271,7 @@ export default class Web3Server extends InterfaceBaseClass {
       data: data, // encoded method and params
       gas: gasLimit,
       gasPrice: gasPrice,
-      nonce,
+      //nonce, // let the chain use the latest
     }
     console.log("TX", tx)
 

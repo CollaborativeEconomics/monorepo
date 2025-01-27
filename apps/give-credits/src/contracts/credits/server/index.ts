@@ -13,11 +13,10 @@ import {
   Keypair,
   Networks,
   Operation,
-  //SorobanRpc, // <<<<<<<<< replace with new rpc.Server(url)
+  SorobanDataBuilder,
   type Transaction,
   TransactionBuilder,
   nativeToScVal,
-  rpc,
   rpc,
   scValToNative,
   xdr,

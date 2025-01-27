@@ -15,11 +15,11 @@
     "@cfce/ipfs": "workspace:*",
     "@cfce/types": "workspace:*",
     "server-only": "^0.0.1",
-    "uuid": "11.0.3",
+    "uuid": "11.0.5",
     "viem": "^2.21.54"
   },
   "devDependencies": {
-    "@smithy/types": "^3.7.2",
+    "@smithy/types": "4.1.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.1",
     "jest": "^29.7.0",

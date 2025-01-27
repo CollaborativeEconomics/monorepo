@@ -595,7 +595,7 @@ chainConfiguration.xdc.networks.mainnet = {
   slug: "mainnet",
   symbol: "XDC",
   decimals: 18,
-  gasprice: "12500000000",
+  gasprice: "15000000000",
   explorer: "https://xdcscan.com",
   rpcUrls: {
     main: "https://rpc.xdcrpc.com",
@@ -616,10 +616,10 @@ chainConfiguration.xdc.networks.testnet = {
   slug: "testnet",
   symbol: "XDC",
   decimals: 18,
-  gasprice: "12500000000",
+  gasprice: "15000000000",
   explorer: "https://testnet.xdcscan.com",
   rpcUrls: {
-    main: "https://erpc.apothem.network",  // https://testnet.xdcscan.com/
+    main: "https://rpc.apothem.network",
   },
   contracts: {
     tba6551RegistryAddress: "0x000000006551c19487814612e58fe06813775758",

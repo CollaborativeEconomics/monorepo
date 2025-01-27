@@ -12,11 +12,11 @@
   "dependencies": {
     "@cfce/app-config": "workspace:*",
     "@cfce/types": "workspace:*",
-    "immer": "^10.0.0",
-    "jotai": "^2.0.0",
-    "jotai-immer": "^0.2.0"
+    "immer": "^10.1.1",
+    "jotai": "^2.10.4",
+    "jotai-immer": "^0.4.1"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.7.2"
   }
 }
