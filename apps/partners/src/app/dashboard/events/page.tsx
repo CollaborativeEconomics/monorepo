@@ -1,4 +1,3 @@
-//import { useRouter } from 'next/navigation'
 import { Suspense } from 'react';
 import { auth } from '@cfce/auth';
 import { getOrganizationById, getEventsByOrganization } from '~/actions/database'

@@ -1,10 +1,12 @@
 'use client';
 import type {
   Event,
+  EventType,
   Initiative,
   OrganizationData,
-  Prisma,
+  Prisma
 } from '@cfce/database';
+import { Decimal } from 'decimal.js'
 //import { useRouter } from 'next/navigation'
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -111,10 +113,7 @@ export default function Page({ organization, events }: PageProps) {
     body.append('name', data.name);
     body.append('file', data.file);
     try {
-      const response = await uploadToIPFS(
-        `${organization.slug}-event-${data.name}.jpg`,
-        data.file,
-      );
+      const response = await uploadToIPFS(`${organization.slug}-event-${data.name}.jpg`, data.file);
       return { uri: response };
     } catch (error) {
       console.error('Error uploading image to IPFS', error);
@@ -182,20 +181,25 @@ export default function Page({ organization, events }: PageProps) {
     const imgName = randomString();
     const image = { name: imgName + ext, file };
     const payrate = Number.parseFloat(data.payrate || '0');
-    const event = {
-      created: dateToPrisma(new Date()),
+    //const event: Omit<Prisma.EventCreateInput, "id" | "created" | "status" | "inactive"> = {
+    //const event: Prisma.EventCreateInput = {
+    //const event: Event = {
+    //const event: Omit<Event, "id" | "created" | "status" | "inactive"> = {
+    const event: EventType = {
       organizationid: organizationId,
       initiativeid: data.initiativeId,
-      name: data.name,
+      //name: data?.name ?? '',
+      name: 'test',
       description: data.desc,
+      location: '',
       budget: Number.parseInt(data.budget || '0', 10),
       unitvalue: Number.parseInt(data.unitvalue || '0', 10),
-      unitlabel: data.unitlabel,
+      unitlabel: data.unitlabel || null,
       quantity: Number.parseInt(data.quantity || '0', 10),
-      payrate: payrate,
+      payrate: new Decimal(payrate),
       volunteers: Number.parseInt(data.volunteers || '0', 10),
       voltoearn: payrate > 0,
-      image: '',
+      image: ''
     };
 
     try {
@@ -209,19 +213,14 @@ export default function Page({ organization, events }: PageProps) {
         return;
       }
       if (typeof resimg?.uri === 'string') {
-        event.image = resimg.uri;
-      } // Main image
-      console.log('REC', event);
+        event.image = resimg.uri; // Main image
+      }
+      console.log('EVENT', event);
       showMessage('Saving info to database...');
-      const opts = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=utf8' },
-        body: JSON.stringify(event),
-      };
       const resp1 = await saveEvent(event);
       console.log('RESULT1', resp1);
-      if (resp1?.error) {
-        showMessage(`Error saving event: ${resp1.error}`);
+      if (!resp1) {
+        showMessage('Error saving event');
         setButtonState(ButtonState.READY);
       } else {
         const eventId = resp1.id;
@@ -404,11 +403,11 @@ export default function Page({ organization, events }: PageProps) {
           {message}
         </p>
       </div>
-      <div>
-        <h1 className="text-center text-2xl my-24">Latest events</h1>
+      <div className={styles.listBox}>
+        <h1 className="w-full text-center text-2xl my-8">Latest events</h1>
         {events?.length > 0 ? (
           events.map(item => (
-            <div className={styles.viewBox} key={item.id}>
+            <div className={styles.itemBox} key={item.id}>
               <Link href={`/dashboard/events/${item.id}`}>
                 <EventView key={item.id} {...item} />
               </Link>

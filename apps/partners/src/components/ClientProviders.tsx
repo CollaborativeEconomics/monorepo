@@ -2,13 +2,11 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider } from 'next-auth/react';
-import { WagmiProvider } from 'wagmi';
-
+import { http, createConfig, WagmiProvider, type WagmiConfig } from 'wagmi';
 import { metaMask } from '@wagmi/connectors';
-import { http, createConfig } from 'wagmi';
 import { arbitrumSepolia } from 'wagmi/chains';
 
-export const wagmiConfig = createConfig({
+const wagmiConfig = createConfig({
   chains: [arbitrumSepolia],
   connectors: [metaMask()],
   transports: {

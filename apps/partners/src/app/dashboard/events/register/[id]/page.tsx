@@ -9,7 +9,8 @@ interface PageProps {
 
 export default async function RegisterPage({ params }: PageProps ) {
   const { id } = await params;
-  const event = await getEventById(id);
+  const eventData = await getEventById(id);
+  const event = JSON.parse(JSON.stringify(eventData))
 
   if (!event) {
     // TODO: Implement proper error handling or redirect
