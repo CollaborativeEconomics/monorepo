@@ -621,6 +621,15 @@ chainConfiguration.xdc.networks.testnet = {
   rpcUrls: {
     main: "https://rpc.apothem.network",
   },
+  tokens: {
+    XDC: {
+      contract: "xdc7849f6ba978188ce97bb02bdaba673af65cbd269",
+      name: "TXDC",
+      symbol: "TXDC",
+      decimals: 18,
+      icon: "icons/xdc.webp",
+    },
+  },
   contracts: {
     tba6551RegistryAddress: "0x000000006551c19487814612e58fe06813775758",
     tba6551ImplementationAddress: "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",

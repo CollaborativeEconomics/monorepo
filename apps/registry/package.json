@@ -41,7 +41,7 @@
     "@types/bun": "^1.1.14",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.1",
-    "@types/react": "^19.0.0",
+    "@types/react": "19.0.0",
     "autoprefixer": "^10.4.20",
     "aws-sdk-client-mock": "^4.1.0",
     "aws-sdk-mock": "6.2.1",

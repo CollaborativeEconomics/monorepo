@@ -36,7 +36,10 @@ export default function StoryCard(props: StoryCardProps) {
             <a href={`/initiatives/${initiative?.id}`}>{initiative?.title}</a>
           </span>
         </p>
-        <DateDisplay timestamp={story.created.getTime()} className="py-4" />
+        <DateDisplay
+          timestamp={new Date(story.created).getTime()}
+          className="py-4"
+        />
       </CardHeader>
       <div className="px-2 -mt-2">
         <Link href={`/stories/${story.id}`}>

@@ -7,9 +7,17 @@
     "build": "rm -rf dist && tsc && tsc-alias"
   },
   "exports": {
+    "./app": {
+      "import": "./dist/app/index.js",
+      "types": "./dist/app/index.d.ts"
+    },
     "./client/auth": {
       "import": "./dist/client/auth/index.js",
       "types": "./dist/client/auth/index.d.ts"
+    },
+    "./client/profile": {
+      "import": "./dist/client/profile/index.js",
+      "types": "./dist/client/profile/index.d.ts"
     },
     "./ui": {
       "import": "./dist/ui/index.js",
@@ -54,16 +62,20 @@
     "./profile": {
       "import": "./dist/profile/index.js",
       "types": "./dist/profile/index.d.ts"
+    },
+    "./widgets": {
+      "import": "./dist/widgets/index.js",
+      "types": "./dist/widgets/index.d.ts"
     }
   },
   "devDependencies": {
-    "@cfce/state": "workspace:*",
     "@cfce/analytics": "workspace:*",
+    "@cfce/state": "workspace:*",
     "@cfce/types": "workspace:*",
     "@cfce/typescript-config": "workspace:*",
     "@types/lodash": "^4.17.13",
     "@types/luxon": "^3.4.2",
-    "@types/react": "^19.0.0",
+    "@types/react": "19.0.0",
     "@types/uuid": "^10.0.0",
     "tsc-alias": "^1.8.10",
     "typescript": "^5.7.2"
@@ -78,7 +90,6 @@
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
-    "react-day-picker": "9.5.0",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
@@ -93,6 +104,7 @@
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
+    "@radix-ui/react-toast": "^1.2.4",
     "@rive-app/react-canvas": "^4.17.0",
     "@stellar/freighter-api": "4.0.0",
     "@stellar/stellar-sdk": "^13.1.0",
@@ -106,7 +118,8 @@
     "lodash": "^4.17.21",
     "lucide-react": "0.473.0",
     "luxon": "^3.5.0",
-    "react-day-picker": "9.1.3",
+    "next-auth": "5.0.0-beta.25",
+    "react-day-picker": "9.4.4",
     "react-hook-form": "^7.54.0",
     "swiper": "^11.1.15",
     "tailwind-merge": "^2.5.5",

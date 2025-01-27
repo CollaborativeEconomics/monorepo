@@ -17,7 +17,7 @@ export interface OrgSocialsProps extends React.HTMLAttributes<HTMLDivElement> {
 const OrgSocials = React.forwardRef<HTMLDivElement, OrgSocialsProps>(
   ({ className, ...props }, ref) => {
     return (
-      <div ref={ref} className={cn('absolute flex flex-wrap', className)}>
+      <div ref={ref} className={cn('flex flex-wrap', className)}>
         {props.websiteAddress && (
           <div className="flex gap-x-1">
             <Globe size={17} />{' '}

@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { signOut } from "../nextAuth"
 //import { revalidatePath } from "next/cache"
 

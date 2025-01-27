@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react"
 
 interface ProgressProps {
-  value: number;
+  value: number
 }
 
 export default function Progress(props: ProgressProps) {
-  const value = props.value || 0;
-  const style = 'rounded text-white text-center bg-blue-700';
-  const width = { width: `${value}%` };
+  const value = props.value || 0
+  const style = "rounded text-white text-center bg-blue-700"
+  const width = { width: `${value}%` }
   //console.log(value)
   //console.log(style)
   return (
@@ -16,5 +16,5 @@ export default function Progress(props: ProgressProps) {
         {value}%
       </div>
     </div>
-  );
+  )
 }

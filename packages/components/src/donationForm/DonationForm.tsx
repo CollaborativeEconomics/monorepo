@@ -80,10 +80,10 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const [loading, setLoading] = useState(false);
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false);
   const [chainState, setChainState] = useAtom(chainAtom);
-  //setChainState(draft => {
-  //  console.log('INIT RATE', rate)
-  //  draft.exchangeRate = rate;
-  //});
+  setChainState(draft => {
+    console.log('INIT RATE', rate);
+    draft.exchangeRate = rate;
+  });
   //console.log('INIT STATE', chainState)
 
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
@@ -94,7 +94,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const coinAmount = useAtomValue(amountCoinAtom);
   const chain = chainConfig[selectedChain];
   const network = chain.networks[appConfig.chainDefaults.network];
-  //console.log('STATE', chainState, exchangeRate)
+  console.log('Coin amount', coinAmount);
 
   const chainInterface = BlockchainClientInterfaces[selectedWallet];
 
@@ -145,45 +145,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       return fallbackAddress;
     }
 
-    handleError(new Error('No wallet found for chain'));
+    handleError(new Error(`No wallet found for chain ${chain?.name}`));
     return '';
   }, [organization, initiative, chain, handleError]);
-
-  const getRate = useCallback(() => {
-    registryApi
-      .get<{ coin: TokenTickerSymbol; rate: number }>(
-        `/rates?coin=${selectedToken}&chain=${selectedChain}`,
-      )
-      .then(response => {
-        if (response.success) {
-          const { rate } = response.data;
-          console.log('RATE', rate);
-          if (rate > 0) {
-            setChainState(draft => {
-              //console.log('DRAFT', draft)
-              draft.exchangeRate = rate;
-            });
-            //requestAnimationFrame(() => {
-            //setChainState(draft => {
-            //console.log('DRAFT', draft)
-            //draft.exchangeRate = rate;
-            //});
-            //console.log('CHAIN1', chainState)
-            //});
-          }
-          //console.log('CHAIN2', chainState)
-        }
-      });
-  }, [selectedToken, selectedChain, setChainState]);
-
-  useEffect(() => {
-    console.log('values changed, updating rate', {
-      selectedToken,
-      selectedChain,
-      setChainState,
-    });
-    getRate();
-  }, [selectedToken, selectedChain, setChainState, getRate]);
 
   const checkBalance = useCallback(async () => {
     if (!chainInterface?.connect) {
@@ -194,16 +158,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     if (!balanceCheck || 'error' in balanceCheck) {
       throw new Error(balanceCheck?.error ?? 'Failed to check balance');
     }
-    return balanceCheck.balance >= chainInterface.toBaseUnit(amount);
-  }, [chainInterface, amount, network.id]);
+    return balanceCheck.balance >= coinAmount;
+  }, [chainInterface, coinAmount, network.id]);
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPayment) {
         throw new Error('No sendPayment method on chain interface');
       }
-      const connected = await chainInterface.connect?.(network.id);
-      console.log('CONNECT', connected);
+
       const data = {
         address,
         amount,
@@ -214,7 +177,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       console.log('PAYMENT RESULT', result);
       return result;
     },
-    [chainInterface, network.id, selectedChain],
+    [chainInterface, selectedChain],
   );
 
   const sendPaymentWithGas = useCallback(
@@ -240,10 +203,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       txid?: string;
       error?: string;
     }) => {
-      if (!paymentResult.success) {
-        throw new Error(paymentResult.error ?? 'Payment failed');
-      }
-
       setButtonMessage('Minting NFT receipt, please wait...');
       const data = {
         donorName: name || 'Anonymous',
@@ -304,7 +263,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       setLoading(true);
       setButtonMessage('Approving payment...');
 
-      const paymentResult = await sendPayment(destinationWalletAddress, amount);
+      const paymentResult = await sendPayment(
+        destinationWalletAddress,
+        coinAmount,
+      );
+
+      if (!paymentResult.success) {
+        throw new Error(paymentResult.error ?? 'Payment failed');
+      }
+
       if (posthog.__loaded) {
         posthog.capture('user_donated', {
           amount,
@@ -314,6 +281,38 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           chain: selectedChain,
         });
       }
+
+      let user = await fetchUserByWallet(paymentResult.walletAddress ?? '');
+
+      if (!user) {
+        user = await createAnonymousUser({
+          walletAddress: paymentResult.walletAddress ?? '',
+          chain: selectedChain as Chain,
+          network: appConfig.chainDefaults.network,
+        });
+      }
+      console.log('USER', user);
+      // Save donation first
+      const donationData = {
+        organizationId: organization.id,
+        initiativeId: initiative.id,
+        categoryId: undefined,
+        userId: user.id,
+        sender: paymentResult.walletAddress ?? '',
+        chainName: selectedChain,
+        network: appConfig.chains[selectedChain]?.network ?? '',
+        coinValue: coinAmount,
+        usdValue: coinAmount * exchangeRate,
+        currency: selectedToken,
+      };
+
+      console.log('DONATION DATA', donationData);
+
+      const donationId = await saveDonation(donationData);
+
+      if (!donationId) {
+        throw new Error('Error saving donation');
+      }
       await handleMinting(paymentResult);
     } catch (error) {
       handleError(error);
@@ -321,6 +320,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       setLoading(false);
     }
   }, [
+    coinAmount,
     amount,
     email,
     destinationWalletAddress,
@@ -333,6 +333,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     selectedChain,
     organization,
     initiative,
+    exchangeRate,
   ]);
 
   function validateForm({ email }: { email: string }) {
@@ -362,9 +363,11 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         initiative: {
           connect: { id: initiativeId },
         },
-        category: {
-          connect: { id: categoryId },
-        },
+        ...(categoryId && {
+          category: {
+            connect: { id: categoryId },
+          },
+        }),
         userId,
         network,
         chain: chainName as Chain,
@@ -462,17 +465,15 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex justify-between">
-            <DialogClose>
-              <Button
-                variant={'link'}
-                onClick={() => {
-                  window.open('https://changelly.com/buy', '_blank');
-                }}
-                className="bg-blue-600 text-white hover:bg-blue-700"
-              >
-                Buy {selectedToken} on Changelly
-              </Button>
-            </DialogClose>
+            <Button
+              variant={'link'}
+              onClick={() => {
+                window.open('https://changelly.com/buy', '_blank');
+              }}
+              className="bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Buy {selectedToken} on Changelly
+            </Button>
             <DialogClose className="text-white-500 hover:underline">
               Close
             </DialogClose>
@@ -497,7 +498,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
                 setTimeout(() => {
                   setLoading(true);
                   setButtonMessage('Approving payment...');
-                  sendPaymentWithGas(destinationWalletAddress, amount)
+                  sendPaymentWithGas(destinationWalletAddress, coinAmount)
                     .then(gasResult => handleMinting(gasResult))
                     .catch(handleError)
                     .finally(() => setLoading(false));

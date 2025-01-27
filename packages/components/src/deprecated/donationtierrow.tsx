@@ -1,21 +1,21 @@
-'use client';
-import Image from 'next/image';
-import React, { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import TextInput from '~/form/textinput';
-import Icon from '~/ui/icon';
-import Card from './card';
+"use client"
+import Image from "next/image"
+import React, { useRef, useState } from "react"
+import { useForm } from "react-hook-form"
+import TextInput from "~/form/textinput"
+import Icon from "~/ui/icon"
+import Card from "./card"
 
 interface DonationTierRowTypes {
-  title: string;
-  description?: string;
-  image?: string;
-  value: number;
-  credit?: number;
-  rate?: number;
-  onClick: (num1: any, num2: any) => void;
-  currency?: string;
-  disabled?: boolean;
+  title: string
+  description?: string
+  image?: string
+  value: number
+  credit?: number
+  rate?: number
+  onClick: (num1: any, num2: any) => void
+  currency?: string
+  disabled?: boolean
 }
 
 // @deprecated is this used anywhere?
@@ -31,25 +31,25 @@ const DonationTierRow = ({
   description,
 }: DonationTierRowTypes) => {
   // ref not working for some reason
-  const minimum = 10;
-  const [message, setMessage] = useState('');
-  const textInputRef = useRef(null);
+  const minimum = 10
+  const [message, setMessage] = useState("")
+  const textInputRef = useRef(null)
   const { register, watch } = useForm({
     defaultValues: { [title as string]: value },
-  });
-  const [amount] = watch([title as string]);
+  })
+  const [amount] = watch([title as string])
   //const rate = 0.1285 // xlm/usd
   //const creditPerTon = 20 // usd/ton
-  const amountPerTon = (credit || 0) / (rate || 1);
+  const amountPerTon = (credit || 0) / (rate || 1)
   //console.log('USD/TON', credit)
   //console.log('XLM/TON', amountPerTon)
-  const offsetVal = amountPerTon > 0 ? (value / amountPerTon).toFixed(2) : 0;
-  const [offset, setOffset] = useState(offsetVal);
+  const offsetVal = amountPerTon > 0 ? (value / amountPerTon).toFixed(2) : 0
+  const [offset, setOffset] = useState(offsetVal)
   // biome-ignore lint/suspicious/noExplicitAny: any
   function updateOffset(event: any) {
-    const value = Number.parseInt(event.target.value, 10) || 0;
-    const final = amountPerTon > 0 ? (value / amountPerTon).toFixed(2) : 0;
-    setOffset(final);
+    const value = Number.parseInt(event.target.value, 10) || 0
+    const final = amountPerTon > 0 ? (value / amountPerTon).toFixed(2) : 0
+    setOffset(final)
   }
   return (
     <>
@@ -61,7 +61,7 @@ const DonationTierRow = ({
         <div className="flex flex-row w-full h-full justify-between items-center">
           <div className="h-full flex flex-row items-center basis-24 aspect-square mr-2">
             <Image
-              src={image || ''}
+              src={image || ""}
               className="h-full"
               width={100}
               height={100}
@@ -84,10 +84,10 @@ const DonationTierRow = ({
             type="button"
             onClick={() => {
               if (amount < minimum) {
-                setMessage('Minimum amount of 10 XLM required');
-                return;
+                setMessage("Minimum amount of 10 XLM required")
+                return
               }
-              onClick(amount, credit);
+              onClick(amount, credit)
             }}
             onKeyDown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -106,9 +106,9 @@ const DonationTierRow = ({
       </Card>
       <p className="my-2 text-center text-yellow-300">{message}</p>
     </>
-  );
-};
+  )
+}
 
-export default DonationTierRow;
+export default DonationTierRow
 
 // textinput onFocus={() => textInputRef?.current?.select() }
