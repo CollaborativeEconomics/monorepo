@@ -3,11 +3,9 @@ import appConfig from '@cfce/app-config';
 import {
   chainConfig,
   getChainConfigurationByName,
+  getNftPath,
 } from '@cfce/blockchain-tools';
-import type {
-  DonationWithRelations,
-  NFTDataWithRelations,
-} from '@cfce/database';
+import type { NFTDataWithRelations } from '@cfce/database';
 import { type Chain, ChainNames } from '@cfce/types';
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -18,18 +16,21 @@ import { Button } from '~/ui/button';
 import { Card, CardContent, CardFooter } from '~/ui/card';
 import { Separator } from '../ui';
 
-export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
-  created,
-  donorAddress,
-  coinNetwork,
-  coinLabel, // TODO: I think this is wrong sometimes (at least it is in the DB), find out why
-  coinSymbol,
-  coinValue,
-  usdValue,
-  tokenId,
-  initiative,
-  organization,
-}) => {
+export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
+  const {
+    created,
+    donorAddress,
+    coinNetwork,
+    coinLabel, // TODO: I think this is wrong sometimes (at least it is in the DB), find out why
+    coinSymbol,
+    coinValue,
+    usdValue,
+    tokenId,
+    contractId,
+    transactionId,
+    initiative,
+    organization,
+  } = nftData;
   const [isFlipped, setIsFlipped] = useState(false);
 
   if (!coinLabel) return <div>No chain</div>;
@@ -121,8 +122,13 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
               <Button variant="default" className="flex-1">
                 <Link
                   target="_blank"
-                  // TODO: why do we include lastId in the tokenId?
-                  href={`${network.explorer}/token/${tokenId.split(' ')[0]}`}
+                  href={getNftPath({
+                    coinLabel,
+                    coinNetwork,
+                    contractId,
+                    tokenId,
+                    transactionId,
+                  })}
                 >
                   View NFT
                 </Link>

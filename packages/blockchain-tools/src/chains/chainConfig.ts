@@ -122,7 +122,10 @@ chainConfiguration.arbitrum.networks.mainnet = {
   symbol: "ARB",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://arbiscan.io",
+  explorer: {
+    url: "https://arbiscan.io",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://arb1.arbitrum.io/rpc",
   },
@@ -136,7 +139,10 @@ chainConfiguration.arbitrum.networks.testnet = {
   symbol: "ARB",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://sepolia.arbiscan.io",
+  explorer: {
+    url: "https://sepolia.arbiscan.io",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://sepolia-rollup.arbitrum.io/rpc",
   },
@@ -150,7 +156,10 @@ chainConfiguration.avalanche.networks.mainnet = {
   symbol: "AVAX",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://snowtrace.io",
+  explorer: {
+    url: "https://snowtrace.io",
+    nftPath: "/nft/{{contractId}}/{{tokenId}}?chainid={{chainId}}",
+  },
   rpcUrls: {
     main: "https://avalanche-mainnet.infura.io",
   },
@@ -164,7 +173,10 @@ chainConfiguration.avalanche.networks.testnet = {
   symbol: "AVAX",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://testnet.snowtrace.io",
+  explorer: {
+    url: "https://testnet.snowtrace.io",
+    nftPath: "/nft/{{contractId}}/{{tokenId}}?chainid={{chainId}}&type=erc721",
+  },
   rpcUrls: {
     main: "https://api.avax-test.network/ext/bc/C/rpc",
     //main: "https://ethereum-goerli.publicnode.com",
@@ -179,7 +191,10 @@ chainConfiguration.base.networks.mainnet = {
   symbol: "BASE",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://basescan.org",
+  explorer: {
+    url: "https://basescan.org",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://mainnet.base.org",
   },
@@ -193,7 +208,10 @@ chainConfiguration.base.networks.testnet = {
   symbol: "BASE",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://sepolia.basescan.org",
+  explorer: {
+    url: "https://sepolia.basescan.org",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://sepolia.base.org",
   },
@@ -207,7 +225,10 @@ chainConfiguration.binance.networks.mainnet = {
   symbol: "BNB",
   decimals: 18,
   gasprice: "9000000000",
-  explorer: "https://bscscan.com",
+  explorer: {
+    url: "https://bscscan.com",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://bsc-dataseed.binance.org",
   },
@@ -221,7 +242,10 @@ chainConfiguration.binance.networks.testnet = {
   symbol: "BNB",
   decimals: 18,
   gasprice: "9000000000",
-  explorer: "https://testnet.bscscan.com",
+  explorer: {
+    url: "https://testnet.bscscan.com",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://data-seed-prebsc-1-s1.binance.org:8545",
   },
@@ -235,7 +259,10 @@ chainConfiguration.celo.networks.mainnet = {
   symbol: "CELO",
   decimals: 18,
   gasprice: "10000000000",
-  explorer: "https://explorer.celo.org",
+  explorer: {
+    url: "https://explorer.celo.org",
+    nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
+  },
   rpcUrls: {
     main: "https://forno.celo.org",
   },
@@ -249,7 +276,10 @@ chainConfiguration.celo.networks.testnet = {
   symbol: "CELO",
   decimals: 18,
   gasprice: "27500000000",
-  explorer: "https://celo-alfajores.blockscout.com",
+  explorer: {
+    url: "https://celo-alfajores.blockscout.com",
+    nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
+  },
   rpcUrls: {
     main: "https://alfajores-forno.celo-testnet.org",
   },
@@ -263,7 +293,11 @@ chainConfiguration.eos.networks.mainnet = {
   symbol: "EOS",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://explorer.eos.io",
+  explorer: {
+    url: "https://eosauthority.com",
+    // NOTE: it's unclear whether EOS has NFTs, but this is the best we can do for now
+    nftPath: "/transaction/{{transactionId}}?network=eos",
+  },
   rpcUrls: {
     main: "https://api.eos.io",
   },
@@ -277,7 +311,11 @@ chainConfiguration.eos.networks.testnet = {
   symbol: "EOS",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://explorer.testnet.eos.io",
+  explorer: {
+    url: "https://eosauthority.com",
+    // NOTE: it's unclear whether EOS has NFTs, but this is the best we can do for now
+    nftPath: "/transaction/{{transactionId}}?network=eosiotest",
+  },
   rpcUrls: {
     main: "https://api.testnet.eos.io",
   },
@@ -291,7 +329,10 @@ chainConfiguration.ethereum.networks.mainnet = {
   symbol: "ETH",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://etherscan.io",
+  explorer: {
+    url: "https://etherscan.io",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://ethereum.publicnode.com",
   },
@@ -305,9 +346,12 @@ chainConfiguration.ethereum.networks.testnet = {
   symbol: "ETH",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://goerli.etherscan.io",
+  explorer: {
+    url: "https://sepolia.etherscan.io",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
-    main: "https://ethereum-goerli.publicnode.com",
+    main: "https://ethereum-sepolia-rpc.publicnode.com",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
@@ -319,7 +363,10 @@ chainConfiguration.filecoin.networks.mainnet = {
   symbol: "FIL",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://filscan.io",
+  explorer: {
+    url: "https://filscan.io",
+    nftPath: "/en/message/{{transactionId}}/",
+  },
   rpcUrls: {
     main: "https://api.node.glif.io",
   },
@@ -333,7 +380,10 @@ chainConfiguration.filecoin.networks.testnet = {
   symbol: "FIL",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://calibration.filscan.io",
+  explorer: {
+    url: "https://calibration.filscan.io",
+    nftPath: "/en/message/{{transactionId}}/",
+  },
   rpcUrls: {
     main: "https://api.calibration.node.glif.io",
   },
@@ -347,7 +397,10 @@ chainConfiguration.flare.networks.mainnet = {
   symbol: "FLR",
   decimals: 18,
   gasprice: "25000000000",
-  explorer: "https://flare-explorer.flare.network",
+  explorer: {
+    url: "https://flare-explorer.flare.network",
+    nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
+  },
   rpcUrls: {
     main: "https://mainnet.flare.network",
   },
@@ -361,7 +414,10 @@ chainConfiguration.flare.networks.testnet = {
   symbol: "FLR",
   decimals: 18,
   gasprice: "25000000000",
-  explorer: "https://coston2-explorer.flare.network",
+  explorer: {
+    url: "https://coston2-explorer.flare.network",
+    nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
+  },
   rpcUrls: {
     main: "https://coston2-api.flare.network/ext/C/rpc",
     //main: "https://coston2-api.flare.network/ext/bc/C/rpc",
@@ -376,7 +432,10 @@ chainConfiguration.optimism.networks.mainnet = {
   symbol: "OP",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://optimistic.etherscan.io",
+  explorer: {
+    url: "https://optimistic.etherscan.io",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://mainnet.optimism.io",
   },
@@ -384,15 +443,18 @@ chainConfiguration.optimism.networks.mainnet = {
   wssurl: "",
 }
 chainConfiguration.optimism.networks.testnet = {
-  id: 420,
+  id: 11155420,
   name: "Optimism Testnet",
   slug: "testnet",
   symbol: "OP",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://goerli-optimism.etherscan.io",
+  explorer: {
+    url: "https://sepolia-optimism.etherscan.io",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
-    main: "https://goerli.optimism.io",
+    main: "https://sepolia.optimism.io",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
@@ -404,7 +466,10 @@ chainConfiguration.polygon.networks.mainnet = {
   symbol: "MATIC",
   decimals: 18,
   gasprice: "20000000000",
-  explorer: "https://polygonscan.com",
+  explorer: {
+    url: "https://polygonscan.com",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://polygon-rpc.com",
   },
@@ -412,15 +477,18 @@ chainConfiguration.polygon.networks.mainnet = {
   wssurl: "",
 }
 chainConfiguration.polygon.networks.testnet = {
-  id: 80001,
+  id: 80002,
   name: "Polygon Testnet",
   slug: "testnet",
   symbol: "MATIC",
   decimals: 18,
   gasprice: "20000000000",
-  explorer: "https://mumbai.polygonscan.com",
+  explorer: {
+    url: "https://amoy.polygonscan.com",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
-    main: "https://rpc-mumbai.maticvigil.com",
+    main: "https://rpc-amoy.polygon.technology/",
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
@@ -432,7 +500,10 @@ chainConfiguration.starknet.networks.mainnet = {
   symbol: "STRK",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://starkscan.co",
+  explorer: {
+    url: "https://starkscan.co",
+    nftPath: "/nft/{{contractId}}/{{tokenId}}",
+  },
   rpcUrls: {
     main: "https://starknet-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
   },
@@ -464,7 +535,10 @@ chainConfiguration.starknet.networks.testnet = {
   symbol: "STRK",
   decimals: 18,
   gasprice: "250000000",
-  explorer: "https://sepolia.starkscan.co/",
+  explorer: {
+    url: "https://sepolia.starkscan.co/",
+    nftPath: "/nft/{{contractId}}/{{tokenId}}",
+  },
   rpcUrls: {
     main: "https://starknet-sepolia.public.blastapi.io",
   },
@@ -494,7 +568,10 @@ chainConfiguration.stellar.networks.mainnet = {
   symbol: "XLM",
   decimals: 6,
   gasprice: "250000000",
-  explorer: "https://stellarchain.io",
+  explorer: {
+    url: "https://stellarchain.io",
+    nftPath: "/accounts/{{contractId}}",
+  },
   rpcUrls: {
     main: "https://horizon.stellar.org",
     soroban:
@@ -521,7 +598,10 @@ chainConfiguration.stellar.networks.testnet = {
   symbol: "XLM",
   decimals: 6,
   gasprice: "250000000",
-  explorer: "https://stellarchain.io",
+  explorer: {
+    url: "https://stellarchain.io",
+    nftPath: "/accounts/{{contractId}}",
+  },
   rpcUrls: {
     main: "https://horizon-testnet.stellar.org",
     soroban: "https://soroban-testnet.stellar.org",
@@ -568,7 +648,10 @@ chainConfiguration.tron.networks.mainnet = {
   symbol: "TRX",
   decimals: 6, // TODO: verify
   gasprice: "250000000", // TODO: verify
-  explorer: "https://tronscan.io",
+  explorer: {
+    url: "https://tronscan.io",
+    nftPath: "/#/transaction/{{transactionId}}",
+  },
   rpcUrls: {
     main: "https://api.trongrid.io/jsonrpc",
   },
@@ -582,7 +665,10 @@ chainConfiguration.tron.networks.testnet = {
   symbol: "TRX",
   decimals: 6,
   gasprice: "250000000",
-  explorer: "https://shasta.tronscan.io",
+  explorer: {
+    url: "https://shasta.tronscan.io",
+    nftPath: "/#/transaction/{{transactionId}}",
+  },
   rpcUrls: {
     main: "https://api.shasta.trongrid.io/jsonrpc",
   },
@@ -596,7 +682,10 @@ chainConfiguration.xdc.networks.mainnet = {
   symbol: "XDC",
   decimals: 18,
   gasprice: "12500000000",
-  explorer: "https://xdcscan.com",
+  explorer: {
+    url: "https://xdcscan.com",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://rpc.xdcrpc.com",
   },
@@ -617,7 +706,10 @@ chainConfiguration.xdc.networks.testnet = {
   symbol: "XDC",
   decimals: 18,
   gasprice: "12500000000",
-  explorer: "https://testnet.xdcscan.com",
+  explorer: {
+    url: "https://testnet.xdcscan.com",
+    nftPath: "/token/{{contractId}}?a={{tokenId}}",
+  },
   rpcUrls: {
     main: "https://erpc.apothem.network",
   },
@@ -647,7 +739,10 @@ chainConfiguration.xrpl.networks.mainnet = {
   symbol: "XRP",
   decimals: 6,
   gasprice: "250000000",
-  explorer: "https://xrpscan.com",
+  explorer: {
+    url: "https://livenet.xrpl.org",
+    nftPath: "/transactions/{{transactionId}}",
+  },
   rpcUrls: {
     main: "https://xrplcluster.com",
   },
@@ -661,7 +756,10 @@ chainConfiguration.xrpl.networks.testnet = {
   symbol: "XRP",
   decimals: 6,
   gasprice: "250000000",
-  explorer: "https://testnet.xrpl.org",
+  explorer: {
+    url: "https://testnet.xrpl.org",
+    nftPath: "/transactions/{{transactionId}}",
+  },
   rpcUrls: {
     main: "https://s.altnet.rippletest.net:51234",
   },

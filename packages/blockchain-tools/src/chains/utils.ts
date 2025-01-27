@@ -1,7 +1,9 @@
-import { Chain, ChainConfig, NetworkConfig } from "@cfce/types"
+import type { Chain, ChainConfig, NetworkConfig } from "@cfce/types"
 
 import appConfig from "@cfce/app-config"
-import { ChainSlugs } from "@cfce/types"
+import type { NFTData } from "@cfce/database"
+import type { ChainSlugs } from "@cfce/types"
+
 import chainConfiguration from "./chainConfig"
 
 /**
@@ -38,6 +40,14 @@ export const getChainByChainId = (chainId: number): ChainConfig => {
     throw new Error(`Chain configuration not found for chain ID ${chainId}`)
   }
   return idToChainMapping[chainId]
+}
+
+export const getChainConfigBySlug = (slug: ChainSlugs): ChainConfig => {
+  const chainConfig = chainConfiguration[slug]
+  if (!chainConfig) {
+    throw new Error(`Chain configuration not found for ${slug}`)
+  }
+  return chainConfig
 }
 
 /**
@@ -100,4 +110,30 @@ export const getRpcUrl = (
   }
 
   return rpcUrl
+}
+
+export const getNftPath = (
+  nftData: Pick<
+    NFTData,
+    "coinLabel" | "coinNetwork" | "contractId" | "tokenId" | "transactionId"
+  >,
+): string => {
+  const { coinLabel: chain, coinNetwork } = nftData
+  if (!chain || !coinNetwork) {
+    throw new Error("Chain label and network are required")
+  }
+  // TODO: Add this to the type in prisma
+  const chainConfig = getChainConfigurationByName(chain as Chain)
+  const networkConfig = chainConfig.networks[coinNetwork]
+  if (!networkConfig) {
+    throw new Error(
+      `Network configuration not found for ${chain} ${coinNetwork}`,
+    )
+  }
+  const explorer = networkConfig.explorer
+  const path = explorer.nftPath
+    .replace("{{contractId}}", nftData.contractId || "")
+    .replace("{{tokenId}}", nftData.tokenId || "")
+    .replace("{{transactionId}}", nftData.transactionId || "")
+  return `${explorer.url}${path}`
 }

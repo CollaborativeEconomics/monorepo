@@ -349,6 +349,8 @@ export async function mintAndSaveReceiptNFT({
       coinValue: amountCUR,
       usdValue: amountUSD,
       tokenId: tokenId,
+      contractId: receiptContract,
+      transactionId: txId,
       status: DonationStatus.claimed,
     }
     console.log("NFT", data)

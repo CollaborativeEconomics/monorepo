@@ -8,15 +8,15 @@ import {
   Keypair,
   Networks,
   Operation,
-  rpc,
   SorobanDataBuilder,
   type Transaction,
   TransactionBuilder,
   nativeToScVal,
+  rpc,
+  scValToNative,
   xdr,
 } from "@stellar/stellar-sdk"
 import type { StellarNetwork } from "../../networks"
-
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -266,13 +266,7 @@ export async function submit(
     const resp = await submitOrRestoreAndRetry(source, tx)
     console.log("RESP", resp)
     if (resp.success) {
-      const meta = resp.meta
-      //console.log('META', JSON.stringify(meta,null,2))
-      const lastId =
-        // @ts-ignore TODO: is there a better way to get this value? I suspect this is broken
-        meta?._value?._attributes?.sorobanMeta?._attributes?.events[0]?._attributes?.body?._value?._attributes?.data?._value?._attributes?.lo?._value?.toString() ||
-        ""
-      const tokenId = lastId ? `${contractId} #${lastId}` : resp.txid
+      const tokenId = resp.value ? scValToNative(resp.value) : null
       console.log("TOKENID", tokenId)
       return { success: true, tokenId, error: null }
     }

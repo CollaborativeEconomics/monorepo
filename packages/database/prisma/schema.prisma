@@ -243,6 +243,7 @@ model NFTData {
   initiativeId   String?      @db.Uuid
   metadataUri    String       @db.VarChar(255)
   imageUri       String       @db.VarChar(255)
+  chainId        String?      @db.VarChar(20)
   coinNetwork    String?      @db.VarChar(20)
   coinLabel      String?      @db.VarChar(20)
   coinSymbol     String?      @db.VarChar(20)
