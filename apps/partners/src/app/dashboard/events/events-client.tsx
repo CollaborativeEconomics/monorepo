@@ -4,9 +4,9 @@ import type {
   EventType,
   Initiative,
   OrganizationData,
-  Prisma
+  Prisma,
 } from '@cfce/database';
-import { Decimal } from 'decimal.js'
+import { Decimal } from 'decimal.js';
 //import { useRouter } from 'next/navigation'
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -113,7 +113,10 @@ export default function Page({ organization, events }: PageProps) {
     body.append('name', data.name);
     body.append('file', data.file);
     try {
-      const response = await uploadToIPFS(`${organization.slug}-event-${data.name}.jpg`, data.file);
+      const response = await uploadToIPFS(
+        `${organization.slug}-event-${data.name}.jpg`,
+        data.file,
+      );
       return { uri: response };
     } catch (error) {
       console.error('Error uploading image to IPFS', error);
@@ -188,8 +191,7 @@ export default function Page({ organization, events }: PageProps) {
     const event: EventType = {
       organizationid: organizationId,
       initiativeid: data.initiativeId,
-      //name: data?.name ?? '',
-      name: 'test',
+      name: data?.name ?? 'Event',
       description: data.desc,
       location: '',
       budget: Number.parseInt(data.budget || '0', 10),
@@ -199,7 +201,7 @@ export default function Page({ organization, events }: PageProps) {
       payrate: new Decimal(payrate),
       volunteers: Number.parseInt(data.volunteers || '0', 10),
       voltoearn: payrate > 0,
-      image: ''
+      image: '',
     };
 
     try {

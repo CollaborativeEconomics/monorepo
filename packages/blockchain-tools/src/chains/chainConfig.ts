@@ -126,6 +126,15 @@ chainConfiguration.arbitrum.networks.mainnet = {
   rpcUrls: {
     main: "https://arb1.arbitrum.io/rpc",
   },
+  tokens: {
+    USDC: {
+      contract: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      name: "USDC",
+      symbol: "USDC",
+      decimals: 6,
+      icon: "icons/usdc.webp",
+    },
+  },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
 }
@@ -139,6 +148,16 @@ chainConfiguration.arbitrum.networks.testnet = {
   explorer: "https://sepolia.arbiscan.io",
   rpcUrls: {
     main: "https://sepolia-rollup.arbitrum.io/rpc",
+  },
+  tokens: {
+    // CFCE-controlled contract
+    USDC: {
+      contract: "0x80C2f901ABA1F95e5ddb2A5024E7Df6a366a3AB0",
+      name: "USDC",
+      symbol: "USDC",
+      decimals: 6,
+      icon: "icons/usdc.webp",
+    },
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",

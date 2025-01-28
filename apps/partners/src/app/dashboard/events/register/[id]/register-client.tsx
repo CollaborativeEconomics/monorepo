@@ -2,20 +2,25 @@
 
 import { abiVolunteersNFT as NFTAbi } from '@cfce/blockchain-tools';
 import type { Contract, Event } from '@cfce/database';
-import { useAccount, useWriteContract } from 'wagmi';
-import { arbitrumSepolia } from 'wagmi/chains';
-import { readContract, simulateContract, switchChain, waitForTransaction } from '@wagmi/core'
-import { wagmiConfig, wagmiConnect, wagmiReconnect } from '~/utils/wagmiConfig';
+import {
+  readContract,
+  simulateContract,
+  switchChain,
+  waitForTransaction,
+} from '@wagmi/core';
 import { BrowserQRCodeReader } from '@zxing/library';
 import clipboard from 'clipboardy';
 import { LucideClipboardPaste, LucideQrCode } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useAccount, useWriteContract } from 'wagmi';
+import { arbitrumSepolia } from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
 import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
 import { cleanAddress } from '~/utils/address';
+import { wagmiConfig, wagmiConnect, wagmiReconnect } from '~/utils/wagmiConfig';
 
 // We may change chains in the future
 const defaultChain = arbitrumSepolia;
@@ -32,11 +37,13 @@ export default function RegisterClient({
   contractNFT,
 }: RegisterClientProps) {
   const qrReader = useRef<BrowserQRCodeReader | null>(null);
-  const [device, setDevice] = useState<string | null>(null);
-  const [message, setMessage] = useState('Scan the QR-CODE to register for the event');
+  const [device, setDevice] = useState<string | null | undefined>(null);
+  const [message, setMessage] = useState(
+    'Scan the QR-CODE to register for the event',
+  );
   const [scanStatus, setScanStatus] = useState<'ready' | 'scanning'>('ready');
   const account = useAccount();
-  const { writeContractAsync } = useWriteContract({ config:wagmiConfig });
+  const { writeContractAsync } = useWriteContract({ config: wagmiConfig });
 
   const { register, watch, setValue } = useForm({
     defaultValues: { address: '' },
@@ -45,16 +52,15 @@ export default function RegisterClient({
 
   // Initialize QR reader
   useEffect(() => {
-    if (qrReader.current) {
-      return;
+    if (!qrReader.current) {
+      qrReader.current = new BrowserQRCodeReader();
     }
-    const reader = new BrowserQRCodeReader();
-    qrReader.current = reader;
 
-    reader
+    qrReader.current
       .getVideoInputDevices()
-      .then(videoInputDevices => {
-        if (videoInputDevices[0]?.deviceId) {
+      .then((videoInputDevices: MediaDeviceInfo[]) => {
+        console.log('VIDEO INPUT DEVICES', videoInputDevices);
+        if (videoInputDevices[0]) {
           setDevice(videoInputDevices[0].deviceId);
         }
       })
@@ -62,11 +68,20 @@ export default function RegisterClient({
         console.error(err);
         setMessage('Error accessing camera');
       });
+
+    return () => {
+      qrReader.current?.reset();
+    };
   }, []);
 
   const beginDecode = useCallback(() => {
-    if (!qrReader.current || !device) return;
-    qrReader.current.decodeFromInputVideoDeviceContinuously(device, 'qrcode', (result, error) => {
+    console.log('BEGIN DECODE', qrReader.current, device);
+    if (!qrReader.current) return;
+    qrReader.current.decodeFromInputVideoDeviceContinuously(
+      // @ts-expect-error: for some reason deviceId can be undefined
+      device,
+      'qrcode',
+      (result, error) => {
         if (error) {
           setMessage(error instanceof Error ? error.message : 'Unknown error');
           return;
@@ -78,18 +93,19 @@ export default function RegisterClient({
         setValue('address', address);
         setScanStatus('ready');
         qrReader.current?.stopContinuousDecode();
-    });
+      },
+    );
   }, [device, setValue]);
 
   async function onScan() {
-    console.log('SCAN')
+    console.log('SCAN');
     setScanStatus('scanning');
     setMessage('Scanning qrcode...');
     beginDecode();
   }
 
   async function onStop() {
-    console.log('STOP')
+    console.log('STOP');
     setScanStatus('ready');
     setMessage('Ready to scan');
     try {
@@ -98,17 +114,16 @@ export default function RegisterClient({
       console.error(ex);
     }
   }
-  
 
   async function onMint() {
-    const connected = await wagmiConnect()
+    const connected = await wagmiConnect();
     console.log('CONNECTED', connected);
-    console.log('ACCOUNT', account)
+    console.log('ACCOUNT', account);
 
     const cleanedAddress = cleanAddress(address) as `0x${string}`;
     const nft = contractNFT.contract_address as `0x${string}`;
-    const tokenId  = BigInt(1)
-    const tokenQty = BigInt(1)
+    const tokenId = BigInt(1);
+    const tokenQty = BigInt(1);
 
     if (!account?.address || !nft) {
       setMessage('Please Connect Wallet in Metamask');
@@ -118,7 +133,7 @@ export default function RegisterClient({
     setMessage('Minting NFT, please wait...');
 
     if (account.chainId !== defaultChain.id) {
-      console.log('SWITCH FROM', account.chainId, 'TO', defaultChain.id)
+      console.log('SWITCH FROM', account.chainId, 'TO', defaultChain.id);
       await switchChain(wagmiConfig, { chainId: defaultChain.id });
     }
 
@@ -129,7 +144,7 @@ export default function RegisterClient({
         functionName: 'balanceOf',
         args: [cleanedAddress, tokenId],
       });
-      console.log('BALANCE', balance)
+      console.log('BALANCE', balance);
 
       if (balance > BigInt(0)) {
         setMessage('User already registered for this event');
@@ -143,8 +158,8 @@ export default function RegisterClient({
         args: [cleanedAddress, tokenId, tokenQty],
         chain: defaultChain,
         account: account.address,
-      }
-      console.log('TX', tx)
+      };
+      console.log('TX', tx);
       const hash = await writeContractAsync({
         address: nft,
         abi: NFTAbi,

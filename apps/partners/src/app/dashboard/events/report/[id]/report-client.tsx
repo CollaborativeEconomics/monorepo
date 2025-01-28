@@ -2,20 +2,20 @@
 
 import { abiVolunteersNFT as NFTAbi } from '@cfce/blockchain-tools';
 import type { Contract, Event } from '@cfce/database';
-import { useAccount, useWriteContract } from 'wagmi';
-import { arbitrumSepolia } from 'wagmi/chains';
 import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
-import { wagmiConfig, wagmiConnect, wagmiReconnect } from '~/utils/wagmiConfig';
 import { BrowserQRCodeReader } from '@zxing/library';
 import clipboard from 'clipboardy';
 import { LucideClipboardPaste, LucideQrCode } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import { useAccount, useWriteContract } from 'wagmi';
+import { arbitrumSepolia } from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
 import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
 import styles from '~/styles/dashboard.module.css';
 import { cleanAddress } from '~/utils/address';
+import { wagmiConfig, wagmiConnect, wagmiReconnect } from '~/utils/wagmiConfig';
 
 // We may change chains in the future
 const defaultChain = arbitrumSepolia;
@@ -38,7 +38,9 @@ export default function ReportClient({
 }: ReportClientProps) {
   const qrReader = useRef<BrowserQRCodeReader | null>(null);
   const [device, setDevice] = useState<string | null>(null);
-  const [message, setMessage] = useState('Scan the QR-CODE to report work delivered');
+  const [message, setMessage] = useState(
+    'Scan the QR-CODE to report work delivered',
+  );
   const [scanStatus, setScanStatus] = useState<'ready' | 'scanning'>('ready');
 
   const { register, handleSubmit, watch, setValue } = useForm<DataForm>({
@@ -50,19 +52,18 @@ export default function ReportClient({
   const unitlabel = event?.unitlabel || '';
   const [amount, setAmount] = useState(payrate);
 
-  const { writeContractAsync } = useWriteContract({ config:wagmiConfig });
+  const { writeContractAsync } = useWriteContract({ config: wagmiConfig });
   const account = useAccount();
 
   // Initialize QR reader
   useEffect(() => {
-    if (qrReader.current) {
-      return;
+    if (!qrReader.current) {
+      qrReader.current = new BrowserQRCodeReader();
     }
-    qrReader.current = new BrowserQRCodeReader();
     qrReader.current
       .getVideoInputDevices()
       .then((videoInputDevices: MediaDeviceInfo[]) => {
-        setDevice(videoInputDevices[0]?.deviceId || null);
+        setDevice(videoInputDevices[0].deviceId);
       })
       .catch((err: Error) => {
         console.error(err);
@@ -71,7 +72,7 @@ export default function ReportClient({
   }, []);
 
   const beginDecode = useCallback(() => {
-    if (!qrReader.current || !device) return;
+    if (!qrReader.current) return;
 
     qrReader.current.decodeFromInputVideoDeviceContinuously(
       device,
@@ -110,23 +111,23 @@ export default function ReportClient({
     }
   }
 
-  async function onSubmit(data:DataForm){
+  async function onSubmit(data: DataForm) {
     console.log('DATA:', data);
-    const address = data.address
-    const units = Number.parseInt(data.units)
+    const address = data.address;
+    const units = Number.parseInt(data.units);
     const nft = contractNFT.contract_address as `0x${string}`;
     const cleanedAddress = cleanAddress(address) as `0x${string}`;
-    const tokenId1 = BigInt(1)
-    const tokenId2 = BigInt(2)
+    const tokenId1 = BigInt(1);
+    const tokenId2 = BigInt(2);
     console.log('address', address);
     console.log('units', units || 0);
 
-    if(!units || units < 1){
+    if (!units || units < 1) {
       setMessage('Units must be greater than zero');
       return;
     }
 
-    const connected = await wagmiConnect()
+    const connected = await wagmiConnect();
     console.log('CONNECTED', connected);
 
     if (!account.isConnected) {
@@ -252,11 +253,7 @@ export default function ReportClient({
           </div>
         </div>
         <div className="w-full mb-2 flex flex-row justify-between">
-          <ButtonBlue
-            id="buttonSubmit"
-            type="submit"
-            text="MINT REPORT NFT"
-          />
+          <ButtonBlue id="buttonSubmit" type="submit" text="MINT REPORT NFT" />
         </div>
         <p id="message" className="mb-6 center text-center truncate w-full">
           {message}

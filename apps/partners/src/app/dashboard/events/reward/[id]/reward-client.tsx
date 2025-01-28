@@ -1,16 +1,16 @@
 'use client';
 
+import { abiVolunteersDistributor as DistributorAbi } from '@cfce/blockchain-tools';
 import type { Contract, Event, Volunteer } from '@cfce/database';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { useState } from 'react';
-import styles from '~/styles/dashboard.module.css';
 import { useAccount, useConnect, useWriteContract } from 'wagmi';
 import { arbitrumSepolia } from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
 import Dashboard from '~/components/dashboard';
 import Sidebar from '~/components/sidebar';
 import Title from '~/components/title';
-import { abiVolunteersDistributor as DistributorAbi } from '@cfce/blockchain-tools';
+import styles from '~/styles/dashboard.module.css';
 import type { getReportedAddresses } from '~/utils/chainLogs';
 import { wagmiConfig, wagmiConnect, wagmiReconnect } from '~/utils/wagmiConfig';
 
@@ -32,7 +32,9 @@ export default function RewardClient({
   contractV2E,
 }: RewardClientProps) {
   const [message, setMessage] = useState('Start the disbursement process');
-  const { data: hash, writeContractAsync } = useWriteContract({ config:wagmiConfig });
+  const { data: hash, writeContractAsync } = useWriteContract({
+    config: wagmiConfig,
+  });
   const { connectors, connect } = useConnect();
   const account = useAccount();
 
@@ -40,8 +42,8 @@ export default function RewardClient({
   const unitlabel = event?.unitlabel || '';
   let total = 0;
 
-  async function onSubmit(){
-    const connected = await wagmiConnect()
+  async function onSubmit() {
+    const connected = await wagmiConnect();
     console.log('CONNECTED', connected);
 
     const nft = contractNFT.contract_address as `0x${string}`;
@@ -55,7 +57,14 @@ export default function RewardClient({
 
     try {
       const registered = volunteers?.map(it => it.address);
-      console.log('REGISTERED', registered);
+      console.log('REGISTERED', registered, {
+        address: distributor,
+        abi: DistributorAbi,
+        functionName: 'distributeTokensByUnit',
+        args: [registered as `0x${string}`[]],
+        chain: defaultChain,
+        account: account.address,
+      });
       const hash = await writeContractAsync({
         address: distributor,
         abi: DistributorAbi,
@@ -94,7 +103,7 @@ export default function RewardClient({
             <tbody className="border-t-2">
               {volunteers &&
                 volunteers?.length > 0 &&
-                volunteers.map((v,index) => {
+                volunteers.map((v, index) => {
                   total += Number(v.value) * Number(payrate);
                   return (
                     <tr key={`volunteer-${v.address}-${index}`}>
