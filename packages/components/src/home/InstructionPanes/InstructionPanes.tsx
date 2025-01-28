@@ -56,7 +56,7 @@ export default function InstructionPanes() {
           >
             <InstructionPaneSectionImageBlend source={pane.image} />
           </Parallax>
-          <div className="md:w-1/2 lg:w-[38%] bg-background/90 backdrop-blur-sm p-6 rounded-xl shadow-lg mr-auto flex flex-col md:flex-row gap-4 flex flex-row md:absolute top-8 left-8">
+          <div className="md:w-1/2 lg:w-[38%] bg-background/90 backdrop-blur-sm p-6 rounded-xl shadow-lg mr-auto flex flex-col md:flex-row gap-4 flex flex-row md:absolute top-8 left-8 color-foreground">
             <RiveAnimation number={pane.riveNumber} />
             <div className="flex flex-col gap-4">
               <h3 className="text-3xl font-bold">{pane.title}</h3>
