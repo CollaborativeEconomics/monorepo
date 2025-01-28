@@ -2,11 +2,12 @@
 import "server-only"
 import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
-import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
+import { BlockchainServerInterfaces, chainConfig } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,
+  Prisma,
   getInitiativeById,
   getNFTbyTokenId,
   getOrganizationById,
@@ -211,6 +212,7 @@ export async function mintAndSaveReceiptNFT({
     const currentChain = appConfig.chains[chain]
     if (!currentChain) throw new Error("Chain not found")
     const network = currentChain.network
+    const config = chainConfig[chain].networks[network]
 
     // #region: Prepare and upload metadata
     const metadata = {
@@ -335,7 +337,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Save data to DB
-    const data = {
+    const data: Prisma.NFTDataCreateInput = {
       created: new Date(),
       donorAddress: donorWalletAddress,
       user: { connect: { id: userId } },
@@ -343,9 +345,10 @@ export async function mintAndSaveReceiptNFT({
       initiative: { connect: { id: initiativeId } },
       metadataUri: uriMeta,
       imageUri: uriImage,
-      coinNetwork: network,
+      network: network,
       coinSymbol: token,
-      coinLabel: chain,
+      chainName: config.name,
+      chainId: config.id,
       coinValue: amountCUR,
       usdValue: amountUSD,
       tokenId: tokenId,
