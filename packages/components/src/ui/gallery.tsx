@@ -1,6 +1,6 @@
 'use client';
 import appConfig from '@cfce/app-config';
-import { ipfsCIDToUrl } from '@cfce/utils';
+import { ipfsCIDToUrl } from '@cfce/utils/client';
 import React from 'react';
 interface Props {
   images?: string[];

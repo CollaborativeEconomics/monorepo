@@ -7,7 +7,7 @@ import { getWalletSecret } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,
-  Prisma,
+  type Prisma,
   getInitiativeById,
   getNFTbyTokenId,
   getOrganizationById,

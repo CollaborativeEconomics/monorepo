@@ -1,6 +1,6 @@
 'use client';
 import type { NFTDataWithRelations } from '@cfce/database';
-import { ipfsCIDToUrl } from '@cfce/utils';
+import { ipfsCIDToUrl } from '@cfce/utils/client';
 import {
   type SortingState,
   createColumnHelper,

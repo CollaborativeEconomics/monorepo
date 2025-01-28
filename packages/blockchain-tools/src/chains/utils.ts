@@ -115,20 +115,18 @@ export const getRpcUrl = (
 export const getNftPath = (
   nftData: Pick<
     NFTData,
-    "coinLabel" | "coinNetwork" | "contractId" | "tokenId" | "transactionId"
+    "chainName" | "network" | "contractId" | "tokenId" | "transactionId"
   >,
 ): string => {
-  const { coinLabel: chain, coinNetwork } = nftData
-  if (!chain || !coinNetwork) {
+  const { chainName: chain, network } = nftData
+  if (!chain || !network) {
     throw new Error("Chain label and network are required")
   }
   // TODO: Add this to the type in prisma
   const chainConfig = getChainConfigurationByName(chain as Chain)
-  const networkConfig = chainConfig.networks[coinNetwork]
+  const networkConfig = chainConfig.networks[network]
   if (!networkConfig) {
-    throw new Error(
-      `Network configuration not found for ${chain} ${coinNetwork}`,
-    )
+    throw new Error(`Network configuration not found for ${chain} ${network}`)
   }
   const explorer = networkConfig.explorer
   const path = explorer.nftPath

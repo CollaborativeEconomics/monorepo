@@ -26,7 +26,7 @@ export default async function Initiatives({
   //console.log('INITS', initiatives.length)
 
   return (
-    <main className="flex min-h-screen flex-col items-stretch container pt-24 mt-12">
+    <main className="flex min-h-screen flex-col items-stretch container pt-24">
       <Card className="flex">
         <SearchBar />
       </Card>

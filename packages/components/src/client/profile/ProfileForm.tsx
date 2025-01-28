@@ -1,6 +1,6 @@
 'use client';
 import type { User } from '@cfce/database';
-import { ipfsCIDToUrl } from '@cfce/utils';
+import { ipfsCIDToUrl } from '@cfce/utils/client';
 import Image from 'next/image';
 import { v7 as uuidv7 } from 'uuid';
 import TextInput from '../../form/textinput';

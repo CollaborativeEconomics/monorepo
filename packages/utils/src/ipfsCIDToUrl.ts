@@ -7,5 +7,6 @@ export default function ipfsCIDToUrl(img: string | null) {
   if (img?.startsWith("ipfs:")) {
     return appConfig.apis.ipfs.gateway + img.slice(5)
   }
+  console.log("img", img)
   return img
 }

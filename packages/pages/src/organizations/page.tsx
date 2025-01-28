@@ -26,7 +26,7 @@ export default async function Organizations(props: {
   console.log('ORGS', organizations.length);
 
   return (
-    <main className="flex min-h-screen flex-col items-stretch container mt-12 pt-24">
+    <main className="flex min-h-screen flex-col items-stretch container pt-24">
       <Card className="flex">
         <SearchBar />
       </Card>

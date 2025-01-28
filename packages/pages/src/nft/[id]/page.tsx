@@ -5,6 +5,7 @@ import { chainConfig } from '@cfce/blockchain-tools';
 import { OrganizationAvatar } from '@cfce/components/organization';
 import { Card, CardContent } from '@cfce/components/ui';
 import { getNFTById } from '@cfce/database';
+import { ipfsCIDToUrl } from '@cfce/utils/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import NotFound from '../../not-found';
@@ -16,7 +17,6 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
     return <NotFound />;
   }
   //console.log('NFT', nft)
-  const imgsrc = appConfig.apis.ipfs.gateway + nft.imageUri.substr(5);
   const [contract, tokenId] = nft.tokenId.split(' ');
   const explorer = `${
     chainConfig.stellar.networks[
@@ -32,7 +32,7 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
         <Card className="flex flex-col overflow-hidden max-w-full lg:max-w-[400px] xl:max-w-[500px] w-full mx-auto">
           <div className="">
             <Image
-              src={imgsrc}
+              src={ipfsCIDToUrl(nft.imageUri)}
               width={480}
               height={480}
               alt="Initiative"
@@ -92,13 +92,13 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Chain:
                 </span>{' '}
-                <span>{nft.coinLabel}</span>
+                <span>{nft.chainName}</span>
               </p>
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Network:
                 </span>{' '}
-                <span>{nft.coinNetwork}</span>
+                <span>{nft.network}</span>
               </p>
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">

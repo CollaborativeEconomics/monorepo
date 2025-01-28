@@ -20,8 +20,8 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
   const {
     created,
     donorAddress,
-    coinNetwork,
-    coinLabel, // TODO: I think this is wrong sometimes (at least it is in the DB), find out why
+    network,
+    chainName,
     coinSymbol,
     coinValue,
     usdValue,
@@ -33,15 +33,14 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
   } = nftData;
   const [isFlipped, setIsFlipped] = useState(false);
 
-  if (!coinLabel) return <div>No chain</div>;
+  if (!chainName) return <div>No chain</div>;
   const isChain = (chain: string): chain is Chain => {
     return ChainNames.some(c => c === chain);
   };
-  if (!isChain(coinLabel)) {
+  if (!isChain(chainName)) {
     return null;
   }
-  const chainDetails = getChainConfigurationByName(coinLabel);
-  const network = chainDetails.networks[appConfig.chainDefaults.network];
+  const chainDetails = getChainConfigurationByName(chainName);
   return (
     <div>
       <span className="text-sm text-muted-foreground">
@@ -123,8 +122,8 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
                 <Link
                   target="_blank"
                   href={getNftPath({
-                    coinLabel,
-                    coinNetwork,
+                    chainName,
+                    network,
                     contractId,
                     tokenId,
                     transactionId,
@@ -214,7 +213,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
                           <span className="text-sm text-muted-foreground">
                             Network
                           </span>
-                          <span className="text-sm">{coinNetwork}</span>
+                          <span className="text-sm">{network}</span>
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm text-muted-foreground">
