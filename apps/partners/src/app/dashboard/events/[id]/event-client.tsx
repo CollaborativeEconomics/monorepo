@@ -114,7 +114,7 @@ export default function EventClient({
         abi: FactoryAbi,
         functionName: 'deployTokenDistributor' as const,
         args: [
-          usdcAddress,
+          usdcAddress as `0x${string}`,
           NFTAddress as `0x${string}`,
           parseEther(event.unitvalue?.toString() || '0'),
         ],
@@ -129,7 +129,7 @@ export default function EventClient({
         abi: FactoryAbi,
         functionName: 'deployTokenDistributor',
         args: [
-          usdcAddress,
+          usdcAddress as `0x${string}`,
           NFTAddress as `0x${string}`,
           // parseEther(event.unitvalue?.toString() || '0'),
           BigInt(0),

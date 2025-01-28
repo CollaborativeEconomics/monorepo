@@ -89,11 +89,11 @@ const FileView = forwardRef(
             >
               <div style={{ width: width, height: height }}>
                 <Image
-                  className={`${style} object-cover`}
+                  className={`${style}`}
                   src={preview}
                   alt={`preview ${index + 1}`}
                   fill
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: 'contain' }}
                 />
               </div>
             </button>

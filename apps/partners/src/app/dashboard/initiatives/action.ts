@@ -14,6 +14,8 @@ type FormData = {
   start?: string;
   finish?: string;
   image: FileList;
+  unitlabel: string;
+  unitvalue: string;
 };
 
 //async function saveImageToIPFS(data: { name: string; file: File }) {
@@ -76,6 +78,8 @@ export async function createInitiative(data: FormData, orgId: string, tba = fals
           id: orgId,
         },
       },
+      unitlabel: data.unitlabel,
+      unitvalue: Number.parseInt(data.unitvalue || '0')
     }
 
     const result = await newInitiative(record)
