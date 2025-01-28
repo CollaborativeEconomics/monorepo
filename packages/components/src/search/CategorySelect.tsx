@@ -59,7 +59,7 @@ export default function CategorySelect(props: CategorySelectProps) {
       let list = await res.json()
       console.log("CATS", list)
       if (list.success) {
-        list = list.map((category: Category) => ({
+        list = list.data.map((category: Category) => ({
           value: category.slug,
           label: category.title,
         }))

@@ -4,14 +4,13 @@ import checkApiKey from "../checkApiKey"
 
 export async function GET(req: NextRequest) {
   try {
-    const apiKey = req.headers.get("x-api-key")
-    const authorized = await checkApiKey(apiKey)
-
-    if (!authorized) {
-      return NextResponse.json({ success: false }, { status: 403 })
-    }
-
+    //const apiKey = req.headers.get("x-api-key")
+    //const authorized = await checkApiKey(apiKey)
+    //if (!authorized) {
+    //  return NextResponse.json({ success: false }, { status: 403 })
+    //}
     const result = await getLocations()
+    console.log('DB-LOCS', result?.length)
     return NextResponse.json({ success: true, data: result }, { status: 200 })
   } catch (error) {
     console.error({ error })

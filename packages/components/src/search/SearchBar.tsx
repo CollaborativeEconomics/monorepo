@@ -27,7 +27,7 @@ export default function SearchBar(props: SearchBarProps) {
   }
 
   function search() {
-    //console.log('SEARCHBAR', query, category, location)
+    console.log('SEARCH', query, category, location)
     const params = { query, category, location }
     const url = new URLSearchParams(params).toString()
     //console.log(url)

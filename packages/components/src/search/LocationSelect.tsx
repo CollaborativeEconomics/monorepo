@@ -30,7 +30,7 @@ export default function LocationSelect(props: LocationSelectProps) {
       const list = await res.json()
       console.log("LOCS", list)
       if (list.success) {
-        setLocations(list)
+        setLocations(list.data)
       }
     }
     loadLocations()

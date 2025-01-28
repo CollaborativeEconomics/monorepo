@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "biomejs.biome",
-    "YoavBls.pretty-ts-errors",
-    "christian-kohler.path-intellisense",
-    "Prisma.prisma",
-    "samxchen.ts-viewer-extension"
-  ]
-}
