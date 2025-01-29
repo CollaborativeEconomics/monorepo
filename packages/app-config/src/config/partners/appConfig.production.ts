@@ -18,6 +18,7 @@ appConfig.chains = {
     slug: "xdc",
     network: "mainnet",
     contracts: {
+      // volunteersFactory: "TODO",
       // receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
       // storyERC1155: "0x0000000000000000000000000000000000000000",
     },

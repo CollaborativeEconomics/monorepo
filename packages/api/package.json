@@ -191,8 +191,8 @@
     "@cfce/registry-hooks": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@types/uuid": "^10.0.0",
-    "@vercel/blob": "0.27.0",
-    "uuid": "11.0.3"
+    "@vercel/blob": "0.27.1",
+    "uuid": "11.0.5"
   },
   "devDependencies": {
     "@cfce/types": "workspace:*",

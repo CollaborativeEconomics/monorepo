@@ -52,7 +52,7 @@ const FileView = ({
         id={id}
         {...props}
         onChange={(event) => onPreviewFile(event)}
-        className="block absolute top-0 left-0 w-full h-full opacity-0 z-10 cursor-pointer"
+        className="block absolute top-0 left-0 w-full h-full object-contain opacity-0 z-10 cursor-pointer"
       />
       <img
         id="file-image"

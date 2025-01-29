@@ -6,7 +6,7 @@ interface TextareaProps {
   register: UseFormRegisterReturn
 }
 
-const Textarea = ({
+export const Textarea = ({
   label,
   register,
   ...rest
@@ -15,6 +15,4 @@ const Textarea = ({
     <span className="text-slate-300 text-sm text-left uppercase">{label}</span>
     <textarea {...rest} {...register} />
   </label>
-)
-
-export default Textarea
+);

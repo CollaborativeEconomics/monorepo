@@ -5,6 +5,9 @@ const nextConfig = {
   outputFileTracingRoot: path.join(process.cwd(), '../../'),
   experimental: {
     //esmExternals: 'loose', //The "esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
     optimizePackageImports: [
       '@cfce/components',
       '@cfce/blockchain-tools',
@@ -52,7 +55,7 @@ const nextConfig = {
         callback();
       });
     }
-    config.externals.push('pino-pretty')
+    config.externals.push('pino-pretty');
     return config;
   },
   env: {

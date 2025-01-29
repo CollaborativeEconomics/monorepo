@@ -126,6 +126,15 @@ chainConfiguration.arbitrum.networks.mainnet = {
   rpcUrls: {
     main: "https://arb1.arbitrum.io/rpc",
   },
+  tokens: {
+    USDC: {
+      contract: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      name: "USDC",
+      symbol: "USDC",
+      decimals: 6,
+      icon: "icons/usdc.webp",
+    },
+  },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
 }
@@ -139,6 +148,16 @@ chainConfiguration.arbitrum.networks.testnet = {
   explorer: "https://sepolia.arbiscan.io",
   rpcUrls: {
     main: "https://sepolia-rollup.arbitrum.io/rpc",
+  },
+  tokens: {
+    // CFCE-controlled contract
+    USDC: {
+      contract: "0x80C2f901ABA1F95e5ddb2A5024E7Df6a366a3AB0",
+      name: "USDC",
+      symbol: "USDC",
+      decimals: 6,
+      icon: "icons/usdc.webp",
+    },
   },
   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
   wssurl: "",
@@ -595,7 +614,7 @@ chainConfiguration.xdc.networks.mainnet = {
   slug: "mainnet",
   symbol: "XDC",
   decimals: 18,
-  gasprice: "12500000000",
+  gasprice: "15000000000",
   explorer: "https://xdcscan.com",
   rpcUrls: {
     main: "https://rpc.xdcrpc.com",
@@ -616,10 +635,10 @@ chainConfiguration.xdc.networks.testnet = {
   slug: "testnet",
   symbol: "XDC",
   decimals: 18,
-  gasprice: "12500000000",
+  gasprice: "15000000000",
   explorer: "https://testnet.xdcscan.com",
   rpcUrls: {
-    main: "https://erpc.apothem.network",
+    main: "https://rpc.apothem.network",
   },
   tokens: {
     XDC: {
@@ -633,7 +652,7 @@ chainConfiguration.xdc.networks.testnet = {
   contracts: {
     tba6551RegistryAddress: "0x000000006551c19487814612e58fe06813775758",
     tba6551ImplementationAddress: "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",
-    tba721TokenContract: "0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7",
+    tba721TokenContract: "0x88Bb2D04f180631BdC4Cd6129106665A0B6790D8", // 0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7
     nft721TokenContract: "0xa3a3d70Ec57bC30472CD687F3D530b3431292989",
     nft1155TokenContract: "0xc917ff4128525a65639d18f1d240a788081f022d",
   },

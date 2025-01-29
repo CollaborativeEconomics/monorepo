@@ -1,109 +1,181 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form'
 import appConfig from '@cfce/app-config';
 import type { Contract, Organization, Prisma } from '@cfce/database';
+import type { Chain } from '@cfce/database';
+import type { ChainSlugs } from '@cfce/types';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import factoryDeployers from '~/chains';
 import ButtonBlue from '~/components/buttonblue';
+import Select from '~/components/form/select';
+import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
-import TextInput from '~/components/form/textinput'
-import Select from '~/components/form/select'
 import styles from '~/styles/dashboard.module.css';
-import { apiFetch } from '~/utils/api';
+import { apiFetch, apiPost } from '~/utils/api';
 
-type OrganizationData = Prisma.OrganizationGetPayload<{ include: { initiative: true } }>
+type OrganizationData = Prisma.OrganizationGetPayload<{
+  include: { initiative: true };
+}>;
 
 interface PageProps {
-  chain?: string;
-  network?: string;
-  wallet?: string;
-  organizationId?: string;
+  chain: string;
+  network: string;
   organization?: OrganizationData | null;
+  organizationId?: string;
+  wallet?: string;
 }
 
 interface FormProps {
-  baseURI?: string
-  initiativeId?: string
-  name?: string
-  symbol?: string
+  baseURI?: string;
+  initiativeId?: string;
+  name?: string;
+  symbol?: string;
 }
 
 export default function NFTReceiptClient({
   chain,
   network,
-  wallet,
-  organizationId,
   organization,
+  organizationId,
+  wallet,
 }: PageProps) {
+  console.log('CHAIN', chain);
+  const contract_type = 'NFTReceipt';
+  const chainSlug = chain.toLowerCase() as ChainSlugs;
+  const appChainConfig = appConfig.chains[chainSlug];
+  if (!appChainConfig) {
+    throw new Error('Chain required but not found');
+  }
 
-  const contract_type = 'NFTReceipt'
-  const [initiative, setInitiative] = useState(organization?.initiative[0].id||'')
-  const [initialURI, setInitialURI] = useState(organization?.initiative[0].imageUri||'')
+  const [initiative, setInitiative] = useState(
+    organization?.initiative[0].id || '',
+  );
+  const [initialURI, setInitialURI] = useState(
+    organization?.initiative[0].imageUri || '',
+  );
 
-  const [buttonText, setButtonText] = useState('NEW CONTRACT')
-  const [buttonDisabled, setButtonDisabled] = useState(false)
-  const [message, showMessage] = useState('Enter contract options')
-  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 }
+  const [buttonText, setButtonText] = useState('NEW CONTRACT');
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [message, showMessage] = useState('Enter contract options');
+  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
 
-  function setButtonState(state:number) {
+  function setButtonState(state: number) {
     switch (state) {
       case ButtonState.READY:
-        setButtonText('NEW CONTRACT')
-        setButtonDisabled(false)
-        break
+        setButtonText('NEW CONTRACT');
+        setButtonDisabled(false);
+        break;
       case ButtonState.WAIT:
-        setButtonText('WAIT')
-        setButtonDisabled(true)
-        break
+        setButtonText('WAIT');
+        setButtonDisabled(true);
+        break;
       case ButtonState.DONE:
-        setButtonText('DONE')
-        setButtonDisabled(true)
-        break
+        setButtonText('DONE');
+        setButtonDisabled(true);
+        break;
     }
   }
 
   const { register, handleSubmit, watch } = useForm({
-    defaultValues: {      
+    defaultValues: {
       name: 'Give Credits',
       symbol: 'GIVE',
       baseURI: initialURI,
-      initiativeId: initiative
-    }
-  })
+      initiativeId: initiative,
+    },
+  });
 
-  const [
-    name,
-    symbol,
-    baseURI,
-    initiativeId
-  ] = watch([
+  const [name, symbol, baseURI, initiativeId] = watch([
     'name',
     'symbol',
     'baseURI',
-    'initiativeId'
-  ])
+    'initiativeId',
+  ]);
 
   function listInitiatives() {
-    if(!organization || organization.initiative?.length < 1){
-      return [{id:'ALL', name:'All initiatives'}]
+    if (!organization || organization.initiative?.length < 1) {
+      return [{ id: 'ALL', name: 'All initiatives' }];
     }
-    const list = organization.initiative?.map(it=>{ return { id: it.id, name: it.title } })
-    console.log('LIST', list)
-    return list
+    const list = organization.initiative?.map(it => {
+      return { id: it.id, name: it.title };
+    });
+    console.log('LIST', list);
+    return list;
   }
 
-  function selectInitiative(selected:string){
-    console.log('SEL', selected)
-    setInitiative(selected)
+  function selectInitiative(selected: string) {
+    console.log('SEL', selected);
+    setInitiative(selected);
   }
 
   async function onSubmit(data: FormProps) {
-    console.log('SUBMIT', data)
-    showMessage('Not ready...')
-    // TODO: finish it
+    console.log('SUBMIT', data);
+    showMessage('Not ready...');
+
+    if (!chain) {
+      showMessage('Chain is required');
+      return;
+    }
+    if (!wallet) {
+      showMessage('Wallet is required');
+      return;
+    }
+    try {
+      showMessage('Deploying contract, please sign transaction...');
+      setButtonState(ButtonState.WAIT);
+
+      // DEPLOY
+      const address = appChainConfig?.contracts?.receiptFactory || '';
+      console.log('CTR', address);
+      const factory = factoryDeployers[chainSlug];
+      console.log('FAC', factory);
+      if (!factory) {
+        showMessage('Error deploying contract: Factory not found');
+        setButtonState(ButtonState.READY);
+        return;
+      }
+
+      // This only works for Stellar, refactor and universalize
+      const wasm_hash =
+        appChainConfig?.contracts?.receiptMintbotERC721Hash || '';
+      const init_fn = 'initialize';
+      const init_args = [name, symbol];
+      const res = await factory.NFTReceipt.deploy({
+        chain: chain.toLowerCase(),
+        network,
+        name: data.name,
+        symbol: data.symbol,
+      });
+      console.log('RES', res);
+      if (!res || res?.error) {
+        showMessage(`Error deploying contract: ${res?.error || 'Unknown'}`);
+        setButtonState(ButtonState.READY);
+        return;
+      }
+      showMessage('Contract deployed successfully');
+      setButtonState(ButtonState.READY);
+      // Save to db contracts
+      const contract = {
+        chain: chain.toLowerCase(),
+        network,
+        contract_type,
+        contract_address: res?.contractId,
+        start_block: res?.block,
+        entity_id: data.initiativeId,
+        admin_wallet_address: wallet,
+      };
+      console.log('CTR', contract);
+      const saved = await apiPost('contracts', contract);
+      console.log('SAVED', saved);
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    } catch (ex: any) {
+      console.error(ex);
+      showMessage(`Error deploying contract: ${ex?.message}`);
+      setButtonState(ButtonState.READY);
+    }
   }
 
-              //onChange={selectInitiative}
   return (
     <div className={styles.vbox}>
       <Title text="NFT Receipt Contract" />
@@ -112,12 +184,13 @@ export default function NFTReceiptClient({
           <div className="w-full">
             <Select
               label="Initiative"
-              register={register('initiativeId')}
+              {...register('initiativeId')}
               options={listInitiatives()}
+              handler={selectInitiative}
             />
-            <TextInput label="Name" register={register('name')} />
-            <TextInput label="Symbol" register={register('symbol')} />
-            <TextInput label="Image URI" id="baseURI" register={register('baseURI')} />
+            <TextInput label="Name" {...register('name')} />
+            <TextInput label="Symbol" {...register('symbol')} />
+            <TextInput label="Image URI" {...register('baseURI')} />
           </div>
         </div>
         <ButtonBlue
