@@ -2,7 +2,7 @@ import type { Prisma } from "@cfce/database"
 import { amountUSDAtom } from "@cfce/state"
 import { useAtomValue } from "jotai"
 import React from "react"
-import CarbonChart from "~/CarbonChart"
+import CarbonChart from "~/home/CarbonChart"
 import Progress from "~/ui/progressbar"
 
 interface CarbonCreditDisplayProps {
