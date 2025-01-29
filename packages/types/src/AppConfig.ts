@@ -30,6 +30,7 @@ export interface AppConfig {
     options: {
       showCarbonCreditDisplay: boolean
     }
+    featuredInitiatives?: string[]
   }
   apis: {
     registry: {

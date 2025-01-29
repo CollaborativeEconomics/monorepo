@@ -1,3 +1,4 @@
+import appConfig from "@cfce/app-config"
 import { CarbonChart } from "@cfce/components/home"
 import { StoryCard } from "@cfce/components/story"
 import { getCredits, getStories } from "@cfce/database"
@@ -8,7 +9,7 @@ import ParallaxHero from "../components/home/ParallaxHero"
 export default async function Home() {
   const appMode = process.env.NODE_ENV || "development"
   console.log(`App running in ${appMode} mode`)
-  const initid = process.env.FEATURED_INITIATIVE
+  const initid = appConfig.siteInfo.featuredInitiatives?.[0]
   const featured = `/initiatives/${initid}`
   const stories = await getStories({ recent: 4 })
 
