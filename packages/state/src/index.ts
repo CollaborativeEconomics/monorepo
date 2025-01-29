@@ -4,7 +4,7 @@ import type {
   ClientInterfaces,
   TokenTickerSymbol,
 } from "@cfce/types"
-import type { Draft } from "immer"
+// import type { Draft } from "immer"
 import { atom } from "jotai"
 import { atomWithImmer } from "jotai-immer"
 

@@ -1,25 +1,25 @@
-import React from 'react';
+import React from "react"
 
-import appConfig from '@cfce/app-config';
-import { getCoinRate } from '@cfce/blockchain-tools/server';
-import { DonationForm, NFTReceipt } from '@cfce/components/donationForm';
-import { InitiativeCardCompact } from '@cfce/components/initiative';
-import { OrganizationAvatar } from '@cfce/components/organization';
-import { Separator } from '@cfce/components/ui';
-import { getInitiativeById, getInitiatives } from '@cfce/database';
-import Image from 'next/image';
-import Link from 'next/link';
-import NotFound from '../../not-found';
+import appConfig from "@cfce/app-config"
+import { getCoinRate } from "@cfce/blockchain-tools/server"
+import { DonationForm, NFTReceipt } from "@cfce/components/donationForm"
+import { InitiativeCardCompact } from "@cfce/components/initiative"
+import { OrganizationAvatar } from "@cfce/components/organization"
+import { Separator } from "@cfce/components/ui"
+import { getInitiativeById, getInitiatives } from "@cfce/database"
+import Image from "next/image"
+import Link from "next/link"
+import NotFound from "../../not-found"
 
 export default async function Initiative(props: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }) {
-  const params = await props.params;
-  let initiative = await getInitiativeById(params?.id);
-  initiative = JSON.parse(JSON.stringify(initiative));
+  const params = await props.params
+  let initiative = await getInitiativeById(params?.id)
+  initiative = JSON.parse(JSON.stringify(initiative))
   //console.log('INIT', initiative)
   if (!initiative) {
-    return <NotFound />;
+    return <NotFound />
   }
 
   // Restore credits contract
@@ -29,78 +29,83 @@ export default async function Initiative(props: {
   //  console.log('RESTORED', result);
   //});
 
-  const organization = initiative.organization;
-  let initiatives = await getInitiatives({ orgId: organization.id });
-  initiatives = JSON.parse(JSON.stringify(initiatives));
+  const organization = initiative.organization
+  let initiatives = await getInitiatives({ orgId: organization.id })
+  initiatives = JSON.parse(JSON.stringify(initiatives))
 
-  const stories = initiative.stories;
-  console.log('STORIES', stories.length);
+  const stories = initiative.stories
+  console.log("STORIES", stories.length)
   // TODO: use default chain
-  const { chainDefaults } = appConfig;
+  const { chainDefaults } = appConfig
   const rate = await getCoinRate({
     symbol: chainDefaults.coin,
     chain: chainDefaults.chain,
-  });
+  })
   // TODO: use carbon only if initiative has credits
   //const carbon = await getCarbon();
-  let carbon = '0';
+  let carbon = "0"
   if (initiative.credits.length > 0) {
-    carbon = `${initiative.credits[0].value}`;
+    carbon = `${initiative.credits[0].value}`
   }
-  console.log('RATE', rate);
-  console.log('CARBON', carbon);
+  console.log("RATE", rate)
+  console.log("CARBON", carbon)
   //console.log('INITIATIVE', initiative);
 
   return (
     <main className="w-full">
-      <div className="relative flex flex-col px-[5%] container pt-24 w-full h-full">
-        <div className="flex overflow-hidden mb-4 flex-col md:flex-row">
-          <div className="relative w-full md:w-[45%] h-[200px] md:h-[300px] mb-12 md:mb-2">
+      <div className="flex flex-col px-[5%] container pt-24 w-full h-full">
+        <div className="flex overflow-hidden flex-col md:flex-row relative">
+          <div className="relative w-full h-[300px] md:h-[400px] mb-4 rounded-lg overflow-hidden">
             <Image
-              className="h-[300px] rounded-lg"
-              src={initiative.defaultAsset || 'noimage.svg'}
+              className="background-top"
+              src={initiative.defaultAsset}
               alt="IMG BG"
               fill
               style={{
-                objectFit: 'cover',
-              }} />
+                objectFit: "cover",
+              }}
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"
+              aria-hidden="true"
+            />
           </div>
-          <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+          <div className="absolute bottom-0 left-0 right-0 py-8 px-6 z-20 flex-row gap-4">
+            <>
+              <h1 className="text-2xl md:text-3xl font-medium text-white mb-3">
+                {initiative.title}
+              </h1>
+
+              <div className="text-white/90 mb-4">
+                <span className="text-sm md:text-base line-clamp-2">
+                  {initiative.description}
+                </span>
+              </div>
+              <div className="flex gap-4 flex-wrap">
+                {initiatives?.length > 1 && (
+                  <Link
+                    className="text-white font-bold hover:underline"
+                    href="#more"
+                  >
+                    See more initiatives
+                  </Link>
+                )}
+                {stories?.length > 0 && (
+                  <Link
+                    className="text-white font-bold hover:underline"
+                    href={`/stories?initiative=${initiative.id}`}
+                  >
+                    See impact storyline
+                  </Link>
+                )}
+              </div>
+            </>
             <OrganizationAvatar
               name={organization.name}
               image={organization.image}
-              avatarProps={{ size: 'md' }}
+              avatarProps={{ size: "md" }}
               className="mb-4"
             />
-
-            <h1 className="text-2xl md:text-3xl font-medium text-white mb-3">
-              {initiative.title}
-            </h1>
-
-            <div className="text-white/90 mb-4">
-              <span className="text-sm md:text-base line-clamp-2">
-                {initiative.description}
-              </span>
-            </div>
-
-            <div className="flex gap-4 flex-wrap">
-              {initiatives?.length > 1 && (
-                <Link
-                  className="text-white font-bold hover:underline"
-                  href="#more"
-                >
-                  See more initiatives
-                </Link>
-              )}
-              {stories?.length > 0 && (
-                <Link
-                  className="text-white font-bold hover:underline"
-                  href={`/stories?initiative=${initiative.id}`}
-                >
-                  See impact storyline
-                </Link>
-              )}
-            </div>
           </div>
         </div>
 
@@ -121,15 +126,15 @@ export default async function Initiative(props: {
           <div className="flex flex-wrap md:flex-nowrap justify-center gap-9 xl:max-w-screen-xl">
             {initiatives.length > 1 && (
               <div className="flex flex-col gap-5 w-full min-w-[400px]">
-                {' '}
+                {" "}
                 {/* md:w-2/6 */}
                 <p className="text-3xl font-semibold">
                   <span id="more">Other Initiatives</span>
                 </p>
                 {initiatives?.length > 0 ? (
-                  initiatives.map(otherInitiative => {
+                  initiatives.map((otherInitiative) => {
                     if (otherInitiative.id === initiative.id) {
-                      return;
+                      return
                     }
                     return (
                       <InitiativeCardCompact
@@ -138,7 +143,7 @@ export default async function Initiative(props: {
                         name={organization.name}
                         avatarImg={organization.image ?? undefined}
                       />
-                    );
+                    )
                   })
                 ) : (
                   <h1 className="m-4">No initiatives found</h1>
@@ -165,5 +170,5 @@ export default async function Initiative(props: {
         </div>
       </div>
     </main>
-  );
+  )
 }
