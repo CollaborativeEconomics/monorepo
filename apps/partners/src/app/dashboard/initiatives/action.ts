@@ -1,20 +1,20 @@
 "use server"
 
 import { type Prisma, newInitiative } from "@cfce/database"
+import { uploadFileToIPFS } from "@cfce/ipfs"
+import { newTBAccount } from "@cfce/tbas"
+import { EntityType } from "@cfce/types"
+import { uploadFile } from "@cfce/utils"
 import { snakeCase } from "lodash"
 import { randomNumber, randomString } from "~/utils/random"
-import { uploadFile } from "@cfce/utils"
-import { uploadFileToIPFS } from "@cfce/ipfs"
-import { EntityType } from "@cfce/types"
-import { newTBAccount } from "@cfce/tbas"
 
 type FormData = {
-  title: string;
-  description: string;
-  start?: string;
-  finish?: string;
-  image: FileList;
-};
+  title: string
+  description: string
+  start?: string
+  finish?: string
+  image: FileList
+}
 
 //async function saveImageToIPFS(data: { name: string; file: File }) {
 //  const body = new FormData()
@@ -28,17 +28,21 @@ type FormData = {
 //  return resp.json()
 //}
 
-export async function createInitiative(data: FormData, orgId: string, tba = false) {
-  console.log('DATA', data)
+export async function createInitiative(
+  data: FormData,
+  orgId: string,
+  tba = false,
+) {
+  console.log("DATA", data)
   if (!data.title || !data.description || !data.image) {
     return { success: false, error: "Missing required fields" }
   }
 
   try {
-    const file = data.image?.length>0 ? data.image[0] : null; // Only one image per initiative
-    let imageUri = ''
-    let defaultAsset = ''
-    if(file){
+    const file = data.image?.length > 0 ? data.image[0] : null // Only one image per initiative
+    let imageUri = ""
+    let defaultAsset = ""
+    if (file) {
       const ext = file.type.split("/")[1]
       if (!["jpg", "jpeg", "png", "webp"].includes(ext)) {
         return { success: false, error: "Invalid image format" }
@@ -46,16 +50,16 @@ export async function createInitiative(data: FormData, orgId: string, tba = fals
 
       // Save image to Vercel
       const name = `${randomString()}.${ext}`
-      const folder = 'media'
-      const resup = await uploadFile({file, name, folder})
+      const folder = "media"
+      const resup = await uploadFile({ file, name, folder })
       if (!resup || resup?.error) {
         return { success: false, error: `Error saving image: ${resup.error}` }
       }
-      defaultAsset = resup?.result?.url || ''
-      
+      defaultAsset = resup?.result?.url || ""
+
       // Save image to IPFS
       const cid = await uploadFileToIPFS(file)
-      imageUri = cid ? `ipfs:${cid}` : ''
+      imageUri = cid ? `ipfs:${cid}` : ""
       //const resimg = await saveImageToIPFS({ name, file })
       //if (resimg.error) {
       //  return { success: false, error: `Error saving image: ${resimg.error}` }
@@ -79,7 +83,7 @@ export async function createInitiative(data: FormData, orgId: string, tba = fals
     }
 
     const result = await newInitiative(record)
-    console.log('RES', result)
+    console.log("RES", result)
 
     if (!result) {
       return { success: false, error: "Unknown error" }
@@ -90,15 +94,21 @@ export async function createInitiative(data: FormData, orgId: string, tba = fals
       description: record.description,
       start: record.start,
       finish: record.finish,
-      image: record.imageUri
+      image: record.imageUri,
     })
 
     // Create TBA for initiative
-    if(tba && result?.id){
+    if (tba && result?.id) {
       const initId = result.id
-      console.log('TBA will be created for initiative', initId)
-      const account = await newTBAccount(EntityType.initiative, initId, EntityType.organization, orgId, metadata) // Parent org
-      console.log('TBA created', account)
+      console.log("TBA will be created for initiative", initId)
+      const account = await newTBAccount(
+        EntityType.initiative,
+        initId,
+        EntityType.organization,
+        orgId,
+        metadata,
+      ) // Parent org
+      console.log("TBA created", account)
     }
 
     return { success: true, data: result }

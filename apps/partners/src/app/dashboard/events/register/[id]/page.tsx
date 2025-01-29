@@ -3,14 +3,14 @@ import { Suspense } from 'react';
 import RegisterClient from './register-client';
 
 interface PageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
   //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function RegisterPage({ params }: PageProps ) {
+export default async function RegisterPage({ params }: PageProps) {
   const { id } = await params;
   const eventData = await getEventById(id);
-  const event = JSON.parse(JSON.stringify(eventData))
+  const event = JSON.parse(JSON.stringify(eventData));
 
   if (!event) {
     // TODO: Implement proper error handling or redirect

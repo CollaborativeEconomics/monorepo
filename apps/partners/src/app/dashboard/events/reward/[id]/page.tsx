@@ -4,14 +4,14 @@ import { getReportedAddresses } from '~/utils/chainLogs';
 import RewardClient from './reward-client';
 
 interface PageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
   //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export default async function RewardPage({ params }: PageProps) {
   const { id } = await params;
   const eventData = await getEventById(id);
-  const event = JSON.parse(JSON.stringify(eventData))
+  const event = JSON.parse(JSON.stringify(eventData));
   //console.log('EVENT', event)
   if (!event) {
     // TODO: Handle redirect in middleware or return not found
@@ -30,7 +30,11 @@ export default async function RewardPage({ params }: PageProps) {
   const contractV2E = resV2E.length > 0 ? resV2E[0] : null;
   //console.log('V2E-CTR', contractV2E)
 
-  if (!contractV2E ||!contractNFT.contract_address ||!contractNFT.start_block) {
+  if (
+    !contractV2E ||
+    !contractNFT.contract_address ||
+    !contractNFT.start_block
+  ) {
     return null;
   }
 
@@ -38,7 +42,7 @@ export default async function RewardPage({ params }: PageProps) {
     contractNFT.contract_address,
     contractNFT.start_block,
   );
-  //console.log('VOLUNTEERS', volunteers)
+  console.log('VOLUNTEERS', volunteers, contractNFT, contractV2E);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

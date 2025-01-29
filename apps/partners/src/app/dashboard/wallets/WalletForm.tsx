@@ -3,7 +3,8 @@
 import appConfig from '@cfce/app-config';
 import type { Chain } from '@cfce/database';
 import type { ChainSlugs } from '@cfce/types';
-import { revalidatePath } from 'next/cache';
+//import { revalidatePath } from 'next/cache';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
@@ -23,6 +24,7 @@ type DataForm = {
 };
 
 export default function WalletForm({ orgId, chains }: WalletFormProps) {
+  const router = useRouter();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('NEW WALLET');
   const [message, setMessage] = useState(
@@ -66,8 +68,9 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
         // You might want to add some logic here to refresh the list of wallets
         // Pass new wallet back to server page component
         // Or refresh server page component
-        revalidatePath('/dashboard/wallets');
+        //revalidatePath('/dashboard/wallets');
         //window.location.reload()
+        router.refresh();
       } else {
         throw new Error(result.error);
       }

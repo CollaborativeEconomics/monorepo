@@ -23,8 +23,13 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
+<<<<<<< HEAD
     "@types/react": "19.0.8",
     "eslint": "9.19.0",
+=======
+    "@types/react": "19.0.0",
+    "eslint": "9.18.0",
+>>>>>>> 9970acd8d1b6c62d06bf96487f607c0fabfed268
     "typescript": "^5.7.2"
   }
 }

@@ -16,6 +16,7 @@ type ContractType =
   | "receiptMintbotERC721Hash"
   | "storyERC1155" // story NFT contract
   | "xlmNativeCoin"
+  | "volunteersFactory"
 
 export interface AppChainConfig {
   slug: ChainSlugs
