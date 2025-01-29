@@ -2,7 +2,7 @@ import type { Prisma } from "@cfce/database"
 import { amountUSDAtom } from "@cfce/state"
 import { useAtomValue } from "jotai"
 import React from "react"
-import CarbonChart from "~/home/CarbonChart"
+import CarbonChart from "~/CarbonChart"
 import Progress from "~/ui/progressbar"
 
 interface CarbonCreditDisplayProps {
@@ -43,7 +43,7 @@ export function CarbonCreditDisplay({ initiative }: CarbonCreditDisplayProps) {
       )}% of total estimated carbon emissions retired ${tonx.toFixed(
         2,
       )} out of ${tons} tons`,
-    [perc, tonx, tons],
+    [perc, tonx],
   )
 
   const percent = React.useMemo(() => {

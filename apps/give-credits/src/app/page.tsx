@@ -4,7 +4,7 @@ import { StoryCard } from "@cfce/components/story"
 import { getCredits, getStories } from "@cfce/database"
 import Image from "next/image"
 import Link from "next/link"
-import ParallaxHero from "../components/home/ParallaxHero"
+import ParallaxHero from "../components/ParallaxHero"
 
 export default async function Home() {
   const appMode = process.env.NODE_ENV || "development"
