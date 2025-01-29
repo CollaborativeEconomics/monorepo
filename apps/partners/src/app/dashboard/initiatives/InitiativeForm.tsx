@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonBlue from '~/components/buttonblue';
 import FileView from '~/components/form/fileview';
+import Select from '~/components/form/select'
 import TextArea from '~/components/form/textarea';
 import TextInput from '~/components/form/textinput';
-import Select from '~/components/form/select'
 import dateToPrisma from '~/utils/DateToPrisma';
 import { createInitiative } from './action';
 
@@ -21,8 +21,6 @@ type FormData = {
   start?: string;
   finish?: string;
   image: FileList;
-  unitlabel: string;
-  unitvalue: string;
 };
 
 export default function InitiativeForm({ orgId }: InitiativeFormProps) {
@@ -44,8 +42,6 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
       description: '',
       start: today,
       finish: nextMonth,
-      unitvalue: '',
-      unitlabel: '',
     },
   });
 
@@ -118,8 +114,6 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
       <TextArea label="Description" {...register('description')} />
       <DatePicker label="Start Date" {...register('start')} />
       <DatePicker label="End Date" {...register('finish')} />
-      <TextInput label="Dollars per unit ($20 per tree, $5 per meal, $150 per wheelchair)" {...register('unitvalue')} />
-      <TextInput label="Unit label (tree, meal, wheelchair)" {...register('unitlabel')} />
 
 {/*
       <Select
