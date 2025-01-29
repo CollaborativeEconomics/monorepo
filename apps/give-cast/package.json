@@ -20,15 +20,15 @@
     "hono": "^4.6.7",
     "jiti": "2.4.2",
     "next": "^15.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "viem": "^2.21.54",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
-    "@types/react": "19.0.8",
-    "@types/react-dom": "19.0.3",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
     "typescript": "^5.7.2",
     "vercel": "39.3.0"
   },
