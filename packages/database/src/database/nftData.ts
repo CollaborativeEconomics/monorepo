@@ -91,7 +91,7 @@ export async function getNFTbyTokenId(
   chain: ChainSlugs,
 ): Promise<NFTData | null> {
   const data = await prismaClient.nFTData.findFirst({
-    where: { tokenId, coinNetwork: chain },
+    where: { tokenId, network: chain },
   })
   return data
 }

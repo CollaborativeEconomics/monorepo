@@ -128,6 +128,6 @@ export type ClientInterfaces =
   // | "stellar"
   // | "argent"
 
-export type ServerInterfaces = "evm" | "xrpl" | "stellar"
+export type ServerInterfaces = "evm" | "xrpl" | "stellar" | "starknet"
 
 export type Chains = Record<ChainSlugs, ChainConfig>

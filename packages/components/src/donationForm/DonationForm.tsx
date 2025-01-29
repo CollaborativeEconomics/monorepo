@@ -110,17 +110,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const canRetryWithGas =
         errorMessage.includes("gasless") ||
         errorMessage.includes("insufficient funds") ||
-        errorMessage.includes("rejected")
+        errorMessage.includes("rejected") ||
+        errorMessage.includes("No API keys found")
 
       if (canRetryWithGas) {
         setErrorDialogState(true)
       }
-
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: errorMessage,
-      })
 
       setButtonMessage(errorMessage)
       throw new Error(errorMessage)
@@ -338,7 +333,10 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       }
 
       if (!paymentResult.success) {
-        handleError(paymentResult.error ?? "Payment failed")
+        console.log("ERROR", paymentResult.error)
+        const errorMessage = paymentResult.error ?? "Payment failed"
+        const error = new Error(errorMessage)
+        handleError(error)
         return
       }
 

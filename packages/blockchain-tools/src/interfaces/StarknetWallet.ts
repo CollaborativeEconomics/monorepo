@@ -4,12 +4,13 @@ import {
   type Connector,
   type StarknetWindowObject,
 } from "starknetkit"
+// import { connect, type StarknetWindowObject } from "@starknet-io/get-starknet"
 import {
   Account,
   constants,
   Contract,
-  num,
-  Provider,
+  WalletAccount,
+  type Provider,
   RpcProvider,
   TransactionFinalityStatus,
 } from "starknet"
@@ -54,8 +55,8 @@ class StarknetWallet extends InterfaceBaseClass {
     this.network = getNetworkForChain("starknet")
     this.chain = chainConfiguration.starknet
 
-    this.provider = new Provider({
-      nodeUrl: process.env.STARKNET_RPC_URI,
+    this.provider = new RpcProvider({
+      nodeUrl: this.network.rpcUrls.main,
     })
 
     this.contract = new Contract(
@@ -71,7 +72,7 @@ class StarknetWallet extends InterfaceBaseClass {
     const starknet = await connect({
       modalMode: "alwaysAsk",
     })
-    if (starknet?.wallet) {
+    if (starknet) {
       return { success: true }
     }
     return { success: false }
@@ -83,17 +84,21 @@ class StarknetWallet extends InterfaceBaseClass {
     })
 
     const account = await connector?.account(this.provider)
-
+    // const walletAccount = new WalletAccount(this.provider, starknet)
     // Get current chain from wallet
     const currentChain = await this.provider?.getChainId()
+    console.log("Current chain", currentChain)
 
     const envChain = appConfig.chains.starknet?.network
+    console.log("Env chain", envChain)
 
     // Determine target network based on environment
     const targetChainId =
       envChain === "mainnet"
         ? constants.StarknetChainId.SN_MAIN // Mainnet for production
         : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
+
+    console.log("Target chain", targetChainId)
 
     // Switch network if needed
     if (currentChain !== targetChainId) {
@@ -156,13 +161,15 @@ class StarknetWallet extends InterfaceBaseClass {
         ({ connector: this.connector } = await this.getWallet())
       }
 
-      const account = await this.connector?.account(this.provider)
+      // const account = await this.connector?.account(this.provider)
+      const account = this.wallet
       if (!account) {
         throw new Error("No account found")
       }
 
+      const walletAccount = new WalletAccount(this.provider, this.wallet as StarknetWindowObject)
       const calls = this.prepareTransferCall(address, amount)
-      const result = await account.execute(calls)
+      const result = await walletAccount.execute(calls)
       const tx = result.transaction_hash
 
       const txResult = await this.provider.waitForTransaction(tx, {
@@ -239,15 +246,15 @@ class StarknetWallet extends InterfaceBaseClass {
         !process.env.NEXT_PUBLIC_AVNU_PUBLIC_KEY ||
         !process.env.NEXT_PUBLIC_AVNU_KEY
       ) {
-        return this.sendPayment({address, amount})
+        throw new Error("No API keys found")
       }
 
       let connector = this.connector
       if (!connector) {
-        ;({ connector } = await this.getWallet())
+        ({ connector } = await this.getWallet())
       }
 
-      const account = await connector?.account(this.provider)
+      const account = new WalletAccount(this.provider, this.wallet as StarknetWindowObject)
       console.log("Account", account)
       console.log("Account connected")
 
@@ -379,19 +386,30 @@ class StarknetWallet extends InterfaceBaseClass {
     try {
       const provider = this.provider
 
-      const minterAddress = process.env.STARKNET_MINTER_ADDRESS
+      const minterAddress = appConfig.chains.starknet?.contracts.receiptMintbotERC721
       if (!minterAddress || !walletSeed) {
         throw new Error("Minter address or wallet seed not available")
       }
 
       const account = new Account(provider, minterAddress, walletSeed)
+      console.log("Account", account)
+      const contractABI = (await provider.getClassAt(contractId)).abi;
 
-      const contract = new Contract(ERC721ABI, contractId, provider)
-      contract.connect(account)
-
+      const contract = new Contract(contractABI, contractId, provider)
       // Generate unique token ID
       // const tokenId = 1;
-      const mintTx = await contract.mint(address, uri)
+      // const call = {
+      //   entrypoint: "safeMint",
+      //   contractAddress: contractId,
+      //   calldata: [address, uri],
+      // }
+      console.log("Contract Function", contract.functions)
+      const call = contract.populate("safeMint", {
+        recipient: address,
+        data: uri,
+      })
+      const mintTx = await account.execute(call)
+      // const mintTx = await contract.functions
       // console.log("MINT TX", mintTx);
       const receipt = await provider.waitForTransaction(
         mintTx.transaction_hash,
