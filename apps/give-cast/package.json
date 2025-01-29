@@ -8,26 +8,36 @@
     "deploy": "vercel",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write ."
   },
   "dependencies": {
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "@t3-oss/env-nextjs": "^0.11.1",
+    "ethers": "^6.13.5",
     "form-data": "^4.0.1",
     "frog": "^0.18.2",
     "hono": "^4.6.7",
+    "jiti": "1.21.7",
     "next": "^15.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "viem": "^2.21.54"
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "viem": "^2.21.54",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
     "typescript": "^5.7.2",
     "vercel": "39.2.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "hono": "^4.6.7"
+    },
+    "patchedDependencies": {
+      "frog": "patches/frog.patch"
+    }
   }
 }
