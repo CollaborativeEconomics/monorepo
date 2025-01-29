@@ -20,11 +20,7 @@
     "@cfce/registry-hooks": "workspace:*",
     "@cfce/types": "workspace:*",
     "@cfce/utils": "workspace:*",
-<<<<<<< HEAD
     "@types/react-dom": "19.0.3",
-=======
-    "@types/react-dom": "19.0.0",
->>>>>>> 9970acd8d1b6c62d06bf96487f607c0fabfed268
     "@vercel/blob": "0.27.1",
     "cookies-next": "5.1.0",
     "fetch": "^1.1.0",
