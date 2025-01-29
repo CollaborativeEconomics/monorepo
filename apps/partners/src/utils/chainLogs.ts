@@ -1,14 +1,12 @@
-const mintTopic =
-  "0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62" // keccak for event TransferSingle(address,address,address,uint256,uint256)
+const mintTopic = "0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62" // keccak for event TransferSingle(address,address,address,uint256,uint256)
 //const mintTopic = ['0x156e29f6982eee45771b2862c71c865cb1ed8ec5a0f2c9d0c2cf96b8a8ba8ee3'] // keccak for method mint(address,uint256,uint256)
 
 // Get all registered addresses in 1155 contract for token #1
 export async function getRegisteredAddresses(contract: string, block: string) {
   const topics = [mintTopic]
   const logs = await getLogs(contract, topics, block)
-  console.log({ logs })
-
   if (logs?.error) {
+    console.log({ logs })
     return {
       success: false,
       error: logs?.error?.message || "Error fetching logs",
@@ -36,6 +34,7 @@ export async function getReportedAddresses(contract: string, block: string) {
   const topics = [mintTopic]
   const logs = await getLogs(contract, topics, block)
   if (logs?.error) {
+    console.log({ logs })
     return {
       success: false,
       error: logs?.error?.message || "Error fetching logs",
@@ -68,9 +67,8 @@ export async function getReportedAddresses(contract: string, block: string) {
   const data = []
   for (const log of logs) {
     const { from, to, nftid, value } = getDataFromTopicsLog(log)
-    if (Number(nftid) !== 2) {
-      continue
-    }
+    if (Number(nftid) !== 2) { continue }
+    if (Number(value) < 1) { continue }
     data.push({
       address: to,
       nftid,
@@ -85,7 +83,12 @@ async function getLogs(address: string, topics: string[], fromBlock: string) {
   const hexBlock = `0x${Number.parseInt(fromBlock).toString(16)}`
 
   try {
-    const url = process.env.PROVIDER_URL
+    const url = process.env.LOGS_PROVIDER_URL
+    //console.log('PROVIDER', url)
+    if (!url) {
+      return { success: false, error: "No chain provider URL" }
+    }
+
     const payload = {
       jsonrpc: "2.0",
       id: 1,
@@ -99,7 +102,7 @@ async function getLogs(address: string, topics: string[], fromBlock: string) {
         },
       ],
     }
-    //console.log('LOGS', url, payload)
+    //console.log('LOGS', payload)
     const options = {
       method: "POST",
       headers: {
@@ -109,16 +112,9 @@ async function getLogs(address: string, topics: string[], fromBlock: string) {
       body: JSON.stringify(payload),
     }
 
-    if (!url) {
-      return {
-        success: false,
-        error: "No provider URL",
-      }
-    }
-
     const result = await fetch(url, options)
     const data = await result.json()
-    console.log("logs data", JSON.stringify(data))
+    //console.log("LOGS DATA", JSON.stringify(data))
     if (data.error) {
       return {
         success: false,

@@ -9,8 +9,8 @@ import Web3 from "web3"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfig from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
-import Abi721base from "../contracts/solidity/erc721/erc721base-abi.json" // must pass tokenid
 import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
+import Abi721tba from "../contracts/solidity/erc721/erc721tba-abi.json" // must pass tokenid and metadatauri
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
 // import { Transaction } from "../types/transaction"
 import {
@@ -31,6 +31,10 @@ function getObjectValue(obj: any, prop: string) {
   }, obj)
 }
 
+function bytesToHex(bytes:Uint8Array){
+  return `0x${Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("")}`
+}
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -43,13 +47,21 @@ export default class Web3Server extends InterfaceBaseClass {
   }
 
   async getGasPrice(minter: string, contractId: string, data: string) {
-    const gasPrice = await this.fetchLedger("eth_gasPrice", [])
+    let gasPrice = await this.fetchLedger("eth_gasPrice", [])
+    // FIX: gasPrice in XDC is not returning updated prices
+    // Increment 20% to XDC gas price to avoid tx in limbo
+    if (this.chain?.slug === "xdc") {
+      console.log("OLD", Number.parseInt(gasPrice, 16), gasPrice)
+      const newGas = Number.parseInt(gasPrice) * 1.2
+      gasPrice = `0x${newGas.toString(16)}`
+    }
     console.log("GAS", Number.parseInt(gasPrice, 16), gasPrice)
-    const checkGas =
-      (await this.fetchLedger("eth_estimateGas", [
-        { from: minter, to: contractId, data },
-      ])) || "0x1e8480" // 2000000
+    const params = [{ from: minter, to: contractId, data }]
+    let checkGas = await this.fetchLedger("eth_estimateGas", params)
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
+    if(!checkGas){
+      checkGas = "0x1e8480" // 2000000
+    }
     const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
     return { gasPrice, gasLimit }
   }
@@ -85,11 +97,7 @@ export default class Web3Server extends InterfaceBaseClass {
     const ABI = instance.methods
     const data = instance.methods.safeMint(address, uri).encodeABI()
     console.log("DATA", data)
-    let gas = await this.getGasPrice(minter, contractId, data)
-    // FIX: getGasPrice in XDC is not returning updated prices
-    if (this.chain.slug === "xdc") {
-      gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
-    }
+    const gas = await this.getGasPrice(minter, contractId, data)
     console.log("GAS", gas)
 
     const account = privateKeyToAccount(walletSeed as `0x${string}`)
@@ -163,20 +171,25 @@ export default class Web3Server extends InterfaceBaseClass {
     }
   }
 
-  // Base erc721 passing token id as uuid instead of auto-incrementing id
-  async mintNFT721({
+  // Base erc721 passing metadatauri and token id as uuid instead of auto-incrementing id
+  async mintNFT721TBA({
     address,
     tokenId,
+    metadataUri,
     contractId,
     walletSeed,
   }: {
     address: string
     tokenId: string
+    metadataUri: string
     contractId: string
     walletSeed: string
   }) {
-    console.log("Server minting NFT721 to", address, "tokenID", tokenId)
-    console.log("Chain", this.chain)
+    console.log("Server minting NFT721")
+    console.log("ADDRESS", address)
+    console.log("TOKENID", tokenId)
+    console.log("METADATA", metadataUri)
+    //console.log("Chain", this.chain)
     if (!this.web3) {
       console.error("Web3 not available")
       return { success: false, error: "Web3 not available" }
@@ -187,17 +200,19 @@ export default class Web3Server extends InterfaceBaseClass {
     }
     const acct = this.web3.eth.accounts.privateKeyToAccount(walletSeed)
     const minter = acct.address
-    const instance = new this.web3.eth.Contract(Abi721base, contractId)
+    const instance = new this.web3.eth.Contract(Abi721tba, contractId)
     const noncex = await this.web3.eth.getTransactionCount(minter, "latest")
     const nonce = Number(noncex)
     //const tokenInt = Number(tokenId)
     console.log("MINTER", minter)
     console.log("NONCE", nonce)
-    const data = instance.methods.safeMint(address, tokenId).encodeABI()
+    const data = instance.methods
+      .mint(address, tokenId, metadataUri)
+      .encodeABI()
     console.log("DATA", data)
-    //const gas = await this.getGasPrice(minter, contractId, data)
+    const gas = await this.getGasPrice(minter, contractId, data)
     // FIX: getGasPrice is not returning updated prices
-    const gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
+    // const gas = { gasPrice: "0x21c2ac6a00", gasLimit: "0xf4240" } // 145000000000 - 1000000
     console.log("GAS", gas)
 
     const tx = {
@@ -253,7 +268,12 @@ export default class Web3Server extends InterfaceBaseClass {
     contractId: string
     walletSeed: string
   }) {
-    console.log(this.chain, "server minting NFT to", address, uri)
+    //console.log(this.chain, "server minting NFT to", address, uri)
+    console.log("Server minting NFT 1155")
+    console.log("Address", address)
+    console.log("TokenId", tokenId)
+    console.log("Contract", contractId)
+    console.log("URI", uri)
     if (!this.web3 || !walletSeed) {
       console.error("Web3 or wallet not available")
       return { success: false, error: "Web3 or wallet not available" }
@@ -262,20 +282,22 @@ export default class Web3Server extends InterfaceBaseClass {
     const minter = acct.address
     const instance = new this.web3.eth.Contract(Abi1155, contractId)
     const noncex = await this.web3.eth.getTransactionCount(minter, "latest")
-    const nonce = Number(noncex)
+    const nonce = Number(noncex) + 1
     console.log("MINTER", minter)
     console.log("NONCE", nonce)
     //contract.mint(address account, uint256 id, uint256 amount, bytes memory data)
     //const bytes = Buffer.from(uri, 'utf8')
-    const bytes = this.web3.utils.toHex(uri)
-    const data = instance.methods.mint(address, tokenId, 1, bytes).encodeABI()
+    //const bytes = this.web3.utils.toHex(uri)
+    const bytes = new TextEncoder().encode(uri)
+    const hex = bytesToHex(bytes)
+    const tokenInt = BigInt(tokenId)
+    const data = instance.methods.mint(address, tokenInt, 1, hex).encodeABI()
     console.log("DATA", data)
     const { gasPrice, gasLimit } = await this.getGasPrice(
       minter,
       contractId,
       data,
     )
-
     const tx = {
       from: minter, // minter wallet
       to: contractId, // contract address
@@ -283,7 +305,7 @@ export default class Web3Server extends InterfaceBaseClass {
       data: data, // encoded method and params
       gas: gasLimit,
       gasPrice: gasPrice,
-      nonce,
+      //nonce, // let the chain use the latest
     }
     console.log("TX", tx)
 
@@ -302,7 +324,8 @@ export default class Web3Server extends InterfaceBaseClass {
       tokenNum = `${contractId} #${txt}`
       //tokenNum = contract + ' #'+Number.parseInt(num)
     }
-    if (info.status === 1) {
+    console.log("LOGS", info.logs?.[0]?.topics)
+    if (info.status === 1n) {
       const result = {
         success: true,
         txId: Buffer.from(info?.transactionHash).toString("hex"),

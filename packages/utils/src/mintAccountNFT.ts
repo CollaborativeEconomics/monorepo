@@ -1,8 +1,10 @@
 // @ts-ignore turbo should error out if these are not set
 // const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
 
+//import { BlockchainManager } from "@cfce/blockchain-tools"
 import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
 
+//const serverInterface = BlockchainManager.xdc.server
 const serverInterface = BlockchainServerInterfaces.evm
 serverInterface.setChain("xdc")
 
@@ -24,17 +26,19 @@ export async function mintAccountNFT(entityId: string) {
   const walletSeed = process.env.XDC_WALLET_SECRET
   const contractId = process.env.XDC_NFT6551_CONTRACT // 0xcBbB500f1CF1D6C44B0d7C9ff40292f8a0E756D7
   const tokenId = uuidToUint256(entityId).toString()
+  const metadataUri = '' // TODO: no metadata for user ?
   console.log({ contractId, address, tokenId })
 
   if (!address || !contractId || !walletSeed) {
     throw new Error("Missing wallet or contract info")
   }
 
-  const response = await serverInterface.mintNFT721({
+  const response = await serverInterface.mintNFT721TBA({
     address,
     tokenId,
     contractId,
     walletSeed,
+    metadataUri
   })
   if ("error" in response) {
     throw new Error(response.error)

@@ -5,35 +5,50 @@ import type { Prisma } from "@cfce/database" // assuming Story is your Prisma mo
 import { createStory } from "@cfce/utils"
 import { revalidatePath } from "next/cache"
 
-export async function saveStory({
-  userId,
-  story,
-  categoryId,
-  organizationId,
-  initiativeId,
-  images,
-  media,
-}: {
+interface StoryData {
   userId: string
-  story: Omit<
-    Prisma.StoryCreateInput,
-    "organization" | "initiative" | "category"
-  >
+  //story: Omit<
+  //  Prisma.StoryCreateInput,
+  //  "organization" | "initiative" | "category"
+  //>
+  story: {
+    name: string
+    description: string
+    amount: string
+    unitvalue: string
+    unitlabel: string
+  }
   categoryId?: string
   organizationId: string
   initiativeId: string
-  images?: (string | File)[]
-  media?: string | File
-}) {
-  const response = await createStory({
+  images?: File[]
+  media?: File
+}
+
+export async function saveStory(
+  {
     userId,
     story,
+    categoryId,
     organizationId,
     initiativeId,
-    categoryId,
     images,
     media,
-  })
+  }: StoryData,
+  tba = false,
+) {
+  const response = await createStory(
+    {
+      userId,
+      story,
+      organizationId,
+      initiativeId,
+      categoryId,
+      images,
+      media,
+    },
+    tba,
+  )
   revalidatePath("/dashboard/stories")
   return response
 }

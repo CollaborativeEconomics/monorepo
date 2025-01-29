@@ -1,28 +1,34 @@
 'use client';
 
+import { abiVolunteersNFT as NFTAbi } from '@cfce/blockchain-tools';
 import type { Contract, Event } from '@cfce/database';
 import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
 import { BrowserQRCodeReader } from '@zxing/library';
 import clipboard from 'clipboardy';
 import { LucideClipboardPaste, LucideQrCode } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import styles from '~/styles/dashboard.module.css';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useAccount, useWriteContract } from 'wagmi';
-import * as wagmiChains from 'wagmi/chains';
+import { arbitrumSepolia } from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
 import TextInput from '~/components/form/textinput';
 import Title from '~/components/title';
-import { NFTAbi } from '~/utils/NFTAbi';
+import styles from '~/styles/dashboard.module.css';
 import { cleanAddress } from '~/utils/address';
-import { config } from '~/utils/wagmiConfig';
+import { wagmiConfig, wagmiConnect, wagmiReconnect } from '~/utils/wagmiConfig';
 
-const arbitrumSepolia = wagmiChains.arbitrumSepolia;
+// We may change chains in the future
+const defaultChain = arbitrumSepolia;
 
 interface ReportClientProps {
   id: string;
   event: Event;
   contractNFT: Contract;
+}
+
+interface DataForm {
+  address: string;
+  units: string;
 }
 
 export default function ReportClient({
@@ -37,7 +43,7 @@ export default function ReportClient({
   );
   const [scanStatus, setScanStatus] = useState<'ready' | 'scanning'>('ready');
 
-  const { register, watch, setValue } = useForm({
+  const { register, handleSubmit, watch, setValue } = useForm<DataForm>({
     defaultValues: { address: '', units: '' },
   });
 
@@ -46,19 +52,18 @@ export default function ReportClient({
   const unitlabel = event?.unitlabel || '';
   const [amount, setAmount] = useState(payrate);
 
-  const { writeContractAsync } = useWriteContract({ config });
+  const { writeContractAsync } = useWriteContract({ config: wagmiConfig });
   const account = useAccount();
 
   // Initialize QR reader
   useEffect(() => {
-    if (qrReader.current) {
-      return;
+    if (!qrReader.current) {
+      qrReader.current = new BrowserQRCodeReader();
     }
-    qrReader.current = new BrowserQRCodeReader();
     qrReader.current
       .getVideoInputDevices()
       .then((videoInputDevices: MediaDeviceInfo[]) => {
-        setDevice(videoInputDevices[0]?.deviceId || null);
+        setDevice(videoInputDevices[0].deviceId);
       })
       .catch((err: Error) => {
         console.error(err);
@@ -67,7 +72,7 @@ export default function ReportClient({
   }, []);
 
   const beginDecode = useCallback(() => {
-    if (!qrReader.current || !device) return;
+    if (!qrReader.current) return;
 
     qrReader.current.decodeFromInputVideoDeviceContinuously(
       device,
@@ -106,9 +111,24 @@ export default function ReportClient({
     }
   }
 
-  async function onMint() {
+  async function onSubmit(data: DataForm) {
+    console.log('DATA:', data);
+    const address = data.address;
+    const units = Number.parseInt(data.units);
     const nft = contractNFT.contract_address as `0x${string}`;
-    console.log('units', units);
+    const cleanedAddress = cleanAddress(address) as `0x${string}`;
+    const tokenId1 = BigInt(1);
+    const tokenId2 = BigInt(2);
+    console.log('address', address);
+    console.log('units', units || 0);
+
+    if (!units || units < 1) {
+      setMessage('Units must be greater than zero');
+      return;
+    }
+
+    const connected = await wagmiConnect();
+    console.log('CONNECTED', connected);
 
     if (!account.isConnected) {
       console.error('User not connected');
@@ -116,37 +136,39 @@ export default function ReportClient({
       return;
     }
 
-    if (account.chainId !== arbitrumSepolia.id) {
-      await switchChain(config, { chainId: arbitrumSepolia.id });
+    if (account.chainId !== defaultChain.id) {
+      console.log('Switching chains...');
+      await switchChain(wagmiConfig, { chainId: defaultChain.id });
     }
 
     setMessage('Minting reward NFT, please wait...');
-    console.log('address', address);
-    const cleanedAddress = cleanAddress(address);
 
     try {
-      const balance = await readContract(config, {
+      const balance = await readContract(wagmiConfig, {
         address: nft,
         abi: NFTAbi,
         functionName: 'balanceOf',
-        args: [cleanedAddress as `0x${string}`, BigInt(1)],
+        args: [cleanedAddress, tokenId1],
       });
+      console.log('Balance', balance);
 
       if (balance === BigInt(0)) {
+        console.log('No Balance');
         setMessage('Error: Volunteer not yet registered');
         return;
       }
 
+      console.log('Mint');
       const hash = await writeContractAsync({
         address: nft,
         abi: NFTAbi,
         functionName: 'mint',
-        args: [cleanedAddress as `0x${string}`, BigInt(2), BigInt(units)],
-        chain: arbitrumSepolia,
+        args: [cleanedAddress, tokenId2, BigInt(units)],
+        chain: defaultChain,
         account: account.address,
       });
 
-      const nftReceipt = await waitForTransaction(config, {
+      const nftReceipt = await waitForTransaction(wagmiConfig, {
         hash,
         confirmations: 2,
       });
@@ -173,7 +195,7 @@ export default function ReportClient({
 
   return (
     <div className="mt-8">
-      <div className={styles.mainBox}>
+      <form className={styles.mainBox} onSubmit={handleSubmit(onSubmit)}>
         <Title text="VOLUNTEER TO EARN" />
         <h1>{event.name}</h1>
         <div className="mt-8 border border-dashed rounded-lg aspect-square overflow-hidden w-[70%] relative">
@@ -201,7 +223,7 @@ export default function ReportClient({
             label="Wallet address"
             id="address"
             className="text-center"
-            register={register('address')}
+            {...register('address')}
             renderRight={
               <LucideClipboardPaste
                 onClick={async () => {
@@ -213,7 +235,7 @@ export default function ReportClient({
           />
           <TextInput
             label="Units delivered"
-            register={register('units')}
+            {...register('units')}
             type="number"
             pattern="\d*"
             onChange={recalc}
@@ -231,16 +253,12 @@ export default function ReportClient({
           </div>
         </div>
         <div className="w-full mb-2 flex flex-row justify-between">
-          <ButtonBlue
-            id="buttonSubmit"
-            text="MINT REPORT NFT"
-            onClick={onMint}
-          />
+          <ButtonBlue id="buttonSubmit" type="submit" text="MINT REPORT NFT" />
         </div>
         <p id="message" className="mb-6 center text-center truncate w-full">
           {message}
         </p>
-      </div>
+      </form>
     </div>
   );
 }

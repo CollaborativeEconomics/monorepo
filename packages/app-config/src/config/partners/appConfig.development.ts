@@ -12,17 +12,18 @@ const apis = {
   registry: {
     apiUrl: "https://registry.staging.cfce.io/api",
   },
-  ipfs: {
-    endpoint: "https://s3.filebase.com/",
-    region: "us-east-1",
-    gateway: "https://ipfs.filebase.io/ipfs/",
-    pinning: "https://api.filebase.io/v1/ipfs",
-    buckets: {
-      nfts: "kuyawa-public",
-      avatars: "kuyawa-avatars",
-      media: "kuyawa-media",
-    },
-  },
+  ...appConfig.apis.ipfs,
+  // ipfs: {
+  //   endpoint: "https://s3.filebase.com/",
+  //   region: "us-east-1",
+  //   gateway: "https://ipfs.filebase.io/ipfs/",
+  //   pinning: "https://api.filebase.io/v1/ipfs",
+  //   buckets: {
+  //     nfts: "kuyawa-public",
+  //     avatars: "kuyawa-avatars",
+  //     media: "kuyawa-media",
+  //   },
+  // },
 }
 
 const chains: AppConfig["chains"] = {
@@ -30,6 +31,7 @@ const chains: AppConfig["chains"] = {
     slug: "arbitrum",
     network: "testnet",
     contracts: {
+      creditsFactory: "0x0???",
       credits: "0x0???",
       receiptMintbotERC721: "0x2c647e44003f403bb3e483ff810279efb136c304",
     },
@@ -37,7 +39,27 @@ const chains: AppConfig["chains"] = {
     enabledWallets: ["metamask"],
     tokens: ["ETH"],
   },
-  stellar: appConfig.chains.stellar,
+  stellar: {
+    slug: "stellar",
+    network: "testnet",
+    contracts: {
+      creditsFactory:
+        "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      credits: "CDHYT3A4XGBNSWP2P7XQTS2AT5XICKD5KOAZ7S2Y2APJMXRDIENP2LZR",
+      creditsHash:
+        "8c850c8ad832e8fcba395dc89009dad9b68c78902b275a5da565c55fe0091c7f",
+      receiptFactory:
+        "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      receiptMintbotERC721:
+        "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
+      receiptMintbotERC721Hash:
+        "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
+      xlmNativeCoin: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+    },
+    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
+    enabledWallets: ["freighter"],
+    tokens: ["XLM"],
+  },
   xdc: appConfig.chains.xdc,
   xrpl: appConfig.chains.xrpl,
 }
