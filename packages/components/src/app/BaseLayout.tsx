@@ -25,9 +25,11 @@ export function BaseLayout({ children }: BaseLayoutProps) {
         >
           <SessionProvider>
             <PostHogProvider>
-              <Header />
-              {children}
-              <Footer />
+              <div className="min-h-screen flex flex-col justify-between">
+                <Header />
+                {children}
+                <Footer />
+              </div>
             </PostHogProvider>
             <Toaster />
           </SessionProvider>
