@@ -14,7 +14,6 @@ import {
   Networks,
   Operation,
   SorobanDataBuilder,
-  //SorobanRpc, // <<<<<<<<< replace with new rpc.Server(url)
   type Transaction,
   TransactionBuilder,
   nativeToScVal,

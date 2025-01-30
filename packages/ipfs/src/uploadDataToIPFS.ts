@@ -42,13 +42,13 @@ export default async function uploadDataToIPFS(fileId: string, bytes: Uint8Array
   const client = new S3Client(s3Config)
   const action = new PutObjectCommand(uploadInput)
 
-let cid: string | undefined = "";
+  let cid: string | undefined = "";
 
-action.middlewareStack.add(
+  action.middlewareStack.add(
     (next) => async (args) => {
       // Check if request is incoming as middleware works both ways
       const response = await next(args);
-      console.log("Response", response)
+      //console.log("Response", response)
       if (!isHttpResponse(response.response)) return response;
 
       cid = response.response.headers["x-amz-meta-cid"];
@@ -61,8 +61,8 @@ action.middlewareStack.add(
   );
 
   const result = await client.send(action)
-  console.log("Result", result)
-  console.log("Cid", cid)
+  //console.log("Result", result)
+  console.log("CID", cid)
   return cid
   //   console.log("Result", result)
 

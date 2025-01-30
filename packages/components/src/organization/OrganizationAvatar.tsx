@@ -1,30 +1,30 @@
-import type { Organization } from '@cfce/database';
-import Link from 'next/link';
-import React from 'react';
-import { cn } from '~/shadCnUtil';
+import type { Organization } from "@cfce/database"
+import Link from "next/link"
+import React from "react"
+import { cn } from "~/shadCnUtil"
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
   type AvatarProps,
   AvatarTitle,
-} from '~/ui/avatar';
+} from "~/ui/avatar"
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-  organization: Organization;
-  avatarProps?: AvatarProps;
+  className?: string
+  organization: Organization
+  avatarProps?: AvatarProps
 }
 
 const OrganizationAvatar = React.forwardRef<HTMLDivElement, Props>(
   ({ className, organization, avatarProps, ...props }, ref) => {
-    console.log({ props });
+    console.log({ props })
     return (
-      <Link href={`/organization/${organization.id}`}>
+      <Link href={`/organizations/${organization.id}`}>
         <div
           ref={ref}
           className={cn(
-            'flex flex-row items-center overflow-hidden gap-3',
+            "flex flex-row items-center overflow-hidden gap-3",
             className,
           )}
           {...props}
@@ -38,14 +38,14 @@ const OrganizationAvatar = React.forwardRef<HTMLDivElement, Props>(
           </Avatar>
           <AvatarTitle
             size={avatarProps?.size}
-            title={organization.name ?? 'no name'}
+            title={organization.name ?? "no name"}
             className={className}
           />
         </div>
       </Link>
-    );
+    )
   },
-);
-OrganizationAvatar.displayName = 'OrganizationAvatar';
+)
+OrganizationAvatar.displayName = "OrganizationAvatar"
 
-export default OrganizationAvatar;
+export default OrganizationAvatar

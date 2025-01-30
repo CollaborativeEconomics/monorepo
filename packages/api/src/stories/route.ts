@@ -5,7 +5,7 @@ import {
   getStories,
   newStory,
 } from "@cfce/database"
-import { createStory } from "@cfce/utils"
+//import { createStory } from "@cfce/utils"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../checkApiKey"
 
@@ -57,16 +57,17 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { organizationId, initiativeId, categoryId, ...story } =
-      await req.json()
+    const { organizationId, initiativeId, categoryId, ...story } = await req.json()
 
     // Legacy fields, remove them later
     // Modern could should use standard prisma connect syntax
     const storyToCreate: Prisma.StoryCreateInput = { ...story }
-    if (organizationId)
+    if (organizationId){
       storyToCreate.organization = { connect: { id: organizationId } }
-    if (initiativeId)
+    }
+    if (initiativeId){
       storyToCreate.initiative = { connect: { id: initiativeId } }
+    }
     if (categoryId) storyToCreate.category = { connect: { id: categoryId } }
 
     const result = await newStory(storyToCreate)

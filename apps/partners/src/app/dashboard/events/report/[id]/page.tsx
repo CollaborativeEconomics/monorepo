@@ -9,7 +9,8 @@ interface PageProps {
 
 export default async function ReportPage({ params }: PageProps) {
   const { id } = await params;
-  const event = await getEventById(id);
+  const eventData = await getEventById(id);
+  const event = JSON.parse(JSON.stringify(eventData))
 
   if (!event) {
     return null;

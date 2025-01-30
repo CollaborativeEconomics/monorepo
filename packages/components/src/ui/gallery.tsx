@@ -10,7 +10,7 @@ export default function Gallery(props: Props) {
     <div className="grid gap-2">
       <div>
         <Image
-          className="w-full aspect-[4/3] object-cover rounded-md"
+          className="w-full aspect-[4/3] object-cover rounded-md max-h-[500px]"
           src={ipfsCIDToUrl(props.images?.[0] ?? "/nopic.png")}
           alt=""
           width={1000}

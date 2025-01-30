@@ -19,7 +19,9 @@ export async function getTokenBoundAccount(
     chain,
     network,
   }
+  console.log("TBA REC WHERE", where)
   const data = await prismaClient.tokenBoundAccount.findFirst({ where })
+  console.log("TBA REC DATA", data)
   return data
 }
 

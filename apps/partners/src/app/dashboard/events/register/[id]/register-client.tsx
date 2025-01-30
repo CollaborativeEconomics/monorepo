@@ -1,28 +1,34 @@
-'use client';
+"use client"
 
-import type { Contract, Event } from '@cfce/database';
-import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
-import { BrowserQRCodeReader } from '@zxing/library';
-import clipboard from 'clipboardy';
-import { LucideClipboardPaste, LucideQrCode } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useAccount, useWriteContract } from 'wagmi';
-import * as wagmiChains from 'wagmi/chains';
-import ButtonBlue from '~/components/buttonblue';
-import TextInput from '~/components/form/textinput';
-import Title from '~/components/title';
-import styles from '~/styles/dashboard.module.css';
-import { NFTAbi } from '~/utils/NFTAbi';
-import { cleanAddress } from '~/utils/address';
-import { config } from '~/utils/wagmiConfig';
+import { abiVolunteersNFT as NFTAbi } from "@cfce/blockchain-tools"
+import type { Contract, Event } from "@cfce/database"
+import {
+  readContract,
+  simulateContract,
+  switchChain,
+  waitForTransaction,
+} from "@wagmi/core"
+import { BrowserQRCodeReader } from "@zxing/library"
+import clipboard from "clipboardy"
+import { LucideClipboardPaste, LucideQrCode } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useForm } from "react-hook-form"
+import { useAccount, useWriteContract } from "wagmi"
+import { arbitrumSepolia } from "wagmi/chains"
+import ButtonBlue from "~/components/buttonblue"
+import TextInput from "~/components/form/textinput"
+import Title from "~/components/title"
+import styles from "~/styles/dashboard.module.css"
+import { cleanAddress } from "~/utils/address"
+import { wagmiConfig, wagmiConnect, wagmiReconnect } from "~/utils/wagmiConfig"
 
-const arbitrumSepolia = wagmiChains.arbitrumSepolia;
+// We may change chains in the future
+const defaultChain = arbitrumSepolia
 
 interface RegisterClientProps {
-  id: string;
-  event: Event;
-  contractNFT: Contract;
+  id: string
+  event: Event
+  contractNFT: Contract
 }
 
 export default function RegisterClient({
@@ -30,131 +36,151 @@ export default function RegisterClient({
   event,
   contractNFT,
 }: RegisterClientProps) {
-  const qrReader = useRef<BrowserQRCodeReader | null>(null);
-  const [device, setDevice] = useState<string | null>(null);
+  const qrReader = useRef<BrowserQRCodeReader | null>(null)
+  const [device, setDevice] = useState<string | null | undefined>(null)
   const [message, setMessage] = useState(
-    'Scan the QR-CODE to register for the event',
-  );
-  const [scanStatus, setScanStatus] = useState<'ready' | 'scanning'>('ready');
-
-  const account = useAccount();
-  const { writeContractAsync } = useWriteContract({ config });
+    "Scan the QR-CODE to register for the event",
+  )
+  const [scanStatus, setScanStatus] = useState<"ready" | "scanning">("ready")
+  const account = useAccount()
+  const { writeContractAsync } = useWriteContract({ config: wagmiConfig })
 
   const { register, watch, setValue } = useForm({
-    defaultValues: { address: '' },
-  });
-  const [address] = watch(['address']);
+    defaultValues: { address: "" },
+  })
+  const [address] = watch(["address"])
 
   // Initialize QR reader
   useEffect(() => {
-    if (qrReader.current) {
-      return;
+    if (!qrReader.current) {
+      qrReader.current = new BrowserQRCodeReader()
     }
-    const reader = new BrowserQRCodeReader();
-    qrReader.current = reader;
 
-    reader
+    qrReader.current
       .getVideoInputDevices()
-      .then(videoInputDevices => {
-        if (videoInputDevices[0]?.deviceId) {
-          setDevice(videoInputDevices[0].deviceId);
+      .then((videoInputDevices: MediaDeviceInfo[]) => {
+        console.log("VIDEO INPUT DEVICES", videoInputDevices)
+        if (videoInputDevices[0]) {
+          setDevice(videoInputDevices[0].deviceId)
         }
       })
-      .catch(err => {
-        console.error(err);
-        setMessage('Error accessing camera');
-      });
-  }, []);
+      .catch((err) => {
+        console.error(err)
+        setMessage("Error accessing camera")
+      })
+
+    return () => {
+      qrReader.current?.reset()
+    }
+  }, [])
 
   const beginDecode = useCallback(() => {
-    if (!qrReader.current || !device) return;
-
+    console.log("BEGIN DECODE", qrReader.current, device)
+    if (!qrReader.current) return
     qrReader.current.decodeFromInputVideoDeviceContinuously(
+      // @ts-expect-error: for some reason deviceId can be undefined
       device,
-      'qrcode',
+      "qrcode",
       (result, error) => {
         if (error) {
-          setMessage(error instanceof Error ? error.message : 'Unknown error');
-          return;
+          setMessage(error instanceof Error ? error.message : "Unknown error")
+          return
         }
-        if (!result) return;
+        if (!result) return
 
-        const address = result.getText();
-        setMessage('Wallet Scanned!');
-        setValue('address', address);
-        setScanStatus('ready');
-        qrReader.current?.stopContinuousDecode();
+        const address = result.getText()
+        setMessage("Wallet Scanned!")
+        setValue("address", address)
+        setScanStatus("ready")
+        qrReader.current?.stopContinuousDecode()
       },
-    );
-  }, [device, setValue]);
+    )
+  }, [device, setValue])
 
   async function onScan() {
-    setScanStatus('scanning');
-    setMessage('Scanning qrcode...');
-    beginDecode();
+    console.log("SCAN")
+    setScanStatus("scanning")
+    setMessage("Scanning qrcode...")
+    beginDecode()
   }
 
   async function onStop() {
-    setScanStatus('ready');
-    setMessage('Ready to scan');
+    console.log("STOP")
+    setScanStatus("ready")
+    setMessage("Ready to scan")
     try {
-      qrReader.current?.reset();
+      qrReader.current?.reset()
     } catch (ex) {
-      console.error(ex);
+      console.error(ex)
     }
   }
 
   async function onMint() {
-    const nft = contractNFT.contract_address as `0x${string}`;
+    const connected = await wagmiConnect()
+    console.log("CONNECTED", connected)
+    console.log("ACCOUNT", account)
+
+    const cleanedAddress = cleanAddress(address) as `0x${string}`
+    const nft = contractNFT.contract_address as `0x${string}`
+    const tokenId = BigInt(1)
+    const tokenQty = BigInt(1)
 
     if (!account?.address || !nft) {
-      setMessage('Please Connect Wallet in Metamask');
-      return;
+      setMessage("Please Connect Wallet in Metamask")
+      return
     }
 
-    setMessage('Minting NFT, please wait...');
+    setMessage("Minting NFT, please wait...")
 
-    if (account.chainId !== arbitrumSepolia.id) {
-      await switchChain(config, { chainId: arbitrumSepolia.id });
+    if (account.chainId !== defaultChain.id) {
+      console.log("SWITCH FROM", account.chainId, "TO", defaultChain.id)
+      await switchChain(wagmiConfig, { chainId: defaultChain.id })
     }
-
-    const cleanedAddress = cleanAddress(address);
 
     try {
-      const balance = await readContract(config, {
+      const balance = await readContract(wagmiConfig, {
         address: nft,
         abi: NFTAbi,
-        functionName: 'balanceOf',
-        args: [cleanedAddress as `0x${string}`, BigInt(1)],
-      });
+        functionName: "balanceOf",
+        args: [cleanedAddress, tokenId],
+      })
+      console.log("BALANCE", balance)
 
       if (balance > BigInt(0)) {
-        setMessage('User already registered for this event');
-        return;
+        setMessage("User already registered for this event")
+        return
       }
 
+      const tx = {
+        address: nft,
+        abi: NFTAbi,
+        functionName: "mint",
+        args: [cleanedAddress, tokenId, tokenQty],
+        chain: defaultChain,
+        account: account.address,
+      }
+      console.log("TX", tx)
       const hash = await writeContractAsync({
         address: nft,
         abi: NFTAbi,
-        functionName: 'mint',
-        args: [cleanedAddress as `0x${string}`, BigInt(1), BigInt(1)],
-        chain: arbitrumSepolia,
+        functionName: "mint",
+        args: [cleanedAddress, tokenId, tokenQty],
+        chain: defaultChain,
         account: account.address,
-      });
-
-      const nftReceipt = await waitForTransaction(config, {
+      })
+      const nftReceipt = await waitForTransaction(wagmiConfig, {
         hash,
         confirmations: 2,
-      });
+      })
 
-      setMessage('NFT minted successfully');
+      setMessage("NFT minted successfully")
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error("Registration error:", error)
       setMessage(
         `Registration error - ${
-          error instanceof Error ? error.message : 'Unknown error'
+          error instanceof Error ? error.message : "Unknown error"
         }`,
-      );
+      )
     }
   }
 
@@ -164,7 +190,7 @@ export default function RegisterClient({
         <Title text="VOLUNTEER TO EARN" />
         <h1>{event.name}</h1>
         <div className="mt-8 border border-dashed rounded-lg aspect-square overflow-hidden w-[70%] relative">
-          {scanStatus === 'ready' && (
+          {scanStatus === "ready" && (
             <div className="absolute top-0 left-0 w-full h-full bg-blue-700/50 flex items-center justify-center">
               <LucideQrCode className="text-white" size={60} />
             </div>
@@ -179,25 +205,24 @@ export default function RegisterClient({
         <div className="w-full mb-2 flex flex-row justify-between">
           <ButtonBlue
             id="buttonSubmit"
-            text={scanStatus === 'ready' ? 'SCAN' : 'CANCEL'}
-            onClick={scanStatus === 'ready' ? onScan : onStop}
+            text={scanStatus === "ready" ? "SCAN" : "CANCEL"}
+            onClick={scanStatus === "ready" ? onScan : onStop}
           />
         </div>
         <div className="w-[90%] text-center">
           <TextInput
             label=""
-            id="address"
             className="text-center"
-            register={register('address')}
+            {...register("address")}
             renderRight={
               <LucideClipboardPaste
                 onClick={async () => {
-                  const pasteContent = await clipboard.read();
-                  setValue('address', pasteContent);
+                  const pasteContent = await clipboard.read()
+                  setValue("address", pasteContent)
                 }}
               />
             }
-            value={address}
+            // value={address}
           />
         </div>
         <div className="w-full mb-2 flex flex-row justify-between">
@@ -212,5 +237,5 @@ export default function RegisterClient({
         </p>
       </div>
     </div>
-  );
+  )
 }

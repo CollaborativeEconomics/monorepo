@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react"
 
-import { OrganizationAvatar } from '@cfce/components/organization';
+import { OrganizationAvatar } from "@cfce/components/organization"
 import {
   Card,
   CardContent,
@@ -8,32 +8,32 @@ import {
   DateDisplay,
   Gallery,
   ShareModal,
-} from '@cfce/components/ui';
-import { getStoryById } from '@cfce/database';
-import Image from 'next/image';
-import NotFound from '../../not-found';
+} from "@cfce/components/ui"
+import { getStoryById } from "@cfce/database"
+import Image from "next/image"
+import NotFound from "../../not-found"
 
 export default async function Story(props: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }) {
-  const storyid = (await props.params).id;
-  const story = await getStoryById(storyid);
+  const storyid = (await props.params).id
+  const story = await getStoryById(storyid)
   if (!story) {
-    return <NotFound />;
+    return <NotFound />
   }
 
-  const media = story.media.map(it => it.media); // flatten list
-  const image = story.image ? [story.image] : [];
-  media.unshift(...image); // main image to the top
+  const media = story.media.map((it) => it.media) // flatten list
+  const image = story.image ? [story.image] : []
+  media.unshift(...image) // main image to the top
 
   return (
-    <main className="flex min-h-screen flex-col items-stretch container mt-12 pt-24">
+    <main className="flex min-h-screen flex-col items-stretch container pt-24 max-w-[800px]">
       <CardHeader className="flex-row justify-between">
         <DateDisplay timestamp={+story.created} className="py-4" />
         <ShareModal />
       </CardHeader>
       <Card className="flex flex-col overflow-hidden">
-        <div className="">
+        <div className="px-4 pt-4">
           <Gallery images={media} />
         </div>
         <CardContent className="flex flex-col pb-8 pt-3 gap-3 px-6">
@@ -54,9 +54,6 @@ export default async function Story(props: {
             <div className="flex flex-col items-center">
               {story.initiative.category ? (
                 <>
-                  <h1 className="text-sm">
-                    {story.initiative.category?.title}
-                  </h1>
                   {story.initiative.category?.image && (
                     <Image
                       src={story.initiative.category.image}
@@ -65,6 +62,9 @@ export default async function Story(props: {
                       alt="Category"
                     />
                   )}
+                  <h1 className="mt-2text-sm">
+                    {story.initiative.category?.title}
+                  </h1>
                 </>
               ) : null}
             </div>
@@ -72,5 +72,5 @@ export default async function Story(props: {
         </CardContent>
       </Card>
     </main>
-  );
+  )
 }

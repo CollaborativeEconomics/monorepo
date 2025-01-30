@@ -6,7 +6,17 @@ import type {
   TokenTickerSymbol,
 } from "./BlockchainTools"
 
-type ContractType = "receiptMintbotERC721" | "credits" | "storyERC1155"
+type ContractType =
+  | "credits" // default carbon credit contract, deprecated in favor of DB-based contracts
+  | "creditsFactory" // deploy credits contract through partner portal
+  | "creditsHash"
+  | "factory"
+  | "receiptFactory" // deploy NFTReceipt contract through partner portal
+  | "receiptMintbotERC721" // automatically mint receipt NFTs
+  | "receiptMintbotERC721Hash"
+  | "storyERC1155" // story NFT contract
+  | "xlmNativeCoin"
+  | "volunteersFactory"
 
 export interface AppChainConfig {
   slug: ChainSlugs
