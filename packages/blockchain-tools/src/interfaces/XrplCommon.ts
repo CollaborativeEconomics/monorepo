@@ -102,7 +102,9 @@ export default class XrplCommon extends InterfaceBaseClass {
     } catch (ex) {
       console.error(ex)
       if (ex instanceof Error) {
-        return { error: ex.message }
+        return {
+          error: `fetchLedger error: ${ex.message}\n ${JSON.stringify({ method, params })}`,
+        }
       }
       return { error: "Unknown error" }
     }
