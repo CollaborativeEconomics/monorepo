@@ -1,13 +1,17 @@
 'use client';
 
+import appConfig from '@cfce/app-config';
+import {
+  abiVolunteersFactory as FactoryAbi,
+  chainConfig,
+} from '@cfce/blockchain-tools';
 import type { Contract, Event } from '@cfce/database';
-import { newContract } from '~/actions/database';
 import { readContract, switchChain, waitForTransaction } from '@wagmi/core';
 import { useState } from 'react';
-import styles from '~/styles/dashboard.module.css';
 import { parseEther } from 'viem';
-import { useAccount, useConnect, useWriteContract } from 'wagmi';
+import { useAccount, useWriteContract } from 'wagmi';
 import * as wagmiChains from 'wagmi/chains';
+import { newContract } from '~/actions/database';
 import ButtonBlue from '~/components/buttonblue';
 import Dashboard from '~/components/dashboard';
 import LinkButton from '~/components/linkbutton';
@@ -15,10 +19,11 @@ import Sidebar from '~/components/sidebar';
 import Title from '~/components/title';
 import { DateDisplay } from '~/components/ui/date-posted';
 import Gallery from '~/components/ui/gallery';
-import { FactoryAbi } from '~/utils/FactoryAbi';
-import { config } from '~/utils/wagmiConfig';
+import styles from '~/styles/dashboard.module.css';
+import { wagmiConfig, wagmiConnect, wagmiReconnect } from '~/utils/wagmiConfig';
 
-const arbitrumSepolia = wagmiChains.arbitrumSepolia;
+// We may change chains in the future
+const defaultChain = wagmiChains.arbitrumSepolia;
 
 interface EventClientProps {
   id: string;
@@ -35,9 +40,9 @@ export default function EventClient({
   contractNFT,
   contractV2E,
 }: EventClientProps) {
-  const { connectors, connect } = useConnect({ config });
+  console.log('EVENT', { id, event, media, contractNFT, contractV2E });
   const { chainId, address } = useAccount();
-  const { writeContractAsync } = useWriteContract({ config });
+  const { writeContractAsync } = useWriteContract({ config: wagmiConfig });
 
   // State Variables
   const started = Boolean(contractNFT && contractV2E);
@@ -48,27 +53,33 @@ export default function EventClient({
   );
 
   // Constants
+  // TODO: move to app config
   const FactoryAddress = '0xD4E47912a12f506843F522Ea58eA31Fd313eB2Ee';
-  const usdcAddressTestnet = '0x80C2f901ABA1F95e5ddb2A5024E7Df6a366a3AB0'; // CFCE-controlled contract
+  const usdcAddress =
+    chainConfig.arbitrum.networks[appConfig.chainDefaults.network].tokens?.USDC
+      ?.contract;
   let NFTBlockNumber: number;
   let distributorBlockNumber: number;
 
   async function deployNFT() {
     try {
       setMessage('Initiating NFT deployment, please wait...');
-      const uri =
-        'https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1.json';
+      // TODO: FIX constant uri?
+      //const uri = 'https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1.json'; // not found - empty bucket
+      const uri = 'ipfs:testEvent';
 
+      // ConnectorNotConnected error when Metamask is not active
+      // Enable Metamask first then retry
       const hash = await writeContractAsync({
         address: FactoryAddress,
         abi: FactoryAbi,
         functionName: 'deployVolunteerNFT',
         args: [uri as `0x${string}`, address as `0x${string}`],
-        chain: arbitrumSepolia,
+        chain: defaultChain,
         account: address,
       });
 
-      const nftReceipt = await waitForTransaction(config, {
+      const nftReceipt = await waitForTransaction(wagmiConfig, {
         hash,
         confirmations: 2,
       });
@@ -76,7 +87,7 @@ export default function EventClient({
       setMessage('NFT deployment confirmed');
       NFTBlockNumber = Number(nftReceipt.blockNumber);
 
-      const NFTAddress = await readContract(config, {
+      const NFTAddress = await readContract(wagmiConfig, {
         address: FactoryAddress,
         abi: FactoryAbi,
         functionName: 'getDeployedVolunteerNFT',
@@ -93,21 +104,41 @@ export default function EventClient({
   async function deployTokenDistributor(NFTAddress: string) {
     try {
       setMessage('Initiating Distributor deployment, please wait...');
+      if (!usdcAddress) {
+        setMessage(`USDC address not found: ${usdcAddress}`);
+        throw new Error('USDC address not found');
+      }
+
+      const args = {
+        address: FactoryAddress,
+        abi: FactoryAbi,
+        functionName: 'deployTokenDistributor' as const,
+        args: [
+          usdcAddress as `0x${string}`,
+          NFTAddress as `0x${string}`,
+          parseEther(event.unitvalue?.toString() || '0'),
+        ],
+        chain: defaultChain,
+        account: address,
+      };
+
+      console.log('ARGS', args);
 
       const hash = await writeContractAsync({
         address: FactoryAddress,
         abi: FactoryAbi,
         functionName: 'deployTokenDistributor',
         args: [
-          usdcAddressTestnet,
+          usdcAddress as `0x${string}`,
           NFTAddress as `0x${string}`,
-          parseEther(event.unitvalue?.toString() || '0'),
+          // parseEther(event.unitvalue?.toString() || '0'),
+          BigInt(0),
         ],
-        chain: arbitrumSepolia,
+        chain: defaultChain,
         account: address,
       });
 
-      const distributorReceipt = await waitForTransaction(config, {
+      const distributorReceipt = await waitForTransaction(wagmiConfig, {
         hash,
         confirmations: 2,
       });
@@ -115,7 +146,7 @@ export default function EventClient({
       setMessage('Distributor deployment confirmed');
       distributorBlockNumber = Number(distributorReceipt.blockNumber);
 
-      const distributorAddress = await readContract(config, {
+      const distributorAddress = await readContract(wagmiConfig, {
         address: FactoryAddress,
         abi: FactoryAbi,
         functionName: 'getDeployedTokenDistributor',
@@ -130,9 +161,11 @@ export default function EventClient({
   }
 
   async function deploy() {
+    console.log('DEPLOYING...');
     try {
-      if (chainId !== arbitrumSepolia.id) {
-        await switchChain(config, { chainId: arbitrumSepolia.id });
+      await wagmiConnect();
+      if (chainId !== defaultChain.id) {
+        await switchChain(wagmiConfig, { chainId: defaultChain.id });
       }
 
       const NFTAddress = await deployNFT();
@@ -178,7 +211,7 @@ export default function EventClient({
     <Dashboard>
       <div className={styles.content}>
         <Title text="Volunteer To Earn Event" />
-        <div className={styles.viewBox}>
+        <div className={styles.mainBox}>
           {event.created && (
             <DateDisplay timestamp={event.created} className="p-4" />
           )}

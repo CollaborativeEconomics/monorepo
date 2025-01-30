@@ -24,14 +24,14 @@ const Checkbox = ({
   //console.log({ rest });
   const [checked, setChecked] = useState(check);
   // const event = useRef(null);
+  const checkClass = `material-icons mr-2 self-center ${checked ? 'check_box' : 'check_box_outline_blank'}`
 
   return (
     <label
       htmlFor={name}
       className="rounded-xl bg-blue-100 flex w-fit flex-row align-middle justify-start text-white px-4 py-1 mb-6"
     >
-      <span className="material-icons mr-2 self-center">
-        {checked ? 'check_box' : 'check_box_outline_blank'}
+      <span className={checkClass}>?
       </span>
       {label}
       <input

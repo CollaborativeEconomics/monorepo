@@ -2,15 +2,15 @@
 import type { Prisma } from '@cfce/database';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { createOrganizationAction } from './actions';
 import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
 import TextInput from '~/components/form/textinput';
 import styles from '~/styles/dashboard.module.css';
+import { createOrganizationAction } from './actions';
 
 interface Category {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 export default function AddOrganizationForm({
@@ -27,26 +27,26 @@ export default function AddOrganizationForm({
 
   const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
 
-  function getFormData(form:HTMLFormElement){
+  function getFormData(form: HTMLFormElement) {
     const data = {} as Prisma.OrganizationCreateInput;
-    const formData = new FormData(form)
+    const formData = new FormData(form);
     //console.log('FORM', formData);
     for (const [name, value] of formData) {
       console.log(name, value);
-      if(name==='categoryId'){
-        data.category = { connect: { id: value as string } }
+      if (name === 'categoryId') {
+        data.category = { connect: { id: value as string } };
       } else {
         // @ts-ignore: I hate this
-        data[name as string] = value as string
+        data[name as string] = value as string;
       }
     }
-    return data
+    return data;
   }
 
   //async function onSubmit(data: Prisma.OrganizationCreateInput) {
-  async function onSubmit(event:React.FormEvent){
-    event.preventDefault()
-    const data = getFormData(event.currentTarget as HTMLFormElement)
+  async function onSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const data = getFormData(event.currentTarget as HTMLFormElement);
     console.log('SUBMIT', data);
 
     if (!data.name) {
@@ -97,7 +97,9 @@ export default function AddOrganizationForm({
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('SUBMIT');
-  const [message, showMessage] = useState('Enter organization info and click on submit');
+  const [message, showMessage] = useState(
+    'Enter organization info and click on submit',
+  );
   const [change, setChange] = useState(0);
 
   // Form data
@@ -115,37 +117,40 @@ export default function AddOrganizationForm({
       background: '',
       url: '',
       twitter: '',
-      facebook: ''
-    }
+      facebook: '',
+      categoryId: '',
+    },
   });
   const [
-      name,
-      slug,
-      description,
-      email,
-      EIN,
-      phone,
-      mailingAddress,
-      country,
-      image,
-      background,
-      url,
-      twitter,
-      facebook
+    name,
+    slug,
+    description,
+    email,
+    EIN,
+    phone,
+    mailingAddress,
+    country,
+    image,
+    background,
+    url,
+    twitter,
+    facebook,
+    categoryId,
   ] = watch([
-      'name',
-      'slug',
-      'description',
-      'email',
-      'EIN',
-      'phone',
-      'mailingAddress',
-      'country',
-      'image',
-      'background',
-      'url',
-      'twitter',
-      'facebook'
+    'name',
+    'slug',
+    'description',
+    'email',
+    'EIN',
+    'phone',
+    'mailingAddress',
+    'country',
+    'image',
+    'background',
+    'url',
+    'twitter',
+    'facebook',
+    'categoryId',
   ]);
 
   useEffect(() => {
@@ -155,22 +160,22 @@ export default function AddOrganizationForm({
   return (
     <div className={styles.mainBox}>
       <form className={styles.vbox} onSubmit={onSubmit}>
-        <TextInput label="Name" name="name" register={register('name')} />
-        <TextInput label="Slug" name="slug" register={register('slug')} />
-        <TextInput label="Description" name="description" register={register('description')} />
-        <TextInput label="Email" name="email" register={register('email')} />
-        <TextInput label="EIN" name="EIN" register={register('EIN')} />
-        <TextInput label="Phone" name="phone" register={register('phone')} />
-        <TextInput label="Address" name="mailingAddress" register={register('mailingAddress')} />
-        <TextInput label="Country" name="country" register={register('country')} />
-        <TextInput label="Image (url)" name="image" register={register('image')} />
-        <TextInput label="Background (url)" name="background" register={register('background')} />
-        <TextInput label="website" name="url" register={register('url')} />
-        <TextInput label="Twitter" name="twitter" register={register('twitter')} />
-        <TextInput label="Facebook" name="facebook" register={register('facebook')} />
+        <TextInput label="Name" {...register('name')} />
+        <TextInput label="Slug" {...register('slug')} />
+        <TextInput label="Description" {...register('description')} />
+        <TextInput label="Email" {...register('email')} />
+        <TextInput label="EIN" {...register('EIN')} />
+        <TextInput label="Phone" {...register('phone')} />
+        <TextInput label="Address" {...register('mailingAddress')} />
+        <TextInput label="Country" {...register('country')} />
+        <TextInput label="Image (url)" {...register('image')} />
+        <TextInput label="Background (url)" {...register('background')} />
+        <TextInput label="website" {...register('url')} />
+        <TextInput label="Twitter" {...register('twitter')} />
+        <TextInput label="Facebook" {...register('facebook')} />
         <Select
           label="Category"
-          name="categoryId"
+          {...register('categoryId')}
           options={categoryOptions}
         />
         <ButtonBlue

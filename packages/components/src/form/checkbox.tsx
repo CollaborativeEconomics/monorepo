@@ -22,13 +22,13 @@ const Checkbox = ({
   className,
   ...rest
 }: CheckboxProps & HTMLProps<HTMLInputElement>) => {
-  const [checked, setChecked] = useState(check)
-  const classes = `rounded-full flex w-fit flex-row align-middle justify-start items-center text-white text-sm lineheight12 px-0 py-1 mb-0 ml-2 ${className}`
+  const [checked, setChecked] = useState(check);
+  const classes = `rounded-full flex w-fit flex-row align-middle justify-start items-center text-white text-sm lineheight12 px-0 py-1 mb-0 ml-2 ${className}`;
+  const checkClass = `material-icons mr-2 self-center ${checked ? 'check_box' : 'check_box_outline_blank'}`
 
   return (
     <label htmlFor={name} className={classes}>
-      <span className="material-icons mr-2 self-center">
-        {checked ? "check_box" : "check_box_outline_blank"}
+      <span className={checkClass}>?
       </span>
       {label}
       <input

@@ -1,15 +1,22 @@
 import "server-only"
 import { posthogNodeClient } from "@cfce/analytics/server"
+import appConfig from "@cfce/app-config"
 import {
   type Prisma,
   type Story,
+  type StoryMedia,
+  addStoryMedia,
   getInitiativeById,
   getOrganizationById,
   newStory,
   prismaClient,
+  updateImpactLink,
   updateStory,
+  updateStoryLink,
 } from "@cfce/database"
 import { uploadDataToIPFS, uploadFileToIPFS } from "@cfce/ipfs"
+import { newTBAccount } from "@cfce/tbas"
+import { EntityType } from "@cfce/types"
 import { put } from "@vercel/blob"
 import { mintStoryNFT } from "./mintStoryNFT"
 
@@ -17,60 +24,96 @@ async function processFile(
   file: string | File,
   prefix: string,
 ): Promise<string> {
+  let cid = ""
   if (typeof file === "string") {
     const response = await fetch(file)
     const mimeType =
       response.headers.get("content-type") || "application/octet-stream"
     const buffer = await response.arrayBuffer()
     const bytes = new Uint8Array(buffer)
-    const cid = await uploadDataToIPFS(file, bytes, mimeType)
+    cid = await uploadDataToIPFS(file, bytes, mimeType)
     await put(`${prefix}/${cid}`, buffer, {
       access: "public",
       contentType: mimeType,
     })
+    console.log("TEXT CID", cid)
     return cid
   }
-  return await uploadFileToIPFS(file)
+  cid = await uploadFileToIPFS(file)
+  console.log("FILE CID", cid)
+  return cid
 }
 
 interface CreateStoryParams {
-  story: Omit<Prisma.StoryCreateInput, "organization" | "initiative">
+  //story: Omit<Prisma.StoryCreateInput, "organization" | "initiative">
+  story: {
+    name: string
+    description: string
+    amount: string
+    unitlabel: string
+    unitvalue: string
+  }
   userId: string
   organizationId: string
   initiativeId: string
   categoryId?: string
-  images?: (string | File)[]
-  media?: string | File
+  images?: File[]
+  media?: File
+  //images?: (string | File)[]
+  //media?: string | File
 }
 
-export default async function createStory({
-  userId,
-  story,
-  organizationId,
-  initiativeId,
-  categoryId,
-  images,
-  media,
-}: CreateStoryParams): Promise<Story> {
-  const imageCIDs: string[] = []
-  let mediaCID = ""
+interface MediaRecord {
+  media: string
+  mime: string
+}
+
+export default async function createStory(
+  {
+    userId,
+    story,
+    organizationId,
+    initiativeId,
+    categoryId,
+    images,
+    media,
+  }: CreateStoryParams,
+  tba = false,
+): Promise<Story> {
   let storyId = ""
+  const gateway = appConfig.apis.ipfs.gateway
 
   try {
+    //const allMedia: Omit<StoryMedia, "id" | "storyId" | "created">[] = []
+    const allMedia: MediaRecord[] = []
+    let image = "" // main image
+    const imageCIDs = []
+    let mediaCID = ""
     // Process images
     if (images && Array.isArray(images)) {
+      let mime = ""
+      let cid = ""
       for (const image of images) {
-        const cid = await processFile(image, "stories")
-        imageCIDs.push(cid)
+        mime = image?.type || ""
+        cid = await processFile(image, "stories")
+        imageCIDs.push(`ipfs:${cid}`)
+        allMedia.push({ media: `${gateway}${cid}`, mime }) // media record
         console.log("Uploaded image to IPFS, CID", cid)
       }
+      // Main image goes in story record, rest goes to storyMedia table
+      image = allMedia.length > 0 ? allMedia[0].media : ""
+      allMedia.shift() // remove first image from stack
     }
 
     // Process media
     if (media) {
-      mediaCID = await processFile(media, "stories")
-      console.log("Uploaded media to IPFS, CID", mediaCID)
+      const mime = media?.type || "application/octet-stream" // any file
+      const cid = await processFile(media, "stories")
+      mediaCID = `ipfs:${cid}`
+      console.log("Uploaded media to IPFS, CID", cid)
+      allMedia.push({ media: `${gateway}${cid}`, mime })
     }
+    console.log("ALL MEDIA", allMedia)
 
     // Get the related organization and initiative
     const [organization, initiative] = await Promise.all([
@@ -79,6 +122,20 @@ export default async function createStory({
     ])
 
     // Create the story DB entry with the data
+    const storyData = {
+      name: story.name,
+      description: story.description,
+      amount: Number(story.amount),
+      organization: { connect: { id: organizationId } },
+      initiative: { connect: { id: initiativeId } },
+      category: categoryId ? { connect: { id: categoryId } } : undefined,
+      unitvalue: Number(story.unitvalue),
+      unitlabel: story.unitlabel,
+      image,
+    }
+    console.log("STORY", storyData)
+    const dbStory = await newStory(storyData)
+    /*
     const dbStory = await newStory({
       ...story,
       amount: story.amount ?? 0,
@@ -91,14 +148,14 @@ export default async function createStory({
         create: [
           ...imageCIDs.map((cid, index) => ({
             media: `ipfs:${cid}`,
-            type: "IMAGE",
+            mime: "IMAGE",
             order: index,
           })),
           ...(mediaCID
             ? [
                 {
                   media: `ipfs:${mediaCID}`,
-                  type: "MEDIA",
+                  mime: "MEDIA",
                   order: imageCIDs.length,
                 },
               ]
@@ -106,8 +163,26 @@ export default async function createStory({
         ],
       },
     })
+*/
     storyId = dbStory.id
     console.log("Created story in DB", dbStory.id, dbStory.name)
+    if (allMedia.length > 0) {
+      const dbMedia = await addStoryMedia(storyId, allMedia)
+      console.log("Media added", dbMedia)
+    }
+
+    // IMPACT LINK
+    if (storyId && storyData.amount > 0) {
+      const link = {
+        initiativeId,
+        storyId,
+        amount: storyData.amount,
+      }
+      const impact = await updateImpactLink(link)
+      console.log("IMPACT", impact?.rowCount)
+      const linked = await updateStoryLink(link)
+      console.log("LINKED", linked?.rowCount)
+    }
 
     // Create and upload the NFT metadata
     const nftMetadata = {
@@ -118,8 +193,11 @@ export default async function createStory({
       initiative: initiative?.title,
       event: story.name,
       description: story.description,
-      image: imageCIDs.map((cid) => `ipfs:${cid}`),
-      media: mediaCID ? `ipfs:${mediaCID}` : undefined,
+      amount: story.amount,
+      unitValue: story.unitvalue,
+      unitLabel: story.unitlabel,
+      image: imageCIDs,
+      media: mediaCID,
     }
     const nftMetadataBytes = Buffer.from(JSON.stringify(nftMetadata, null, 2))
     const tokenCID = await uploadDataToIPFS(
@@ -128,8 +206,22 @@ export default async function createStory({
       "text/plain",
     )
 
+    // Create TBA for story
+    if (tba) {
+      console.log("TBA will be created for story", storyId)
+      const metadata = JSON.stringify(nftMetadata)
+      const account = await newTBAccount(
+        EntityType.story,
+        storyId,
+        EntityType.initiative,
+        initiativeId,
+        metadata,
+      ) // Parent initiative
+      console.log("TBA created", account)
+    }
+
     // Mint the NFT
-    const { tokenId } = await mintStoryNFT(storyId, tokenCID)
+    const { tokenId } = await mintStoryNFT(storyId, tokenCID, initiativeId)
     console.log("Minted NFT", tokenCID, nftMetadata)
 
     posthogNodeClient.capture({
@@ -143,13 +235,18 @@ export default async function createStory({
     posthogNodeClient.shutdown()
 
     // Update the story with token information
-    return await updateStory(dbStory.id, {
+    const result = await updateStory(dbStory.id, {
       tokenId,
       metadata: `ipfs:${tokenCID}`,
     })
+    return result
   } catch (error) {
     // If it failed, delete the DB entry and throw the error
-    if (storyId) await prismaClient.story.delete({ where: { id: storyId } })
+    if (storyId)
+      await prismaClient.story
+        .delete({ where: { id: storyId } })
+        .catch((e) => console.error("Error deleting rogue story", e))
+    console.error("createStory ERROR", error)
     throw error
   }
 }

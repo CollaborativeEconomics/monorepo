@@ -51,17 +51,15 @@ export async function getStoryMediaById(
 }
 
 interface StoryMediaData {
-  media: Array<{
-    media: string
-    mime: string
-  }>
+  media: string
+  mime: string
 }
 
-export async function addStoryMedia(id: string, images: StoryMediaData) {
-  if (images?.media?.length < 1) {
+export async function addStoryMedia(id: string, media: StoryMediaData[]) {
+  if (media?.length < 1) {
     return null
   }
-  const data = images?.media?.map((it) => {
+  const data = media?.map((it) => {
     return { storyId: id, media: it.media, mime: it.mime }
   })
   const result = await prismaClient.storyMedia.createManyAndReturn({ data })

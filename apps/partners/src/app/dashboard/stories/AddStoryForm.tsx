@@ -1,16 +1,18 @@
 'use client';
 
+//import Checkbox from '~/components/form/checkbox';
+// import { Checkbox, CheckboxWithText } from '@cfce/components/ui';
+import { Alert, AlertDescription, Button, Input } from '@cfce/components/ui';
 import type { Category, Initiative } from '@cfce/database';
-import { useState } from 'react';
+import React, { useState, type FormEvent } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import ButtonBlue from '~/components/buttonblue';
-import Checkbox from '~/components/form/checkbox';
 import FileView from '~/components/form/fileview';
-import Select from '~/components/form/select';
-import TextArea from '~/components/form/textarea';
-import TextInput from '~/components/form/textinput';
 import styles from '~/styles/dashboard.module.css';
-import { saveStory } from './actions'; // Update this import
+import ButtonBlue from '../../../components/buttonblue';
+import Select from '../../../components/form/select';
+import TextArea from '../../../components/form/textarea';
+import TextInput from '../../../components/form/textinput';
+import { saveStory } from './actions';
 
 interface AddStoryFormProps {
   userId: string;
@@ -19,19 +21,20 @@ interface AddStoryFormProps {
   categories: Category[];
 }
 
-interface FormData {
+interface DataForm {
   initiativeId: string;
-  name: string;
-  desc: string;
-  amount: string;
-  image1: File[];
-  image2: File[];
-  image3: File[];
-  image4: File[];
-  image5: File[];
-  media: File[];
-  yesNFT: boolean;
   categoryId: string;
+  name: string;
+  description: string;
+  amount: string;
+  image1: FileList;
+  image2: FileList;
+  image3: FileList;
+  image4: FileList;
+  image5: FileList;
+  media: FileList;
+  unitvalue: string;
+  unitlabel: string;
 }
 
 export default function AddStoryForm({
@@ -45,12 +48,20 @@ export default function AddStoryForm({
   const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, setMessage] = useState('Enter story info and upload images');
 
+  console.log('ADD STORY FORM');
+
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<DataForm>({
+    defaultValues: {
+      initiativeId: initiatives[0]?.id || '',
+      categoryId: initiatives[0]?.categoryId || categories[0]?.id || '',
+    },
+  });
 
   const initiativesOptions = initiatives.map(initiative => ({
     id: initiative.id,
@@ -63,38 +74,46 @@ export default function AddStoryForm({
   }));
 
   const imageFields = watch(['image1', 'image2', 'image3', 'image4', 'image5']);
+  console.log('IMAGE FIELDS', imageFields);
   const mediaFile = watch('media');
+  const imgSource = '/media/upload.jpg';
 
-  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    if (!data.name || !data.desc || !data.image1 || !data.initiativeId) {
+  const onSubmit: SubmitHandler<DataForm> = async data => {
+    console.log('DATA:', data);
+    if (
+      !data.name ||
+      !data.description ||
+      !data.image1?.[0] ||
+      !data.initiativeId
+    ) {
       setMessage('All required fields must be filled');
       return;
     }
 
     setButtonDisabled(true);
     setButtonText('WAIT');
-    setMessage('Uploading files...');
+    setMessage('Uploading files and saving story...');
 
     try {
-      const images = [
-        data.image1,
-        data.image2,
-        data.image3,
-        data.image4,
-        data.image5,
-      ]
-        .filter(img => img && img.length > 0)
-        .map(img => img[0]);
+      const images: File[] = [
+        data.image1?.[0],
+        data.image2?.[0],
+        data.image3?.[0],
+        data.image4?.[0],
+        data.image5?.[0],
+      ].filter((img): img is File => img instanceof File && img.size > 0);
 
-      const media =
-        data.media && data.media.length > 0 ? data.media[0] : undefined;
+      const mediaFile = data.media?.[0];
+      const media = mediaFile && mediaFile.size > 0 ? mediaFile : undefined;
 
       const storyData = {
-        userId: userId,
+        userId,
         story: {
           name: data.name,
-          description: data.desc,
-          amount: Number.parseInt(data.amount),
+          description: data.description,
+          amount: data.amount,
+          unitvalue: data.unitvalue,
+          unitlabel: data.unitlabel,
         },
         categoryId: data.categoryId,
         organizationId: orgId,
@@ -103,9 +122,13 @@ export default function AddStoryForm({
         media,
       };
 
-      const storyResponse = await saveStory(storyData);
-      if ('error' in storyResponse) {
-        setMessage(`Error saving story: ${storyResponse.error}`);
+      const storyResponse = await saveStory(storyData, true);
+      if (!storyResponse || 'error' in storyResponse) {
+        setMessage(
+          `Error saving story: ${
+            (storyResponse as { error: string })?.error || 'Unknown error'
+          }`,
+        );
         setButtonDisabled(false);
         return;
       }
@@ -114,56 +137,60 @@ export default function AddStoryForm({
       setButtonText('DONE');
     } catch (error) {
       console.error('Error saving story:', error);
-      setMessage('An error occurred while saving the story.');
-      setButtonDisabled(false);
+      setMessage('An error occurred while saving the story');
+      setButtonText('ERROR');
+      setButtonDisabled(true);
     }
   };
 
   return (
     <div className={styles.mainBox}>
-      <form
-        className={styles.vbox}
-        onSubmit={handleSubmit(onSubmit)}
-        // onSubmit={data => console.log('submit', data)}
-      >
+      <form className={styles.vbox} onSubmit={handleSubmit(onSubmit)}>
         {/* Image Upload Inputs */}
-        <FileView
-          id="image1"
-          register={register('image1')}
-          width={250}
-          height={250}
-        />
+        <div className={`${styles.hbox} justify-center`}>
+          <FileView
+            id="image1"
+            width={250}
+            height={250}
+            source={imgSource}
+            {...register('image1', { required: true })}
+          />
+        </div>
         <div className={`${styles.hbox} justify-center`}>
           <FileView
             id="image2"
-            register={register('image2')}
             width={128}
             height={128}
+            source={imgSource}
+            {...register('image2')}
           />
           <FileView
             id="image3"
-            register={register('image3')}
             width={128}
             height={128}
+            source={imgSource}
+            {...register('image3')}
           />
           <FileView
             id="image4"
-            register={register('image4')}
             width={128}
             height={128}
+            source={imgSource}
+            {...register('image4')}
           />
           <FileView
             id="image5"
-            register={register('image5')}
             width={128}
             height={128}
+            source={imgSource}
+            {...register('image5')}
           />
         </div>
 
         {/* Media Input */}
         <div>
           <label htmlFor="media">Other media (PDF, MP3, MP4, etc.):</label>
-          <input
+          <Input
             type="file"
             id="media"
             {...register('media')}
@@ -174,45 +201,54 @@ export default function AddStoryForm({
         {/* Additional form inputs */}
         <Select
           label="Initiative"
-          register={register('initiativeId', { required: true })}
+          {...register('initiativeId', { required: true })}
           options={initiativesOptions}
         />
+
         <Select
           label="Category"
-          register={register('categoryId', { required: true })}
+          {...register('categoryId', { required: true })}
           options={categoriesOptions}
         />
-        <TextInput label="Title" register={register('name', { required: true })} />
-        <TextArea
-          label="Description"
-          {...register('desc', { required: true })}
-        />
+
         <TextInput
-          label="Estimated Amount Spent"
-          register={register('amount', { required: true })}
-        />
-        <Checkbox
-          label="Mint Story NFT"
-          register={register('yesNFT')}
-          check={true}
+          label="Title"
+          {...register('name', { required: true })}
+          className={errors.name ? 'border-red-500' : ''}
         />
 
-        <button
-          type="submit"
-          // text={buttonText}
-          disabled={buttonDisabled}
-          // onClick={handleSubmit(onSubmit)}
-        >
-          {buttonText}
-        </button>
+        <TextArea
+          label="Description"
+          {...register('description', { required: true })}
+          className={errors.description ? 'border-red-500' : ''}
+        />
+
+        <TextInput
+          label="Estimated Amount Spent"
+          {...register('amount', { required: true })}
+        />
+        <TextInput
+          label="Dollars per unit ($20 per tree, $5 per meal, $150 per wheelchair)"
+          {...register('unitvalue')}
+        />
+        <TextInput
+          label="Unit label (tree, meal, wheelchair)"
+          {...register('unitlabel')}
+        />
+        <ButtonBlue type="submit" text={buttonText} disabled={buttonDisabled} />
 
         {/* Validation error handling */}
         {errors.name && <p className="error">Title is required</p>}
-        {errors.desc && <p className="error">Description is required</p>}
+        {errors.description && <p className="error">Description is required</p>}
         {errors.amount && <p className="error">Amount is required</p>}
+        {errors.initiativeId && <p className="error">Initiative is required</p>}
       </form>
 
-      <p className="text-center">{message}</p>
+      {message && (
+        <Alert variant={message.includes('Error') ? 'destructive' : 'default'}>
+          <AlertDescription>{message}</AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 }
