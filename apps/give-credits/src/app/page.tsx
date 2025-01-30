@@ -11,7 +11,7 @@ export default async function Home() {
   console.log(`App running in ${appMode} mode`)
   const initid = appConfig.siteInfo.featuredInitiatives?.[0]
   const featured = `/initiatives/${initid}`
-  const stories = await getStories({ recent: 4 })
+  const stories = await getStories({ recent: 4, initId: initid })
 
   // Chart data
   const credits = await getCredits({ initiativeid: initid })

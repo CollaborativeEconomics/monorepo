@@ -40,27 +40,24 @@ export function CarbonCreditDisplay({ initiative }: CarbonCreditDisplayProps) {
     () =>
       `${perc.toFixed(
         2,
-      )}% of total estimated carbon emissions retired ${tonx.toFixed(
+      )}% of total estimated carbon emissions retired\n (${tonx.toFixed(
         2,
-      )} out of ${tons} tons`,
+      )} out of ${tons} tons)`,
     [perc, tonx],
   )
 
-  const percent = React.useMemo(() => {
-    const creditsToRetire = usdAmount / creditUnitValue
-    const remainingCredits = tonx - creditsToRetire
-    const percentDiff = (100 * remainingCredits) / creditsToRetire
-    return percentDiff
-  }, [creditUnitValue, usdAmount, tonx])
+  const offset = usdAmount / creditUnitValue
 
-  const offset = (usdAmount / creditUnitValue).toFixed(2)
+  const percent = React.useMemo(() => {
+    return (offset * 100) / tons
+  }, [offset])
 
   return (
-    <div className="my-10 text-center">
+    <div className="my-10 flex flex-col items-center">
       <CarbonChart title={chartTitle} goal={maxGoal} value={maxValue} />
       <p className="mt-4 mb-4">
-        Your donation will offset {offset} ton
-        {Number.parseInt(offset) === 1 ? "" : "s"} of carbon
+        Your donation will offset {offset.toFixed(2)} ton
+        {offset === 1 ? "" : "s"} of carbon
       </p>
       <Progress value={percent} />
       <p className="mt-2 mb-4">1 ton of carbon = USD {creditUnitValue}</p>
