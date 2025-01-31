@@ -23,25 +23,28 @@ export default auth((req) => {
 })
 
 export const config = {
-  unstable_allowDynamic: [
-    // "**/.pnpm/**/node_modules/lodash-es/*.js",
-    "**/.pnpm/**/node_modules/lodash/**/*.js",
-    "**/.pnpm/**/node_modules/@stellar/stellar-sdk/**/*.js",
-    "**/.pnpm/**/node_modules/web3/**/*.js",
-    "**/.pnpm/**/node_modules/@cfce/blockchain-tools/**/*.js",
-    "**/packages/@cfce/blockchain-tools/**/*.js",
-    "**/.pnpm/**/node_modules/web3/lib/**/*.js",
-    "**/.pnpm/**/node_modules/web3/lib/esm/**/*.js",
-    "**/.pnpm/**/node_modules/web3/lib/commonjs/**/*.js",
-    "**/.pnpm/**/node_modules/web3/dist/**/*.min.js",
-    "**/.pnpm/**/node_modules/web3/src/**/*.ts",
-  ],
   matcher: [
-    // "/admin",
     "/dashboard",
+    "/dashboard/organization",
     "/dashboard/donations",
-    "/dashboard/stories",
     "/dashboard/initiatives",
+    "/dashboard/stories",
+    "/dashboard/events",
     "/dashboard/wallets",
+    "/dashboard/contracts",
   ],
+//  unstable_allowDynamic: [
+//    // "**/.pnpm/**/node_modules/lodash-es/*.js",
+//    "**/.pnpm/**/node_modules/lodash/**/*.js",
+//    "**/.pnpm/**/node_modules/@stellar/stellar-sdk/**/*.js",
+//    "**/.pnpm/**/node_modules/web3/**/*.js",
+//    "**/.pnpm/**/node_modules/@cfce/blockchain-tools/**/*.js",
+//    "**/packages/@cfce/blockchain-tools/**/*.js",
+//    "**/.pnpm/**/node_modules/web3/lib/**/*.js",
+//    "**/.pnpm/**/node_modules/web3/lib/esm/**/*.js",
+//    "**/.pnpm/**/node_modules/web3/lib/commonjs/**/*.js",
+//    "**/.pnpm/**/node_modules/web3/dist/**/*.min.js",
+//    "**/.pnpm/**/node_modules/web3/src/**/*.ts",
+//  ],
+
 }
