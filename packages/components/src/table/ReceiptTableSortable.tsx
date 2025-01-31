@@ -1,5 +1,6 @@
-"use client"
-import type { NFTDataWithRelations } from "@cfce/database"
+'use client';
+import type { NFTDataWithRelations } from '@cfce/database';
+import { ipfsCIDToUrl } from '@cfce/utils/client';
 import {
   type SortingState,
   createColumnHelper,
@@ -7,10 +8,10 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import React, { useState } from "react"
+} from '@tanstack/react-table';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -18,47 +19,46 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/ui/table"
-import { imageUrl } from "@cfce/utils"
+} from '~/ui/table';
 
 interface ReceiptTableSortableProps {
-  receipts: NFTDataWithRelations[]
+  receipts: NFTDataWithRelations[];
 }
 
 export default function ReceiptTableSortable({
   receipts,
 }: ReceiptTableSortableProps) {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [order, setOrder] = useState("")
-  const [sorting, setSorting] = useState<SortingState>([])
+  const [order, setOrder] = useState('');
+  const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columnHelper = createColumnHelper<NFTDataWithRelations>()
+  const columnHelper = createColumnHelper<NFTDataWithRelations>();
 
   const columns = [
-    columnHelper.accessor("imageUri", {
-      header: "Image",
-      cell: (info) =>
+    columnHelper.accessor('imageUri', {
+      header: 'Image',
+      cell: info =>
         info.getValue() ??
         `https://ipfs.filebase.io/ipfs/${info.getValue().substr(5)}`,
     }),
-    columnHelper.accessor("initiative", {
-      header: "Initiative",
-      cell: (info) => info.getValue()?.title ?? "",
+    columnHelper.accessor('initiative', {
+      header: 'Initiative',
+      cell: info => info.getValue()?.title ?? '',
     }),
-    columnHelper.accessor("organization", {
-      header: "Organization",
-      cell: (info) => info.getValue()?.name ?? "",
+    columnHelper.accessor('organization', {
+      header: 'Organization',
+      cell: info => info.getValue()?.name ?? '',
     }),
-    columnHelper.accessor("coinValue", {
-      header: "Amount",
-      cell: (info) => info.getValue(),
+    columnHelper.accessor('coinValue', {
+      header: 'Amount',
+      cell: info => info.getValue(),
     }),
-    columnHelper.accessor("coinSymbol", {
-      header: "Coin",
-      cell: (info) => info.getValue(),
+    columnHelper.accessor('coinSymbol', {
+      header: 'Coin',
+      cell: info => info.getValue(),
     }),
-  ]
+  ];
 
   const table = useReactTable({
     data: receipts,
@@ -67,36 +67,36 @@ export default function ReceiptTableSortable({
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-  })
+  });
 
-  const list = table.getRowModel().rows
+  const list = table.getRowModel().rows;
 
   function clicked(evt: React.MouseEvent) {
     const parent = (evt.target as HTMLElement).closest(
-      "[data-id]",
-    ) as HTMLElement | null
+      '[data-id]',
+    ) as HTMLElement | null;
     if (parent?.dataset.id) {
-      const rowId = Number.parseInt(parent.dataset.id, 10)
-      const { id: nftId } = receipts[rowId]
-      console.log("CLICKED", rowId, nftId)
-      console.log("DATA", receipts[rowId])
-      router.push(`/nft/${nftId}`)
+      const rowId = Number.parseInt(parent.dataset.id, 10);
+      const { id: nftId } = receipts[rowId];
+      console.log('CLICKED', rowId, nftId);
+      console.log('DATA', receipts[rowId]);
+      router.push(`/nft/${nftId}`);
     }
   }
 
   return (
     <Table id="table-nfts" className="w-full">
       <TableHeader>
-        {table.getHeaderGroups().map((headerGroup) => (
+        {table.getHeaderGroups().map(headerGroup => (
           <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
+            {headerGroup.headers.map(header => (
               <TableHead key={header.id}>
                 {header.isPlaceholder ? null : (
                   <div
                     {...{
                       className: header.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : "",
+                        ? 'cursor-pointer select-none'
+                        : '',
                       onClick: header.column.getToggleSortingHandler(),
                     }}
                   >
@@ -105,8 +105,8 @@ export default function ReceiptTableSortable({
                       header.getContext(),
                     )}
                     {{
-                      asc: " ↑",
-                      desc: " ↓",
+                      asc: ' ↑',
+                      desc: ' ↓',
                     }[header.column.getIsSorted() as string] ?? null}
                   </div>
                 )}
@@ -117,16 +117,16 @@ export default function ReceiptTableSortable({
       </TableHeader>
       <TableBody onClick={clicked}>
         {list.length > 0 ? (
-          list.map((row) => {
+          list.map(row => {
             return (
               <TableRow key={row.id} data-id={row.id}>
-                {row.getVisibleCells().map((cell) => {
+                {row.getVisibleCells().map(cell => {
                   //console.log('CELL', cell)
                   return (
                     <TableCell key={cell.id}>
-                      {cell?.column?.id === "imageUri" ? (
+                      {cell?.column?.id === 'imageUri' ? (
                         <Image
-                          src={imageUrl(cell?.getValue() as string)}
+                          src={ipfsCIDToUrl(cell?.getValue() as string)}
                           width={64}
                           height={64}
                           alt="NFT"
@@ -138,10 +138,10 @@ export default function ReceiptTableSortable({
                         )
                       )}
                     </TableCell>
-                  )
+                  );
                 })}
               </TableRow>
-            )
+            );
           })
         ) : (
           <TableRow>
@@ -150,5 +150,5 @@ export default function ReceiptTableSortable({
         )}
       </TableBody>
     </Table>
-  )
+  );
 }

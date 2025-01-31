@@ -42,6 +42,7 @@ export interface AppConfig {
       enableGaslessTransactions: boolean
       enableFetchBalance: boolean
     }
+    featuredInitiatives?: string[]
   }
   apis: {
     registry: {

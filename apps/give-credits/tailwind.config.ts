@@ -47,7 +47,7 @@ const config: Config = {
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
-        background: "var(--background)",
+        background: "rgb(var(--background))",
         foreground: "var(--foreground)",
         primary: {
           DEFAULT: "var(--primary)",

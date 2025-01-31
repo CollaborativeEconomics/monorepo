@@ -1,56 +1,57 @@
-'use client';
-import appConfig from '@cfce/app-config';
+"use client"
+import appConfig from "@cfce/app-config"
 import {
   chainConfig,
   getChainConfigurationByName,
-} from '@cfce/blockchain-tools';
-import type {
-  DonationWithRelations,
-  NFTDataWithRelations,
-} from '@cfce/database';
-import { type Chain, ChainNames } from '@cfce/types';
-import { format } from 'date-fns';
-import Image from 'next/image';
-import React, { useState } from 'react';
-import { Badge } from '~/ui/badge';
-import { Button } from '~/ui/button';
-import { Card, CardContent, CardFooter } from '~/ui/card';
-import { Separator } from '../ui';
+  getNftPath,
+} from "@cfce/blockchain-tools"
+import type { NFTDataWithRelations } from "@cfce/database"
+import { type Chain, ChainNames } from "@cfce/types"
+import { format } from "date-fns"
+import Image from "next/image"
+import Link from "next/link"
+import React, { useState } from "react"
+import { Badge } from "~/ui/badge"
+import { Button } from "~/ui/button"
+import { Card, CardContent, CardFooter } from "~/ui/card"
+import { Separator } from "../ui"
 
-export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
-  created,
-  donorAddress,
-  network,
-  chainName, // TODO: I think this is wrong sometimes (at least it is in the DB), find out why
-  coinSymbol,
-  coinValue,
-  usdValue,
-  tokenId,
-  initiative,
-  organization,
-}) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
+  const {
+    created,
+    donorAddress,
+    network,
+    chainName,
+    coinSymbol,
+    coinValue,
+    usdValue,
+    tokenId,
+    contractId,
+    transactionId,
+    initiative,
+    organization,
+  } = nftData
+  const [isFlipped, setIsFlipped] = useState(false)
 
-  if (!chainName) return <div>No chain</div>;
+  if (!chainName) return <div>No chain</div>
   const isChain = (chain: string): chain is Chain => {
-    return ChainNames.some(c => c === chain);
-  };
-  if (!isChain(chainName)) {
-    return null;
+    return ChainNames.some((c) => c === chain)
   }
-  const chainDetails = getChainConfigurationByName(chainName);
-  const chainNetwork = chainDetails.networks[appConfig.chainDefaults.network];
+  if (!isChain(chainName)) {
+    return null
+  }
+  const chainDetails = getChainConfigurationByName(chainName)
   return (
     <div>
       <span className="text-sm text-muted-foreground">
-        {format(created, 'MMM d, yyyy')}
+        {format(created, "MMM d, yyyy")}
       </span>
       {/* Flip card container */}
       <div className="relative">
         {/* Inner container that does the flipping */}
         <div
           className={`transition-transform duration-800 [transform-style:preserve-3d] ${
-            isFlipped ? '[transform:rotateY(180deg)]' : ''
+            isFlipped ? "[transform:rotateY(180deg)]" : ""
           }`}
         >
           {/* Front of card */}
@@ -61,7 +62,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
                 <div className="relative w-full h-[200px]">
                   <Image
                     src={initiative?.defaultAsset}
-                    alt={initiative?.title ?? 'Initiative Image'}
+                    alt={initiative?.title ?? "Initiative Image"}
                     fill
                     className="rounded-md object-cover"
                   />
@@ -117,15 +118,19 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
             </CardContent>
 
             <CardFooter className="p-4 pt-0 gap-2 shrink-0">
-              <Button
-                variant="default"
-                className="flex-1"
-                onClick={() => {
-                  const url = `${chainNetwork.explorer}/token/${tokenId}`;
-                  window.open(url, '_blank');
-                }}
-              >
-                View NFT
+              <Button variant="default" className="flex-1">
+                <Link
+                  target="_blank"
+                  href={getNftPath({
+                    chainName,
+                    network,
+                    contractId,
+                    tokenId,
+                    transactionId,
+                  })}
+                >
+                  View NFT
+                </Link>
               </Button>
               <Button
                 variant="outline"
@@ -195,7 +200,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
                             Date
                           </span>
                           <span className="text-sm">
-                            {format(created, 'MMMM d, yyyy')}
+                            {format(created, "MMMM d, yyyy")}
                           </span>
                         </div>
                         <div className="flex flex-col">
@@ -269,8 +274,8 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
                     const url = `${
                       chainConfig.xdc.networks[appConfig.chainDefaults.network]
                         .explorer
-                    }/token/${tokenId}`;
-                    window.open(url, '_blank');
+                    }/token/${tokenId}`
+                    window.open(url, "_blank")
                   }}
                 >
                   View NFT
@@ -288,5 +293,5 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

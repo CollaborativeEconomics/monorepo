@@ -11,7 +11,7 @@
 
 @layer base {
   :root {
-    --background: hsl(0, 0%, 100%);
+    --background: 255, 255, 255;
     --foreground: hsl(0, 0%, 3.9%);
 
     --card: hsl(0, 0%, 100%);
@@ -43,7 +43,7 @@
   }
 
   .dark {
-    --background: hsl(215, 23%, 42%);
+    --background: 82 103 132;
     --foreground: hsl(0, 0%, 98%);
 
     --card: hsl(215, 25%, 27%);

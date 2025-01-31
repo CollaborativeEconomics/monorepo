@@ -2,11 +2,13 @@
 import "server-only"
 import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
-import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
+import { BlockchainServerInterfaces, chainConfig } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
+import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,
+  type Prisma,
   getInitiativeById,
   getNFTbyTokenId,
   getOrganizationById,
@@ -17,11 +19,15 @@ import {
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
-import { ChainSlugs, DonationStatus, EntityType, TokenTickerSymbol } from "@cfce/types"
+import {
+  ChainSlugs,
+  DonationStatus,
+  EntityType,
+  TokenTickerSymbol,
+} from "@cfce/types"
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
 import { registryApi } from "./registryApi"
-import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 
 interface MintAndSaveReceiptNFTParams {
   transaction: {
@@ -115,7 +121,8 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Check for existing receipt
-    const existingReceipt = await getNFTbyTokenId(txId, chain)
+    const chainName = chainConfig[chain].name
+    const existingReceipt = await getNFTbyTokenId(txId, chainName)
     if (existingReceipt) {
       return { success: false, error: "Receipt already exists" }
     }
@@ -222,6 +229,7 @@ export async function mintAndSaveReceiptNFT({
     const currentChain = appConfig.chains[chain]
     if (!currentChain) throw new Error("Chain not found")
     const network = currentChain.network
+    const config = chainConfig[chain].networks[network]
 
     // #region: Prepare and upload metadata
     const metadata = {
@@ -346,7 +354,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Save data to DB
-    const data = {
+    const data: Prisma.NFTDataCreateInput = {
       created: new Date(),
       donorAddress: donorWalletAddress,
       user: { connect: { id: userId } },
@@ -354,12 +362,15 @@ export async function mintAndSaveReceiptNFT({
       initiative: { connect: { id: initiativeId } },
       metadataUri: uriMeta,
       imageUri: uriImage,
-      coinNetwork: network,
+      network: network,
       coinSymbol: token,
-      coinLabel: chain,
+      chainName: config.name,
+      chainId: config.id,
       coinValue: amountCUR,
       usdValue: amountUSD,
       tokenId: tokenId,
+      contractId: receiptContract,
+      transactionId: txId,
       status: DonationStatus.claimed,
     }
     console.log("NFT", data)
@@ -371,9 +382,14 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Mint NFTCC and attach to TBA for donor
-    const tbaRec = await getTokenBoundAccount(EntityType.user, userId, chain, network)
+    const tbaRec = await getTokenBoundAccount(
+      EntityType.user,
+      userId,
+      chain,
+      network,
+    )
     const tbAddress = tbaRec?.account_address
-    if(tbAddress){
+    if (tbAddress) {
       let tokenId2 = ""
       const args2 = {
         contractId: receiptContract,
@@ -390,7 +406,10 @@ export async function mintAndSaveReceiptNFT({
       if ("error" in mintResponse2 && typeof mintResponse2.error === "string") {
         throw new Error(mintResponse2.error)
       }
-      if ("tokenId" in mintResponse2 && typeof mintResponse2.tokenId === "string") {
+      if (
+        "tokenId" in mintResponse2 &&
+        typeof mintResponse2.tokenId === "string"
+      ) {
         tokenId2 = mintResponse2?.tokenId
       }
     }

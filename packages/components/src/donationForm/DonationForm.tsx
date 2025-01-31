@@ -3,7 +3,12 @@ import { usePostHog } from "@cfce/analytics"
 import appConfig from "@cfce/app-config"
 import { createAnonymousUser, fetchUserByWallet } from "@cfce/auth"
 import { BlockchainClientInterfaces, chainConfig } from "@cfce/blockchain-tools"
-import type { Chain, Prisma, User } from "@cfce/database"
+import type {
+  Chain,
+  InitiativeWithRelations,
+  Prisma,
+  User,
+} from "@cfce/database"
 import {
   PAYMENT_STATUS,
   amountCoinAtom,
@@ -41,13 +46,7 @@ import { RateMessage } from "./RateMessage"
 import { WalletSelect } from "./WalletSelect"
 
 interface DonationFormProps {
-  initiative: Prisma.InitiativeGetPayload<{
-    include: {
-      organization: { include: { wallets: true } }
-      credits: true
-      wallets: true
-    }
-  }>
+  initiative: InitiativeWithRelations
   rate: number
 }
 
@@ -148,9 +147,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       return fallbackAddress
     }
 
-    handleError(new Error(`No wallet found for chain ${chain?.name}`));
-    return '';
-  }, [organization, initiative, chain, handleError]);
+    handleError(new Error(`No wallet found for chain ${chain?.name}`))
+    return ""
+  }, [organization, initiative, chain, handleError])
 
   const checkBalance = useCallback(async () => {
     if (!chainInterface?.connect) {
@@ -408,7 +407,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     initiative,
     exchangeRate,
     sendGaslessPayment,
-    chain.name
+    chain.name,
   ])
 
   function validateForm({ email }: { email: string }) {
@@ -514,9 +513,10 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         </div>
         <Separator />
         <div className="px-6">
-          {appConfig.siteInfo.options.showCarbonCreditDisplay && (
-            <CarbonCreditDisplay initiative={initiative} />
-          )}
+          {appConfig.siteInfo.options.showCarbonCreditDisplay &&
+            initiative.contractcredit && (
+              <CarbonCreditDisplay initiative={initiative} />
+            )}
           <div className="w-full mt-6 mb-2">
             <DonationAmountInput label="Amount" />
             <RateMessage />

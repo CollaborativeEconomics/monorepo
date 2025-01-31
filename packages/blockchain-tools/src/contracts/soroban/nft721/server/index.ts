@@ -8,10 +8,11 @@ import {
   // nativeToScVal,
   // Networks,
   Operation,
-  rpc,
   SorobanDataBuilder,
   //SorobanRpc,
   TransactionBuilder,
+  rpc,
+  scValToNative,
   xdr,
 } from "@stellar/stellar-sdk"
 import type { Transaction } from "@stellar/stellar-sdk"
@@ -248,13 +249,9 @@ export default class Contract721 {
       const resp = await this.submitOrRestoreAndRetry(source, tx)
       console.log("RESP", resp)
       if (resp?.success) {
-        const meta = resp.meta
-        const lastId = _get(
-          meta,
-          "_value._attributes.sorobanMeta._attributes.events.0._attributes.body._value._attributes.data._value._attributes.lo._value",
-        )
+        // const meta = resp.meta
         //console.log('META', JSON.stringify(meta,null,2))
-        const tokenId = lastId ? `${contractId} #${lastId}` : resp?.txid
+        const tokenId = resp.value ? scValToNative(resp.value) : null
         console.log("TOKENID", tokenId)
         return { success: true, tokenId }
       }
