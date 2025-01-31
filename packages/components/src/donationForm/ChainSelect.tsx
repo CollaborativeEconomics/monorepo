@@ -17,6 +17,7 @@ interface ChainOption {
 export function ChainSelect() {
   const [chainState, setChainState] = useAtom(chainAtom)
   const { selectedChain } = chainState
+  console.log({ selectedChain })
 
   const chains: ChainOption[] = React.useMemo(
     () =>

@@ -1,7 +1,7 @@
 import "server-only"
+import type { ChainSlugs, ListQuery } from "@cfce/types"
 import type { NFTData, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
-import type { ListQuery, ChainSlugs } from "@cfce/types"
 
 interface NFTDataQuery extends ListQuery {
   id?: string

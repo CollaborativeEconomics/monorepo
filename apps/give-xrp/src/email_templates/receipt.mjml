@@ -1,0 +1,105 @@
+<mjml>
+  <mj-head>
+    <mj-title>Donation Receipt</mj-title>
+    <mj-attributes>
+      <mj-section background-color="#fff" padding-top="10px" padding-bottom="10px" />
+      <mj-all font-family="Arial" />
+      <mj-text padding="5px 20px" />
+    </mj-attributes>
+    <mj-style>
+      body {
+        color: blue;
+      }
+      .wrapper {
+        margin: 15px auto !important;
+        border-radius: 7px;
+        box-shadow: 0px 30px 30px rgba(0,0,0,.25);
+        overflow: hidden;
+      }
+      .wrapper > table > tbody > tr > td {
+        padding: 0 !important;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#F8FAFD" width="450px">
+    <mj-wrapper css-class="wrapper">
+      <mj-section>
+        <mj-column>
+          <mj-spacer height="10px" />
+          <mj-text font-size="22px" align="center">DONATION RECEIPT</mj-text>
+          <mj-spacer height="10px" />
+          <mj-divider border-width="1px" border-style="dashed" border-color="lightgrey" />
+        </mj-column>
+      </mj-section>
+      <mj-section>
+        <mj-column>
+          <mj-text font-size="15px" font-weight="bold" align="center">{{organizationName}}</mj-text>
+          <mj-text align="center">
+            EIN: {{ein}} <br />
+            {{address}}
+          </mj-text>
+          <mj-divider border-width="1px" border-style="dashed" border-color="lightgrey" />
+        </mj-column>
+      </mj-section>
+      <mj-section>
+        <mj-column>
+          <mj-text font-weight="bold" align="center">{{date}}</mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-section>
+        <mj-column>
+          <mj-table>
+            <tr>
+              <td style="width: 50%;"><span style="font-weight: bold;">Donation Amount</span></td>
+              <td style="width: 50%; text-align: right;"><span style="font-weight: bold;">{{xlm}} XLM*</span></td>
+            </tr>
+            <tr>
+              <td />
+              <td style="line-height: 12px; text-align: right;"><span style="font-size: 10px;">* XLM is a publicly tradeable crypto-currency with a direct monetary value</span></td>
+            </tr>
+          </mj-table>
+        </mj-column>
+      </mj-section>
+      <mj-section>
+        <mj-column>
+          <mj-table>
+            <tr>
+              <td style="width: 50%;"><span style="font-weight: bold;">Monetary Value</span></td>
+              <td style="width: 50%; text-align: right;"><span style="font-weight: bold;">${{usd}} USD</span></td>
+            </tr>
+            <tr>
+              <td />
+              <td style="line-height: 12px; text-align: right;"><span style="font-size: 10px;">* At the time of the transaction</span></td>
+            </tr>
+          </mj-table>
+        </mj-column>
+      </mj-section>
+      <mj-section>
+        <mj-column>
+          <mj-table>
+            <tr>
+              <td style="width: 50%;"><span style="font-weight: bold;">Donated By: </span></td>
+              <td style="width: 50%; text-align: right;"><span style="font-weight: bold;">{{donorName}}</span></td>
+            </tr>
+          </mj-table>
+        </mj-column>
+      </mj-section>
+      <mj-section>
+        <mj-column>
+          <mj-text font-weight="bold" align="center">Thank you for your donation!</mj-text>
+          <mj-text font-size="10px" align="center">No goods or services were provided in exchange for this contribution.</mj-text>
+          <mj-text font-size="10px" align="center">{{organizationName}} is a tax-exempt 501(c)(3) organization.</mj-text>
+          <mj-spacer height="15px" />
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+    </mh-body>
+    <mj-section background-color="transparent">
+      <mj-column vertical-align="middle">
+        <mj-text align="right">Powered By:</mj-text>
+      </mj-column>
+      <mj-column vertical-align="middle">
+        <mj-image width="100px" src="https://givecredit.cfce.io/logo.png" align="left" href="https://givecredit.cfce.io" alt="Give Credit Logo"/>
+      </mj-column>
+    </mj-section>
+</mjml>

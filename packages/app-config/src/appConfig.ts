@@ -23,15 +23,20 @@ import giveArbitrumDev from "./config/give-arbitrum/appConfig.development"
 import giveArbitrumProd from "./config/give-arbitrum/appConfig.production"
 import giveArbitrumStaging from "./config/give-arbitrum/appConfig.staging"
 
+// Give XRP
+import giveXrpDev from "./config/give-xrp/appConfig.development"
+import giveXrpProd from "./config/give-xrp/appConfig.production"
+import giveXrpStaging from "./config/give-xrp/appConfig.staging"
+
 // partners
 import partnersDev from "./config/partners/appConfig.development"
 import partnersProd from "./config/partners/appConfig.production"
 import partnersStaging from "./config/partners/appConfig.staging"
 
+import testsStaging from "./config/partners/appConfig.staging"
 // tests
 import testsDev from "./config/tests/appConfig.development"
 import testsProd from "./config/tests/appConfig.production"
-import testsStaging from "./config/partners/appConfig.staging"
 
 type Environment = "development" | "production" | "staging"
 type AppId =
@@ -40,6 +45,7 @@ type AppId =
   | "give-tron"
   | "giving-universe"
   | "give-arbitrum"
+  | "give-xrp"
   | "partners"
   | "registry"
   | "tests"
@@ -69,6 +75,11 @@ const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
     development: giveArbitrumDev,
     production: giveArbitrumProd,
     staging: giveArbitrumStaging,
+  },
+  "give-xrp": {
+    development: giveXrpDev,
+    production: giveXrpProd,
+    staging: giveXrpStaging,
   },
   partners: {
     development: partnersDev,

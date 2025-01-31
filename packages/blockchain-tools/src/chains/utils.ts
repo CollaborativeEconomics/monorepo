@@ -1,7 +1,7 @@
 import { Chain, ChainConfig, NetworkConfig } from "@cfce/types"
 
 import appConfig from "@cfce/app-config"
-import { ChainSlugs } from "@cfce/types"
+import type { ChainSlugs } from "@cfce/types"
 import chainConfiguration from "./chainConfig"
 
 /**
