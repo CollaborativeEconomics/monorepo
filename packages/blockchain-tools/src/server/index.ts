@@ -1,3 +1,4 @@
+import { getAllCoinRates } from "./getAllCoinRates"
 import getCoinRate from "./getCoinRate"
 
-export { getCoinRate }
+export { getAllCoinRates, getCoinRate }

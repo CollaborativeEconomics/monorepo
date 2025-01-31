@@ -1,29 +1,29 @@
-import React from 'react';
+import React from "react"
 
-import appConfig from '@cfce/app-config';
-import { chainConfig } from '@cfce/blockchain-tools';
-import { OrganizationAvatar } from '@cfce/components/organization';
-import { Card, CardContent } from '@cfce/components/ui';
-import { getNFTById } from '@cfce/database';
-import { ipfsCIDToUrl } from '@cfce/utils/client';
-import Image from 'next/image';
-import Link from 'next/link';
-import NotFound from '../../not-found';
+import appConfig from "@cfce/app-config"
+import { chainConfig } from "@cfce/blockchain-tools"
+import { OrganizationAvatar } from "@cfce/components/organization"
+import { Card, CardContent } from "@cfce/components/ui"
+import { getNFTById } from "@cfce/database"
+import { ipfsCIDToUrl } from "@cfce/utils/client"
+import Image from "next/image"
+import Link from "next/link"
+import NotFound from "../../not-found"
 
 export default async function NFT(props: { params: Promise<{ id: string }> }) {
-  const id = (await props.params).id;
-  const nft = await getNFTById(id);
+  const id = (await props.params).id
+  const nft = await getNFTById(id)
   if (!nft) {
-    return <NotFound />;
+    return <NotFound />
   }
   //console.log('NFT', nft)
-  const [contract, tokenId] = nft.tokenId.split(' ');
+  const [contract, tokenId] = nft.tokenId.split(" ")
   const explorer = `${
     chainConfig.stellar.networks[
       appConfig.chains.stellar?.network ?? appConfig.chainDefaults.network
     ].explorer
-  }/contract/${contract}`;
-  const metalink = appConfig.apis.ipfs.gateway + nft.metadataUri.substr(5);
+  }/contract/${contract}`
+  const metalink = appConfig.apis.ipfs.gateway + nft.metadataUri.substr(5)
 
   return (
     <main className="flex min-h-screen flex-col items-stretch container mt-12 pt-24">
@@ -85,31 +85,31 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Minted:
-                </span>{' '}
+                </span>{" "}
                 <span>{new Date(nft.created).toLocaleString()}</span>
               </p>
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Chain:
-                </span>{' '}
+                </span>{" "}
                 <span>{nft.chainName}</span>
               </p>
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Network:
-                </span>{' '}
+                </span>{" "}
                 <span>{nft.network}</span>
               </p>
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Wallet:
-                </span>{' '}
+                </span>{" "}
                 <span>{`${nft.donorAddress.substr(0, 12)}...`}</span>
               </p>
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Amount:
-                </span>{' '}
+                </span>{" "}
                 <span>
                   {`${nft.coinValue}`} {nft.coinSymbol}
                 </span>
@@ -117,19 +117,19 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   USD Value:
-                </span>{' '}
+                </span>{" "}
                 <span>{`${nft.usdValue}`}</span>
               </p>
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Token ID:
-                </span>{' '}
+                </span>{" "}
                 <span className="text-xl">{tokenId}</span>
               </p>
               <p className="mt-4">
                 <span className="inline-block w-32 text-slate-400 font-semibold">
                   Contract:
-                </span>{' '}
+                </span>{" "}
                 <span>
                   <a href={explorer}>{`${contract.substr(0, 12)}...`}</a>
                 </span>
@@ -144,5 +144,5 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
         </Card>
       </div>
     </main>
-  );
+  )
 }

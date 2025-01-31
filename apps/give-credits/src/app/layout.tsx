@@ -1,4 +1,5 @@
 import "~/styles/globals.css"
+import React from "react"
 
 import appConfig from "@cfce/app-config"
 import { BaseLayout } from "@cfce/components/app"

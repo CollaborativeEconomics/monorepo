@@ -21,6 +21,7 @@ import { mintAndSaveReceiptNFT } from "@cfce/utils"
 import { registryApi } from "@cfce/utils"
 import { useAtom, useAtomValue } from "jotai"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useToast } from "~/hooks/use-toast"
 import { Button } from "~/ui/button"
 import { Card } from "~/ui/card"
 import { CheckboxWithText } from "~/ui/checkbox"
@@ -55,7 +56,7 @@ interface DonationData {
   categoryId?: string
   userId?: string
   sender: string
-  chainName: string
+  chainName: Chain
   network: string
   coinValue: number
   usdValue: number
@@ -98,23 +99,28 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     "One wallet confirmation required",
   )
   const [errorDialogState, setErrorDialogState] = useState(false)
+  const { toast } = useToast()
 
-  const handleError = useCallback((error: unknown) => {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred"
+  const handleError = useCallback(
+    (error: unknown) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred"
 
-    const canRetryWithGas =
-      errorMessage.includes("gasless") ||
-      errorMessage.includes("insufficient funds") ||
-      errorMessage.includes("rejected")
+      const canRetryWithGas =
+        errorMessage.includes("gasless") ||
+        errorMessage.includes("insufficient funds") ||
+        errorMessage.includes("rejected") ||
+        errorMessage.includes("No API keys found")
 
-    if (canRetryWithGas) {
-      setErrorDialogState(true)
-    }
+      if (canRetryWithGas) {
+        setErrorDialogState(true)
+      }
 
-    setButtonMessage(errorMessage)
-    console.error(error)
-  }, [])
+      setButtonMessage(errorMessage)
+      throw new Error(errorMessage)
+    },
+    [toast],
+  )
 
   const destinationWalletAddress = useMemo(() => {
     const chainName = chain?.name
@@ -147,12 +153,14 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   const checkBalance = useCallback(async () => {
     if (!chainInterface?.connect) {
-      throw new Error("No connect method on chain interface")
+      const error = new Error("No connect method on chain interface")
+      throw error
     }
-    await chainInterface?.connect?.(network.id)
+    await chainInterface.connect(network.id)
     const balanceCheck = await chainInterface?.getBalance?.()
     if (!balanceCheck || "error" in balanceCheck) {
-      throw new Error(balanceCheck?.error ?? "Failed to check balance")
+      const error = new Error(balanceCheck?.error ?? "Failed to check balance")
+      throw error
     }
     return balanceCheck.balance >= coinAmount
   }, [chainInterface, coinAmount, network.id])
@@ -160,7 +168,13 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
       if (!chainInterface?.sendPayment) {
-        throw new Error("No sendPayment method on chain interface")
+        const error = new Error("No sendPayment method on chain interface")
+        toast({
+          variant: "destructive",
+          title: "Payment Error",
+          description: error.message,
+        })
+        throw error
       }
 
       const data = {
@@ -171,25 +185,44 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       }
       const result = await chainInterface.sendPayment(data)
       console.log("PAYMENT RESULT", result)
+      if (!result.success) {
+        const error = new Error(result.error || "Payment failed")
+        toast({
+          variant: "destructive",
+          title: "Payment Failed",
+          description: error.message,
+        })
+        throw error
+      }
       return result
     },
-    [chainInterface, selectedChain],
+    [chainInterface, selectedChain, toast],
   )
 
-  const sendPaymentWithGas = useCallback(
+  const sendGaslessPayment = useCallback(
     async (address: string, amount: number) => {
-      if (!chainInterface?.sendPaymentWithGas) {
-        throw new Error("Gas payments not supported")
+      if (!chainInterface?.sendGaslessPayment) {
+        const error = new Error("Gas payments not supported")
+        toast({
+          variant: "destructive",
+          title: "Gas Payment Error",
+          description: error.message,
+        })
+        throw error
       }
       if (!chainInterface.isConnected()) {
         await chainInterface?.connect?.()
       }
 
-      const result = await chainInterface.sendPaymentWithGas(address, amount)
+      const result = await chainInterface.sendGaslessPayment({
+        address,
+        amount,
+        memo: appConfig.chains[selectedChain]?.destinationTag,
+      })
       console.log("GAS PAYMENT RESULT", result)
       return result
     },
-    [chainInterface],
+    [chainInterface, toast, selectedChain],
   )
 
   const handleMinting = useCallback(
@@ -199,38 +232,55 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       txid?: string
       error?: string
     }) => {
-      setButtonMessage("Minting NFT receipt, please wait...")
-      const data = {
-        donorName: name || "Anonymous",
-        email: emailReceipt ? email : undefined,
-        organizationId: organization.id,
-        initiativeId: initiative.id,
-        transaction: {
-          date: new Date().toISOString(),
-          donorWalletAddress: paymentResult.walletAddress ?? "",
-          destinationWalletAddress,
-          amount,
-          txId: paymentResult.txid ?? "",
-          chain: selectedChain,
-          token: selectedToken,
-        },
-      }
-      console.log("NFT", data)
-      // TODO: increase sleep time? some chains take longer <<<<
-      await sleep(2000) // Wait for tx to confirm
-      console.log("SLEEP")
-      const receiptResult = await mintAndSaveReceiptNFT(data)
-      console.log("RESULT", receiptResult)
+      try {
+        setButtonMessage("Minting NFT receipt, please wait...")
+        const data = {
+          donorName: name || "Anonymous",
+          email: emailReceipt ? email : undefined,
+          organizationId: organization.id,
+          initiativeId: initiative.id,
+          transaction: {
+            date: new Date().toISOString(),
+            donorWalletAddress: paymentResult.walletAddress ?? "",
+            destinationWalletAddress,
+            amount,
+            txId: paymentResult.txid ?? "",
+            chain: selectedChain,
+            token: selectedToken,
+          },
+        }
+        console.log("NFT", data)
+        // TODO: increase sleep time? some chains take longer <<<<
+        await sleep(2000) // Wait for tx to confirm
+        console.log("SLEEP")
+        const receiptResult = await mintAndSaveReceiptNFT(data)
+        console.log("RESULT", receiptResult)
 
-      if ("error" in receiptResult) {
-        throw new Error(receiptResult.error ?? "Failed to process receipt")
-      }
+        if ("error" in receiptResult) {
+          throw new Error(receiptResult.error ?? "Failed to process receipt")
+        }
 
-      setButtonMessage("Thank you for your donation!")
-      setDonationForm((draft) => {
-        draft.paymentStatus = PAYMENT_STATUS.minted
-        draft.date = new Date()
-      })
+        toast({
+          title: "Success",
+          description: "NFT receipt minted successfully!",
+        })
+
+        setButtonMessage("Thank you for your donation!")
+        setDonationForm((draft) => {
+          draft.paymentStatus = PAYMENT_STATUS.minted
+          draft.date = new Date()
+        })
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Minting Error",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Failed to mint NFT receipt",
+        })
+        throw error
+      }
     },
     [
       name,
@@ -243,6 +293,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       selectedChain,
       selectedToken,
       setDonationForm,
+      toast,
     ],
   )
 
@@ -250,22 +301,42 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     try {
       validateForm({ email })
 
-      const hasBalance = await checkBalance()
-      if (!hasBalance) {
-        setBalanceDialogOpen(true)
-        return
+      if (appConfig.siteInfo.options.enableFetchBalance) {
+        console.log("CHECKING BALANCE")
+        const hasBalance = await checkBalance()
+        if (!hasBalance) {
+          setBalanceDialogOpen(true)
+          return
+        }
       }
 
       setLoading(true)
       setButtonMessage("Approving payment...")
 
-      const paymentResult = await sendPayment(
-        destinationWalletAddress,
-        coinAmount,
-      )
+      let paymentResult: {
+        success: boolean
+        walletAddress?: string
+        txid?: string
+        error?: string
+      }
+
+      if (appConfig.siteInfo.options.enableGaslessTransactions) {
+        console.log("SENDING GASLESS PAYMENT")
+        paymentResult = await sendGaslessPayment(
+          destinationWalletAddress,
+          coinAmount,
+        )
+      } else {
+        console.log("SENDING GAS PAYMENT")
+        paymentResult = await sendPayment(destinationWalletAddress, coinAmount)
+      }
 
       if (!paymentResult.success) {
-        throw new Error(paymentResult.error ?? "Payment failed")
+        console.log("ERROR", paymentResult.error)
+        const errorMessage = paymentResult.error ?? "Payment failed"
+        const error = new Error(errorMessage)
+        handleError(error)
+        return
       }
 
       if (posthog.__loaded) {
@@ -278,12 +349,17 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         })
       }
 
-      let user = await fetchUserByWallet(paymentResult.walletAddress ?? "")
+      if (!paymentResult.walletAddress) {
+        handleError(new Error("No wallet address found"))
+        return
+      }
+
+      let user = await fetchUserByWallet(paymentResult.walletAddress)
 
       if (!user) {
         user = await createAnonymousUser({
           walletAddress: paymentResult.walletAddress ?? "",
-          chain: selectedChain as Chain,
+          chain: chain.name,
           network: appConfig.chainDefaults.network,
         })
       }
@@ -295,7 +371,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         categoryId: undefined,
         userId: user.id,
         sender: paymentResult.walletAddress ?? "",
-        chainName: selectedChain,
+        chainName: chain.name,
         network: appConfig.chains[selectedChain]?.network ?? "",
         coinValue: coinAmount,
         usdValue: coinAmount * exchangeRate,
@@ -330,11 +406,19 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     organization,
     initiative,
     exchangeRate,
+    sendGaslessPayment,
+    chain.name,
   ])
 
   function validateForm({ email }: { email: string }) {
     if (email && !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
-      throw new Error("Invalid email")
+      const error = new Error("Invalid email")
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: error.message,
+      })
+      throw error
     }
   }
 
@@ -352,6 +436,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       usdValue,
       currency,
     }: DonationData) => {
+      if (chainName !== "XDC" && chainName !== "XRPL") {
+        chainName = chainName.charAt(0).toUpperCase() + chainName.slice(1)
+      }
       const donation = {
         organization: {
           connect: { id: organizationId },
@@ -366,7 +453,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         }),
         userId,
         network,
-        chain: chainName as Chain,
+        chain: chain.name,
         wallet: sender,
         amount: coinValue,
         usdvalue: usdValue,
@@ -385,15 +472,30 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //  setButtonMessage('Error saving donation')
       //  return false
       //}
-      const donationResp = await createDonation(donation)
-      if (!donationResp) {
-        setButtonMessage("Error saving donation")
+      try {
+        const donationResp = await createDonation(donation)
+        if (!donationResp) {
+          const error = new Error("Error saving donation")
+          toast({
+            variant: "destructive",
+            title: "Donation Error",
+            description: error.message,
+          })
+          setButtonMessage("Error saving donation")
+          return false
+        }
+        return donationResp.id
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Donation Error",
+          description:
+            error instanceof Error ? error.message : "Failed to save donation",
+        })
         return false
       }
-      const donationId = donationResp.id
-      return donationId
     },
-    [],
+    [toast, chain.name],
   )
 
   return (
@@ -495,7 +597,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
                 setTimeout(() => {
                   setLoading(true)
                   setButtonMessage("Approving payment...")
-                  sendPaymentWithGas(destinationWalletAddress, coinAmount)
+                  sendPayment(destinationWalletAddress, coinAmount)
                     .then((gasResult) => handleMinting(gasResult))
                     .catch(handleError)
                     .finally(() => setLoading(false))

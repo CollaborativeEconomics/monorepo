@@ -11,6 +11,8 @@ const siteInfo: AppConfig["siteInfo"] = {
   description: "Give Stark is a platform for donation on StarkNet.",
   options: {
     showCarbonCreditDisplay: false,
+    enableGaslessTransactions: false,
+    enableFetchBalance: false,
   },
 }
 

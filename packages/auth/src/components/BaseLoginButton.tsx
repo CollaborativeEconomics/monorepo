@@ -1,6 +1,7 @@
 'use client';
 // NOTE: components relies on this package, so we can't import ui components from there
 
+import React from 'react';
 import { Button } from './Button';
 interface BaseLoginButtonProps {
   icon: string;

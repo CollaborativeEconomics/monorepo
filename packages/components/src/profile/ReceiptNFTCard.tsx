@@ -1,22 +1,22 @@
-'use client';
-import appConfig from '@cfce/app-config';
+"use client"
+import appConfig from "@cfce/app-config"
 import {
   chainConfig,
   getChainConfigurationByName,
   getNftPath,
-} from '@cfce/blockchain-tools';
-import type { NFTDataWithRelations } from '@cfce/database';
-import { type Chain, ChainNames } from '@cfce/types';
-import { format } from 'date-fns';
-import Image from 'next/image';
-import Link from 'next/link';
-import React, { useState } from 'react';
-import { Badge } from '~/ui/badge';
-import { Button } from '~/ui/button';
-import { Card, CardContent, CardFooter } from '~/ui/card';
-import { Separator } from '../ui';
+} from "@cfce/blockchain-tools"
+import type { NFTDataWithRelations } from "@cfce/database"
+import { type Chain, ChainNames } from "@cfce/types"
+import { format } from "date-fns"
+import Image from "next/image"
+import Link from "next/link"
+import React, { useState } from "react"
+import { Badge } from "~/ui/badge"
+import { Button } from "~/ui/button"
+import { Card, CardContent, CardFooter } from "~/ui/card"
+import { Separator } from "../ui"
 
-export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
+export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
   const {
     created,
     donorAddress,
@@ -30,28 +30,28 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
     transactionId,
     initiative,
     organization,
-  } = nftData;
-  const [isFlipped, setIsFlipped] = useState(false);
+  } = nftData
+  const [isFlipped, setIsFlipped] = useState(false)
 
-  if (!chainName) return <div>No chain</div>;
+  if (!chainName) return <div>No chain</div>
   const isChain = (chain: string): chain is Chain => {
-    return ChainNames.some(c => c === chain);
-  };
-  if (!isChain(chainName)) {
-    return null;
+    return ChainNames.some((c) => c === chain)
   }
-  const chainDetails = getChainConfigurationByName(chainName);
+  if (!isChain(chainName)) {
+    return null
+  }
+  const chainDetails = getChainConfigurationByName(chainName)
   return (
     <div>
       <span className="text-sm text-muted-foreground">
-        {format(created, 'MMM d, yyyy')}
+        {format(created, "MMM d, yyyy")}
       </span>
       {/* Flip card container */}
       <div className="relative">
         {/* Inner container that does the flipping */}
         <div
           className={`transition-transform duration-800 [transform-style:preserve-3d] ${
-            isFlipped ? '[transform:rotateY(180deg)]' : ''
+            isFlipped ? "[transform:rotateY(180deg)]" : ""
           }`}
         >
           {/* Front of card */}
@@ -62,7 +62,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
                 <div className="relative w-full h-[200px]">
                   <Image
                     src={initiative?.defaultAsset}
-                    alt={initiative?.title ?? 'Initiative Image'}
+                    alt={initiative?.title ?? "Initiative Image"}
                     fill
                     className="rounded-md object-cover"
                   />
@@ -200,7 +200,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
                             Date
                           </span>
                           <span className="text-sm">
-                            {format(created, 'MMMM d, yyyy')}
+                            {format(created, "MMMM d, yyyy")}
                           </span>
                         </div>
                         <div className="flex flex-col">
@@ -274,8 +274,8 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
                     const url = `${
                       chainConfig.xdc.networks[appConfig.chainDefaults.network]
                         .explorer
-                    }/token/${tokenId}`;
-                    window.open(url, '_blank');
+                    }/token/${tokenId}`
+                    window.open(url, "_blank")
                   }}
                 >
                   View NFT
@@ -293,5 +293,5 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = nftData => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
