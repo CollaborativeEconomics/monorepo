@@ -4,6 +4,7 @@ import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
 import { BlockchainServerInterfaces, chainConfig } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
+import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,
@@ -27,7 +28,6 @@ import {
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
 import { registryApi } from "./registryApi"
-import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 
 interface MintAndSaveReceiptNFTParams {
   transaction: {
@@ -129,25 +129,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Initialize blockchain tools and verify transaction
-<<<<<<< HEAD
     let chainTool: (typeof BlockchainServerInterfaces)[keyof typeof BlockchainServerInterfaces]
-    switch (chain) {
-      case "stellar":
-        chainTool = BlockchainServerInterfaces.stellar
-        break
-      case "xrpl":
-        chainTool = BlockchainServerInterfaces.xrpl
-        break
-      // case 'starknet': {
-      // TODO: add starknet server interface
-      // }
-      default: // evm
-        chainTool = BlockchainServerInterfaces.evm
-        chainTool.setChain(chain)
-    }
-
-=======
-    let chainTool
     if (chain === "stellar") {
       chainTool = BlockchainServerInterfaces.stellar
     } else if (chain === "xrpl") {
@@ -159,7 +141,6 @@ export async function mintAndSaveReceiptNFT({
       chainTool.setChain(chain)
     }
     console.log("TxId", txId)
->>>>>>> dev
     const txInfo = await chainTool.getTransactionInfo(txId, true) // wait for receipt
     if ("error" in txInfo) {
       console.log("ERROR", "Transaction not found")
