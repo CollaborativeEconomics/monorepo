@@ -1,4 +1,5 @@
 "use client"
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
 import React from "react"
 import { type KeyboardEvent, useState } from "react"
@@ -27,7 +28,7 @@ export default function SearchBar(props: SearchBarProps) {
   }
 
   function search() {
-    //console.log('SEARCHBAR', query, category, location)
+    console.log("SEARCH", query, category, location)
     const params = { query, category, location }
     const url = new URLSearchParams(params).toString()
     //console.log(url)
@@ -42,30 +43,41 @@ export default function SearchBar(props: SearchBarProps) {
   return (
     <CardContent className="p-3 w-full">
       <div className="flex flex-col lg:flex-row w-full space-y-2 lg:space-y-0 lg:space-x-2">
-        <InitiativeOrgSwitch />
-        <Input
-          type="search"
-          placeholder="Search"
-          className="flex-1"
-          value={query}
-          onChange={(evt) => setQuery(evt.target.value)}
-          onKeyDown={checkEnter}
-        />
-        <div className="flex flex-row justify-between">
+        <div className="flex-[2] flex flex-row gap-2">
+          <InitiativeOrgSwitch className="flex-initial" />
+          <div className="relative flex-1">
+            <Input
+              type="search"
+              placeholder="Search"
+              className="flex-1"
+              value={query}
+              onChange={(evt) => setQuery(evt.target.value)}
+              onKeyDown={checkEnter}
+            />
+            <MagnifyingGlassIcon className="h-[1.2rem] w-[1.2rem] absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          </div>
+        </div>
+        <div className="flex flex-row flex-1 gap-2">
           <CategorySelect
+            className="flex-1 md:flex-initial"
             onChange={(val: string) => {
               setCategory(val)
             }}
           />
           <LocationSelect
+            className="flex-1 lg:flex-initial"
             onChange={(val: string) => {
-              setLocation(val)
+              if (val === "All") {
+                setLocation("")
+              } else {
+                setLocation(val)
+              }
             }}
           />
+          <Button type="submit" onClick={search} className="flex-initial">
+            Search
+          </Button>
         </div>
-        <Button type="submit" onClick={search}>
-          Search
-        </Button>
       </div>
     </CardContent>
   )
