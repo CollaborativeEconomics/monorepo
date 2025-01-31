@@ -43,6 +43,7 @@ interface CategoryOption {
 
 interface CategorySelectProps {
   onChange?: (category: string) => void
+  className?: string
 }
 
 export default function CategorySelect(props: CategorySelectProps) {
@@ -63,6 +64,7 @@ export default function CategorySelect(props: CategorySelectProps) {
           value: category.slug,
           label: category.title,
         }))
+        list.unshift({ value: "", label: "All" })
         setCategories(list)
       }
     }
@@ -83,13 +85,13 @@ export default function CategorySelect(props: CategorySelectProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={cn("justify-between whitespace-nowrap", props.className)}
         >
           {value ? findCategory(value) : "Select category..."}
           <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent>
         <Command>
           <CommandInput placeholder="Search category..." />
           <CommandEmpty>No category found.</CommandEmpty>
