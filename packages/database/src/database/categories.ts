@@ -10,7 +10,7 @@ interface CategoryQuery extends ListQuery {
 export async function getCategories(
   query: CategoryQuery,
 ): Promise<Array<Category>> {
-  const filter: Prisma.CategoryFindManyArgs = { skip: 0, take: 100 }
+  const filter: Prisma.CategoryFindManyArgs = { skip: 0, take: 100, orderBy: { title: "asc" } }
   if (query?.distinct) {
     if (query.distinct === "organizations")
       filter.where = {

@@ -20,9 +20,7 @@ export default async function Organizations(props: {
       category,
       location,
     })) as OrganizationData[]) || [];
-  const organizations = JSON.parse(
-    JSON.stringify(data.filter(org => !org.inactive)),
-  ) as OrganizationData[];
+  const organizations = JSON.parse(JSON.stringify(data.filter(org => !org.inactive))) as OrganizationData[];
   console.log('ORGS', organizations.length);
 
   return (
