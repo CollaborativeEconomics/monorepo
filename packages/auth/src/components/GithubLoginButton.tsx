@@ -1,3 +1,4 @@
+import React from 'react';
 import { githubLogin } from '../actions';
 import { BaseLoginButton } from './BaseLoginButton';
 

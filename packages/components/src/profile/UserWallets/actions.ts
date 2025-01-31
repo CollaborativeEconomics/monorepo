@@ -33,7 +33,7 @@ export async function connectWallet(address: string, chain: string) {
   // Check if wallet already exists
   const existing = await getUserWalletByAddress(address, chain as Chain)
   if (existing) {
-    throw new Error("Wallet already connected")
+    throw new Error("Wallet already connected to another account")
   }
 
   // Create new wallet

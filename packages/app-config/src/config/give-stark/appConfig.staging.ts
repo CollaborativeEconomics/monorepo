@@ -8,10 +8,16 @@ const siteInfo: AppConfig["siteInfo"] = {
 }
 
 const apis: AppConfig["apis"] = {
-  ...appConfig.apis,
   registry: {
     apiUrl: "https://registry.staging.cfce.io/api",
   },
+  ipfs: {
+    ...appConfig.apis.ipfs,
+    buckets: {
+      ...appConfig.apis.ipfs.buckets,
+      nfts: process.env.IPFS_DEFAULT_BUCKET || ""
+    }
+  }
 }
 
 const chains: AppConfig["chains"] = {

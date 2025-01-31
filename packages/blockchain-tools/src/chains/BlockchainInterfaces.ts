@@ -33,7 +33,7 @@ const BlockchainClientInterfaces: Record<ClientInterfaces, InterfaceBaseClass> =
 
 const BlockchainServerInterfaces = {
   evm: new Web3Server(),
-  // starknet: todo
+  starknet: new StarknetWallet(),
   stellar: new StellarServer(),
   xrpl: new XrplServer(),
 } satisfies Record<ServerInterfaces, InterfaceBaseClass>

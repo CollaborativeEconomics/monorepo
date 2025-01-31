@@ -77,6 +77,7 @@ export function ConnectWalletOverlay({
                 : "Failed to connect wallet",
             variant: "destructive",
           })
+          return
         }
 
         toast({

@@ -1,5 +1,8 @@
 "use client"
-import type { DonationWithRelations } from "@cfce/database"
+import type {
+  DonationWithRelations,
+  NFTDataWithRelations,
+} from "@cfce/database"
 import {
   type SortingState,
   createColumnHelper,
@@ -8,10 +11,19 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import jsPDF from "jspdf"
+import { Download } from "lucide-react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import React from "react"
-import Image from "next/image"
 import { useState } from "react"
+import { Button } from "~/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/ui/dropdown-menu"
 import {
   Table,
   TableBody,
@@ -20,6 +32,14 @@ import {
   TableHeader,
   TableRow,
 } from "~/ui/table"
+import "jspdf-autotable"
+
+declare module "jspdf" {
+  interface jsPDF {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    autoTable: (options: any) => jsPDF
+  }
+}
 
 interface DonationsTableSortableProps {
   donations?: DonationWithRelations[]
@@ -37,14 +57,109 @@ type Donation = {
   impactScore?: string
   impactLabel?: string
   impact?: string
+  coinAmount?: number
+  asset?: string
+  wallet?: string
 }
 
 function money(amount: number) {
-  return "$" + amount.toFixed(2)
+  return `$${amount.toFixed(2)}`
 }
 
-function localDate(sdate: string) {
-  return new Date(sdate).toLocaleString()
+function downloadCSV(data: Donation[]) {
+  const headers = [
+    "Date",
+    "Initiative",
+    "Organization",
+    "USD Amount",
+    "Chain",
+    "Impact",
+    "Coin Amount",
+    "Asset",
+  ]
+  const csvContent = [
+    headers.join(","),
+    ...data.map((row) =>
+      [
+        new Date(row.created).toLocaleString(),
+        `"${row.initiative}"`,
+        `"${row.organization}"`,
+        row.amount,
+        row.chain,
+        `"${row.impact}"`,
+        row.coinAmount,
+        row.asset,
+      ].join(","),
+    ),
+  ].join("\n")
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+  const link = document.createElement("a")
+  const url = URL.createObjectURL(blob)
+  link.setAttribute("href", url)
+  link.setAttribute("download", `donations_${new Date().toISOString()}.csv`)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+function downloadPDF(data: Donation[]) {
+  const doc = new jsPDF()
+
+  // Format wallet address: first 6 chars + "..." + last 5 chars
+  const wallet = data[0].wallet
+  const formattedWallet = wallet
+    ? `${wallet.slice(0, 6)}...${wallet.slice(-5)}`
+    : ""
+
+  doc.setFontSize(16)
+  doc.text(`Donations Report for ${formattedWallet}`, 20, 20)
+
+  // Add date
+  doc.setFontSize(11)
+  doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 30)
+
+  // Table headers
+  const headers = [
+    "Date",
+    "Initiative",
+    "Organization",
+    "USD Amount",
+    "Chain",
+    "Impact",
+    "Coin Amount",
+    "Asset",
+  ]
+
+  console.log("DATA", data)
+
+  // Convert data to table format
+  const tableData = data.map((row) => [
+    new Date(row.created).toLocaleString(),
+    row.initiative,
+    row.organization,
+    `$${row.amount.toFixed(2)}`,
+    row.chain,
+    row.impact,
+    row.coinAmount,
+    row.asset,
+  ])
+
+  // Add table
+  doc.autoTable({
+    head: [headers],
+    body: tableData,
+    startY: 40,
+    margin: { top: 40 },
+    styles: { fontSize: 9 },
+    columnStyles: {
+      0: { cellWidth: 40 },
+      3: { halign: "right" },
+    },
+  })
+
+  // Save PDF
+  doc.save(`donations_${new Date().toISOString()}.pdf`)
 }
 
 export default function DonationsTableSortable(
@@ -54,6 +169,7 @@ export default function DonationsTableSortable(
   const donations = props?.donations || []
 
   const recs: Donation[] = donations.map((rec) => {
+    console.log("REC", rec)
     const unitValue =
       rec.impactlinks.length > 0 ? rec.impactlinks[0].story?.unitvalue || 0 : 0
     let impactScore = ""
@@ -66,10 +182,11 @@ export default function DonationsTableSortable(
         : ""
     let impactLabel = unitLabel
     if (unitLabel) {
-      impactLabel = unitLabel + (impactScore == "1" ? "" : "s")
+      impactLabel = unitLabel + (impactScore === "1" ? "" : "s")
     }
     //console.log('UNITS', unitValue, unitLabel)
     console.log("IMPACT", impactScore, impactLabel)
+
     const item = {
       id: rec.id,
       created: rec.created,
@@ -82,6 +199,9 @@ export default function DonationsTableSortable(
       impactScore,
       impactLabel,
       impact: `${impactScore} ${impactLabel}`,
+      coinAmount: Number(rec.amount),
+      asset: rec.asset || "",
+      wallet: rec.wallet || "",
     }
     return item
   })
@@ -89,6 +209,8 @@ export default function DonationsTableSortable(
   const [data, setData] = useState(recs)
   const [order, setOrder] = useState("")
   const [sorting, setSorting] = useState<SortingState>([])
+
+  console.log("DATA", data)
 
   //const columnHelper = createColumnHelper<DonationWithRelations>();
   const columnHelper = createColumnHelper<Donation>()
@@ -160,71 +282,97 @@ export default function DonationsTableSortable(
     }
   }
 
+  const exportButtons = (
+    <div className="flex gap-2 mb-4">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Export Data
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => downloadCSV(data)}>
+            Export as CSV
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => downloadPDF(data)}>
+            Export as PDF
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  )
+
   return (
-    <Table id="table-donations" className="w-full">
-      <TableHeader>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <TableHead key={header.id}>
-                {header.isPlaceholder ? null : (
-                  <div
-                    {...{
-                      className: header.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : "",
-                      onClick: header.column.getToggleSortingHandler(),
-                    }}
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
-                    {{
-                      asc: " ↑",
-                      desc: " ↓",
-                    }[header.column.getIsSorted() as string] ?? null}
-                  </div>
-                )}
-              </TableHead>
-            ))}
-          </TableRow>
-        ))}
-      </TableHeader>
-      <TableBody onClick={clicked}>
-        {list.length > 0 ? (
-          list.map((row) => {
-            return (
-              <TableRow key={row.id} data-id={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  const align = cell?.column?.id == "amount" ? "text-right" : ""
-                  return (
-                    <TableCell key={cell.id} className={align}>
-                      {cell?.column?.id == "image" && cell?.getValue() != "" ? (
-                        <Image
-                          src={cell?.getValue() as string}
-                          width={20}
-                          height={20}
-                          alt="NFT"
-                        />
-                      ) : (
-                        flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )
+    <div>
+      {exportButtons}
+      <Table id="table-donations" className="w-full">
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder ? null : (
+                    <div
+                      {...{
+                        className: header.column.getCanSort()
+                          ? "cursor-pointer select-none"
+                          : "",
+                        onClick: header.column.getToggleSortingHandler(),
+                      }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
                       )}
-                    </TableCell>
-                  )
-                })}
-              </TableRow>
-            )
-          })
-        ) : (
-          <TableRow>
-            <TableCell className="col-span-5">No donations found</TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+                      {{
+                        asc: " ↑",
+                        desc: " ↓",
+                      }[header.column.getIsSorted() as string] ?? null}
+                    </div>
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody onClick={clicked}>
+          {list.length > 0 ? (
+            list.map((row) => {
+              return (
+                <TableRow key={row.id} data-id={row.id}>
+                  {row.getVisibleCells().map((cell) => {
+                    const align =
+                      cell?.column?.id === "amount" ? "text-right" : ""
+                    return (
+                      <TableCell key={cell.id} className={align}>
+                        {cell?.column?.id === "image" &&
+                        cell?.getValue() !== "" ? (
+                          <Image
+                            src={cell?.getValue() as string}
+                            width={20}
+                            height={20}
+                            alt="NFT"
+                          />
+                        ) : (
+                          flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )
+                        )}
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              )
+            })
+          ) : (
+            <TableRow>
+              <TableCell className="col-span-5">No donations found</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   )
 }

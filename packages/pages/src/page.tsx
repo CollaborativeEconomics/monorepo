@@ -1,11 +1,11 @@
 import appConfig from '@cfce/app-config';
-import { getInitiatives } from '@cfce/database';
 import {
   ActionBar,
   ImpactCarousel,
   InstructionPanes,
   VideoBackground,
 } from '@cfce/components/home';
+import { getInitiatives } from '@cfce/database';
 import type { Metadata, Viewport } from 'next';
 import React from 'react';
 
@@ -29,8 +29,8 @@ export default async function Handler(props: {
   //console.log('JSON', JSON.stringify(plain,null,2))
   return (
     <>
-      <div className="w-full top-0">
-        <div className="container mt-48 mb-16 ml-6 md:ml-auto">
+      <div className="relative">
+        <div className="container pt-48 pb-16 py-6 md:py-auto">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-accent-foreground">
             Blockchain-driven philanthropy <br />
             for a transparent world
@@ -43,9 +43,11 @@ export default async function Handler(props: {
         </div>
         <ImpactCarousel initiatives={plain} />
         <ActionBar />
-        <InstructionPanes />
-        <VideoBackground />
+        <div className="absolute inset-0 -z-10">
+          <VideoBackground />
+        </div>
       </div>
+      <InstructionPanes />
     </>
   );
 }

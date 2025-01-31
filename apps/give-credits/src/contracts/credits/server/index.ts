@@ -21,7 +21,7 @@ import {
   scValToNative,
   xdr,
 } from "@stellar/stellar-sdk"
-import type { StellarNetwork } from "../../networks"
+import type { StellarNetwork } from "../networks"
 
 //---- SUBMIT TX
 

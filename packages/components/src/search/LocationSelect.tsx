@@ -16,6 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover"
 
 interface LocationSelectProps {
   onChange?: (location: string) => void
+  className?: string
 }
 
 export default function LocationSelect(props: LocationSelectProps) {
@@ -30,7 +31,8 @@ export default function LocationSelect(props: LocationSelectProps) {
       const list = await res.json()
       console.log("LOCS", list)
       if (list.success) {
-        setLocations(list)
+        list.data.unshift("All")
+        setLocations(list.data)
       }
     }
     loadLocations()
@@ -43,13 +45,13 @@ export default function LocationSelect(props: LocationSelectProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={cn("justify-between whitespace-nowrap", props.className)}
         >
           {value ? value : "Select location..."}
           <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent>
         <Command>
           <CommandInput placeholder="Search location..." />
           <CommandEmpty>No location found</CommandEmpty>

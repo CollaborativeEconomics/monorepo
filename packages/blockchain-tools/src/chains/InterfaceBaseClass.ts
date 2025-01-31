@@ -159,13 +159,13 @@ export default abstract class InterfaceBaseClass {
     return Buffer.from(hex.substr(2), "hex").toString(encoding)
   }
 
-  sendPaymentWithGas?(
-    address: string,
-    amount: number,
-  ): Promise<{
+  sendGaslessPayment?(params: {
+    address: string
+    amount: number
+    memo?: string
+    walletSeed?: string
+  }): Promise<{
     success: boolean
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    result?: any
     error?: string
     txid?: string
     walletAddress?: string

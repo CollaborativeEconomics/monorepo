@@ -1,4 +1,5 @@
 import { getDonations, getStoryById } from '@cfce/database';
+import { ipfsCIDToUrl } from '@cfce/utils';
 import { DateTime } from 'luxon';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -67,8 +68,8 @@ export default async function Story({
                 </p>
                 <Link href={`/organizations/${story.organization.id}`}>
                   <OrganizationAvatar
-                    name={story.organization.name}
                     image={story.organization.image || undefined}
+                    name={story.organization.name}
                   />
                 </Link>
               </div>
@@ -79,7 +80,7 @@ export default async function Story({
                       {story.initiative.category?.title}
                     </h1>
                     <Image
-                      src={story.initiative.category?.image || ''}
+                      src={ipfsCIDToUrl(story.initiative.category?.image)}
                       width={96}
                       height={96}
                       alt="Category"

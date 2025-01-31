@@ -39,7 +39,10 @@ export interface AppConfig {
     }
     options: {
       showCarbonCreditDisplay: boolean
+      enableGaslessTransactions: boolean
+      enableFetchBalance: boolean
     }
+    featuredInitiatives?: string[]
   }
   apis: {
     registry: {

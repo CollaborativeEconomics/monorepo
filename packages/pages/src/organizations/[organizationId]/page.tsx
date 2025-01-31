@@ -61,12 +61,17 @@ export default async function Home(props: {
   if (!organization) {
     return <NotFound />;
   }
+
   organization = JSON.parse(JSON.stringify(organization)) as OrganizationData;
 
   let stories = (await getStories({ orgId })) || [];
   stories = JSON.parse(JSON.stringify(stories));
 
-  let initiatives = organization.initiative;
+  // append organization to each initiative
+  let initiatives = organization.initiative.map(i => ({
+    ...i,
+    organization,
+  }));
   initiatives = JSON.parse(JSON.stringify(initiatives));
   console.log({ organization });
 
@@ -184,8 +189,9 @@ export default async function Home(props: {
             <div className="flex flex-col gap-5 w-full md:w-2/6 min-w-[350px]">
               <p className="text-3xl font-semibold">Initiatives</p>
               {initiatives.map(initiative => {
-                //initiative.organization = organization
-                return <InitiativeCard key={initiative.id} data={initiative} />;
+                return (
+                  <InitiativeCard key={initiative.id} initiative={initiative} />
+                );
               })}
             </div>
             <div className="flex flex-col gap-5 md:w-4/6">

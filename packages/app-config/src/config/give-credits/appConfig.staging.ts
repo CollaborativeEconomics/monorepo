@@ -11,6 +11,7 @@ const siteInfo = {
   ...appConfig.siteInfo,
   title: "Give Credit (Staging)",
   description: "Make tax-deductible donations of carbon credits (Staging)",
+  featuredInitiatives: ["30c0636f-b0f1-40d5-bb9c-a531dc4d69e2"],
 }
 
 const apis = {

@@ -1,7 +1,8 @@
+import { chainConfig } from "@cfce/blockchain-tools"
 import { getNFTbyTokenId, getNftData, newNftData } from "@cfce/database"
+import type { ChainSlugs } from "@cfce/types"
 import { type NextRequest, NextResponse } from "next/server"
 import checkApiKey from "../../checkApiKey"
-import type { ChainSlugs } from "@cfce/types"
 export async function GET(req: NextRequest) {
   try {
     const apiKey = req.headers.get("x-api-key")
@@ -14,9 +15,10 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const tokenId = searchParams.get("tokenId")
     const chain = searchParams.get("chain") as ChainSlugs
+    const chainName = chainConfig[chain].name
 
     const result = tokenId
-      ? await getNFTbyTokenId(tokenId, chain)
+      ? await getNFTbyTokenId(tokenId, chainName)
       : await getNftData(Object.fromEntries(searchParams.entries()))
 
     return NextResponse.json({ success: true, data: result }, { status: 200 }) // Status code 200 for successful GET request

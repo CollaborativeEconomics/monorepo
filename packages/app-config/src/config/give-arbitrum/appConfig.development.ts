@@ -4,6 +4,10 @@ import appConfig from "./appConfig.staging"
 const siteInfo: AppConfig["siteInfo"] = {
   ...appConfig.siteInfo,
   title: "Give Arbitrum (Development)",
+  options: {
+    ...appConfig.siteInfo.options,
+    enableFetchBalance: true,
+  },
 }
 
 const apis: AppConfig["apis"] = {

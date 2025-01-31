@@ -1,56 +1,50 @@
-"use client"
-import appConfig from "@cfce/app-config"
+import { ipfsCIDToUrl } from "@cfce/utils/client"
+import Image from "next/image"
 import React from "react"
 interface Props {
   images?: string[]
 }
 
-const IPFSURL = appConfig.apis.ipfs.gateway
-
 export default function Gallery(props: Props) {
-  let image = props.images?.[0] ?? "/nopic.png"
-  if (image.startsWith("ipfs:")) {
-    image = IPFSURL + image.substr(5)
-  }
   return (
-    <div className="grid gap-1">
+    <div className="grid gap-2">
       <div>
-        <img
-          className="h-auto min-w-full max-w-full aspect-[4/3] object-cover"
-          src={image}
+        <Image
+          className="w-full aspect-[4/3] object-cover rounded-md max-h-[500px]"
+          src={ipfsCIDToUrl(props.images?.[0] ?? "/nopic.png")}
           alt=""
+          width={1000}
+          height={1000}
         />
       </div>
-      {getGridDiv(props.images?.slice(1))}
+      {props.images?.slice(1).length ? (
+        <ThumbnailGrid images={props.images?.slice(1)} />
+      ) : null}
     </div>
   )
 }
 
-function getGridDiv(images: string[] | undefined): React.ReactElement {
-  if (!images) {
-    return <div />
-  }
+function ThumbnailGrid({ images }: { images: string[] }) {
   // must contain at least three images to fill to width, overflows to new row after 4
   let gridClass: string
   if (images.length <= 3) {
-    gridClass = "grid grid-cols-3 gap-1"
+    gridClass = "grid grid-cols-3 gap-2"
   } else {
-    gridClass = "grid grid-cols-4 gap-1"
+    gridClass = "grid grid-cols-4 gap-2"
   }
+  console.log({ images })
   return (
-    <div className={gridClass}>{images.map((image) => getImageDiv(image))}</div>
-  )
-}
-
-function getImageDiv(image: string): React.ReactElement {
-  const imgsrc = image.startsWith("ipfs:") ? IPFSURL + image.substr(5) : image
-  return (
-    <div key={image}>
-      <img
-        className="h-auto max-w-full aspect-[4/3] object-cover"
-        src={imgsrc}
-        alt=""
-      />
+    <div className={gridClass}>
+      {images.map((image) => (
+        <Image
+          key={image}
+          className="h-auto max-w-full aspect-[4/3] object-cover rounded-md"
+          src={ipfsCIDToUrl(image)}
+          width={600}
+          height={600}
+          alt=""
+        />
+      ))}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 import type { AuthTypes, ChainSlugs, ClientInterfaces } from '@cfce/types';
 import { GithubLoginButton } from './GithubLoginButton';
 import { GoogleLoginButton } from './GoogleLoginButton';

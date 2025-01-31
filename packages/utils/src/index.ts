@@ -1,6 +1,6 @@
 export { default as createStory } from "./createStory"
 export { default as localizedNumber } from "./localizedNumber"
-export { default as imageUrl } from "./imageUrl"
+export { default as ipfsCIDToUrl } from "./ipfsCIDToUrl"
 export * from "./mailgun"
 export * from "./mintReceiptNFT"
 export * from "./mintStoryNFT"

@@ -14,6 +14,11 @@ appConfig.siteInfo = {
     light: "/newui/logo.png",
     dark: "/newui/logo.svg",
   },
+  options: {
+    ...appConfig.siteInfo.options,
+    enableFetchBalance: true,
+    enableGaslessTransactions: true,
+  },
 }
 
 // Override chains

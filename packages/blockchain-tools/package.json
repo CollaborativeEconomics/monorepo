@@ -59,7 +59,7 @@
     "@cfce/state": "workspace:*",
     "@crossmarkio/sdk": "^0.4.0",
     "@gemwallet/api": "^3.8.0",
-    "@metamask/providers": "18.3.1",
+    "@metamask/providers": "19.0.0",
     "@stellar/freighter-api": "4.0.0",
     "jotai": "^2.10.4",
     "@stellar/stellar-sdk": "^13.1.0",

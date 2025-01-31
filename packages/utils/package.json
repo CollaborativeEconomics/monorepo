@@ -10,6 +10,10 @@
     "./mailgun": {
       "import": "./dist/mailgun.js",
       "types": "./dist/mailgun.d.ts"
+    },
+    "./client": {
+      "import": "./dist/clientFunctions.js",
+      "types": "./dist/clientFunctions.d.ts"
     }
   },
   "scripts": {

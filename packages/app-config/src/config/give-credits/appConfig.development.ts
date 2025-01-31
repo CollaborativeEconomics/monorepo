@@ -5,7 +5,7 @@ import type {
   ChainSlugs,
   Network,
 } from "@cfce/types"
-import appConfig from "./appConfig.production"
+import appConfig from "./appConfig.staging"
 
 const siteInfo = {
   ...appConfig.siteInfo,
@@ -36,7 +36,6 @@ const chainDefaults = {
 }
 
 const auth = appConfig.auth as AuthTypes[]
-
 
 const appConfigStaging: AppConfig = {
   apis,

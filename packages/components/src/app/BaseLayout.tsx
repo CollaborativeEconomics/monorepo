@@ -1,14 +1,14 @@
-import { PostHogProvider } from '@cfce/analytics';
-import { Footer, Header } from '@cfce/components/navigation';
-import { SessionProvider } from 'next-auth/react';
-import { ThemeProvider } from 'next-themes';
-import { Inter } from 'next/font/google';
-import { Toaster } from '../ui/toaster';
+import { PostHogProvider } from "@cfce/analytics"
+import { Footer, Header } from "@cfce/components/navigation"
+import { SessionProvider } from "next-auth/react"
+import { ThemeProvider } from "next-themes"
+import { Inter } from "next/font/google"
+import { Toaster } from "../ui/toaster"
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] })
 
 export interface BaseLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export function BaseLayout({ children }: BaseLayoutProps) {
@@ -24,15 +24,11 @@ export function BaseLayout({ children }: BaseLayoutProps) {
           disableTransitionOnChange
         >
           <SessionProvider>
-            <PostHogProvider>
-              <Header />
-              {children}
-              <Footer />
-            </PostHogProvider>
+            <PostHogProvider>{children}</PostHogProvider>
             <Toaster />
           </SessionProvider>
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

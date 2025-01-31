@@ -1,42 +1,43 @@
-import type { Initiative } from "@cfce/database"
-import Image from "next/image"
-import Link from "next/link"
-import React from "react"
-import { Card, CardContent } from "~/ui/card"
-import { DateDisplay } from "~/ui/date-posted"
+import type { Initiative } from '@cfce/database';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import { Card, CardContent } from '~/ui/card';
+import { DateDisplay } from '~/ui/date-posted';
 
 export default function InitiativeCardCompact(props: {
-  initiative: Initiative
+  initiative: Initiative;
 }) {
-  const initiative = props.initiative
+  const initiative = props.initiative;
   if (!initiative) {
-    return <></>
+    return <></>;
   }
   return (
-    <Card className="flex flex-col overflow-hidden h-56">
-      <CardContent className="flex flex-col pb-8 pt-3 gap-3 px-0">
-        <Link href={`/initiatives/${initiative.id}`}>
-          <div className="inline-flex">
-            <Image
-              className="mt-3 ml-6"
-              src={initiative.defaultAsset}
-              alt="IMG BG"
-              width={120}
-              height={120}
-            />
-            <div>
-              <h3 className="px-6 pt-2 text-xl font-semibold uppercase">
+    <Link href={`/initiatives/${initiative.id}`}>
+      <Card className="flex flex-col overflow-hidden h-40">
+        <CardContent className="flex flex-col p-0 h-full">
+          <div className="flex flex-row h-full">
+            <div className="relative w-40 h-full">
+              <Image
+                className="object-cover object-left-top"
+                src={initiative.defaultAsset}
+                alt="Initiative image"
+                fill
+              />
+            </div>
+            <div className="flex flex-col flex-1 p-4">
+              <h3 className="text-xl font-semibold uppercase line-clamp-2">
                 {initiative.title}
               </h3>
               <DateDisplay
                 timestamp={+new Date(initiative.created)}
-                className="py-4 px-6"
+                className="py-4"
               />
-              <div className="px-6 line-clamp-2">{initiative.description}</div>
+              <div className="line-clamp-2">{initiative.description}</div>
             </div>
           </div>
-        </Link>
-      </CardContent>
-    </Card>
-  )
+        </CardContent>
+      </Card>
+    </Link>
+  );
 }

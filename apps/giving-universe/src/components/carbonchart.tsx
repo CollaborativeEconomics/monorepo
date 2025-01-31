@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface ChartType {
   title?: string
   goal?: number

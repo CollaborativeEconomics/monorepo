@@ -64,7 +64,10 @@ export interface NetworkConfig {
   symbol: string
   decimals: number
   gasprice: string
-  explorer: string
+  explorer: {
+    url: string
+    nftPath: string
+  }
   rpcUrls: {
     main: string
     [key: string]: string
@@ -128,6 +131,6 @@ export type ClientInterfaces =
 // | "stellar"
 // | "argent"
 
-export type ServerInterfaces = "evm" | "xrpl" | "stellar"
+export type ServerInterfaces = "evm" | "xrpl" | "stellar" | "starknet"
 
 export type Chains = Record<ChainSlugs, ChainConfig>

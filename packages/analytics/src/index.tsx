@@ -16,7 +16,9 @@ export function initializeAnalytics() {
 
 export function PostHogProvider({
   children,
-}: Parameters<typeof PostHogProviderBase>[0]) {
+}: {
+  children: React.ReactNode;
+}) {
   useEffect(() => {
     initializeAnalytics();
   }, []);

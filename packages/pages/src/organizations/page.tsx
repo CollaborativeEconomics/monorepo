@@ -20,13 +20,11 @@ export default async function Organizations(props: {
       category,
       location,
     })) as OrganizationData[]) || [];
-  const organizations = JSON.parse(
-    JSON.stringify(data.filter(org => !org.inactive)),
-  ) as OrganizationData[];
+  const organizations = JSON.parse(JSON.stringify(data.filter(org => !org.inactive))) as OrganizationData[];
   console.log('ORGS', organizations.length);
 
   return (
-    <main className="flex min-h-screen flex-col items-stretch container mt-12 pt-24">
+    <main className="flex min-h-screen flex-col items-stretch container pt-24">
       <Card className="flex">
         <SearchBar />
       </Card>

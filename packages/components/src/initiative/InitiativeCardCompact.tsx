@@ -1,45 +1,51 @@
-import type { Initiative } from "@cfce/database"
-import Image from "next/image"
-import React from "react"
-import OrganizationAvatar from "~/organization/OrganizationAvatar"
-import { Button } from "~/ui/button"
-import { Card, CardContent } from "~/ui/card"
-import { DateDisplay } from "~/ui/date-posted"
-import { Progress } from "~/ui/progress"
-import { Separator } from "~/ui/separator"
+import type { Initiative, Organization } from '@cfce/database';
+import { ipfsCIDToUrl } from '@cfce/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import OrganizationAvatar from '~/organization/OrganizationAvatar';
+import { Button } from '~/ui/button';
+import { Card, CardContent } from '~/ui/card';
+import { DateDisplay } from '~/ui/date-posted';
+import { Progress } from '~/ui/progress';
+import { Separator } from '~/ui/separator';
 
 interface InitiativeCardCompactProps extends Initiative {
-  name: string // organization name
-  avatarImg?: string // organization avatar image
+  organization: Organization;
 }
 
-export default function InitiativeCardCompact(
-  initiative: InitiativeCardCompactProps,
-) {
+export default function InitiativeCardCompact({
+  initiative,
+}: {
+  initiative: InitiativeCardCompactProps;
+}) {
+  console.log('initiative', initiative);
   return (
     <Card className="flex flex-col overflow-hidden">
       <CardContent className="flex flex-col pb-8 pt-3 gap-3 px-0">
-        <div className="inline-flex">
-          {initiative.avatarImg && (
-            <Image
-              className="mt-3 ml-6"
-              src={initiative.avatarImg}
-              alt="IMG BG"
-              width={200}
-              height={200}
-            />
-          )}
-          <div>
-            <h3 className="px-6 pt-2 text-xl font-semibold uppercase">
-              {initiative.title}
-            </h3>
-            <DateDisplay
-              timestamp={+new Date(initiative.created)}
-              className="py-4 px-6"
-            />
-            <div className="px-6 line-clamp-2">{initiative.description}</div>
+        <Link href={`/initiative/${initiative.id}`}>
+          <div className="inline-flex">
+            {initiative.defaultAsset && (
+              <Image
+                className="mt-3 ml-6 rounded-sm"
+                src={initiative.defaultAsset}
+                alt="IMG BG"
+                width={200}
+                height={200}
+              />
+            )}
+            <div>
+              <h3 className="px-6 pt-2 text-xl font-semibold uppercase">
+                {initiative.title}
+              </h3>
+              <DateDisplay
+                timestamp={+new Date(initiative.created)}
+                className="py-4 px-6"
+              />
+              <div className="px-6 line-clamp-2">{initiative.description}</div>
+            </div>
           </div>
-        </div>
+        </Link>
         <Separator />
         <div className="px-6 pt-3">
           <Progress value={(initiative.received / initiative.goal) * 100} />
@@ -50,15 +56,14 @@ export default function InitiativeCardCompact(
         </div>
         <Separator />
         <div className="px-6 pt-6 inline-flex justify-between">
-          <OrganizationAvatar
-            name={initiative.name}
-            image={initiative.avatarImg}
-          />
-          <Button className="mx-6 bg-transparent text-black dark:text-white outline outline-slate-300 outline-1">
-            Donate
-          </Button>
+          <OrganizationAvatar organization={initiative.organization} />
+          <Link href={`/initiative/${initiative.id}`}>
+            <Button className="mx-6 bg-transparent text-black dark:text-white outline outline-slate-300 outline-1">
+              Donate
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

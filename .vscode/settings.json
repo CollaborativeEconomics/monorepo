@@ -32,5 +32,8 @@
       "hideFromTree": false,
       "alwaysShow": true
     }
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
   }
 }
