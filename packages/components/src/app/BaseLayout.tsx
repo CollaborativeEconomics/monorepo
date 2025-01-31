@@ -24,7 +24,7 @@ export function BaseLayout({ children }: BaseLayoutProps) {
           disableTransitionOnChange
         >
           <SessionProvider>
-            <PostHogProvider apiKey="123">
+            <PostHogProvider>
               <Header />
               {children}
               <Footer />
