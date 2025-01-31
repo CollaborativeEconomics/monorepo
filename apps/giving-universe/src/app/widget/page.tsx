@@ -1,3 +1,4 @@
+import React from 'react';
 import { headers } from 'next/headers';
 
 export default async function Widget() {

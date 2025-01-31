@@ -14,6 +14,10 @@ appConfig.siteInfo = {
     light: "/newui/logo.svg",
     dark: "/newui/logo-white.svg",
   },
+  options: {
+    ...appConfig.siteInfo.options,
+    enableFetchBalance: true,
+  },
 }
 
 // Override chains

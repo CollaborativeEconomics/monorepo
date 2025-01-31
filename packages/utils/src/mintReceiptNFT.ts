@@ -21,6 +21,7 @@ import { ChainSlugs, DonationStatus, EntityType, TokenTickerSymbol } from "@cfce
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
 import { registryApi } from "./registryApi"
+import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 
 interface MintAndSaveReceiptNFTParams {
   transaction: {
@@ -121,9 +122,18 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Initialize blockchain tools and verify transaction
-    const chainTool = BlockchainServerInterfaces.evm
-    chainTool.setChain(chain)
-
+    let chainTool
+    if (chain === "stellar") {
+      chainTool = BlockchainServerInterfaces.stellar
+    } else if (chain === "xrpl") {
+      chainTool = BlockchainServerInterfaces.xrpl
+    } else if (chain === "starknet") {
+      chainTool = BlockchainServerInterfaces.starknet
+    } else {
+      chainTool = BlockchainServerInterfaces.evm
+      chainTool.setChain(chain)
+    }
+    console.log("TxId", txId)
     const txInfo = await chainTool.getTransactionInfo(txId, true) // wait for receipt
     if ("error" in txInfo) {
       console.log("ERROR", "Transaction not found")
