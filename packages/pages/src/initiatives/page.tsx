@@ -23,7 +23,7 @@ export default async function Initiatives({
       location,
     })) || [];
   const initiatives = data.filter(it => !it.inactive);
-  //console.log('INITS', initiatives.length)
+  console.log('INITS', initiatives.length)
 
   return (
     <main className="flex min-h-screen flex-col items-stretch container pt-24">
@@ -32,9 +32,12 @@ export default async function Initiatives({
       </Card>
       <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 pt-10">
         {initiatives?.length > 0 ? (
-          initiatives.map(intiative => (
-            <InitiativeCard key={intiative.id} initiative={intiative} />
-          ))
+          initiatives.map((initiative) => {
+            const initPlain = JSON.parse(JSON.stringify(initiative))
+            return (
+              <InitiativeCard key={initPlain.id} initiative={initPlain} />
+            )
+          })
         ) : (
           <h1 className="m-4">No initiatives found</h1>
         )}

@@ -10,15 +10,15 @@
     "lint": "pnpm checkTypes && next lint"
   },
   "dependencies": {
+    "@cfce/api": "workspace:*",
     "@cfce/app-config": "workspace:*",
     "@cfce/auth": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/components": "workspace:*",
     "@cfce/database": "workspace:*",
+    "@cfce/pages": "workspace:*",
     "@cfce/registry-hooks": "workspace:*",
     "@cfce/types": "workspace:*",
-    "@cfce/api": "workspace:*",
-    "@cfce/components": "workspace:*",
-    "@cfce/pages": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@types/react-dom": "19.0.0",
     "@vercel/blob": "0.27.1",
@@ -46,7 +46,7 @@
     "esmify": "^2.1.1",
     "mjml": "^4.15.3",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16",
+    "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }
