@@ -123,12 +123,16 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     [toast],
   )
 
-  const destinationWalletAddress = useMemo(() => {
-    const chainName = chain?.name
 
+  //const destinationWalletAddress = 'raHkr5qJNYez8bQQDMVLwvaRvxMripVznT' // hardcoded for testing
+  const destinationWalletAddress = useMemo(() => {
+    console.log('CHAIN', chain)
+    const chainName = chain?.name
+    console.log('NAME', chainName)
     const initiativeWallet = initiative?.wallets?.find(
       (w) => w.chain === chainName,
     )
+    console.log('INITIATIVE', initiativeWallet)
     if (initiativeWallet) {
       return initiativeWallet.address
     }
@@ -137,6 +141,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       (w) => w.chain === chainName,
     )?.address
 
+    console.log('ORGANIZATION', organizationWallet)
     if (organizationWallet) {
       return organizationWallet
     }
@@ -144,6 +149,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     // Use fallback address if both initiative and organization wallets are not found
     // There will be no fallback address for production, hence the error will be thrown
     const fallbackAddress = appConfig.chainDefaults?.defaultAddress
+    console.log('FALLBACK', fallbackAddress)
     if (fallbackAddress) {
       return fallbackAddress
     }
@@ -151,6 +157,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     handleError(new Error(`No wallet found for chain ${chain?.name}`))
     return ""
   }, [organization, initiative, chain, handleError])
+
   console.log("DESTINATION WALLET", destinationWalletAddress)
 
   const checkBalance = useCallback(async () => {
@@ -169,6 +176,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
+      console.log('SEND', address, amount)
       if (!chainInterface?.sendPayment) {
         const error = new Error("No sendPayment method on chain interface")
         toast({
@@ -185,6 +193,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         //amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || "",
       }
+      console.log('DATA', data)
       const result = await chainInterface.sendPayment(data)
       console.log("PAYMENT RESULT", result)
       if (!result.success) {
@@ -379,11 +388,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         usdValue: coinAmount * exchangeRate,
         currency: selectedToken,
       }
-
       console.log("DONATION DATA", donationData)
-
       const donationId = await saveDonation(donationData)
-
       if (!donationId) {
         throw new Error("Error saving donation")
       }
@@ -598,6 +604,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
                 setTimeout(() => {
                   setLoading(true)
                   setButtonMessage("Approving payment...")
+                  console.log('SENDING PAYMENT TO', destinationWalletAddress, coinAmount)
                   sendPayment(destinationWalletAddress, coinAmount)
                     .then((gasResult) => handleMinting(gasResult))
                     .catch(handleError)

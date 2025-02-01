@@ -333,13 +333,17 @@ export async function mintAndSaveReceiptNFT({
 
     let tokenId = ""
     const walletSecret = getWalletSecret(chain)
+    if (!walletSecret) {
+      throw new Error("Minter wallet not found")
+    }
     const args = {
       contractId: receiptContract,
       address: donorWalletAddress,
       uri: uriMeta,
       walletSeed: walletSecret,
     }
-    const mintResponse = await chainTool.mintNFT(args)
+    console.log('ARGS1', args)
+    const mintResponse = await chainTool.mintNFT(args)  // <<<<< ERROR HERE FOR XRPL
     console.log("RESMINT", mintResponse)
     if (!mintResponse) {
       throw new Error("Error minting NFT")
@@ -393,6 +397,7 @@ export async function mintAndSaveReceiptNFT({
         uri: uriMeta,
         walletSeed: walletSecret,
       }
+      console.log('ARGS2', args2)
       //const mintResponse2 = await BlockchainManager[chain]?.server.mintNFT(args2)
       const mintResponse2 = await chainTool.mintNFT(args2)
       console.log("RESMINT2", mintResponse2)

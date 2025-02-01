@@ -137,10 +137,11 @@ export default async function Initiative(props: {
                     if (otherInitiative.id === initiative.id) {
                       return
                     }
+                    const otherPlain = JSON.parse(JSON.stringify(otherInitiative))
                     return (
                       <InitiativeCardCompact
-                        key={`other-${otherInitiative.id}`}
-                        {...otherInitiative}
+                        key={`other-${otherPlain.id}`}
+                        {...otherPlain}
                         name={organization.name}
                         avatarImg={organization.image ?? undefined}
                       />
