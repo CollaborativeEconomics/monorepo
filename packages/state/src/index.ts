@@ -12,11 +12,13 @@ const chainAtom = atomWithImmer<{
   selectedChain: ChainSlugs
   selectedWallet: ClientInterfaces
   selectedToken: TokenTickerSymbol
+  enabledChains: ChainSlugs[]
   exchangeRate: number
 }>({
   selectedChain: appConfig.chainDefaults.chain,
   selectedWallet: appConfig.chainDefaults.wallet,
   selectedToken: appConfig.chainDefaults.coin,
+  enabledChains: [],
   exchangeRate: 0.0,
 })
 
