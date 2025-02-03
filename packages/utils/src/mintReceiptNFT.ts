@@ -17,11 +17,14 @@ import {
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
-import { ChainSlugs, DonationStatus, EntityType, TokenTickerSymbol } from "@cfce/types"
+import {
+  ChainSlugs,
+  DonationStatus,
+  EntityType,
+  TokenTickerSymbol,
+} from "@cfce/types"
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
-import { registryApi } from "./registryApi"
-import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 
 interface MintAndSaveReceiptNFTParams {
   transaction: {
@@ -371,9 +374,14 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Mint NFTCC and attach to TBA for donor
-    const tbaRec = await getTokenBoundAccount(EntityType.user, userId, chain, network)
+    const tbaRec = await getTokenBoundAccount(
+      EntityType.user,
+      userId,
+      chain,
+      network,
+    )
     const tbAddress = tbaRec?.account_address
-    if(tbAddress){
+    if (tbAddress) {
       let tokenId2 = ""
       const args2 = {
         contractId: receiptContract,
@@ -390,7 +398,10 @@ export async function mintAndSaveReceiptNFT({
       if ("error" in mintResponse2 && typeof mintResponse2.error === "string") {
         throw new Error(mintResponse2.error)
       }
-      if ("tokenId" in mintResponse2 && typeof mintResponse2.tokenId === "string") {
+      if (
+        "tokenId" in mintResponse2 &&
+        typeof mintResponse2.tokenId === "string"
+      ) {
         tokenId2 = mintResponse2?.tokenId
       }
     }
