@@ -14,10 +14,11 @@ const apis: AppConfig["apis"] = {
   ipfs: {
     ...appConfig.apis.ipfs,
     buckets: {
-      ...appConfig.apis.ipfs.buckets,
-      nfts: process.env.IPFS_DEFAULT_BUCKET || ""
-    }
-  }
+      nfts: "kuyawa-public",
+      avatars: "kuyawa-avatars",
+      media: "kuyawa-media",
+    },
+  },
 }
 
 const chains: AppConfig["chains"] = {
