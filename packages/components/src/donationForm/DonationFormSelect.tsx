@@ -13,6 +13,7 @@ interface SelectOption {
   value: string
   label: string
   icon: string
+  disabled?: boolean
 }
 
 export interface SelectInputProps<T extends string, U extends SelectOption>
@@ -49,6 +50,7 @@ const DonationFormSelect = <T extends string, U extends SelectOption>({
             className="dark:bg-slate-500 bg-white text-black dark:text-white"
             value={option.value}
             key={option.value}
+            disabled={option.disabled}
           >
             <div className="flex flex-row gap-3">
               <Image
