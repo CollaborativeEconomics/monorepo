@@ -29,7 +29,7 @@ export const PAYMENT_STATUS = {
 } as const
 
 interface DonationFormState {
-  amount: number
+  amount: string
   showUsd: boolean
   emailReceipt: boolean
   name: string
@@ -40,7 +40,7 @@ interface DonationFormState {
 }
 
 const donationFormAtom = atomWithImmer<DonationFormState>({
-  amount: 1,
+  amount: "1",
   name: "",
   email: "",
   emailReceipt: false,
@@ -54,18 +54,26 @@ const amountUSDAtom = atom<number>((get) => {
   const { showUsd, amount } = get(donationFormAtom)
   if (!showUsd) {
     const exchangeRate = get(chainAtom).exchangeRate
-    return amount * exchangeRate
+    const result = Number(amount) * exchangeRate
+    if (Number.isNaN(result)) {
+      return 0
+    }
+    return result
   }
-  return amount
+  return Number(amount)
 })
 
 const amountCoinAtom = atom<number>((get) => {
   const { showUsd, amount } = get(donationFormAtom)
   if (showUsd) {
     const exchangeRate = get(chainAtom).exchangeRate
-    return amount / exchangeRate
+    const result = Number(amount) / exchangeRate
+    if (Number.isNaN(result)) {
+      return 0
+    }
+    return result
   }
-  return amount
+  return Number(amount)
 })
 
 interface AppSettings {
