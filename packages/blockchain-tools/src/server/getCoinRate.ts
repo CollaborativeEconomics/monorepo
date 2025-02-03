@@ -21,8 +21,8 @@ import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 //   return exchangeRate
 // }
 
+// TODO: handle stablecoins
 export default async function getCoinRate({
-  chain,
   symbol,
 }: { symbol: TokenTickerSymbol; chain?: ChainSlugs }): Promise<number> {
   try {
@@ -35,7 +35,7 @@ export default async function getCoinRate({
       Authorization: `${process.env.MOBULA_API_KEY}`,
     }
     const response = await fetch(
-      `https://api.mobula.io/api/1/market/data?symbol=${symbol}&blockchain=${chain}`,
+      `https://api.mobula.io/api/1/market/data?symbol=${symbol}`,
       {
         ...options,
         headers,
@@ -43,23 +43,6 @@ export default async function getCoinRate({
     )
     const json = await response.json()
     console.log("RESPONSE", json)
-
-    // Check if asset was not found
-    if (json.message === "Asset not found") {
-      // Fallback to CoinGecko API
-      if (!chain) {
-        throw new Error("Chain is required for fallback")
-      }
-      const coingeckoResponse = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${chain.toLowerCase()}&vs_currencies=usd`,
-      )
-      const coingeckoJson = await coingeckoResponse.json()
-      const coingeckoRate = coingeckoJson[chain.toLowerCase()]?.usd
-
-      if (coingeckoRate && typeof coingeckoRate === "number") {
-        return coingeckoRate
-      }
-    }
 
     const rate = json?.data?.price
     if (!rate || typeof rate !== "number") {

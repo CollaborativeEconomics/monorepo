@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   ).toUpperCase() as TokenTickerSymbol
   const chain = (requrl.searchParams.get("chain") || "") as ChainSlugs
   try {
-    const rate = await getCoinRate({ symbol, chain })
+    const rate = await getCoinRate({ symbol })
     console.log("Ticker:", symbol, chain, rate)
     return Response.json({ coin: symbol, rate })
   } catch (ex) {
