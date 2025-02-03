@@ -1846,8 +1846,8 @@ importers:
         specifier: 19.0.0
         version: 19.0.0(webextension-polyfill@0.10.0)
       '@stellar/freighter-api':
-        specifier: 4.0.0
-        version: 4.0.0
+        specifier: 3.0.0
+        version: 3.0.0
       '@stellar/stellar-sdk':
         specifier: ^13.1.0
         version: 13.1.0
@@ -5523,6 +5523,9 @@ packages:
 
   '@starknet-io/types-js@0.7.10':
     resolution: {integrity: sha512-1VtCqX4AHWJlRRSYGSn+4X1mqolI1Tdq62IwzoU2vUuEE72S1OlEeGhpvd6XsdqXcfHmVzYfj8k1XtKBQqwo9w==}
+
+  '@stellar/freighter-api@3.0.0':
+    resolution: {integrity: sha512-AI1AeHnCPLMcM8d6182FScOJjCFd1tLZcNuu5M10NmtuLfNzavw+f991dWBoz6h41mOKjauIaojR+7VfU2nULg==}
 
   '@stellar/freighter-api@4.0.0':
     resolution: {integrity: sha512-LYuVAUuvmZhzissBoAQPu2InD+R7WW1NUAJZ3iD0mPa/e5pMEhQSQUQoBWLcSpSrsQduRSDqEn5Egu8caUjLgQ==}
@@ -16364,6 +16367,8 @@ snapshots:
       bowser: 2.11.0
 
   '@starknet-io/types-js@0.7.10': {}
+
+  '@stellar/freighter-api@3.0.0': {}
 
   '@stellar/freighter-api@4.0.0':
     dependencies:

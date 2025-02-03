@@ -69,7 +69,7 @@ export default async function Initiative(props: {
             }}
             className="-z-10"
           />
-          <div className="flex flex-col w-full h-auto px-4 absolute bottom-0">
+          <div className="flex flex-col w-full h-auto p-6 absolute bottom-0">
             <div className="w-auto w-max-full pb-6">
               <OrganizationAvatar
                 organization={organization}

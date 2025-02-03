@@ -183,6 +183,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         //amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || "",
       }
+      console.log("SENDING PAYMENT", data)
       const result = await chainInterface.sendPayment(data)
       console.log("PAYMENT RESULT", result)
       if (!result.success) {
