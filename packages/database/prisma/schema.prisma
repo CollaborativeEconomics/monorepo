@@ -243,18 +243,18 @@ model NFTData {
   initiativeId   String?      @db.Uuid
   metadataUri    String       @db.VarChar(255)
   imageUri       String       @db.VarChar(255)
+  chainId        Int?
   network        String?      @db.VarChar(20)
-  chainName      Chain?
+  chainName      String?      @db.VarChar(20)
   coinSymbol     String?      @db.VarChar(20)
   coinValue      Decimal      @default(0) @db.Decimal(14, 4)
   usdValue       Decimal      @default(0) @db.Decimal(14, 4)
+  transactionId  String?      @db.VarChar(255)
+  contractId     String?      @db.VarChar(255)
   tokenId        String       @db.VarChar(255)
   offerId        String?      @db.VarChar(255)
   status         Int          @default(0)
   donationId     String?      @db.Uuid
-  contractId     String?      @db.VarChar(255)
-  transactionId  String?      @db.VarChar(255)
-  chainId        Int?
   initiative     Initiative?  @relation(fields: [initiativeId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [id])

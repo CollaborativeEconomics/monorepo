@@ -29,7 +29,8 @@ export default async function Initiative(props: {
   //  console.log('RESTORED', result);
   //});
 
-  const organization = initiative.organization
+  let organization = initiative.organization
+  organization = JSON.parse(JSON.stringify(organization))
   let initiatives = await getInitiatives({ orgId: organization.id })
   initiatives = JSON.parse(JSON.stringify(initiatives))
 
@@ -54,59 +55,56 @@ export default async function Initiative(props: {
 
   return (
     <main className="w-full">
-      <div className="flex flex-col px-[5%] container pt-24 w-full h-full">
-        <div className="flex overflow-hidden flex-col md:flex-row relative">
-          <div className="relative w-full h-[300px] md:h-[400px] mb-4 rounded-lg overflow-hidden">
-            <Image
-              className="background-top"
-              src={initiative.defaultAsset}
-              alt="IMG BG"
-              fill
-              style={{
-                objectFit: "cover",
-              }}
-            />
-            <div
-              className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"
-              aria-hidden="true"
-            />
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 py-8 px-6 z-20 flex-row gap-4">
-            <>
-              <h1 className="text-2xl md:text-3xl font-medium text-white mb-3">
-                {initiative.title}
-              </h1>
+      <div className="relative flex flex-col px-[5%] container pt-24 w-full h-full">
+        <div className="relative h-96 rounded-lg overflow-hidden mb-4">
+          {/* Overlay */}
+          <div className="absolute left-0 right-0 top-0 bottom-0 h-full w-full bg-gradient-to-t from-black to-transparent opacity-50 -z-1" />
+          {/* Background */}
+          <Image
+            src={initiative.defaultAsset || "noimage.png"}
+            alt="Initiative background"
+            fill
+            style={{
+              objectFit: "cover",
+              objectPosition: "50% 10%",
+            }}
+            className="-z-10"
+          />
+          <div className="flex flex-col w-full h-auto px-4 absolute bottom-0">
+            <div className="w-auto w-max-full pb-6">
+              <OrganizationAvatar
+                organization={organization}
+                avatarProps={{ size: "md" }}
+              />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-medium text-white mb-3">
+              {initiative.title}
+            </h1>
 
-              <div className="text-white/90 mb-4">
-                <span className="text-sm md:text-base line-clamp-2">
-                  {initiative.description}
-                </span>
-              </div>
-              <div className="flex gap-4 flex-wrap">
-                {initiatives?.length > 1 && (
-                  <Link
-                    className="text-white font-bold hover:underline"
-                    href="#more"
-                  >
-                    See more initiatives
-                  </Link>
-                )}
-                {stories?.length > 0 && (
-                  <Link
-                    className="text-white font-bold hover:underline"
-                    href={`/stories?initiative=${initiative.id}`}
-                  >
-                    See impact storyline
-                  </Link>
-                )}
-              </div>
-            </>
-            <OrganizationAvatar
-              name={organization.name}
-              image={organization.image}
-              avatarProps={{ size: "md" }}
-              className="mb-4"
-            />
+            <div className="text-white/90 mb-4">
+              <span className="text-sm md:text-base line-clamp-2">
+                {initiative.description}
+              </span>
+            </div>
+
+            <div className="flex gap-4 flex-wrap">
+              {initiatives?.length > 1 && (
+                <Link
+                  className="text-white font-bold hover:underline"
+                  href="#more"
+                >
+                  See more initiatives
+                </Link>
+              )}
+              {stories?.length > 0 && (
+                <Link
+                  className="text-white font-bold hover:underline"
+                  href={`/stories?initiative=${initiative.id}`}
+                >
+                  See impact storyline
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 
@@ -137,13 +135,13 @@ export default async function Initiative(props: {
                     if (otherInitiative.id === initiative.id) {
                       return
                     }
-                    const otherPlain = JSON.parse(JSON.stringify(otherInitiative))
+                    const otherPlain = JSON.parse(
+                      JSON.stringify(otherInitiative),
+                    )
                     return (
                       <InitiativeCardCompact
-                        key={`other-${otherPlain.id}`}
-                        {...otherPlain}
-                        name={organization.name}
-                        avatarImg={organization.image ?? undefined}
+                        key={`other-${otherInitiative.id}`}
+                        initiative={otherPlain}
                       />
                     )
                   })

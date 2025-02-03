@@ -1,5 +1,5 @@
 'use client';
-import type { Prisma } from '@cfce/database';
+import type { InitiativeWithRelations, Prisma } from '@cfce/database';
 import {
   amountCoinAtom,
   amountUSDAtom,
@@ -15,13 +15,7 @@ import { ReceiptStatus } from '~/ui/receipt-status';
 import { NFTReceiptText } from './NFTReceiptText';
 
 interface ReceiptNFTProps {
-  initiative: Prisma.InitiativeGetPayload<{
-    include: {
-      organization: { include: { wallets: true } };
-      credits: true;
-      wallets: true;
-    };
-  }>;
+  initiative: InitiativeWithRelations;
 }
 
 export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
@@ -53,10 +47,7 @@ export default function NFTReceipt({ initiative }: ReceiptNFTProps) {
             src={initiative.defaultAsset ?? ''}
             alt="IMG BG"
             fill
-            style={{
-              objectFit: 'cover',
-              objectPosition: '50% 10%',
-            }}
+            className="rounded-sm object-cover"
           />
         </div>
         <ReceiptStatus status={donationForm.paymentStatus} />

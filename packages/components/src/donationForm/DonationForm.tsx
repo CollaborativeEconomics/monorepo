@@ -7,7 +7,12 @@ import {
   chainConfig,
   getChainConfigurationByName,
 } from "@cfce/blockchain-tools"
-import type { Chain, Prisma, User } from "@cfce/database"
+import type {
+  Chain,
+  InitiativeWithRelations,
+  Prisma,
+  User,
+} from "@cfce/database"
 import {
   PAYMENT_STATUS,
   amountCoinAtom,
@@ -45,13 +50,7 @@ import { RateMessage } from "./RateMessage"
 import { WalletSelect } from "./WalletSelect"
 
 interface DonationFormProps {
-  initiative: Prisma.InitiativeGetPayload<{
-    include: {
-      organization: { include: { wallets: true } }
-      credits: true
-      wallets: true
-    }
-  }>
+  initiative: InitiativeWithRelations
   rate: number
 }
 
@@ -171,9 +170,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   console.log("DESTINATION WALLET", destinationWalletAddress)
 
   const checkBalance = useCallback(async () => {
-    console.log('BALANCE')
+    console.log("BALANCE")
     const balanceCheck = await chainInterface?.getBalance?.()
-    console.log('BALANCED', balanceCheck)
+    console.log("BALANCED", balanceCheck)
     if (!balanceCheck || "error" in balanceCheck) {
       const error = new Error(balanceCheck?.error ?? "Failed to check balance")
       throw error
@@ -323,9 +322,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         const error = new Error("No connect method on chain interface")
         throw error
       }
-      console.log('CONNECT')
+      console.log("CONNECT")
       const connected = await chainInterface?.connect(network.id)
-      console.log('CONNECTED', connected)
+      console.log("CONNECTED", connected)
 
       if (appConfig.siteInfo.options.enableFetchBalance) {
         console.log("CHECKING BALANCE")
@@ -536,9 +535,10 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         </div>
         <Separator />
         <div className="px-6">
-          {appConfig.siteInfo.options.showCarbonCreditDisplay && (
-            <CarbonCreditDisplay initiative={initiative} />
-          )}
+          {appConfig.siteInfo.options.showCarbonCreditDisplay &&
+            initiative.contractcredit && (
+              <CarbonCreditDisplay initiative={initiative} />
+            )}
           <div className="w-full mt-6 mb-2">
             <DonationAmountInput label="Amount" />
             <RateMessage />

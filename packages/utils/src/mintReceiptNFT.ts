@@ -67,7 +67,6 @@ export async function mintAndSaveReceiptNFT({
     console.log("Chain", chain)
     console.log("Token", token)
     const rate = await getCoinRate({ chain, symbol: token })
-    const chainName = chainConfig[chain].name
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {
@@ -122,7 +121,8 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Check for existing receipt
-    const existingReceipt = await getNFTbyTokenId(txId, chain)
+    const chainName = chainConfig[chain].name
+    const existingReceipt = await getNFTbyTokenId(txId, chainName)
     if (existingReceipt) {
       return { success: false, error: "Receipt already exists" }
     }
@@ -229,6 +229,7 @@ export async function mintAndSaveReceiptNFT({
     const currentChain = appConfig.chains[chain]
     if (!currentChain) throw new Error("Chain not found")
     const network = currentChain.network
+    const config = chainConfig[chain].networks[network]
 
     // #region: Prepare and upload metadata
     const metadata = {
@@ -342,8 +343,8 @@ export async function mintAndSaveReceiptNFT({
       uri: uriMeta,
       walletSeed: walletSecret,
     }
-    console.log('ARGS1', args)
-    const mintResponse = await chainTool.mintNFT(args)  // <<<<< ERROR HERE FOR XRPL
+    console.log("ARGS1", args)
+    const mintResponse = await chainTool.mintNFT(args) // <<<<< ERROR HERE FOR XRPL
     console.log("RESMINT", mintResponse)
     if (!mintResponse) {
       throw new Error("Error minting NFT")
@@ -367,10 +368,13 @@ export async function mintAndSaveReceiptNFT({
       imageUri: uriImage,
       network: network,
       coinSymbol: token,
-      chainName: chainName,
+      chainName,
+      chainId: config.id,
       coinValue: amountCUR,
       usdValue: amountUSD,
       tokenId: tokenId,
+      contractId: receiptContract,
+      transactionId: txId,
       status: DonationStatus.claimed,
     }
     console.log("NFT", data)
@@ -397,7 +401,7 @@ export async function mintAndSaveReceiptNFT({
         uri: uriMeta,
         walletSeed: walletSecret,
       }
-      console.log('ARGS2', args2)
+      console.log("ARGS2", args2)
       //const mintResponse2 = await BlockchainManager[chain]?.server.mintNFT(args2)
       const mintResponse2 = await chainTool.mintNFT(args2)
       console.log("RESMINT2", mintResponse2)

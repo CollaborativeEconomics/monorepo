@@ -34,9 +34,9 @@ const style = {
     width: "40px",
     height: "20px",
     margin: "0px 4px",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
-    backgroundColor: "#f6f6f6",
+    // border: "1px solid #ccc",
+    // borderRadius: "6px",
+    // backgroundColor: "#f6f6f6",
   },
   off: {
     boxSizing: "border-box",
@@ -45,44 +45,46 @@ const style = {
     height: "20px",
     margin: "0px 4px",
     // border: '1px solid #00440044',
-    borderRadius: "6px",
+    // borderRadius: "6px",
     // backgroundColor: '#00aa00', // 1a56db blue
   },
+  // lime-500: #7ccf00, lime-700: #64a800
+  // slate-100: rgba(241,245,249,0.2), slate-200: rgba(226,232,240,0.2)
   p10: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 10%, #fff 10%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 10%,rgba(241,245,249,0.2) 10%,rgba(226,232,240,0.2))",
   },
   p20: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 20%, #fff 20%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 20%,rgba(241,245,249,0.2) 20%,rgba(226,232,240,0.2))",
   },
   p30: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 30%, #fff 30%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 30%,rgba(241,245,249,0.2) 30%,rgba(226,232,240,0.2))",
   },
   p40: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 40%, #fff 40%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 40%,rgba(241,245,249,0.2) 40%,rgba(226,232,240,0.2))",
   },
   p50: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 50%, #fff 50%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 50%,rgba(241,245,249,0.2) 50%,rgba(226,232,240,0.2))",
   },
   p60: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 60%, #fff 60%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 60%,rgba(241,245,249,0.2) 60%,rgba(226,232,240,0.2))",
   },
   p70: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 70%, #fff 70%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 70%,rgba(241,245,249,0.2) 70%,rgba(226,232,240,0.2))",
   },
   p80: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 80%, #fff 80%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 80%,rgba(241,245,249,0.2) 80%,rgba(226,232,240,0.2))",
   },
   p90: {
-    background:
-      "linear-gradient(to right, #00aa00 0%, #00aa00 90%, #fff 90%, #fff 100%)",
+    backgroundImage:
+      "linear-gradient(90deg,#7ccf00 0%,#64a800 90%,rgba(241,245,249,0.2) 90%,rgba(226,232,240,0.2))",
   },
 } as const
 
@@ -90,15 +92,15 @@ function CarbonChart({ title, goal = 100, value, max100 = true }: ChartType) {
   console.log("CHART", goal, value)
   const max = max100 ? 100 : goal
   const pct: Record<number, Record<string, string>> = {
-    10: { ...style.ton, ...style.p10 },
-    20: { ...style.ton, ...style.p20 },
-    30: { ...style.ton, ...style.p30 },
-    40: { ...style.ton, ...style.p40 },
-    50: { ...style.ton, ...style.p50 },
-    60: { ...style.ton, ...style.p60 },
-    70: { ...style.ton, ...style.p70 },
-    80: { ...style.ton, ...style.p80 },
-    90: { ...style.ton, ...style.p90 },
+    10: style.p10,
+    20: style.p20,
+    30: style.p30,
+    40: style.p40,
+    50: style.p50,
+    60: style.p60,
+    70: style.p70,
+    80: style.p80,
+    90: style.p90,
   }
   const num = value
   const int = Math.trunc(num)
@@ -121,22 +123,30 @@ function CarbonChart({ title, goal = 100, value, max100 = true }: ChartType) {
     <>
       <div className="text-center mb-4">{title}</div>
       <div className="max-w-[480px]">
+        {/* full */}
         {offs.map((i) => {
           return (
             <div
               style={style.off}
               key={keyRand()}
-              className="bg-gradient-to-br from-lime-500 to-lime-700 border-lime-700 rounded-lg shadow-lg border"
+              className="bg-gradient-to-br from-lime-500 to-lime-700 border-lime-700 shadow-lg border rounded-sm"
             />
           )
         })}
-        {dec > 0 ? <div style={prt} /> : null}
+        {/* partial */}
+        {dec > 0 ? (
+          <div
+            style={{ ...style.ton, ...prt }}
+            className="rounded-sm shadow-lg border border-slate-400"
+          />
+        ) : null}
+        {/* empty */}
         {tons.map((i) => {
           return (
             <div
               style={style.ton}
               key={keyRand()}
-              className="bg-gradient-to-br from-slate-100 to-slate-200"
+              className="bg-gradient-to-br from-slate-100/20 to-slate-200/20 rounded-sm shadow-lg border border-slate-400"
             />
           )
         })}

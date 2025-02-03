@@ -1,35 +1,35 @@
 /// <reference path="./metamask.d.ts" />
 
+import appConfig from "@cfce/app-config"
 import type {
-  Network,
   ChainSlugs,
+  Network,
   NetworkConfig,
   TokenTickerSymbol,
 } from "@cfce/types"
 import type { MetaMaskInpageProvider } from "@metamask/providers"
+import {
+  http,
+  connect,
+  createConfig,
+  estimateGas,
+  getBalance,
+  sendTransaction,
+} from "@wagmi/core"
+import { injected } from "@wagmi/core"
+import { arbitrumSepolia, mainnet, sepolia } from "@wagmi/core/chains"
 import { erc20Abi } from "viem"
+import { formatUnits, parseEther } from "viem"
 import Web3 from "web3"
 import type {
   ProviderConnectInfo,
   ProviderMessage,
   ProviderRpcError,
 } from "web3"
-import {
-  http,
-  createConfig,
-  connect,
-  getBalance,
-  sendTransaction,
-  estimateGas,
-} from "@wagmi/core"
-import { mainnet, sepolia, arbitrumSepolia } from "@wagmi/core/chains"
-import { injected } from "@wagmi/core"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
+import chainConfig from "../chains/chainConfig"
 import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
-import { formatUnits, parseEther } from "viem"
-import appConfig from "@cfce/app-config"
-import chainConfig from "../chains/chainConfig"
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {
@@ -226,7 +226,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
                   symbol: provider.symbol,
                 },
                 rpcUrls: [provider.rpcUrls.main],
-                blockExplorerUrls: [provider.explorer],
+                blockExplorerUrls: [provider.explorer.url],
               },
             ],
           })
