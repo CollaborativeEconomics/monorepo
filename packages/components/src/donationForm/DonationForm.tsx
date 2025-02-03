@@ -83,8 +83,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   })
   //console.log('INIT STATE', chainState)
 
-  const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
-    chainState
+  const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState
   const [donationForm, setDonationForm] = useAtom(donationFormAtom)
   const { emailReceipt, name, email, amount } = donationForm
   const usdAmount = useAtomValue(amountUSDAtom)
@@ -234,6 +233,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     }) => {
       try {
         setButtonMessage("Minting NFT receipt, please wait...")
+        const usdValue = coinAmount * exchangeRate
         const data = {
           donorName: name || "Anonymous",
           email: emailReceipt ? email : undefined,
@@ -244,6 +244,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             donorWalletAddress: paymentResult.walletAddress ?? "",
             destinationWalletAddress,
             amount,
+            usdValue,
+            rate,
             txId: paymentResult.txid ?? "",
             chain: selectedChain,
             token: selectedToken,

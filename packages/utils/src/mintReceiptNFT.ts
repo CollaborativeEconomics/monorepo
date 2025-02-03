@@ -37,6 +37,8 @@ interface MintAndSaveReceiptNFTParams {
     donorWalletAddress: string
     destinationWalletAddress: string
     amount: number
+    usdValue: number
+    rate: number
     date: string
   }
   initiativeId: string
@@ -61,12 +63,14 @@ export async function mintAndSaveReceiptNFT({
       donorWalletAddress,
       destinationWalletAddress,
       amount,
+      usdValue,
+      rate,
       date,
     } = transaction
     console.log("MINT", chain, txId)
     console.log("Chain", chain)
     console.log("Token", token)
-    const rate = await getCoinRate({ chain, symbol: token })
+    //const rate = await getCoinRate({ chain, symbol: token }) // We should get the rate only once in form and pass it as param here
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {

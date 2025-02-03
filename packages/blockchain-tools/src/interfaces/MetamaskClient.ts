@@ -128,6 +128,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   }
 
   setListeners() {
+    console.log("LISTENERS", this)
     if (!this.metamask) {
       console.error("Metamask not available")
       return
