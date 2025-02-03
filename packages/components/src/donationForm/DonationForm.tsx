@@ -161,12 +161,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   console.log("DESTINATION WALLET", destinationWalletAddress)
 
   const checkBalance = useCallback(async () => {
-    if (!chainInterface?.connect) {
-      const error = new Error("No connect method on chain interface")
-      throw error
-    }
-    await chainInterface.connect(network.id)
+    console.log('BALANCE')
     const balanceCheck = await chainInterface?.getBalance?.()
+    console.log('BALANCED', balanceCheck)
     if (!balanceCheck || "error" in balanceCheck) {
       const error = new Error(balanceCheck?.error ?? "Failed to check balance")
       throw error
@@ -311,6 +308,14 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const onSubmit = useCallback(async () => {
     try {
       validateForm({ email })
+
+      if (!chainInterface?.connect) {
+        const error = new Error("No connect method on chain interface")
+        throw error
+      }
+      console.log('CONNECT')
+      const connected = await chainInterface?.connect(network.id)
+      console.log('CONNECTED', connected)
 
       if (appConfig.siteInfo.options.enableFetchBalance) {
         console.log("CHECKING BALANCE")

@@ -77,6 +77,7 @@ export default class XummClient extends XrplCommon {
   }> {
     console.log("XRP Sending payment...", address, amount, memo)
     const wallet = this.getWallet()
+    console.log('WALLET', wallet)
     try {
       const request: XummJsonTransaction = {
         TransactionType: "Payment",
@@ -86,10 +87,12 @@ export default class XummClient extends XrplCommon {
       if (memo) {
         request.DestinationTag = memo
       }
+      console.log('REQUEST', request)
       //this.sendPayload(request, callback)
       const payload = await wallet.payload?.createAndSubscribe(
         request,
         (event) => {
+          console.log("REQUESTED")
           if (Object.keys(event.data).indexOf("opened") > -1) {
             // Update the UI? The payload was opened.
             console.log("OPENED")
