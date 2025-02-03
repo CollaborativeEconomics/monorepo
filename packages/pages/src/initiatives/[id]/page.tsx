@@ -124,8 +124,8 @@ export default async function Initiative(props: {
         <Separator className="py-4" />
 
         {/* Stories and Initiatives  */}
-        <div className="flex gap-6">
-          <div className="w-1/2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
             <p className="text-3xl font-semibold py-6">
               <span id="more">Other Initiatives</span>
             </p>
@@ -147,13 +147,13 @@ export default async function Initiative(props: {
               )}
             </div>
           </div>
-          <div className="w-1/2">
+          <div>
             <p className="text-3xl font-semibold py-6">
               <span id="stories">Stories</span>
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 xxl:grid-cols-2 gap-4">
               {stories?.length > 0 ? (
-                stories.map((story: any) => {
+                stories.map((story) => {
                   return <StoryCard key={story.id} story={story} />
                 })
               ) : (

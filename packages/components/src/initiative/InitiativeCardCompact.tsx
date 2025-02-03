@@ -1,29 +1,29 @@
-import type { Initiative, Organization } from '@cfce/database';
-import { ipfsCIDToUrl } from '@cfce/utils';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-import OrganizationAvatar from '~/organization/OrganizationAvatar';
-import { Button } from '~/ui/button';
-import { Card, CardContent } from '~/ui/card';
-import { DateDisplay } from '~/ui/date-posted';
-import { Progress } from '~/ui/progress';
-import { Separator } from '~/ui/separator';
+import type { Initiative, Organization } from "@cfce/database"
+import { ipfsCIDToUrl } from "@cfce/utils"
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+import OrganizationAvatar from "~/organization/OrganizationAvatar"
+import { Button } from "~/ui/button"
+import { Card, CardContent } from "~/ui/card"
+import { DateDisplay } from "~/ui/date-posted"
+import { Progress } from "~/ui/progress"
+import { Separator } from "~/ui/separator"
 
 interface InitiativeCardCompactProps extends Initiative {
-  organization: Organization;
+  organization: Organization
 }
 
 export default function InitiativeCardCompact({
   initiative,
 }: {
-  initiative: InitiativeCardCompactProps;
+  initiative: InitiativeCardCompactProps
 }) {
-  console.log('initiative', initiative);
+  console.log("initiative", initiative)
   return (
     <Card className="flex flex-col overflow-hidden">
       <CardContent className="flex flex-col pb-8 pt-3 gap-3 px-0">
-        <Link href={`/initiative/${initiative.id}`}>
+        <Link href={`/initiatives/${initiative.id}`}>
           <div className="inline-flex">
             {initiative.defaultAsset && (
               <Image
@@ -57,7 +57,7 @@ export default function InitiativeCardCompact({
         <Separator />
         <div className="px-6 pt-6 inline-flex justify-between">
           <OrganizationAvatar organization={initiative.organization} />
-          <Link href={`/initiative/${initiative.id}`}>
+          <Link href={`/initiatives/${initiative.id}`}>
             <Button className="mx-6 bg-transparent text-black dark:text-white outline outline-slate-300 outline-1">
               Donate
             </Button>
@@ -65,5 +65,5 @@ export default function InitiativeCardCompact({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
