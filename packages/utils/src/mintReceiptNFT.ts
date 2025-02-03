@@ -364,7 +364,7 @@ export async function mintAndSaveReceiptNFT({
       imageUri: uriImage,
       network: network,
       coinSymbol: token,
-      chainName: config.name,
+      chainName,
       chainId: config.id,
       coinValue: amountCUR,
       usdValue: amountUSD,
@@ -398,7 +398,8 @@ export async function mintAndSaveReceiptNFT({
         walletSeed: walletSecret,
       }
       //const mintResponse2 = await BlockchainManager[chain]?.server.mintNFT(args2)
-      const mintResponse2 = await chainTool.mintNFT(args2)
+      BlockchainServerInterfaces.evm.setChain("xdc")
+      const mintResponse2 = await BlockchainServerInterfaces.evm.mintNFT(args2)
       console.log("RESMINT2", mintResponse2)
       if (!mintResponse2) {
         throw new Error("Error minting NFT")
