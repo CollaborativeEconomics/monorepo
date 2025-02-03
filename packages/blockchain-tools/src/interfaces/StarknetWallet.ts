@@ -54,6 +54,7 @@ class StarknetWallet extends InterfaceBaseClass {
     super()
     this.network = getNetworkForChain("starknet")
     this.chain = chainConfiguration.starknet
+    console.log("CHAIN", this.network.rpcUrls.main)
 
     this.provider = new RpcProvider({
       nodeUrl: this.network.rpcUrls.main,
@@ -386,7 +387,7 @@ class StarknetWallet extends InterfaceBaseClass {
     try {
       const provider = this.provider
 
-      const minterAddress = appConfig.chains.starknet?.contracts.receiptMintbotERC721
+      const minterAddress = appConfig.chains.starknet?.wallet
       if (!minterAddress || !walletSeed) {
         throw new Error("Minter address or wallet seed not available")
       }
@@ -396,6 +397,8 @@ class StarknetWallet extends InterfaceBaseClass {
       const contractABI = (await provider.getClassAt(contractId)).abi;
 
       const contract = new Contract(contractABI, contractId, provider)
+      console.log("Contract ID", contractId)
+      console.log("provider", provider)
       // Generate unique token ID
       // const tokenId = 1;
       // const call = {
@@ -404,7 +407,7 @@ class StarknetWallet extends InterfaceBaseClass {
       //   calldata: [address, uri],
       // }
       console.log("Contract Function", contract.functions)
-      const call = contract.populate("safeMint", {
+      const call = contract.populate("mint", {
         recipient: address,
         data: uri,
       })
