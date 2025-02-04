@@ -105,23 +105,32 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const [errorDialogState, setErrorDialogState] = useState(false)
   const { toast } = useToast()
 
-  const handleError = useCallback((error: unknown) => {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred"
+  const handleError = useCallback(
+    (error: unknown) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred"
 
-    const canRetryWithGas =
-      errorMessage.includes("gasless") ||
-      errorMessage.includes("insufficient funds") ||
-      errorMessage.includes("rejected") ||
-      errorMessage.includes("No API keys found")
+      const canRetryWithGas =
+        errorMessage.includes("gasless") ||
+        errorMessage.includes("insufficient funds") ||
+        errorMessage.includes("rejected") ||
+        errorMessage.includes("No API keys found")
 
-    if (canRetryWithGas) {
-      setErrorDialogState(true)
-    }
+      if (canRetryWithGas) {
+        setErrorDialogState(true)
+      }
 
-    setButtonMessage(errorMessage)
-    throw new Error(errorMessage)
-  }, [])
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      })
+
+      setButtonMessage(errorMessage)
+      throw new Error(errorMessage)
+    },
+    [toast],
+  )
 
   // Disable chains that don't have wallets
   useEffect(() => {

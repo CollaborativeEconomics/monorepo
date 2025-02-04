@@ -27,7 +27,6 @@ import {
 } from "@cfce/types"
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
-import { registryApi } from "./registryApi"
 
 interface MintAndSaveReceiptNFTParams {
   transaction: {
@@ -66,7 +65,7 @@ export async function mintAndSaveReceiptNFT({
     console.log("MINT", chain, txId)
     console.log("Chain", chain)
     console.log("Token", token)
-    const rate = await getCoinRate({ chain, symbol: token })
+    const rate = await getCoinRate({ symbol: token })
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {
