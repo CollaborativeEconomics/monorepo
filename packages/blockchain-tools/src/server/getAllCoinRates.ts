@@ -6,7 +6,7 @@ import chainConfiguration from "../chains/chainConfig"
 import getCoinRate from "./getCoinRate"
 
 export type CoinRateResult = {
-  chain: ChainSlugs
+  // chain: ChainSlugs
   symbol: TokenTickerSymbol
   rate: number
 }

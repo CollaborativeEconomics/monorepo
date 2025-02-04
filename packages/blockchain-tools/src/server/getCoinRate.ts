@@ -49,9 +49,7 @@ export default async function getCoinRate({
 
     const rate = json?.data?.price
     if (!rate || typeof rate !== "number") {
-      console.log(
-        `No price quote found in response chain: ${chain} symbol: ${symbol}`,
-      )
+      console.log(`No price quote found in response symbol: ${symbol}`)
       //console.log(response.object)
       // throw new Error(`No price quote found in response ${JSON.stringify(response.object?.data)}`)
       return 0
