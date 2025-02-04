@@ -1,3 +1,4 @@
+import React from 'react';
 import { ProfileForm } from '@cfce/components/client/profile';
 import { UserDonationsTable, UserWallets } from '@cfce/components/profile';
 import {

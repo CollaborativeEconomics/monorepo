@@ -17,10 +17,14 @@ import {
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
 import { Triggers, runHook } from "@cfce/registry-hooks"
-import { ChainSlugs, DonationStatus, EntityType, TokenTickerSymbol } from "@cfce/types"
+import {
+  ChainSlugs,
+  DonationStatus,
+  EntityType,
+  TokenTickerSymbol,
+} from "@cfce/types"
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
-import { registryApi } from "./registryApi"
 
 interface MintAndSaveReceiptNFTParams {
   transaction: {
@@ -59,7 +63,7 @@ export async function mintAndSaveReceiptNFT({
     console.log("MINT", chain, txId)
     console.log("Chain", chain)
     console.log("Token", token)
-    const rate = await getCoinRate({ chain, symbol: token })
+    const rate = await getCoinRate({ symbol: token })
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {
@@ -121,9 +125,18 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Initialize blockchain tools and verify transaction
-    const chainTool = BlockchainServerInterfaces.evm
-    chainTool.setChain(chain)
-
+    let chainTool: typeof BlockchainServerInterfaces[keyof typeof BlockchainServerInterfaces]
+    if (chain === "stellar") {
+      chainTool = BlockchainServerInterfaces.stellar
+    } else if (chain === "xrpl") {
+      chainTool = BlockchainServerInterfaces.xrpl
+    } else if (chain === "starknet") {
+      chainTool = BlockchainServerInterfaces.starknet
+    } else {
+      chainTool = BlockchainServerInterfaces.evm
+      chainTool.setChain(chain)
+    }
+    console.log("TxId", txId)
     const txInfo = await chainTool.getTransactionInfo(txId, true) // wait for receipt
     if ("error" in txInfo) {
       console.log("ERROR", "Transaction not found")
@@ -344,9 +357,9 @@ export async function mintAndSaveReceiptNFT({
       initiative: { connect: { id: initiativeId } },
       metadataUri: uriMeta,
       imageUri: uriImage,
-      coinNetwork: network,
+      network: network,
+      chainName: chain,
       coinSymbol: token,
-      coinLabel: chain,
       coinValue: amountCUR,
       usdValue: amountUSD,
       tokenId: tokenId,
@@ -361,9 +374,14 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Mint NFTCC and attach to TBA for donor
-    const tbaRec = await getTokenBoundAccount(EntityType.user, userId, chain, network)
+    const tbaRec = await getTokenBoundAccount(
+      EntityType.user,
+      userId,
+      chain,
+      network,
+    )
     const tbAddress = tbaRec?.account_address
-    if(tbAddress){
+    if (tbAddress) {
       let tokenId2 = ""
       const args2 = {
         contractId: receiptContract,
@@ -380,7 +398,10 @@ export async function mintAndSaveReceiptNFT({
       if ("error" in mintResponse2 && typeof mintResponse2.error === "string") {
         throw new Error(mintResponse2.error)
       }
-      if ("tokenId" in mintResponse2 && typeof mintResponse2.tokenId === "string") {
+      if (
+        "tokenId" in mintResponse2 &&
+        typeof mintResponse2.tokenId === "string"
+      ) {
         tokenId2 = mintResponse2?.tokenId
       }
     }

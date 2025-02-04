@@ -99,13 +99,13 @@ export default async function NFT(props: { params: Promise<{ id: string }> }) {
                 <label className="inline-block w-32 text-slate-400 font-semibold">
                   Chain:
                 </label>{' '}
-                <span>{nft.coinLabel}</span>
+                <span>{nft.chainName}</span>
               </p>
               <p className="mt-4">
                 <label className="inline-block w-32 text-slate-400 font-semibold">
                   Network:
                 </label>{' '}
-                <span>{nft.coinNetwork}</span>
+                <span>{nft.network}</span>
               </p>
               <p className="mt-4">
                 <label className="inline-block w-32 text-slate-400 font-semibold">

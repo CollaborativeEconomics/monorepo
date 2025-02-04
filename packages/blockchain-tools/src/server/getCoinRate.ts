@@ -21,8 +21,8 @@ import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 //   return exchangeRate
 // }
 
+// TODO: handle stablecoins
 export default async function getCoinRate({
-  chain,
   symbol,
 }: { symbol: TokenTickerSymbol; chain?: ChainSlugs }): Promise<number> {
   try {
@@ -35,7 +35,7 @@ export default async function getCoinRate({
       Authorization: `${process.env.MOBULA_API_KEY}`,
     }
     const response = await fetch(
-      `https://api.mobula.io/api/1/market/data?symbol=${symbol}&blockchain=${chain}`,
+      `https://api.mobula.io/api/1/market/data?symbol=${symbol}`,
       {
         ...options,
         headers,
@@ -43,6 +43,7 @@ export default async function getCoinRate({
     )
     const json = await response.json()
     console.log("RESPONSE", json)
+
     const rate = json?.data?.price
     if (!rate || typeof rate !== "number") {
       console.log("No price quote found in response")

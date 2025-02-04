@@ -485,7 +485,7 @@ chainConfiguration.starknet.networks.testnet = {
   gasprice: "250000000",
   explorer: "https://sepolia.starkscan.co/",
   rpcUrls: {
-    main: "https://starknet-sepolia.public.blastapi.io",
+    main: "https://free-rpc.nethermind.io/sepolia-juno/",
   },
   tokens: {
     USDT: {

@@ -20,8 +20,8 @@ import { Separator } from '../ui';
 export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
   created,
   donorAddress,
-  coinNetwork,
-  coinLabel, // TODO: I think this is wrong sometimes (at least it is in the DB), find out why
+  network,
+  chainName, // TODO: I think this is wrong sometimes (at least it is in the DB), find out why
   coinSymbol,
   coinValue,
   usdValue,
@@ -31,15 +31,15 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
-  if (!coinLabel) return <div>No chain</div>;
+  if (!chainName) return <div>No chain</div>;
   const isChain = (chain: string): chain is Chain => {
     return ChainNames.some(c => c === chain);
   };
-  if (!isChain(coinLabel)) {
+  if (!isChain(chainName)) {
     return null;
   }
-  const chainDetails = getChainConfigurationByName(coinLabel);
-  const network = chainDetails.networks[appConfig.chainDefaults.network];
+  const chainDetails = getChainConfigurationByName(chainName);
+  const chainNetwork = chainDetails.networks[appConfig.chainDefaults.network];
   return (
     <div>
       <span className="text-sm text-muted-foreground">
@@ -121,7 +121,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
                 variant="default"
                 className="flex-1"
                 onClick={() => {
-                  const url = `${network.explorer}/token/${tokenId}`;
+                  const url = `${chainNetwork.explorer}/token/${tokenId}`;
                   window.open(url, '_blank');
                 }}
               >
@@ -208,7 +208,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = ({
                           <span className="text-sm text-muted-foreground">
                             Network
                           </span>
-                          <span className="text-sm">{coinNetwork}</span>
+                          <span className="text-sm">{network}</span>
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm text-muted-foreground">

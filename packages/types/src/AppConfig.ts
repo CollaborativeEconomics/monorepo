@@ -39,6 +39,8 @@ export interface AppConfig {
     }
     options: {
       showCarbonCreditDisplay: boolean
+      enableGaslessTransactions: boolean
+      enableFetchBalance: boolean
     }
   }
   apis: {

@@ -1,24 +1,4 @@
 import {
-  connect,
-  disconnect,
-  type Connector,
-  type StarknetWindowObject,
-} from "starknetkit"
-import {
-  Account,
-  constants,
-  Contract,
-  num,
-  Provider,
-  RpcProvider,
-  TransactionFinalityStatus,
-} from "starknet"
-import type {
-  GetTransactionReceiptResponse,
-  Call,
-  AccountInterface,
-} from "starknet"
-import {
   type GaslessOptions,
   SEPOLIA_BASE_URL,
   executeCalls,
@@ -31,12 +11,31 @@ import type {
   Network,
   NetworkConfig,
 } from "@cfce/types"
+import {
+  constants,
+  Account,
+  Contract,
+  RpcProvider,
+  TransactionFinalityStatus,
+  WalletAccount,
+} from "starknet"
+import type {
+  AccountInterface,
+  Call,
+  GetTransactionReceiptResponse,
+  Provider,
+} from "starknet"
+import {
+  type Connector,
+  type StarknetWindowObject,
+  connect,
+  disconnect,
+} from "starknetkit"
 import { formatEther, parseEther } from "viem"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"
-import { ERC721ABI } from "../contracts/starknet/ERC721Abi"
 
 class StarknetWallet extends InterfaceBaseClass {
   provider: Provider
@@ -54,8 +53,8 @@ class StarknetWallet extends InterfaceBaseClass {
     this.network = getNetworkForChain("starknet")
     this.chain = chainConfiguration.starknet
 
-    this.provider = new Provider({
-      nodeUrl: process.env.STARKNET_RPC_URI,
+    this.provider = new RpcProvider({
+      nodeUrl: this.network.rpcUrls.main,
     })
 
     this.contract = new Contract(
@@ -63,15 +62,13 @@ class StarknetWallet extends InterfaceBaseClass {
       "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
       this.provider,
     )
-    //console.log("STARKNET INIT")
-    //console.log("RPC provider", this.provider)
   }
 
   async init() {
     const starknet = await connect({
       modalMode: "alwaysAsk",
     })
-    if (starknet?.wallet) {
+    if (starknet) {
       return { success: true }
     }
     return { success: false }
@@ -83,17 +80,14 @@ class StarknetWallet extends InterfaceBaseClass {
     })
 
     const account = await connector?.account(this.provider)
-
-    // Get current chain from wallet
     const currentChain = await this.provider?.getChainId()
-
     const envChain = appConfig.chains.starknet?.network
 
     // Determine target network based on environment
     const targetChainId =
       envChain === "mainnet"
-        ? constants.StarknetChainId.SN_MAIN // Mainnet for production
-        : constants.StarknetChainId.SN_SEPOLIA // Sepolia for development
+        ? constants.StarknetChainId.SN_MAIN
+        : constants.StarknetChainId.SN_SEPOLIA
 
     // Switch network if needed
     if (currentChain !== targetChainId) {
@@ -105,7 +99,6 @@ class StarknetWallet extends InterfaceBaseClass {
           },
         })
       } catch (error) {
-        console.error("Failed to switch network:", error)
         throw new Error(
           `Please switch to ${envChain === "mainnet" ? "Mainnet" : "Sepolia"} network in your wallet`,
         )
@@ -130,8 +123,6 @@ class StarknetWallet extends InterfaceBaseClass {
 
   async connect() {
     try {
-      console.log("CONNECT...")
-
       await this.getWallet()
 
       if (this.connectedWallet) {
@@ -145,24 +136,32 @@ class StarknetWallet extends InterfaceBaseClass {
 
       throw new Error("Failed to connect wallet")
     } catch (ex) {
-      console.error(ex)
       return { success: false, error: ex instanceof Error ? ex.message : "" }
     }
   }
 
-  public async sendPaymentWithGas(address: string, amount: number) {
+  public async sendPayment({
+    address,
+    amount,
+    memo,
+  }: { address: string; amount: number; memo?: string }) {
     try {
       if (!this.connector) {
-        ({ connector: this.connector } = await this.getWallet())
+        ;({ connector: this.connector } = await this.getWallet())
       }
 
-      const account = await this.connector?.account(this.provider)
+      // const account = await this.connector?.account(this.provider)
+      const account = this.wallet
       if (!account) {
         throw new Error("No account found")
       }
 
+      const walletAccount = new WalletAccount(
+        this.provider,
+        this.wallet as StarknetWindowObject,
+      )
       const calls = this.prepareTransferCall(address, amount)
-      const result = await account.execute(calls)
+      const result = await walletAccount.execute(calls)
       const tx = result.transaction_hash
 
       const txResult = await this.provider.waitForTransaction(tx, {
@@ -172,7 +171,6 @@ class StarknetWallet extends InterfaceBaseClass {
       if (txResult.statusReceipt === "success") {
         return {
           success: true,
-          result: txResult,
           txid: tx,
           walletAddress: this.connectedWallet,
         }
@@ -181,11 +179,9 @@ class StarknetWallet extends InterfaceBaseClass {
       return {
         success: false,
         error: "Transaction failed",
-        result: txResult,
         txid: tx,
       }
     } catch (gasErr) {
-      console.error("Error executing gas transaction", gasErr)
       return {
         success: false,
         error:
@@ -230,18 +226,17 @@ class StarknetWallet extends InterfaceBaseClass {
     ]
   }
 
-  async sendPayment({
+  async sendGaslessPayment({
     address,
     amount,
     memo,
   }: { address: string; amount: number; memo: string }) {
     try {
-      // Check if API keys are available
       if (
         !process.env.NEXT_PUBLIC_AVNU_PUBLIC_KEY ||
         !process.env.NEXT_PUBLIC_AVNU_KEY
       ) {
-        return this.sendPaymentWithGas(address, amount)
+        throw new Error("No API keys found")
       }
 
       let connector = this.connector
@@ -249,10 +244,10 @@ class StarknetWallet extends InterfaceBaseClass {
         ;({ connector } = await this.getWallet())
       }
 
-      const account = await connector?.account(this.provider)
-      console.log("Account", account)
-      console.log("Account connected")
-
+      const account = new WalletAccount(
+        this.provider,
+        this.wallet as StarknetWindowObject,
+      )
       const calls = this.prepareTransferCall(address, amount)
 
       const options: GaslessOptions = {
@@ -262,7 +257,6 @@ class StarknetWallet extends InterfaceBaseClass {
       }
 
       const gasTokenPrice = await fetchGasTokenPrices(options)
-      console.log("GasTokenPrice", gasTokenPrice)
 
       if (!account) {
         throw new Error("Account not found")
@@ -270,14 +264,11 @@ class StarknetWallet extends InterfaceBaseClass {
 
       let txid: string
       try {
-        // First attempt: gasless transaction
         txid = (await executeCalls(account, calls, {}, options)).transactionHash
       } catch (err) {
-        console.error("Error executing gasless calls", err)
         throw new Error("Failed to execute gasless transaction")
       }
 
-      console.log("TX", txid)
       const tx = txid
 
       if (!tx) {
@@ -291,7 +282,6 @@ class StarknetWallet extends InterfaceBaseClass {
       if (result.statusReceipt === "success") {
         return {
           success: true,
-          result,
           txid: tx,
           walletAddress: this.connectedWallet,
         }
@@ -300,11 +290,9 @@ class StarknetWallet extends InterfaceBaseClass {
       return {
         success: false,
         error: "Transaction failed",
-        result,
         txid: tx,
       }
     } catch (err) {
-      console.error("E>>", err)
       return {
         success: false,
         error: err instanceof Error ? err.message : "Unknown error",
@@ -314,7 +302,6 @@ class StarknetWallet extends InterfaceBaseClass {
 
   async getTransactionInfo(txid: string) {
     try {
-      console.log("Get tx info by txid", txid)
       const txInfo = await this.provider.waitForTransaction(txid, {
         successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2],
       })
@@ -322,7 +309,6 @@ class StarknetWallet extends InterfaceBaseClass {
         await this.provider.getTransactionReceipt(txid)
 
       if (!txInfo || !txReceipt) {
-        console.log("ERROR", "Transaction not found:", txid)
         return { error: "Transaction not found" }
       }
 
@@ -338,7 +324,6 @@ class StarknetWallet extends InterfaceBaseClass {
       }
       return result
     } catch (error) {
-      console.error(error)
       if (error instanceof Error) {
         return { error: error.message }
       }
@@ -359,7 +344,6 @@ class StarknetWallet extends InterfaceBaseClass {
       const inf = await res.json()
       return inf?.result
     } catch (ex) {
-      console.error(ex)
       if (ex instanceof Error) {
         return { error: ex.message }
       }
@@ -378,25 +362,23 @@ class StarknetWallet extends InterfaceBaseClass {
     contractId: string
     walletSeed: string
   }) {
-    console.log(this.chain, "server minting NFT to", address, uri)
-
     try {
       const provider = this.provider
 
-      const minterAddress = process.env.STARKNET_MINTER_ADDRESS
+      const minterAddress = appConfig.chains.starknet?.wallet
       if (!minterAddress || !walletSeed) {
         throw new Error("Minter address or wallet seed not available")
       }
 
       const account = new Account(provider, minterAddress, walletSeed)
+      const contractABI = (await provider.getClassAt(contractId)).abi
 
-      const contract = new Contract(ERC721ABI, contractId, provider)
-      contract.connect(account)
-
-      // Generate unique token ID
-      // const tokenId = 1;
-      const mintTx = await contract.mint(address, uri)
-      // console.log("MINT TX", mintTx);
+      const contract = new Contract(contractABI, contractId, provider)
+      const call = contract.populate("mint", {
+        recipient: address,
+        data: uri,
+      })
+      const mintTx = await account.execute(call)
       const receipt = await provider.waitForTransaction(
         mintTx.transaction_hash,
         {
@@ -405,7 +387,13 @@ class StarknetWallet extends InterfaceBaseClass {
       )
       const events = contract.parseEvents(receipt)
 
-      // Find the Transfer event from the NFT contract
+      if (
+        events.length === 0 ||
+        !events[0]["openzeppelin_token::erc721::erc721::ERC721Component::Transfer"]
+      ) {
+        return { success: false, error: "Transfer event not found." }
+      }
+
       const transferEvent =
         events[0][
           "openzeppelin_token::erc721::erc721::ERC721Component::Transfer"
@@ -422,7 +410,6 @@ class StarknetWallet extends InterfaceBaseClass {
 
       return { success: false, error: "Transaction failed" }
     } catch (error) {
-      console.error("Mint error:", error)
       return {
         success: false,
         error:
@@ -439,14 +426,11 @@ class StarknetWallet extends InterfaceBaseClass {
         await this.getWallet()
       }
       const balance = await this.contract?.balanceOf(this.connectedWallet)
-      console.log("Balance", balance)
       const {
         balance: { low },
       } = balance
-      console.log("Balance low", low)
       return { success: true, balance: low }
     } catch (error) {
-      console.error("Error getting balance", error)
       return { success: false, error: "Error getting balance" }
     }
   }
