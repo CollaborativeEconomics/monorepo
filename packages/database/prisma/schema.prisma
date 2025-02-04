@@ -229,7 +229,7 @@ model InitiativeTier {
   issuer         String?     @db.VarChar(255)
   title          String      @db.VarChar(255)
   description    String      @db.VarChar(255)
-  initiative     Initiative? @relation(fields: [initiativeId], references: [id], onDelete: SetNull)
+  initiative     Initiative? @relation(fields: [initiativeId], references: [id])
 
   @@map("initiativetiers")
 }
@@ -243,16 +243,19 @@ model NFTData {
   initiativeId   String?      @db.Uuid
   metadataUri    String       @db.VarChar(255)
   imageUri       String       @db.VarChar(255)
-  network    String?      @db.VarChar(20)
+  chainId        Int?
+  network        String?      @db.VarChar(20)
   chainName      String?      @db.VarChar(20)
   coinSymbol     String?      @db.VarChar(20)
   coinValue      Decimal      @default(0) @db.Decimal(14, 4)
   usdValue       Decimal      @default(0) @db.Decimal(14, 4)
+  transactionId  String?      @db.VarChar(255)
+  contractId     String?      @db.VarChar(255)
   tokenId        String       @db.VarChar(255)
   offerId        String?      @db.VarChar(255)
   status         Int          @default(0)
   donationId     String?      @db.Uuid
-  initiative     Initiative?  @relation(fields: [initiativeId], references: [id], onDelete: SetNull)
+  initiative     Initiative?  @relation(fields: [initiativeId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [id])
 
@@ -380,10 +383,10 @@ model Story {
 
 model StoryMedia {
   id      String   @id(map: "storypics_pkey") @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  created DateTime @default(now()) @db.Timestamptz(6)
   storyId String   @db.Uuid
   media   String   @db.VarChar(255)
   mime    String?  @db.VarChar(60)
+  created DateTime @default(now()) @db.Timestamptz(6)
   story   Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
 
   @@map("storymedia")
@@ -442,7 +445,7 @@ model Wallet {
   address        String       @db.VarChar(255)
   chain          Chain
   network        String?      @db.VarChar(10)
-  initiatives    Initiative?  @relation(fields: [initiativeId], references: [id], onDelete: SetNull)
+  initiatives    Initiative?  @relation(fields: [initiativeId], references: [id])
   organizations  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("wallets")
@@ -550,11 +553,11 @@ enum Chain {
   Flare
   Optimism
   Polygon
-  Starknet
   Stellar
-  Tron
   XDC
   XRPL
+  Starknet
+  Tron
 }
 
 enum CreditType {

@@ -18,6 +18,8 @@ async function DonationsData({ userId }: Props) {
     getNftData({ userId }),
     getDonations({ userId }),
   ])
+  receipts = JSON.parse(JSON.stringify(receipts))
+  donations = JSON.parse(JSON.stringify(donations))
 
   receipts = JSON.parse(JSON.stringify(receipts))
   return (

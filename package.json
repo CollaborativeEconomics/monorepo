@@ -9,13 +9,14 @@
     "match-versions": "syncpack fix-mismatches",
     "update-dependencies": "syncpack update",
     "delete-node-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
-    "delete-builds": "find packages/* -type d -name \"dist\" -exec rm -rf {} +"
+    "delete-builds": "find packages/* -type d -name \"dist\" -exec rm -rf {} +",
+    "delete-cache": "find .turbo/cache  -mtime +14  -exec rm {} +"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@cfce/typescript-config": "workspace:*",
     "syncpack": "^13.0.0",
-    "turbo": "2.3.3"
+    "turbo": "2.3.4"
   },
   "packageManager": "pnpm@9.12.2+sha256.2ef6e547b0b07d841d605240dce4d635677831148cd30f6d564b8f4f928f73d2",
   "engines": {

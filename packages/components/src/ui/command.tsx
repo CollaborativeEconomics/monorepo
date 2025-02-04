@@ -126,23 +126,20 @@ const CommandSeparator: CommandSeparatorType = React.forwardRef(
 
 CommandSeparator.displayName = CommandPrimitive.Separator.displayName
 
-type CommandItemType = React.ForwardRefExoticComponent<
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item> &
-    React.RefAttributes<React.ComponentRef<typeof CommandPrimitive.Item>>
->
-
-const CommandItem: CommandItemType = React.forwardRef(
-  ({ className, ...props }, ref) => (
-    <CommandPrimitive.Item
-      ref={ref}
-      className={cn(
-        "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-        className,
-      )}
-      {...props}
-    />
-  ),
-)
+//data-[disabled]:pointer-events-none data-[disabled]:opacity-50
+const CommandItem = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
+>(({ className, ...props }, ref) => (
+  <CommandPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground ",
+      className,
+    )}
+    {...props}
+  />
+))
 
 CommandItem.displayName = CommandPrimitive.Item.displayName
 

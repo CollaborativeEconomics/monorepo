@@ -2,11 +2,13 @@
 import "server-only"
 import { posthogNodeClient } from "@cfce/analytics/server"
 import appConfig from "@cfce/app-config"
-import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
+import { BlockchainServerInterfaces, chainConfig } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
+import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,
+  type Prisma,
   getInitiativeById,
   getNFTbyTokenId,
   getOrganizationById,
@@ -118,14 +120,15 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Check for existing receipt
-    const existingReceipt = await getNFTbyTokenId(txId, chain)
+    const chainName = chainConfig[chain].name
+    const existingReceipt = await getNFTbyTokenId(txId, chainName)
     if (existingReceipt) {
       return { success: false, error: "Receipt already exists" }
     }
     // #endregion
 
     // #region: Initialize blockchain tools and verify transaction
-    let chainTool: typeof BlockchainServerInterfaces[keyof typeof BlockchainServerInterfaces]
+    let chainTool: (typeof BlockchainServerInterfaces)[keyof typeof BlockchainServerInterfaces]
     if (chain === "stellar") {
       chainTool = BlockchainServerInterfaces.stellar
     } else if (chain === "xrpl") {
@@ -225,6 +228,7 @@ export async function mintAndSaveReceiptNFT({
     const currentChain = appConfig.chains[chain]
     if (!currentChain) throw new Error("Chain not found")
     const network = currentChain.network
+    const config = chainConfig[chain].networks[network]
 
     // #region: Prepare and upload metadata
     const metadata = {
@@ -329,13 +333,17 @@ export async function mintAndSaveReceiptNFT({
 
     let tokenId = ""
     const walletSecret = getWalletSecret(chain)
+    if (!walletSecret) {
+      throw new Error("Minter wallet not found")
+    }
     const args = {
       contractId: receiptContract,
       address: donorWalletAddress,
       uri: uriMeta,
       walletSeed: walletSecret,
     }
-    const mintResponse = await chainTool.mintNFT(args)
+    console.log("ARGS1", args)
+    const mintResponse = await chainTool.mintNFT(args) // <<<<< ERROR HERE FOR XRPL
     console.log("RESMINT", mintResponse)
     if (!mintResponse) {
       throw new Error("Error minting NFT")
@@ -349,7 +357,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Save data to DB
-    const data = {
+    const data: Prisma.NFTDataCreateInput = {
       created: new Date(),
       donorAddress: donorWalletAddress,
       user: { connect: { id: userId } },
@@ -358,11 +366,14 @@ export async function mintAndSaveReceiptNFT({
       metadataUri: uriMeta,
       imageUri: uriImage,
       network: network,
-      chainName: chain,
       coinSymbol: token,
+      chainName,
+      chainId: config.id,
       coinValue: amountCUR,
       usdValue: amountUSD,
       tokenId: tokenId,
+      contractId: receiptContract,
+      transactionId: txId,
       status: DonationStatus.claimed,
     }
     console.log("NFT", data)
@@ -389,8 +400,10 @@ export async function mintAndSaveReceiptNFT({
         uri: uriMeta,
         walletSeed: walletSecret,
       }
+      console.log("ARGS2", args2)
       //const mintResponse2 = await BlockchainManager[chain]?.server.mintNFT(args2)
-      const mintResponse2 = await chainTool.mintNFT(args2)
+      BlockchainServerInterfaces.evm.setChain("xdc")
+      const mintResponse2 = await BlockchainServerInterfaces.evm.mintNFT(args2)
       console.log("RESMINT2", mintResponse2)
       if (!mintResponse2) {
         throw new Error("Error minting NFT")

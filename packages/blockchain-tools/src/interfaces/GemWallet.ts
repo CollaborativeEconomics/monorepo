@@ -1,4 +1,4 @@
-import gemWallet from "@gemwallet/api"
+import { isInstalled, getAddress, sendPayment } from "@gemwallet/api"
 import XrplCommon from "./XrplCommon"
 
 export default class GemWallet extends XrplCommon {
@@ -6,13 +6,13 @@ export default class GemWallet extends XrplCommon {
 
   async connect() {
     try {
-      const ready = await gemWallet.isInstalled()
+      const ready = await isInstalled()
       const installed = ready?.result?.isInstalled
       console.log("GEM Ready?", installed)
       if (!installed) {
         return { success: false, error: "GemWallet not installed" }
       }
-      const res = await gemWallet.getAddress() // <<<< Here gets stuck forever
+      const res = await getAddress() // <<<< Here gets stuck forever
       console.log("RES", res)
       this.connectedWallet = res.result?.address || ""
       console.log("GemWallet", this.connectedWallet)
@@ -35,9 +35,12 @@ export default class GemWallet extends XrplCommon {
   }: { address: string; amount: number; memo?: string }) {
     console.log("PAY", address, amount, memo)
     try {
+      const connected = await this.connect()
+      console.log("CONNECTED", connected)
       const sender = this.connectedWallet
       const wei = Math.floor(amount * 1000000).toString()
       //const wei = String(this.toBaseUnit(amount))
+      console.log("SENDER", sender)
 
       const payload = {
         amount: wei,
@@ -52,7 +55,7 @@ export default class GemWallet extends XrplCommon {
         //},
       }
       console.log("TX", payload)
-      const res = await gemWallet.sendPayment(payload)
+      const res = await sendPayment(payload)
       console.log("RES", res)
       const txid = res?.result?.hash
       console.log("TXID", txid)

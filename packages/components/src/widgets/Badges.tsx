@@ -1,5 +1,5 @@
 import { getDonations } from '@cfce/database';
-import { imageUrl } from '@cfce/utils';
+import { ipfsCIDToUrl } from '@cfce/utils';
 import Image from 'next/image';
 
 type Props = {
@@ -32,7 +32,7 @@ export async function Badges({ userId }: Props) {
             <Image
               key={badge.id}
               className="mr-1"
-              src={imageUrl(badge.image)}
+              src={ipfsCIDToUrl(badge.image)}
               width={72}
               height={72}
               alt="Badge"

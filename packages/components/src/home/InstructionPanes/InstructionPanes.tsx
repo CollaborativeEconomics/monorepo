@@ -1,65 +1,70 @@
-"use client"
+'use client';
 
-import Link from "next/link"
-import React from "react"
-import RiveAnimation from "../RiveAnimation"
-import {
-  InstructionPaneSectionContent,
-  InstructionPaneSectionImageBlend,
-  InstructionPaneSectionText,
-  InstructionPaneSectionTitle,
-} from "./InstructionPaneSection"
+import Link from 'next/link';
+import React from 'react';
+import { Parallax } from '../../navigation';
+import RiveAnimation from '../RiveAnimation';
+import { InstructionPaneSectionImageBlend } from './InstructionPaneSectionImageBlend';
+
+const instructionPanesData = [
+  {
+    slug: 'donate',
+    image: '/home/DonateV2.jpg',
+    riveNumber: 1 as const,
+    title: 'Donate to community causes you care about',
+    content: (
+      <>
+        Find organizations working on the{' '}
+        <Link className="hover:underline" href="https://www.cfce.io/un2030/">
+          sustainable development goals
+        </Link>{' '}
+        that you care most about. Invest in those working in your community or
+        for a community you care about.
+      </>
+    ),
+  },
+  {
+    slug: 'nft-receipt',
+    image: '/home/NFTReceiptV2.jpg',
+    riveNumber: 2 as const,
+    title: 'Receive personalized, tax-deductible NFT Receipts',
+    content:
+      'Whenever you donate, you receive a personalzed tax-deductible NFT receipt.',
+  },
+  {
+    slug: 'nft-story',
+    image: '/home/ReceiveNFTV2.jpg',
+    riveNumber: 3 as const,
+    title: 'NFTs tell the story of your impact',
+    content:
+      'Non-profits publish and distribute their progress as Story NFTs. Watch the impact from your donation unfold!',
+  },
+];
 
 export default function InstructionPanes() {
   return (
-    <div className="relative flex flex-col container pt-20 md:my-auto pl-0 w-[90%]">
-      <h2 className="text-5xl font-bold pb-8">How it works</h2>
-      <div className="flex flex-col md:flex-row">
-        <RiveAnimation number={1} />
-        <InstructionPaneSectionContent>
-          <InstructionPaneSectionTitle>
-            Donate to community causes you care about
-          </InstructionPaneSectionTitle>
-          <InstructionPaneSectionText>
-            Find organizations working on the{" "}
-            <Link
-              className="hover:underline"
-              href="https://www.cfce.io/un2030/"
-            >
-              sustainable development goals
-            </Link>{" "}
-            that you care most about. Invest in those working in your community
-            or for a community you care about.
-          </InstructionPaneSectionText>
-        </InstructionPaneSectionContent>
-      </div>
-      <InstructionPaneSectionImageBlend sourceProperty='bg-[url("/home/DonateV2.jpg")]' />
-      <div className="flex flex-col md:flex-row">
-        <RiveAnimation number={2} />
-        <InstructionPaneSectionContent>
-          <InstructionPaneSectionTitle>
-            Receive personalized, tax-deductible NFT Receipts
-          </InstructionPaneSectionTitle>
-          <InstructionPaneSectionText>
-            Whenever you donate, you receive a personalzed tax-deductible NFT
-            receipt.
-          </InstructionPaneSectionText>
-        </InstructionPaneSectionContent>
-      </div>
-      <InstructionPaneSectionImageBlend sourceProperty="bg-[url('/home/NFTReceiptV2.jpg')]" />
-      <div className="flex flex-col md:flex-row">
-        <RiveAnimation number={3} />
-        <InstructionPaneSectionContent>
-          <InstructionPaneSectionTitle>
-            NFTs tell the story of your impact
-          </InstructionPaneSectionTitle>
-          <InstructionPaneSectionText>
-            Non-profits publish and distribute their progress as Story NFTs.
-            Watch the impact from your donation unfold!
-          </InstructionPaneSectionText>
-        </InstructionPaneSectionContent>
-      </div>
-      <InstructionPaneSectionImageBlend sourceProperty="bg-[url('/home/ReceiveNFTV2.jpg')]" />
+    <div className="container flex flex-col pt-8 md:pt-20 w-full gap-16">
+      <h2 className="text-5xl font-bold">How it works</h2>
+      {instructionPanesData.map(pane => (
+        <div
+          key={`${pane.slug}-pane`}
+          className="flex flex-col relative gap-4 md:gap-0"
+        >
+          <Parallax
+            className="w-full h-72 md:h-[500px] rounded-2xl"
+            speed={0.5}
+          >
+            <InstructionPaneSectionImageBlend source={pane.image} />
+          </Parallax>
+          <div className="md:w-1/2 lg:w-[38%] bg-background/90 backdrop-blur-sm p-6 rounded-xl shadow-lg mr-auto flex flex-col md:flex-row gap-4 flex flex-row md:absolute top-8 left-8 color-foreground">
+            <RiveAnimation number={pane.riveNumber} />
+            <div className="flex flex-col gap-4">
+              <h3 className="text-3xl font-bold">{pane.title}</h3>
+              <p className="text-lg">{pane.content}</p>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
-  )
+  );
 }

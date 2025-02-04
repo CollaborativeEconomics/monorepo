@@ -35,7 +35,10 @@ export default async function getCoinRate({
       Authorization: `${process.env.MOBULA_API_KEY}`,
     }
     const response = await fetch(
-      `https://api.mobula.io/api/1/market/data?symbol=${symbol}`,
+      // EOS and Starknet don't use `eos` and `starknet` as blockchain
+      // and there's no need for blockchain unless we're using a token contract
+      // so disabled for now
+      `https://api.mobula.io/api/1/market/data?symbol=${symbol}`, //&blockchain=${chain}`,
       {
         ...options,
         headers,
@@ -46,7 +49,9 @@ export default async function getCoinRate({
 
     const rate = json?.data?.price
     if (!rate || typeof rate !== "number") {
-      console.log("No price quote found in response")
+      console.log(
+        `No price quote found in response chain: ${chain} symbol: ${symbol}`,
+      )
       //console.log(response.object)
       // throw new Error(`No price quote found in response ${JSON.stringify(response.object?.data)}`)
       return 0

@@ -1,6 +1,7 @@
 import { getDonations } from '@cfce/database';
-import { imageUrl } from '@cfce/utils';
+import { ipfsCIDToUrl } from '@cfce/utils';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {
   userId: string;
@@ -23,21 +24,23 @@ export async function FavoriteOrganizations({ userId }: Props) {
       <div className="grid grid-cols-2 gap-2 mb-8">
         {uniqueOrgs.size > 0 ? (
           Array.from(uniqueOrgs.values()).map(org => (
-            <div
-              key={org.id}
-              className="flex flex-row justify-start items-center content-center mt-4"
-            >
-              {org?.image && (
-                <Image
-                  className="rounded-full mr-1"
-                  src={imageUrl(org.image)}
-                  width={64}
-                  height={64}
-                  alt="Organization"
-                />
-              )}
-              <h1 className="text-sm text-center">{org.name}</h1>
-            </div>
+            <Link href={`/organizations/${org.id}`} key={org.id}>
+              <div
+                key={org.id}
+                className="flex flex-row justify-start items-center content-center mt-4"
+              >
+                {org?.image && (
+                  <Image
+                    className="rounded-full mr-1"
+                    src={ipfsCIDToUrl(org.image)}
+                    width={64}
+                    height={64}
+                    alt="Organization"
+                  />
+                )}
+                <h1 className="text-sm text-center">{org.name}</h1>
+              </div>
+            </Link>
           ))
         ) : (
           <div className="text-gray-300">None</div>
