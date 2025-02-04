@@ -5,24 +5,37 @@ const appConfig: AppConfig = {
   ...appConfigBase,
 }
 
-// Override siteInfo
 appConfig.siteInfo = {
   ...appConfig.siteInfo,
   title: "Partner's Portal",
   description: "Manage your organizations blockchain donations",
 }
 
-// Override chains (empty in this case)
+appConfig.apis = {
+  ...appConfig.apis,
+  ipfs: {
+    endpoint: "https://s3.filebase.com/",
+    region: "us-east-1",
+    gateway: "https://ipfs.filebase.io/ipfs/",
+    pinning: "https://api.filebase.io/v1/ipfs",
+    buckets: {
+      nfts: "cfce-give-nfts",
+      avatars: "cfce-profiles",
+      media: "cfce-media",
+    },
+  },
+}
+
 appConfig.chains = {
   xdc: {
     slug: "xdc",
     network: "mainnet",
     contracts: {
-      // volunteersFactory: "TODO",
-      // receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-      // storyERC1155: "0x0000000000000000000000000000000000000000",
+      receiptMintbotERC721: "0xD218A3C26DeEFa93eb74a785463B6bbF48A5a1b4",
+      storyERC1155: "0x013da344B34447360aE4A01E86a4a4c2aAd3CEbb",
+      volunteersFactory: "0x0eD50ddEE2c561016A9aaB9DaFC891DB3Afe554d",
     },
-    // wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
+    wallet: "0x1540026E002b09bc1720D130d90CB674b06121e2",
     enabledWallets: ["metamask"],
     tokens: ["XDC"],
   },
