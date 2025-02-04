@@ -6,7 +6,7 @@ import chainConfiguration from "../chains/chainConfig"
 import getCoinRate from "./getCoinRate"
 
 export type CoinRateResult = {
-  chain: ChainSlugs
+  // chain: ChainSlugs
   symbol: TokenTickerSymbol
   rate: number
 }
@@ -19,12 +19,12 @@ export async function getAllCoinRates(): Promise<CoinRateResult[]> {
   const ratePromises = chains.map(async (chain) => {
     try {
       const rate = await getCoinRate({
-        chain: chain.slug,
+        // chain: chain.slug,
         symbol: chain.symbol as TokenTickerSymbol,
       })
 
       return {
-        chain: chain.slug,
+        // chain: chain.slug,
         symbol: chain.symbol as TokenTickerSymbol,
         rate,
       }

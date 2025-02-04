@@ -24,11 +24,7 @@ export function BaseLayout({ children }: BaseLayoutProps) {
           disableTransitionOnChange
         >
           <SessionProvider>
-            <PostHogProvider>
-              <Header />
-              {children}
-              <Footer />
-            </PostHogProvider>
+            <PostHogProvider>{children}</PostHogProvider>
             <Toaster />
           </SessionProvider>
         </ThemeProvider>
