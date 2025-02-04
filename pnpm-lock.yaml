@@ -2605,18 +2605,6 @@ importers:
 
   packages/typescript-config: {}
 
-  packages/ui-tests:
-    devDependencies:
-      '@playwright/test':
-        specifier: ^1.42.1
-        version: 1.50.0
-      '@types/node':
-        specifier: ^20.11.24
-        version: 20.17.16
-      typescript:
-        specifier: ^5.3.3
-        version: 5.7.3
-
   packages/utils:
     dependencies:
       '@auth/prisma-adapter':
@@ -5980,9 +5968,6 @@ packages:
 
   '@types/node@16.18.11':
     resolution: {integrity: sha512-3oJbGBUWuS6ahSnEq1eN2XrCyf4YsWI8OyCvo7c64zQJNplk3mO84t53o8lfTk+2ji59g5ycfc6qQ3fdHliHuA==}
-
-  '@types/node@20.17.16':
-    resolution: {integrity: sha512-vOTpLduLkZXePLxHiHsBLp98mHGnl8RptV4YAO3HfKO5UHjDvySGbxKtpYfy8Sx5+WKcgc45qNreJJRVM3L6mw==}
 
   '@types/node@22.12.0':
     resolution: {integrity: sha512-Fll2FZ1riMjNmlmJOdAyY5pUbkftXslB5DgEzlIuNaiWhXd00FhWxVC/r4yV/4wBb9JfImTu+jiSvXTkJ7F/gA==}
@@ -16868,10 +16853,6 @@ snapshots:
   '@types/node@10.12.18': {}
 
   '@types/node@16.18.11': {}
-
-  '@types/node@20.17.16':
-    dependencies:
-      undici-types: 6.19.8
 
   '@types/node@22.12.0':
     dependencies:
