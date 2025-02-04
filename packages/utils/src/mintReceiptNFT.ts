@@ -125,7 +125,7 @@ export async function mintAndSaveReceiptNFT({
     // #endregion
 
     // #region: Initialize blockchain tools and verify transaction
-    let chainTool
+    let chainTool: typeof BlockchainServerInterfaces[keyof typeof BlockchainServerInterfaces]
     if (chain === "stellar") {
       chainTool = BlockchainServerInterfaces.stellar
     } else if (chain === "xrpl") {

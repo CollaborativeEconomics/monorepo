@@ -14,11 +14,12 @@ type Props = {
 }
 
 async function DonationsData({ userId }: Props) {
-  const [receipts, donations] = await Promise.all([
+  let [receipts, donations] = await Promise.all([
     getNftData({ userId }),
     getDonations({ userId }),
   ])
 
+  receipts = JSON.parse(JSON.stringify(receipts))
   return (
     <div className="w-full border rounded-md p-10 bg-card">
       {/* NFT card view */}
@@ -31,15 +32,11 @@ async function DonationsData({ userId }: Props) {
       </TabsContent>
       {/* NFT Receipts */}
       <TabsContent className="TabsContent" value="tab2">
-        <ReceiptTableSortable
-          receipts={JSON.parse(JSON.stringify(receipts)) || []}
-        />
+        <ReceiptTableSortable receipts={receipts || []} />
       </TabsContent>
       {/* Donations */}
       <TabsContent className="TabsContent" value="tab3">
-        <DonationsTableSortable
-          donations={JSON.parse(JSON.stringify(donations)) || []}
-        />
+        <DonationsTableSortable donations={donations || []} />
       </TabsContent>
     </div>
   )

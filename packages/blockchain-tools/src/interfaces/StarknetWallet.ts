@@ -387,6 +387,13 @@ class StarknetWallet extends InterfaceBaseClass {
       )
       const events = contract.parseEvents(receipt)
 
+      if (
+        events.length === 0 ||
+        !events[0]["openzeppelin_token::erc721::erc721::ERC721Component::Transfer"]
+      ) {
+        return { success: false, error: "Transfer event not found." }
+      }
+
       const transferEvent =
         events[0][
           "openzeppelin_token::erc721::erc721::ERC721Component::Transfer"

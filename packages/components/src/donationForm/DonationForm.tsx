@@ -117,6 +117,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         setErrorDialogState(true)
       }
 
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      })
+
       setButtonMessage(errorMessage)
       throw new Error(errorMessage)
     },
@@ -148,9 +154,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       return fallbackAddress
     }
 
-    handleError(new Error(`No wallet found for chain ${chain?.name}`));
-    return '';
-  }, [organization, initiative, chain, handleError]);
+    handleError(new Error(`No wallet found for chain ${chain?.name}`))
+    return ""
+  }, [organization, initiative, chain, handleError])
 
   const checkBalance = useCallback(async () => {
     if (!chainInterface?.connect) {
@@ -408,7 +414,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     initiative,
     exchangeRate,
     sendGaslessPayment,
-    chain.name
+    chain.name,
   ])
 
   function validateForm({ email }: { email: string }) {
@@ -594,14 +600,22 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
               className="bg-lime-600 text-white text-lg hover:bg-green-600 hover:shadow-inner"
               onClick={() => {
                 setErrorDialogState(false)
-                setTimeout(() => {
-                  setLoading(true)
-                  setButtonMessage("Approving payment...")
-                  sendPayment(destinationWalletAddress, coinAmount)
-                    .then((gasResult) => handleMinting(gasResult))
-                    .catch(handleError)
-                    .finally(() => setLoading(false))
-                }, 0)
+                const handleGasPayment = async () => {
+                  try {
+                    setLoading(true)
+                    setButtonMessage("Approving payment...")
+                    const gasResult = await sendPayment(
+                      destinationWalletAddress,
+                      coinAmount,
+                    )
+                    await handleMinting(gasResult)
+                  } catch (error) {
+                    handleError(error)
+                  } finally {
+                    setLoading(false)
+                  }
+                }
+                handleGasPayment()
               }}
             >
               Try With Gas
