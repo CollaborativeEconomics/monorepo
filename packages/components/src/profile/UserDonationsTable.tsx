@@ -14,10 +14,12 @@ type Props = {
 }
 
 async function DonationsData({ userId }: Props) {
-  const [receipts, donations] = await Promise.all([
+  let [receipts, donations] = await Promise.all([
     getNftData({ userId }),
     getDonations({ userId }),
   ])
+  receipts = JSON.parse(JSON.stringify(receipts))
+  donations = JSON.parse(JSON.stringify(donations))
 
   return (
     <div className="w-full border rounded-md p-10 bg-card">

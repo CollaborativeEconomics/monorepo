@@ -199,7 +199,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         //amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || "",
       }
-      console.log("DATA", data)
+      console.log("SENDING PAYMENT", data)
       const result = await chainInterface.sendPayment(data)
       console.log("PAYMENT RESULT", result)
       if (!result.success) {
@@ -260,7 +260,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             date: new Date().toISOString(),
             donorWalletAddress: paymentResult.walletAddress ?? "",
             destinationWalletAddress,
-            amount,
+            amount: Number(amount),
             txId: paymentResult.txid ?? "",
             chain: selectedChain,
             token: selectedToken,
@@ -550,6 +550,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             type="text"
             className="pl-4 mb-6"
             id="name-input"
+            autoComplete="name"
             onChange={({ target: { value: name } }) => {
               setDonationForm((draft) => {
                 draft.name = name
@@ -560,7 +561,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           <Label htmlFor="email-input" className="mb-2">
             Email address (optional)
           </Label>
-          <Input type="text" className="pl-4 mb-6" id="email-input" />
+          <Input
+            type="text"
+            className="pl-4 mb-6"
+            id="email-input"
+            autoComplete="email"
+          />
           <CheckboxWithText
             id="receipt-check"
             text="I'd like to receive an emailed receipt"

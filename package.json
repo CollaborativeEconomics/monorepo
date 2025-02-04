@@ -9,7 +9,8 @@
     "match-versions": "syncpack fix-mismatches",
     "update-dependencies": "syncpack update",
     "delete-node-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
-    "delete-builds": "find packages/* -type d -name \"dist\" -exec rm -rf {} +"
+    "delete-builds": "find packages/* -type d -name \"dist\" -exec rm -rf {} +",
+    "delete-cache": "find .turbo/cache  -mtime +14  -exec rm {} +"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

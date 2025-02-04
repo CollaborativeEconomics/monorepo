@@ -17,7 +17,7 @@ const InputWithContent = React.forwardRef<
         type={type}
         id={id}
         className={cn(
-          "flex h-10 text-lg w-full rounded-full bg-white dark:bg-slate-500 px-2 py-2 border-0 focus:border-0 focus:outline-0 focus:ring-0",
+          "flex h-10 text-lg w-full rounded-full bg-white dark:bg-slate-500 px-4 py-2 border-0 focus:border-0 focus:outline-0 focus:ring-0",
           className,
         )}
         {...props}

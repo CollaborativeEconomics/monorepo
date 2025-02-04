@@ -403,7 +403,8 @@ export async function mintAndSaveReceiptNFT({
       }
       console.log("ARGS2", args2)
       //const mintResponse2 = await BlockchainManager[chain]?.server.mintNFT(args2)
-      const mintResponse2 = await chainTool.mintNFT(args2)
+      BlockchainServerInterfaces.evm.setChain("xdc")
+      const mintResponse2 = await BlockchainServerInterfaces.evm.mintNFT(args2)
       console.log("RESMINT2", mintResponse2)
       if (!mintResponse2) {
         throw new Error("Error minting NFT")

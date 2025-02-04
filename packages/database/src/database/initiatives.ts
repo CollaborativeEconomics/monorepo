@@ -32,6 +32,9 @@ export async function getInitiatives(query: InitiativeQuery) {
           },
         },
       },
+      orderBy: {
+        created: "desc",
+      },
     },
   }
 

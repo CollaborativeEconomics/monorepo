@@ -22,7 +22,7 @@ export default function RootLayout({
     <BaseLayout>
       <Header />
       {children}
-      {/* <Footer /> */}
+      {/* <Footer /> causing display problems for some reason*/}
     </BaseLayout>
   )
 }
