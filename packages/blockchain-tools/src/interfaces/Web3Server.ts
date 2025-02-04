@@ -1,10 +1,7 @@
-import type {
-  ChainConfig,
-  ChainSlugs,
-  Network,
-  NetworkConfig,
-} from "@cfce/types"
+import type { ChainSlugs } from "@cfce/types"
 import _get from "lodash/get"
+import { http, createPublicClient, createWalletClient } from "viem"
+import { privateKeyToAccount } from "viem/accounts"
 import Web3 from "web3"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfig from "../chains/chainConfig"
@@ -12,17 +9,6 @@ import { getNetworkForChain } from "../chains/utils"
 import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
 import Abi721tba from "../contracts/solidity/erc721/erc721tba-abi.json" // must pass tokenid and metadatauri
 import Abi1155 from "../contracts/solidity/erc1155/erc1155-abi.json"
-// import { Transaction } from "../types/transaction"
-import {
-  createWalletClient,
-  http,
-  createPublicClient,
-  parseAbi,
-  encodeFunctionData,
-  Abi,
-} from "viem"
-import { privateKeyToAccount } from "viem/accounts"
-import appConfig from "@cfce/app-config"
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 function getObjectValue(obj: any, prop: string) {
@@ -31,8 +17,10 @@ function getObjectValue(obj: any, prop: string) {
   }, obj)
 }
 
-function bytesToHex(bytes:Uint8Array){
-  return `0x${Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("")}`
+function bytesToHex(bytes: Uint8Array) {
+  return `0x${Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")}`
 }
 
 function sleep(ms: number) {
@@ -59,7 +47,7 @@ export default class Web3Server extends InterfaceBaseClass {
     const params = [{ from: minter, to: contractId, data }]
     let checkGas = await this.fetchLedger("eth_estimateGas", params)
     console.log("EST", Number.parseInt(checkGas, 16), checkGas)
-    if(!checkGas){
+    if (!checkGas) {
       checkGas = "0x1e8480" // 2000000
     }
     const gasLimit = `0x${Math.floor(Number.parseInt(checkGas, 16) * 1.2).toString(16)}` // add 20% just in case
@@ -113,7 +101,6 @@ export default class Web3Server extends InterfaceBaseClass {
       transport: http(RPC_URL),
     })
 
-
     try {
       const { request } = await publicClient.simulateContract({
         account,
@@ -122,7 +109,7 @@ export default class Web3Server extends InterfaceBaseClass {
         functionName: "safeMint",
         args: [address, uri],
       })
-      
+
       const hash = await walletClient.writeContract(request)
 
       const receipt = await publicClient.waitForTransactionReceipt({ hash })
@@ -165,7 +152,7 @@ export default class Web3Server extends InterfaceBaseClass {
         address,
         uri,
         chain: this.chain,
-        wallet: account.address
+        wallet: account.address,
       })
       return { success: false, error: "Transaction failed" }
     }

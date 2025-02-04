@@ -12,9 +12,6 @@ const siteInfo: AppConfig["siteInfo"] = {
 
 const apis: AppConfig["apis"] = {
   ...appConfig.apis,
-  registry: {
-    apiUrl: "https://registry.staging.cfce.io/api",
-  },
   ipfs: {
     endpoint: "https://s3.filebase.com/",
     region: "us-east-1",
@@ -60,4 +57,3 @@ const appConfigDevelopment: AppConfig = {
 }
 
 export default appConfigDevelopment
-

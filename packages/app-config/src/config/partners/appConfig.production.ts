@@ -13,17 +13,6 @@ appConfig.siteInfo = {
 
 appConfig.apis = {
   ...appConfig.apis,
-  ipfs: {
-    endpoint: "https://s3.filebase.com/",
-    region: "us-east-1",
-    gateway: "https://ipfs.filebase.io/ipfs/",
-    pinning: "https://api.filebase.io/v1/ipfs",
-    buckets: {
-      nfts: "cfce-give-nfts",
-      avatars: "cfce-profiles",
-      media: "cfce-media",
-    },
-  },
 }
 
 appConfig.chains = {
