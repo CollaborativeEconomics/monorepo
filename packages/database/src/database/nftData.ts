@@ -1,5 +1,5 @@
 import "server-only"
-import type { ChainSlugs, ListQuery } from "@cfce/types"
+import type { ListQuery } from "@cfce/types"
 import type { Chain, NFTData, Prisma } from "@prisma/client"
 import { prismaClient } from ".."
 

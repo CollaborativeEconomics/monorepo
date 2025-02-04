@@ -45,6 +45,10 @@ export default class XrplServer extends XrplCommon {
     walletSeed: string
   }): Promise<{ success: boolean; tokenId?: string; error?: string }> {
     console.log("XRP Minting NFT...", uri, address)
+    if (!walletSeed) {
+      console.error("Wallet not available")
+      return { success: false, error: "Wallet not available" }
+    }
     let client = null
     if (!taxon) {
       taxon = 123456000
@@ -71,8 +75,7 @@ export default class XrplServer extends XrplCommon {
       client = new Client(this.network.wssurl || "")
       await client.connect()
       const txInfo = await client.submitAndWait(tx, { wallet })
-      const txRes = (txInfo?.result?.meta as TransactionMetadata)
-        .TransactionResult
+      const txRes = (txInfo?.result?.meta as TransactionMetadata).TransactionResult
       console.log("Result:", txRes)
       if (txRes === "tesSUCCESS") {
         //console.log('TXINFO', JSON.stringify(txInfo))

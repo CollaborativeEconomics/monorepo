@@ -4,7 +4,7 @@ import type {
   ClientInterfaces,
   TokenTickerSymbol,
 } from "@cfce/types"
-import type { Draft } from "immer"
+// import type { Draft } from "immer"
 import { atom } from "jotai"
 import { atomWithImmer } from "jotai-immer"
 
@@ -12,11 +12,13 @@ const chainAtom = atomWithImmer<{
   selectedChain: ChainSlugs
   selectedWallet: ClientInterfaces
   selectedToken: TokenTickerSymbol
+  enabledChains: ChainSlugs[]
   exchangeRate: number
 }>({
   selectedChain: appConfig.chainDefaults.chain,
   selectedWallet: appConfig.chainDefaults.wallet,
   selectedToken: appConfig.chainDefaults.coin,
+  enabledChains: [],
   exchangeRate: 0.0,
 })
 

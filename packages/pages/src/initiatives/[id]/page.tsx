@@ -30,7 +30,8 @@ export default async function Initiative(props: {
   //  console.log('RESTORED', result);
   //});
 
-  const organization = initiative.organization
+  let organization = initiative.organization
+  organization = JSON.parse(JSON.stringify(organization))
   let initiatives = await getInitiatives({ orgId: organization.id })
   initiatives = JSON.parse(JSON.stringify(initiatives))
 
