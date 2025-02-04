@@ -559,7 +559,7 @@ chainConfiguration.starknet.networks.testnet = {
     nftPath: "/nft/{{contractId}}/{{tokenId}}",
   },
   rpcUrls: {
-    main: "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/Q0iUmOgcRA7kG_HFnce2h5l25ZQO82rI",
+    main: "https://free-rpc.nethermind.io/sepolia-juno/",
   },
   tokens: {
     USDT: {
