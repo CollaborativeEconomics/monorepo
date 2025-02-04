@@ -2,7 +2,11 @@
 import { usePostHog } from "@cfce/analytics"
 import appConfig from "@cfce/app-config"
 import { createAnonymousUser, fetchUserByWallet } from "@cfce/auth"
-import { BlockchainClientInterfaces, chainConfig } from "@cfce/blockchain-tools"
+import {
+  BlockchainClientInterfaces,
+  chainConfig,
+  getChainConfigurationByName,
+} from "@cfce/blockchain-tools"
 import type {
   Chain,
   InitiativeWithRelations,
@@ -16,7 +20,7 @@ import {
   chainAtom,
   donationFormAtom,
 } from "@cfce/state"
-import type { TokenTickerSymbol } from "@cfce/types"
+import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 import { mintAndSaveReceiptNFT } from "@cfce/utils"
 import { registryApi } from "@cfce/utils"
 import { useAtom, useAtomValue } from "jotai"
@@ -101,33 +105,45 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const [errorDialogState, setErrorDialogState] = useState(false)
   const { toast } = useToast()
 
-  const handleError = useCallback(
-    (error: unknown) => {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred"
+  const handleError = useCallback((error: unknown) => {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred"
 
-      const canRetryWithGas =
-        errorMessage.includes("gasless") ||
-        errorMessage.includes("insufficient funds") ||
-        errorMessage.includes("rejected") ||
-        errorMessage.includes("No API keys found")
+    const canRetryWithGas =
+      errorMessage.includes("gasless") ||
+      errorMessage.includes("insufficient funds") ||
+      errorMessage.includes("rejected") ||
+      errorMessage.includes("No API keys found")
 
-      if (canRetryWithGas) {
-        setErrorDialogState(true)
-      }
+    if (canRetryWithGas) {
+      setErrorDialogState(true)
+    }
 
-      setButtonMessage(errorMessage)
-      throw new Error(errorMessage)
-    },
-    [toast],
-  )
+    setButtonMessage(errorMessage)
+    throw new Error(errorMessage)
+  }, [])
 
+  // Disable chains that don't have wallets
+  useEffect(() => {
+    const nameToSlug = (name: Chain): ChainSlugs =>
+      getChainConfigurationByName(name).slug
+    const orgWallets = organization?.wallets.map((w) => nameToSlug(w.chain))
+    const initiativeWallets = initiative?.wallets.map((w) =>
+      nameToSlug(w.chain),
+    )
+    setChainState((draft) => {
+      draft.enabledChains = [...orgWallets, ...initiativeWallets]
+    })
+  }, [initiative, organization, setChainState])
+  //const destinationWalletAddress = 'raHkr5qJNYez8bQQDMVLwvaRvxMripVznT' // hardcoded for testing
   const destinationWalletAddress = useMemo(() => {
+    console.log("CHAIN", chain)
     const chainName = chain?.name
-
+    console.log("NAME", chainName)
     const initiativeWallet = initiative?.wallets?.find(
       (w) => w.chain === chainName,
     )
+    console.log("INITIATIVE", initiativeWallet)
     if (initiativeWallet) {
       return initiativeWallet.address
     }
@@ -136,6 +152,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       (w) => w.chain === chainName,
     )?.address
 
+    console.log("ORGANIZATION", organizationWallet)
     if (organizationWallet) {
       return organizationWallet
     }
@@ -143,21 +160,19 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     // Use fallback address if both initiative and organization wallets are not found
     // There will be no fallback address for production, hence the error will be thrown
     const fallbackAddress = appConfig.chainDefaults?.defaultAddress
+    console.log("FALLBACK", fallbackAddress)
     if (fallbackAddress) {
       return fallbackAddress
     }
-
-    handleError(new Error(`No wallet found for chain ${chain?.name}`))
     return ""
-  }, [organization, initiative, chain, handleError])
+  }, [organization, initiative, chain])
+
+  console.log("DESTINATION WALLET", destinationWalletAddress)
 
   const checkBalance = useCallback(async () => {
-    if (!chainInterface?.connect) {
-      const error = new Error("No connect method on chain interface")
-      throw error
-    }
-    await chainInterface.connect(network.id)
+    console.log("BALANCE")
     const balanceCheck = await chainInterface?.getBalance?.()
+    console.log("BALANCED", balanceCheck)
     if (!balanceCheck || "error" in balanceCheck) {
       const error = new Error(balanceCheck?.error ?? "Failed to check balance")
       throw error
@@ -167,6 +182,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
+      console.log("SEND", address, amount)
       if (!chainInterface?.sendPayment) {
         const error = new Error("No sendPayment method on chain interface")
         toast({
@@ -183,6 +199,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         //amount: chainInterface.toBaseUnit(amount),
         memo: appConfig.chains[selectedChain]?.destinationTag || "",
       }
+      console.log("DATA", data)
       const result = await chainInterface.sendPayment(data)
       console.log("PAYMENT RESULT", result)
       if (!result.success) {
@@ -301,6 +318,14 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     try {
       validateForm({ email })
 
+      if (!chainInterface?.connect) {
+        const error = new Error("No connect method on chain interface")
+        throw error
+      }
+      console.log("CONNECT")
+      const connected = await chainInterface?.connect(network.id)
+      console.log("CONNECTED", connected)
+
       if (appConfig.siteInfo.options.enableFetchBalance) {
         console.log("CHECKING BALANCE")
         const hasBalance = await checkBalance()
@@ -377,11 +402,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         usdValue: coinAmount * exchangeRate,
         currency: selectedToken,
       }
-
       console.log("DONATION DATA", donationData)
-
       const donationId = await saveDonation(donationData)
-
       if (!donationId) {
         throw new Error("Error saving donation")
       }
@@ -597,6 +619,11 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
                 setTimeout(() => {
                   setLoading(true)
                   setButtonMessage("Approving payment...")
+                  console.log(
+                    "SENDING PAYMENT TO",
+                    destinationWalletAddress,
+                    coinAmount,
+                  )
                   sendPayment(destinationWalletAddress, coinAmount)
                     .then((gasResult) => handleMinting(gasResult))
                     .catch(handleError)

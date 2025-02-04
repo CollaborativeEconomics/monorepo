@@ -29,7 +29,8 @@ export default async function Initiative(props: {
   //  console.log('RESTORED', result);
   //});
 
-  const organization = initiative.organization
+  let organization = initiative.organization
+  organization = JSON.parse(JSON.stringify(organization))
   let initiatives = await getInitiatives({ orgId: organization.id })
   initiatives = JSON.parse(JSON.stringify(initiatives))
 
@@ -134,10 +135,13 @@ export default async function Initiative(props: {
                     if (otherInitiative.id === initiative.id) {
                       return
                     }
+                    const otherPlain = JSON.parse(
+                      JSON.stringify(otherInitiative),
+                    )
                     return (
                       <InitiativeCardCompact
                         key={`other-${otherInitiative.id}`}
-                        initiative={otherInitiative}
+                        initiative={otherPlain}
                       />
                     )
                   })
