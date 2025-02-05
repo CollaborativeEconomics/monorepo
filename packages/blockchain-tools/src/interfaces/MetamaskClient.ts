@@ -17,8 +17,33 @@ import {
   sendTransaction,
 } from "@wagmi/core"
 import { injected } from "@wagmi/core"
-// TODO: ADD MORE CHAINS AS WE TEST THEM
-import { arbitrumSepolia, mainnet, sepolia, xdcTestnet } from "@wagmi/core/chains"
+import { 
+  arbitrum,
+  arbitrumSepolia,
+  avalancheFuji,
+  avalanche,
+  base,
+  baseSepolia,
+  bsc,
+  bscTestnet,
+  celo,
+  celoAlfajores,
+  eos,
+  eosTestnet,
+  filecoin,
+  filecoinCalibration,
+  flare,
+  flareTestnet,
+  goerli, //ETH
+  mainnet, // ETH
+  optimism,
+  optimismSepolia,
+  polygon,
+  polygonMumbai,
+  sepolia, // ETH
+  xdc,
+  xdcTestnet,
+} from "@wagmi/core/chains"
 import { erc20Abi } from "viem"
 import { formatUnits, parseEther } from "viem"
 import Web3 from "web3"
@@ -46,9 +71,58 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
   config: ReturnType<typeof createConfig> = createConfig({
-    chains: [arbitrumSepolia, xdcTestnet],
+    chains: [
+      arbitrum,
+      arbitrumSepolia,
+      avalancheFuji,
+      avalanche,
+      base,
+      baseSepolia,
+      bsc,
+      bscTestnet,
+      celo,
+      celoAlfajores,
+      eos,
+      eosTestnet,
+      filecoin,
+      filecoinCalibration,
+      flare,
+      flareTestnet,
+      goerli,
+      mainnet,
+      optimism,
+      optimismSepolia,
+      polygon,
+      polygonMumbai,
+      sepolia,
+      xdc,
+      xdcTestnet
+    ],
     transports: {
+      [arbitrum.id]: http(this.network?.rpcUrls?.main),
       [arbitrumSepolia.id]: http(this.network?.rpcUrls?.main),
+      [avalancheFuji.id]: http(this.network?.rpcUrls?.main),
+      [avalanche.id]: http(this.network?.rpcUrls?.main),
+      [base.id]: http(this.network?.rpcUrls?.main),
+      [baseSepolia.id]: http(this.network?.rpcUrls?.main),
+      [bsc.id]: http(this.network?.rpcUrls?.main),
+      [bscTestnet.id]: http(this.network?.rpcUrls?.main),
+      [celo.id]: http(this.network?.rpcUrls?.main),
+      [celoAlfajores.id]: http(this.network?.rpcUrls?.main),
+      [eos.id]: http(this.network?.rpcUrls?.main),
+      [eosTestnet.id]: http(this.network?.rpcUrls?.main),
+      [filecoin.id]: http(this.network?.rpcUrls?.main),
+      [filecoinCalibration.id]: http(this.network?.rpcUrls?.main),
+      [flare.id]: http(this.network?.rpcUrls?.main),
+      [flareTestnet.id]: http(this.network?.rpcUrls?.main),
+      [goerli.id]: http(this.network?.rpcUrls?.main),
+      [mainnet.id]: http(this.network?.rpcUrls?.main),
+      [optimism.id]: http(this.network?.rpcUrls?.main),
+      [optimismSepolia.id]: http(this.network?.rpcUrls?.main),
+      [polygon.id]: http(this.network?.rpcUrls?.main),
+      [polygonMumbai.id]: http(this.network?.rpcUrls?.main),
+      [sepolia.id]: http(this.network?.rpcUrls?.main),
+      [xdc.id]: http(this.network?.rpcUrls?.main),
       [xdcTestnet.id]: http(this.network?.rpcUrls?.main),
     }
   })
@@ -72,7 +146,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       //  }
       //})
       //console.log("CONFIG", this.config)
-      
+
       const connection = await connect(this.config, { connector: injected() })
       this.connectedWallet = connection.accounts[0]
       console.log("MM Wallet", this.connectedWallet)
