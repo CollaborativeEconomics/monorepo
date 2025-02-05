@@ -17,7 +17,8 @@ import {
   sendTransaction,
 } from "@wagmi/core"
 import { injected } from "@wagmi/core"
-import { arbitrumSepolia, mainnet, sepolia } from "@wagmi/core/chains"
+// TODO: ADD MORE CHAINS AS WE TEST THEM
+import { arbitrumSepolia, mainnet, sepolia, xdcTestnet } from "@wagmi/core/chains"
 import { erc20Abi } from "viem"
 import { formatUnits, parseEther } from "viem"
 import Web3 from "web3"
@@ -31,6 +32,10 @@ import chainConfig from "../chains/chainConfig"
 import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
 
+function stringToHex(str?:string){
+  return str ? `0x${Buffer.from(str, "utf8").toString("hex")}` as `0x${string}` : undefined
+}
+
 export default class MetaMaskWallet extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {
     this.chain = chainConfig[slug]
@@ -40,12 +45,12 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   connectedWallet? = ""
   wallets?: string[]
   metamask?: MetaMaskInpageProvider
-
   config: ReturnType<typeof createConfig> = createConfig({
-    chains: [arbitrumSepolia],
+    chains: [arbitrumSepolia, xdcTestnet],
     transports: {
       [arbitrumSepolia.id]: http(this.network?.rpcUrls?.main),
-    },
+      [xdcTestnet.id]: http(this.network?.rpcUrls?.main),
+    }
   })
 
   async connect(newChainId?: number) {
@@ -55,13 +60,24 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       this.metamask = window.ethereum
       this.wallets = await this.metamask?.enable()
       const metamaskChainId = window.ethereum?.chainId
+      console.log("MM Chain ID", metamaskChainId)
 
+      // TODO: Assign config based on chainId <<<<
+      //const currentId = newChainId || 0
+      //const currentChain = chains[currentId] || null
+      //this.config = createConfig({
+      //  chains: [currentChain],
+      //  transports: {
+      //    [currentId]: http(this.network?.rpcUrls?.main)
+      //  }
+      //})
+      //console.log("CONFIG", this.config)
+      
       const connection = await connect(this.config, { connector: injected() })
       this.connectedWallet = connection.accounts[0]
-      const newChainIsSameAsConnectedChain =
-        Number(newChainId) === Number(this.network?.id)
-      const metamaskChainIsSameAsConnectedChain =
-        Number(metamaskChainId) === Number(this.network?.id)
+      console.log("MM Wallet", this.connectedWallet)
+      const newChainIsSameAsConnectedChain = Number(newChainId) === Number(this.network?.id)
+      const metamaskChainIsSameAsConnectedChain = Number(metamaskChainId) === Number(this.network?.id)
       // early return if chainId and wallet are already set correctly
       console.log(
         "newChainIsSameAsConnectedChain",
@@ -75,7 +91,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         metamaskChainId,
         this.network?.id,
       )
-      console.log("this.connectedWallet", this.network)
+      console.log("this.network", this.network)
 
       if (
         typeof newChainId === "undefined" &&
@@ -84,6 +100,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         throw new Error("No chain ID provided or inferred")
       }
       const chainId = newChainId ?? Number(metamaskChainId)
+      console.log("MM Chain ID", chainId)
 
       if (typeof chainId !== "number") {
         throw new Error(`Invalid chain ID type: ${typeof chainId}`)
@@ -436,7 +453,8 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     address,
     amount,
     memo,
-  }: { address: string; amount: number; memo: string }) {
+  }: { address: string; amount: number; memo?: string }) {
+    console.log('METAMASK PAYMENT', address, amount, memo)
     if (!this.network) {
       console.error("Network not set, connect or setChain first")
       return { success: false, error: "Network not set" }
@@ -456,29 +474,23 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
 
       // Convert amount to wei using parseEther
       const value = parseEther(amount.toString())
+      console.log('VALUE', value)
 
       // Prepare transaction parameters
-      const transaction = {
-        account: this.connectedWallet as `0x${string}`,
-        to: address as `0x${string}`,
-        value,
-        data: memo
-          ? (`0x${Buffer.from(memo, "utf8").toString("hex")}` as `0x${string}`)
-          : undefined,
-        gas:
-          (await estimateGas(this.config, {
-            account: this.connectedWallet as `0x${string}`,
-            to: address as `0x${string}`,
-            value,
-            data: memo
-              ? (`0x${Buffer.from(memo, "utf8").toString("hex")}` as `0x${string}`)
-              : undefined,
-          })) * BigInt(2),
-      }
-
+      const account = this.connectedWallet as `0x${string}`
+      const to = address as `0x${string}`
+      const data = stringToHex(memo)
+      const preTx = { account, to, value, data }
+      console.log('PRETX', preTx)
+      console.log('CONFIG', this.config)
+      const estimated = await estimateGas(this.config, preTx)
+      console.log('EST', estimated)
+      const gas = BigInt(Number(estimated) * 1.2) // 20% just to be safe
+      console.log('GAS', gas)
+      const transaction = { account, to, value, data, gas }
+      console.log('TX', transaction)
       const result = await sendTransaction(this.config, transaction)
-
-      console.log("TXID:", result)
+      console.log('TXID:', result)
 
       return {
         success: true,

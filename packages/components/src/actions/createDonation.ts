@@ -7,8 +7,9 @@ export default async function createDonation(
 ) {
   try {
     const record = await newDonation(data)
-    console.log("CREATE DONATION", record)
-    return record
+    //console.log("CREATE DONATION", record)
+    const plain = JSON.parse(JSON.stringify(record))
+    return plain
   } catch (error) {
     console.log("DONATION ERROR", error)
     throw new Error(error instanceof Error ? error.message : "Unknown error")
