@@ -64,13 +64,20 @@ class FreighterWallet extends InterfaceBaseClass {
     amount,
     memo,
   }: { address: string; amount: number; memo: string }) {
+    console.log("SENDING PAYMENT", address, amount, memo)
+    console.log("CONNECTED WALLET", this.connectedWallet)
     try {
       console.log("From", this.connectedWallet || "???")
       console.log("Paying", amount, "XLM to", address, "Memo", memo || "[no]")
+      if (!this.connectedWallet) {
+        await this.connect()
+      }
       const act = await this.horizon.loadAccount(this.connectedWallet)
       //const fee = 5000
       const fee = await this.horizon.fetchBaseFee() // 100
-      const xlm = amount.toString()
+      // freighter limits to 7 decimal places
+      const xlm = amount.toFixed(7)
+      console.log(xlm, typeof xlm)
       const data = {
         destination: address,
         //amount: `${amount}`,

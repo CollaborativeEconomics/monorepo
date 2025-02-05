@@ -1,31 +1,32 @@
-import appConfig from '@cfce/app-config';
-import type { StoryWithRelations } from '@cfce/database';
-import { ipfsCIDToUrl } from '@cfce/utils';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-import OrganizationAvatar from '~/organization/OrganizationAvatar';
-import { Card, CardContent } from '~/ui/card';
-import { DateDisplay } from '~/ui/date-posted';
+import appConfig from "@cfce/app-config"
+import type { StoryWithRelations } from "@cfce/database"
+import { ipfsCIDToUrl } from "@cfce/utils"
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+import OrganizationAvatar from "~/organization/OrganizationAvatar"
+import { Card, CardContent } from "~/ui/card"
+import { DateDisplay } from "~/ui/date-posted"
 
-const IPFSURL = appConfig.apis.ipfs.gateway;
+const IPFSURL = appConfig.apis.ipfs.gateway
 
 interface StoryCardCompactVertProps {
-  story: StoryWithRelations;
+  story: StoryWithRelations
 }
 
 export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
-  const story = props?.story;
+  console.log("ipfscid", typeof ipfsCIDToUrl)
+  const story = props?.story
   if (!story) {
-    return;
+    return
   }
-  const organization = story.organization;
-  const initiative = story.initiative;
+  const organization = story.organization
+  const initiative = story.initiative
   const image = story.image
-    ? story.image.startsWith('ipfs:')
+    ? story.image.startsWith("ipfs:")
       ? IPFSURL + story.image.substr(5)
       : story.image
-    : '/nopic.png';
+    : "/nopic.png"
 
   return (
     <Card className="flex flex-col overflow-hidden h-auto mx-2">
@@ -35,7 +36,7 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
             className="object-cover"
             src={ipfsCIDToUrl(image)}
             alt="IMG BG"
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: "cover" }}
             fill
           />
         </Link>
@@ -47,7 +48,7 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
             organization={organization}
           />
           <p className="text-sm font-semibold truncate">
-            in{' '}
+            in{" "}
             <span className="underline">
               <Link href={`/initiatives/${initiative?.id}`}>
                 {initiative?.title}
@@ -62,5 +63,5 @@ export default function StoryCardCompactVert(props: StoryCardCompactVertProps) {
         <div className="pl-6 line-clamp-2 text-left">{story.description}</div>
       </CardContent>
     </Card>
-  );
+  )
 }

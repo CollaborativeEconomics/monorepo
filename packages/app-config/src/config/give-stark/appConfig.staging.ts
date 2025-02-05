@@ -14,10 +14,11 @@ const apis: AppConfig["apis"] = {
   ipfs: {
     ...appConfig.apis.ipfs,
     buckets: {
-      ...appConfig.apis.ipfs.buckets,
-      nfts: process.env.IPFS_DEFAULT_BUCKET || ""
-    }
-  }
+      nfts: "kuyawa-public",
+      avatars: "kuyawa-avatars",
+      media: "kuyawa-media",
+    },
+  },
 }
 
 const chains: AppConfig["chains"] = {
@@ -36,10 +37,10 @@ const chains: AppConfig["chains"] = {
     network: "testnet",
     contracts: {
       receiptMintbotERC721:
-        "0x55e3f6e2abe8443047ec5f70875791a2463c8137c07001c3f279d4f0e0cb62f",
+        "0x3cfdb23c07a9a059090c871df3f2a242c6738e25351749be334f2b23d764368",
     },
     wallet:
-      "0x023345e38d729e39128c0cF163e6916a343C18649f07FcC063014E63558B20f3",
+      "0x063783605f5f8a4c716ec82453815ac5a5d9bb06fe27c0df022495a137a5a74f",
     enabledWallets: ["argent"],
     tokens: ["STRK"],
   },
