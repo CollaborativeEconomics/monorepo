@@ -42,6 +42,7 @@ import { Input } from "~/ui/input"
 import { Label } from "~/ui/label"
 import { Separator } from "~/ui/separator"
 import createDonation from "../actions/createDonation"
+import getRate from "../actions/getRate"
 import { CarbonCreditDisplay } from "./CarbonCreditDisplay"
 import { ChainSelect } from "./ChainSelect"
 import { DonationAmountInput } from "./DonationAmountInput"
@@ -78,12 +79,13 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const posthog = usePostHog()
   const contractId = initiative.contractcredit // needed for CC contract
   const organization = initiative.organization
+  const [coinRate, setCoinRate] = useState(rate)
   const [loading, setLoading] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const [chainState, setChainState] = useAtom(chainAtom)
   setChainState((draft) => {
-    console.log("INIT RATE", rate)
-    draft.exchangeRate = rate
+    console.log("INIT RATE", coinRate)
+    draft.exchangeRate = coinRate
   })
   //console.log('INIT STATE', chainState)
 
@@ -131,16 +133,26 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   // Disable chains that don't have wallets
   useEffect(() => {
-    const nameToSlug = (name: Chain): ChainSlugs =>
-      getChainConfigurationByName(name).slug
-    const orgWallets = organization?.wallets.map((w) => nameToSlug(w.chain))
-    const initiativeWallets = initiative?.wallets.map((w) =>
-      nameToSlug(w.chain),
-    )
-    setChainState((draft) => {
-      draft.enabledChains = [...orgWallets, ...initiativeWallets]
-    })
-  }, [initiative, organization, setChainState])
+    async function updateView(){
+      console.log("CHAIN STATE", chainState)
+      console.log("SELECTED CHAIN", selectedChain)
+      const nameToSlug = (name: Chain): ChainSlugs => getChainConfigurationByName(name).slug
+      const orgWallets = organization?.wallets.map((w) => nameToSlug(w.chain))
+      const initiativeWallets = initiative?.wallets.map((w) => nameToSlug(w.chain))
+      const symbol = chain.symbol
+      const rate = await getRate(symbol)
+      setCoinRate(rate)
+      console.log("COIN", symbol)
+      console.log("RATE", rate)
+      setChainState((draft) => { 
+        draft.enabledChains = [...orgWallets, ...initiativeWallets] 
+        //draft.exchangeRate = rate
+      })
+      console.log("UPDATED")
+    }
+    updateView()
+  }, [initiative, organization, selectedChain]) // setChainState, chainState, 
+  
   //const destinationWalletAddress = 'raHkr5qJNYez8bQQDMVLwvaRvxMripVznT' // hardcoded for testing
   const destinationWalletAddress = useMemo(() => {
     console.log("CHAIN", chain)
@@ -149,7 +161,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     const initiativeWallet = initiative?.wallets?.find(
       (w) => w.chain === chainName,
     )
-    console.log("INITIATIVE", initiativeWallet)
+    console.log("INITIATIVE WALLET", initiativeWallet)
     if (initiativeWallet) {
       return initiativeWallet.address
     }
