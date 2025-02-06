@@ -4,10 +4,10 @@ import type { TokenTickerSymbol } from "@cfce/types"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 
 export default async function getRate(
-  symbol: string,
+  symbol: TokenTickerSymbol,
 ) {
   try {
-    const rate = await getCoinRate({symbol:symbol as TokenTickerSymbol})
+    const rate = await getCoinRate({symbol})
     console.log("RATE", rate)
     return rate
   } catch (error) {

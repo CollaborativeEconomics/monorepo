@@ -139,7 +139,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const nameToSlug = (name: Chain): ChainSlugs => getChainConfigurationByName(name).slug
       const orgWallets = organization?.wallets.map((w) => nameToSlug(w.chain))
       const initiativeWallets = initiative?.wallets.map((w) => nameToSlug(w.chain))
-      const symbol = chain.symbol
+      const symbol = chain.symbol as TokenTickerSymbol
       const rate = await getRate(symbol)
       setCoinRate(rate)
       console.log("COIN", symbol)
