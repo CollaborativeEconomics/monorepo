@@ -2,13 +2,16 @@
   "name": "@cfce/ui-tests",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
+    "@synthetixio/synpress": "^4.0.3",
+    "@synthetixio/synpress-cache": "^0.0.5",
     "@types/node": "^20.11.24",
     "typescript": "^5.3.3"
   }
-} 
+}
