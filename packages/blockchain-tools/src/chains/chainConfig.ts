@@ -359,7 +359,7 @@ chainConfiguration.ethereum.networks.mainnet = {
   wssurl: "",
 }
 chainConfiguration.ethereum.networks.testnet = {
-  id: 5,
+  id: 5, // goerli, sepolia is 11155111
   name: "Ethereum Testnet",
   slug: "testnet",
   symbol: "ETH",
@@ -376,7 +376,7 @@ chainConfiguration.ethereum.networks.testnet = {
   wssurl: "",
 }
 chainConfiguration.filecoin.networks.mainnet = {
-  id: 31415790,
+  id: 314, // 31415790 ?
   name: "Filecoin Mainnet",
   slug: "mainnet",
   symbol: "FIL",
@@ -463,7 +463,7 @@ chainConfiguration.optimism.networks.mainnet = {
 }
 chainConfiguration.optimism.networks.testnet = {
   id: 11155420,
-  name: "Optimism Testnet",
+  name: "Optimism Testnet", // sepolia
   slug: "testnet",
   symbol: "OP",
   decimals: 18,
@@ -496,7 +496,7 @@ chainConfiguration.polygon.networks.mainnet = {
   wssurl: "",
 }
 chainConfiguration.polygon.networks.testnet = {
-  id: 80002,
+  id: 80002, // 80001 Mumbai and 80002 Amoy,
   name: "Polygon Testnet",
   slug: "testnet",
   symbol: "MATIC",

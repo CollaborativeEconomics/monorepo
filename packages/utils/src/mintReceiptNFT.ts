@@ -36,6 +36,8 @@ interface MintAndSaveReceiptNFTParams {
     donorWalletAddress: string
     destinationWalletAddress: string
     amount: number
+    usdValue: number
+    rate: number
     date: string
   }
   initiativeId: string
@@ -60,12 +62,15 @@ export async function mintAndSaveReceiptNFT({
       donorWalletAddress,
       destinationWalletAddress,
       amount,
+      usdValue,
+      rate,
       date,
     } = transaction
     console.log("MINT", chain, txId)
     console.log("Chain", chain)
     console.log("Token", token)
-    const rate = await getCoinRate({ symbol: token })
+    console.log("Amounts", amount, usdValue)
+    //const rate = await getCoinRate({ chain, symbol: token }) // We should get the rate only once in form and pass it as param here
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {
@@ -83,10 +88,7 @@ export async function mintAndSaveReceiptNFT({
       return { success: false, error: "Invalid donor wallet address" }
     }
 
-    if (
-      !destinationWalletAddress ||
-      typeof destinationWalletAddress !== "string"
-    ) {
+    if (!destinationWalletAddress || typeof destinationWalletAddress !== "string") {
       return { success: false, error: "Invalid destination wallet address" }
     }
 
@@ -193,7 +195,7 @@ export async function mintAndSaveReceiptNFT({
 
     // #region: Calculate amounts and prepare metadata
     const amountCUR = (+amount).toFixed(4)
-    const amountUSD = (+amount * rate).toFixed(4)
+    const amountUSD = (+usdValue).toFixed(4)
     console.log("Image URI", initiative?.imageUri)
 
     const uriImage = initiative?.imageUri
@@ -242,11 +244,11 @@ export async function mintAndSaveReceiptNFT({
       organization: organizationName,
       initiative: initiativeName,
       image: uriImage, // Already sanitized above
-      coinCode: token,
-      coinIssuer: chain,
+      chain,
+      network,
+      symbol: token,
       coinValue: amountCUR,
       usdValue: amountUSD,
-      network,
     }
 
     console.log("META", metadata)

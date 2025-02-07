@@ -17,7 +17,7 @@ interface ChainOption {
 export function ChainSelect() {
   const [chainState, setChainState] = useAtom(chainAtom)
   const { selectedChain, enabledChains } = chainState
-
+  //console.log('CHAIN STATE', chainState)
   const chains: ChainOption[] = React.useMemo(
     () =>
       Object.entries(getChainConfiguration()).map(([_, chain]) => ({
@@ -26,7 +26,7 @@ export function ChainSelect() {
         icon: chain.icon,
         disabled: !enabledChains.includes(chain.slug),
       })),
-    [],
+    [enabledChains],
   )
 
   return (
