@@ -2,26 +2,15 @@ import type { AuthTypes } from "./Auth"
 import type {
   ChainSlugs,
   ClientInterfaces,
+  Contract,
   Network,
   TokenTickerSymbol,
 } from "./BlockchainTools"
 
-type ContractType =
-  | "credits" // default carbon credit contract, deprecated in favor of DB-based contracts
-  | "creditsFactory" // deploy credits contract through partner portal
-  | "creditsHash"
-  | "factory"
-  | "receiptFactory" // deploy NFTReceipt contract through partner portal
-  | "receiptMintbotERC721" // automatically mint receipt NFTs
-  | "receiptMintbotERC721Hash"
-  | "storyERC1155" // story NFT contract
-  | "xlmNativeCoin"
-  | "volunteersFactory"
-
 export interface AppChainConfig {
   slug: ChainSlugs
   network: Network
-  contracts: Partial<Record<ContractType, string>>
+  contracts: Partial<Record<Contract, string>>
   wallet?: string
   enabledWallets: ClientInterfaces[]
   tokens: TokenTickerSymbol[]

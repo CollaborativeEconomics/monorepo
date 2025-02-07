@@ -12,17 +12,6 @@ const siteInfo: AppConfig["siteInfo"] = {
 
 const apis: AppConfig["apis"] = {
   ...appConfig.apis,
-  ipfs: {
-    endpoint: "https://s3.filebase.com/",
-    region: "us-east-1",
-    gateway: "https://ipfs.filebase.io/ipfs/",
-    pinning: "https://api.filebase.io/v1/ipfs",
-    buckets: {
-      nfts: "kuyawa-public",
-      avatars: "kuyawa-avatars",
-      media: "kuyawa-media",
-    },
-  },
 }
 
 const chains: AppConfig["chains"] = {
@@ -39,11 +28,7 @@ const chains: AppConfig["chains"] = {
 }
 
 const chainDefaults: AppConfig["chainDefaults"] = {
-  network: "testnet",
-  wallet: "metamask",
-  chain: "arbitrum",
-  coin: "ETH",
-  defaultAddress: "0x2f033661Aca76816d9f729D1F5f190597E539C3f",
+  ...appConfig.chainDefaults,
 }
 
 const auth = appConfig.auth as AuthTypes[]

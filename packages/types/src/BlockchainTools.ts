@@ -57,6 +57,23 @@ export const ChainNames: Chain[] = [
 ] as const
 
 export type Network = "mainnet" | "testnet"
+
+type FactoryContract =
+  | "CreditsFactory"
+  | "ReceiptFactory"
+  | "VolunteersFactory"
+  | "ReceiptFactory"
+  | "VolunteersFactory"
+
+export type Contract =
+  | FactoryContract
+  | "TBA_Registry"
+  | "TBA_Implementation"
+  | "TBA_NFT"
+  | "Receipt_NFT"
+  | "Story_NFT"
+  | "Credits"
+
 export interface NetworkConfig {
   id: number
   name: string
@@ -75,7 +92,7 @@ export interface NetworkConfig {
   wssurl: string
   tokens?: Partial<Record<TokenTickerSymbol, TokenConfig>>
   networkPassphrase?: string
-  contracts?: Record<string, string>
+  contracts?: Partial<Record<Contract, string>>
   wallet?: string
 }
 

@@ -26,7 +26,7 @@ export function ChainSelect() {
         icon: chain.icon,
         disabled: !enabledChains.includes(chain.slug),
       })),
-    [],
+    [enabledChains],
   )
 
   return (

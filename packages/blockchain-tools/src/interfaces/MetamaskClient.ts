@@ -1,6 +1,5 @@
 /// <reference path="./metamask.d.ts" />
 
-import appConfig from "@cfce/app-config"
 import type {
   ChainSlugs,
   Network,

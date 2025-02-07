@@ -34,7 +34,7 @@ const chains: AppConfig["chains"] = {
       // credits: "0x0???",
       receiptMintbotERC721: "0x2c647e44003f403bb3e483ff810279efb136c304",
       storyERC1155: "0xc917ff4128525a65639d18f1d240a788081f022d",
-      volunteersFactory: "0xD4E47912a12f506843F522Ea58eA31Fd313eB2Ee",
+      volunteersFactory: "0xfbB261eADa2b1D881715984222De161F3F3E914e",
     },
     wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
     enabledWallets: ["metamask"],
