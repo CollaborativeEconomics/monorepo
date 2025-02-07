@@ -20,16 +20,17 @@ const apis = {
   },
 }
 
-const chains = Object.entries(appConfig.chains).reduce(
-  (obj, [key, chain]) => {
-    obj[key as ChainSlugs] = {
-      ...chain,
-      network: "testnet" as Network,
-    }
-    return obj
+const chains = {
+  ...appConfig.chains,
+  stellar: {
+    ...appConfig.chains.stellar,
+    contracts: {
+      ...appConfig.chains.stellar?.contracts,
+      credits: "CAGENCA7RDSBTGL7OJUC3XHPMGE43AXAZ3RVFFH5E3P22COOG7TUPDPN",
+    },
+    network: "testnet" as Network,
   },
-  {} as Record<ChainSlugs, AppChainConfig>,
-)
+}
 const chainDefaults = {
   ...appConfig.chainDefaults,
   network: "testnet" as Network,

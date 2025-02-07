@@ -166,10 +166,7 @@
                           ]
                         },
                         "val": {
-                          "u128": {
-                            "hi": 1692489495,
-                            "lo": 8932282930470846464
-                          }
+                          "string": "30c0636f-b0f1-40d5-bb9c-a531dc4d69e2"
                         }
                       },
                       {
@@ -299,10 +296,7 @@
                   "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
                 },
                 {
-                  "u128": {
-                    "hi": 1692489495,
-                    "lo": 8932282930470846464
-                  }
+                  "string": "30c0636f-b0f1-40d5-bb9c-a531dc4d69e2"
                 },
                 {
                   "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
@@ -534,10 +528,7 @@
               }
             ],
             "data": {
-              "u128": {
-                "hi": 1692489495,
-                "lo": 8932282930470846464
-              }
+              "string": "30c0636f-b0f1-40d5-bb9c-a531dc4d69e2"
             }
           }
         }

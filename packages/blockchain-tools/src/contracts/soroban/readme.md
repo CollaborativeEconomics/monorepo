@@ -3,18 +3,18 @@
 Documentation at https://developers.stellar.org/docs/smart-contracts
 
 
-## Install
+# Install
 
 To deploy Soroban contracts please read the docs and install Rust lang, Wasm target and Soroban CLI
 
 https://developers.stellar.org/docs/smart-contracts/getting-started/setup
 
 
-## Credits
+# Credits
 
 Source code at [/credits/src](/credits/src)
 
-### Methods
+## Methods
 
 ```
   initialize(admin: Address, initiative: u128, provider: Address, vendor: Address, bucket: i128, xlm: Address)
@@ -40,9 +40,7 @@ Source code at [/credits/src](/credits/src)
   setXLM(newval: Address)
 ```
 
-### Calls
-
-build
+### Build
 
 ```
 cargo build --target wasm32-unknown-unknown --release
@@ -54,54 +52,103 @@ or
 soroban contract build
 ```
 
-test
+### Test
 
 ```
 cargo test
 ```
 
-test with logs
+Test with logs
 
 ```
 cargo test -- --nocapture
 ```
 
-optimize
+### Optimize
 
 ```
-soroban contract optimize --wasm target/wasm32-unknown-unknown/release/credits.wasm
+soroban contract optimize \
+  --wasm target/wasm32-unknown-unknown/release/credits.wasm
 ```
 
-deploy (Once deployed write down the contract ID)
+### Deploy
 
 ```
-soroban contract deploy --wasm target/wasm32-unknown-unknown/release/credits.wasm --source [G123-ADMIN] --rpc-url [RPC-PROVIDER-URL]  --network-passphrase 'Public Global Stellar Network ; September 2015'
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/credits.wasm \
+  --source [wallet secret] \
+  --network testnet
 ```
 
-initialize
+### Initialize
+ - provider gets 90% (i.e Stellar Carbon)
+ - vendor gets 10% (i.e. Public Node)
+ - bucket is the amount to accumulate before splitting/sending
+ - xlm is the contract address of the XLM token
 
-```
-soroban contract invoke --id [CONTRACT-ID] --source [G123-ADMIN] --rpc-url [RPC-PROVIDER-URL] --network-passphrase 'Public Global Stellar Network ; September 2015' -- initialize --admin [G123-ADMIN] --initiative [INITIATIVE-ID] --provider [G123-PROVIDER] --vendor [G123-VENDOR] --bucket 20000000 --xlm CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA
-```
-
-donate
-
-```
-soroban contract invoke --id [CONTRACT-ID] --source [G123-ADMIN] --rpc-url [RPC-PROVIDER-URL] --network-passphrase 'Public Global Stellar Network ; September 2015' -- donate --from [G123-DONOR] --amount 10000000
-```
-
-generate libraries
-
-```
-soroban contract bindings typescript --rpc-url https://soroban.stellar.org --network-passphrase 'Public Global Stellar Network ; September 2015' --contract-id [CONTRACT-ID] --output-dir libs
+ To get the stellar contract address:
+ ```
+ stellar contract id asset \
+  --network [NETWORK] \
+  --asset native
 ```
 
+#### testnet
+```
+soroban contract invoke \
+  --id [CONTRACT-ID] \
+  --source [wallet secret] \
+  --network testnet \
+  -- initialize \
+  --admin [wallet address] \
+  --initiative [INITIATIVE-ID] \
+  --provider [provider address] \
+  --vendor [vender address] \
+  --bucket 20000000 \
+  --xlm CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC
+```
 
-## NFToken
+#### mainnet
+```
+soroban contract invoke \
+  --id [CONTRACT-ID] \
+  --source [wallet secret] \
+  --network mainnet \
+  -- initialize \
+  --admin [wallet address] \
+  --initiative [INITIATIVE-ID] \
+  --xlm CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA
+```
+
+### Donate
+
+```
+soroban contract invoke \
+  --id [CONTRACT-ID] \
+  --source [G123-ADMIN] \
+  --rpc-url [RPC-PROVIDER-URL] \
+  --network-passphrase 'Public Global Stellar Network ; September 2015' \
+  -- donate \
+  --from [G123-DONOR] \
+  --amount 10000000
+```
+
+### Generate Libraries
+
+```
+soroban contract bindings typescript \
+  --rpc-url https://soroban.stellar.org \
+  --network-passphrase 'Public Global Stellar Network ; September 2015' \
+  --contract-id [CONTRACT-ID] \
+  --output-dir libs
+```
+
+
+# NFToken
 
 Source code at [/nftoken/src](/nftoken/src)
 
-### Methods
+## Methods
 
 ```
   initialize(admin: Address, name: String, symbol: String)
@@ -123,12 +170,14 @@ Source code at [/nftoken/src](/nftoken/src)
   token_uri() -> String
 ```
 
-### Calls
+## Calls
 
-build
+### Build
 
 ```
-cargo build --target wasm32-unknown-unknown --release
+cargo build \
+  --target wasm32-unknown-unknown \
+  --release
 ```
 
 or
@@ -137,37 +186,56 @@ or
 soroban contract build
 ```
 
-optimize
+### Optimize
 
 ```
-soroban contract optimize --wasm target/wasm32-unknown-unknown/release/nftoken.wasm
+soroban contract optimize \
+  --wasm target/wasm32-unknown-unknown/release/nftoken.wasm
 ```
 
-deploy (Once deployed write down the contract ID)
+### Deploy (Once deployed write down the contract ID)
 
 ```
-soroban contract deploy --wasm target/wasm32-unknown-unknown/release/nftoken.wasm --source [G123-ADMIN] --rpc-url [RPC-PROVIDER-URL] --network-passphrase 'Public Global Stellar Network ; September 2015'
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/nftoken.wasm \
+  --source [G123-ADMIN] \
+  --network [NETWORK]
 ```
 
-initialize
+### Initialize
 
 ```
-soroban contract invoke --id [CONTRACT-ID] --source [G123-ADMIN] --rpc-url [RPC-PROVIDER-URL] --network-passphrase 'Public Global Stellar Network ; September 2015' -- initialize --admin [G123-ADMIN] --name 'GIVE' --symbol 'GIVE'
+soroban contract invoke \
+  --id [CONTRACT-ID] \
+  --source [G123-ADMIN] \
+  --network [NETWORK] \
+  -- initialize \
+  --admin [G123-ADMIN] \
+  --name 'GIVE' \
+  --symbol 'GIVE'
 ```
 
-mint
+### Mint
 
 ```
-soroban contract invoke --id [CONTRACT-ID] --source [G123-ADMIN] --rpc-url [RPC-PROVIDER-URL] --network-passphrase 'Public Global Stellar Network ; September 2015' -- mint --to [G123-RECEIVER]
+soroban contract invoke \
+  --id [CONTRACT-ID] \
+  --source [G123-ADMIN] \
+  --network [NETWORK] \
+  -- mint \
+  --to [G123-RECEIVER]
 ```
 
-generate libraries
+### Generate Libraries
 
 ```
-soroban contract bindings typescript --rpc-url https://soroban.stellar.org --network-passphrase 'Public Global Stellar Network ; September 2015' --contract-id [CONTRACT-ID] --output-dir libs
+soroban contract bindings typescript \
+  --network [NETWORK] \
+  --contract-id [CONTRACT-ID] \
+  --output-dir libs
 ```
 
-## Notes
+# Notes
 
 To test, replace MAINNET for FUTURENET rpc providers:
 
