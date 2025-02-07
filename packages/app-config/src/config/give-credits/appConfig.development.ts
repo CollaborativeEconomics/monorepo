@@ -10,7 +10,6 @@ import appConfig from "./appConfig.staging"
 const siteInfo = {
   ...appConfig.siteInfo,
   title: "Give Credit (Development)",
-  description: "Make tax-deductible donations of carbon credits (Development)",
 }
 
 const apis = {

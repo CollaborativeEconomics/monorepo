@@ -40,7 +40,7 @@ fn test_views() {
   assert_eq!(credit.getInitiative(), initiative);
   assert_eq!(credit.getMinimum(), 1000000);
   assert_eq!(credit.getProvider(), provider);
-  assert_eq!(credit.getProviderFees(), 80);
+  assert_eq!(credit.getProviderFees(), 90);
   assert_eq!(credit.getVendor(), vendor);
   assert_eq!(credit.getVendorFees(), 10);
   assert_eq!(credit.getXLM(), xlm);

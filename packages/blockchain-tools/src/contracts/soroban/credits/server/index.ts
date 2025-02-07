@@ -1,5 +1,5 @@
-import { Address, BASE_FEE, Contract, FeeBumpTransaction, Keypair, nativeToScVal, Networks, Operation, SorobanDataBuilder, SorobanRpc, Transaction, TransactionBuilder, xdr } from "@stellar/stellar-sdk";
-const { Api, assembleTransaction } = SorobanRpc;
+import { Address, BASE_FEE, Contract, FeeBumpTransaction, Keypair, Horizon, nativeToScVal, scValToNative, Networks, Operation, SorobanDataBuilder, SorobanRpc, Transaction, TransactionBuilder, xdr } from "@stellar/stellar-sdk";
+const { Api, assembleTransaction } = SorobanRpc
 
 function sleep(ms:number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -8,12 +8,17 @@ function sleep(ms:number) {
 
 //---- SUBMIT TX
 
-const RPC_SERVER = process.env.STELLAR_SOROBAN
-//const RPC_SERVER = "https://rpc-futurenet.stellar.org:443";
-//const RPC_SERVER = "https://soroban-testnet.stellar.org/";
-console.log('RPC', RPC_SERVER)
-const server = new SorobanRpc.Server(RPC_SERVER);
+const HORIZON_URL = process.env.NEXT_PUBLIC_STELLAR_HORIZON
+const SOROBAN_URL = process.env.STELLAR_SOROBAN
+//const SOROBAN_URL = 'https://small-shy-borough.stellar-mainnet.quiknode.pro/53e6763ed40e4bc3202a8792d6d2d51706052755/'
+//const SOROBAN_URL = 'https://mainnet.stellar.validationcloud.io/v1/QW6tYBRenqUwP8d9ZJds44Dm-txH1497oDXcdC07xDo'
+//const SOROBAN_URL = 'https://soroban-mainnet.nownodes.io/32b582fb-d83b-44fc-8788-774de28395cb'
 
+//const SOROBAN_URL = "https://rpc-futurenet.stellar.org:443";
+//const SOROBAN_URL = "https://soroban-testnet.stellar.org/";
+const server = new SorobanRpc.Server(SOROBAN_URL);
+//const server = new SorobanRpc.Server(QUIKNODE_URL);
+//console.log('>Server Loaded', server)
 /*
 // Submits a tx and then polls for its status until a timeout is reached.
 async function submitTx2(tx){
@@ -60,42 +65,45 @@ async function submitTx(tx:Transaction) {
         console.log("Waiting for transaction confirmation...");
         // See if the transaction is complete
         result = await server.getTransaction(response.hash);
-        // Wait two seconds
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Wait one second
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       //console.log(`getTransaction response: ${JSON.stringify(result)}`);
       console.log(`Status:`, result.status);
       if (result.status === "SUCCESS") {
+        console.log('RESULT:', result);
         // Make sure the transaction's resultMetaXDR is not empty
         if (!result.resultMetaXdr) {
-          console.log('Error: Empty resultMetaXDR')
           throw "Empty resultMetaXDR in getTransaction response";
         }
         // Find the return value from the contract and return it
         let transactionMeta = result.resultMetaXdr;
-        let returnValue = result.returnValue;
+        //const metares  = result.resultMetaXdr.v3().sorobanMeta().returnValue();
+        //console.log('METARES:', metares);
+        let returnValue = result.returnValue;  //parseResultXdr(result.returnValue);
+        //const metaXDR = SorobanClient.xdr.TransactionMeta.fromXDR(result.resultMetaXdr, "base64")
+        //console.log('METAXDR:', JSON.stringify(metaXDR,null,2));
+        //console.log('Return meta:', JSON.stringify(transactionMeta,null,2));
         console.log('Return value:', JSON.stringify(returnValue,null,2));
         //console.log(`Return value: ${returnValue}`);
         return {success:true, value:returnValue, meta:transactionMeta, txid};
       } else {
-        //console.log('RESULTX:', JSON.stringify(result,null,2));
-        console.log('ERROR IN TRANSACTION:', JSON.stringify(result.resultXdr,null,2));
+        console.log('XDR:', JSON.stringify(result.resultXdr,null,2));
         throw `Transaction failed: ${result.resultXdr}`;
       }
     } else {
-      console.log('ERROR IN RESPONSE')
       throw response.errorResult;
     }
   } catch (err:any) {
     // Catch and report any errors we've thrown
     console.log("Sending transaction failed");
-    console.log('Error:', err);
+    console.log(err);
     console.log(JSON.stringify(err));
     return {success:false, error:err.message};
   }
 }
 
-//---- RESTORE
+//---- RESTORE DATA
 
 // assume that `server` is the Server() instance from the preamble
 async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
@@ -105,7 +113,6 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
 
   // Other failures are out of scope of this tutorial.
   if (!Api.isSimulationSuccess(sim)) {
-    console.log('Error simulating')
     throw sim;
   }
 
@@ -117,11 +124,11 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
     //prepTx.sign(signer);
 
     let prepTx = await server.prepareTransaction(tx);
-    console.log('PREPTX',prepTx)
+    console.log(prepTx)
     prepTx.sign(signer)
-    console.log('SIGNTX',prepTx)
-    const rest = await submitTx(prepTx)
-    console.log(rest)
+
+    const rest = await submitTx(prepTx);
+    //console.log(rest)
     return rest
   }
 
@@ -173,7 +180,7 @@ async function submitOrRestoreAndRetry(signer: Keypair, tx: Transaction) {
   return resx
 }
 
-//---- RESTORE
+//---- RESTORE CONTRACT
 
 async function restoreContract(signer:Keypair, c:Contract, network:any){
   const instance = c.getFootprint();
@@ -182,11 +189,10 @@ async function restoreContract(signer:Keypair, c:Contract, network:any){
   // @ts-ignore: types suck donkey balls
   const data = new SorobanDataBuilder().setReadWrite([instance, wasmEntry]).build();
   const restoreTx = new TransactionBuilder(account, { fee: BASE_FEE })
-    .setNetworkPassphrase(network.passphrase)
+    .setNetworkPassphrase(network.networkPassphrase)
     .setSorobanData(data) // Set the restoration footprint (remember, it should be in the read-write part!)
     .addOperation(Operation.restoreFootprint({}))
     .build();
-
   const preppedTx = await server.prepareTransaction(restoreTx);
   preppedTx.sign(signer);
   return submitTx(preppedTx);
@@ -204,10 +210,10 @@ function getWasmLedgerKey(entry: any) {
 
 export async function submit(network:any, secret:string, contractId:string, method:string, args:any) {
   const source   = Keypair.fromSecret(secret)
-  //const server   = new SorobanRpc.Server(network.soroban)
+  const server   = new SorobanRpc.Server(network.soroban)
   const contract = new Contract(contractId)
   const account  = await server.getAccount(source.publicKey())
-  console.log('SUBMIT', {network, contractId, method, args})
+  console.log({network, contractId, method, args})
 
   let op = contract.call(method, ...args)
   let tx = new TransactionBuilder(account, { fee: BASE_FEE, networkPassphrase: network.passphrase })
@@ -219,47 +225,63 @@ export async function submit(network:any, secret:string, contractId:string, meth
     const resp = await submitOrRestoreAndRetry(source, tx)
     console.log('RESP', resp)
     if(resp.success){
-      const meta:any = resp.meta
+      //const meta:any = resp.meta
       //console.log('META', JSON.stringify(meta,null,2))
-      const lastId = meta?._value?._attributes?.sorobanMeta?._attributes?.events[0]?._attributes?.body?._value?._attributes?.data?._value?._attributes?.lo?._value?.toString() || ''
-      const tokenId = lastId ? (contractId + ' #' + lastId) : resp.txid
-      console.log('TOKENID', tokenId)
-      return {success:true, tokenId, error:null}
+      //console.log('Return value:', resp?.value)
+      const resval = scValToNative(resp?.value)
+      console.log('Return value:', resval)
+      return {success:true, value:resval, error:null}
     } else {
-      return {success:false, tokenId:'', error:'Error minting NFT'}
+      return {success:false, value:'', error:'Error submitting transaction'}
     }
   } catch (err:any) {
     // Catch and report any errors we've thrown
-    console.log("Error sending transaction", err);
-    return {success:false, tokenId:'', error:err.message||'Error minting NFT'}
+    console.log("Error sending transaction", err)
+    return {success:false, value:'', error:err.message||'Error sending transaction'}
   }
 }
 
 export async function checkContract(network:any, secret:string, contractId:string, method:string, args:any) {
-  const source   = Keypair.fromSecret(secret)
-  //const server   = new SorobanRpc.Server(network.soroban)
-  const contract = new Contract(contractId)
-  const account  = await server.getAccount(source.publicKey())
-  console.log({network, contractId, method, args})
+  try {
+    console.log('CHECK', network, secret, contractId, method)
+    const source   = Keypair.fromSecret(secret)
+    const pubkey   = source.publicKey()
+    const rpcurl   = network.soroban
+    console.log('CHECK1:', pubkey)
+    console.log('CHECK2:', rpcurl)
+    const contract = new Contract(contractId)
+    console.log('CHECK3')
+    const horizon  = new Horizon.Server(HORIZON_URL)
+    const account  = await horizon.loadAccount(pubkey)
 
-  let op = contract.call(method, ...args)
-  let tx = new TransactionBuilder(account, { fee: BASE_FEE, networkPassphrase: network.passphrase })
-    .addOperation(op)
-    .setTimeout(30)
-    .build()
+    console.log('CHECK4:', account?.id)
+    let op = contract.call(method, ...args)
+    let tx = new TransactionBuilder(account, { fee: BASE_FEE, networkPassphrase: network.passphrase })
+      .addOperation(op)
+      .setTimeout(30)
+      .build()
 
-  const sim = await server.simulateTransaction(tx);
-  if (!Api.isSimulationSuccess(sim)) {
-    throw sim
-  }
-  if (Api.isSimulationRestore(sim)) {
-    console.log('Contract needs to be restored')
-    const result = await restoreContract(source, contract, network)
-    console.log('RESULT', result)
-    return {ready:true}
-  } else {
-    console.log('Contract is ready')
-    return {ready:true}
+    console.log('CHECK5:', tx)
+    const sim = await server.simulateTransaction(tx);
+    console.log('CHECK6:', sim)
+    if (!Api.isSimulationSuccess(sim)) {
+      console.log('Error: Contract could not be restored')
+      console.log('SIM:', sim)
+      return {ready:false}
+      //throw sim
+    }
+    if (Api.isSimulationRestore(sim)) {
+      console.log('Contract needs to be restored')
+      const result = await restoreContract(source, contract, network)
+      console.log('RESTORED', result)
+      return {ready:true}
+    } else {
+      console.log('Contract is ready')
+      return {ready:true}
+    }
+  } catch(ex) {
+    console.error('Restore Error:', ex)
+    return {ready:false}
   }
 }
 

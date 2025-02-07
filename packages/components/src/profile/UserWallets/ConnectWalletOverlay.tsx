@@ -37,7 +37,6 @@ export function ConnectWalletOverlay({
 }: ConnectWalletOverlayProps) {
   const [chainState, setChainState] = useAtom(chainAtom)
   const { toast } = useToast()
-  // const chainConfig = getChainConfiguration();
   const enabledWallets = appConfig.auth.filter(
     (w) => !["github", "google"].includes(w),
   ) as ClientInterfaces[]
