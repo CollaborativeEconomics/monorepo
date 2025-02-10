@@ -10,7 +10,7 @@ test.describe("Homepage", () => {
 
   test("has expected title and meta content", async ({ page }) => {
     // Basic check that we're on the homepage
-    await expect(page).toHaveTitle("Give Stark (Staging)")
+    await expect(page).toHaveTitle("Give Arbitrum (Development)")
 
     // Check meta description
     const metaDescription = await page.locator('meta[name="description"]')
@@ -26,7 +26,7 @@ test.describe("Homepage", () => {
     await expect(header).toBeVisible()
 
     // Check logo - make it more specific by looking within the header
-    const headerLogo = header.getByRole("link", { name: /give stark/i })
+    const headerLogo = header.getByRole("link", { name: /give arbitrum/i })
     await expect(headerLogo).toBeVisible()
 
     // Check main nav links
@@ -58,13 +58,10 @@ test.describe("Homepage", () => {
 
     // Test navigation
     await findOrgButton.click()
-    await page.waitForTimeout(80000) // Add small delay for navigation
-    await expect(page).toHaveURL("/organizations")
-
-    // Verify we're on the organizations page by checking for specific content
-    await expect(
-      page.getByRole("heading", { name: /organizations/i }),
-    ).toBeVisible()
+    await page.waitForURL(
+      /^http:\/\/localhost:3000\/organizations$/
+    )
+    await expect(page).toHaveURL(/.*\/organizations/)
 
     // Go back to homepage
     await page.goto("/")
@@ -82,12 +79,14 @@ test.describe("Homepage", () => {
 
     // Test navigation
     await findInitiativesButton.click()
-    await page.waitForTimeout(50000) // Add small delay for navigation
-    await expect(page).toHaveURL("/initiatives")
+    await page.waitForURL(
+      /^http:\/\/localhost:3000\/initiatives$/
+    )
+    await expect(page).toHaveURL(/.*\/initiatives/)
 
     // Verify we're on the initiatives page by checking for specific content
     await expect(
-      page.getByRole("heading", { name: /initiatives/i }),
+      page.getByRole("link", { name: "Initiatives" }),
     ).toBeVisible()
   })
 
@@ -142,7 +141,7 @@ test.describe("Homepage", () => {
 
     // Check footer logo
     await expect(
-      footer.getByRole("link", { name: "Give Stark (Staging) logo" }),
+      footer.getByRole("link", { name: "Give Arbitrum (Development) logo" }),
     ).toBeVisible()
   })
 
