@@ -99,24 +99,36 @@ const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
   },
 }
 
-const appId = process.env.NEXT_PUBLIC_APP_ID as AppId
-const env = process.env.NEXT_PUBLIC_APP_ENV as Environment
+const appId = process.env.NEXT_PUBLIC_APP_ID as AppId | undefined
+const env = process.env.NEXT_PUBLIC_APP_ENV as Environment | undefined
 
-if (!appId) {
-  console.warn("NEXT_PUBLIC_APP_ID not defined")
+const getAppConfig = (): AppConfig => {
+  if (!appId) {
+    console.warn("NEXT_PUBLIC_APP_ID not defined")
+    return base
+  }
+
+  if (!appConfigs[appId]) {
+    console.warn(`App config not found for appId ${appId}`)
+    return base
+  }
+
+  if (!env) {
+    console.warn("NEXT_PUBLIC_APP_ENV not defined")
+    return base
+  }
+
+  const envConfig = appConfigs[appId][env]
+  if (!envConfig) {
+    console.warn(`App config not found for appId ${appId} and env ${env}`)
+    return base
+  }
+
+  return envConfig
 }
 
-if (!appConfigs[appId]) {
-  console.warn(`App config not found for appId ${appId}`)
-}
+const appConfig = getAppConfig()
 
-if (!env) {
-  console.warn("NEXT_PUBLIC_APP_ENV not defined")
-}
+//console.log({ appConfig, appId, env })
 
-const envConfig = appConfigs[appId][env]
-if (!envConfig) {
-  console.warn(`App config not found for appId ${appId} and env ${env}`)
-}
-
-export default envConfig
+export default appConfig

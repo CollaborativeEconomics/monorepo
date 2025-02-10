@@ -79,11 +79,12 @@ export type Contract =
   | "Volunteers_NFT"
 
 export interface NetworkConfig {
-  id: number | string
+  id: number
   name: Chain
   slug: ChainSlugs
   network: Network
   symbol: string
+  icon: string
   decimals: number
   gasprice: string
   explorer: {

@@ -1,15 +1,9 @@
-import type {
-  Chain,
-  ChainConfig,
-  Network,
-  NetworkConfig,
-  RuntimeChainConfig,
-} from "@cfce/types"
+import type { Chain, ChainConfig, Network, NetworkConfig } from "@cfce/types"
 
 import type { NFTData } from "@cfce/database"
 import type { ChainSlugs } from "@cfce/types"
 
-import chainConfiguration from "./chainConfig"
+import { chainConfig } from "@cfce/app-config"
 
 /**
  * Get the network config for the chain, using the app environment
@@ -17,7 +11,7 @@ import chainConfiguration from "./chainConfig"
  * @returns The network config object
  */
 export const getNetworkForChain = (slug: ChainSlugs): NetworkConfig =>
-  chainConfiguration[slug].networks[
+  chainConfig[slug].networks[
     process.env.NEXT_PUBLIC_APP_ENV === "production" ? "mainnet" : "testnet"
   ]
 
@@ -31,7 +25,7 @@ export const getChainByChainId = (chainId: number): ChainConfig => {
   if (chainId === 0) {
     throw new Error("Chain ID 0 is not a valid chain ID")
   }
-  const idToChainMapping = Object.values(chainConfiguration).reduce(
+  const idToChainMapping = Object.values(chainConfig).reduce(
     (acc, chain) => {
       // Check IDs for each network
       for (const network of Object.values(chain.networks)) {
@@ -50,11 +44,11 @@ export const getChainByChainId = (chainId: number): ChainConfig => {
 }
 
 export const getChainConfigBySlug = (slug: ChainSlugs): ChainConfig => {
-  const chainConfig = chainConfiguration[slug]
-  if (!chainConfig) {
+  const config = chainConfig[slug]
+  if (!config) {
     throw new Error(`Chain configuration not found for ${slug}`)
   }
-  return chainConfig
+  return config
 }
 
 /**
@@ -63,7 +57,7 @@ export const getChainConfigBySlug = (slug: ChainSlugs): ChainConfig => {
  * @returns The chain configuration
  */
 export const getChainConfigurationByName = (name: Chain): ChainConfig => {
-  const configs = Object.values(chainConfiguration)
+  const configs = Object.values(chainConfig)
   const config = configs.find((config) => config.name === name)
   if (!config) {
     throw new Error(`Chain configuration not found for ${name}`)
@@ -83,12 +77,12 @@ export const getRpcUrl = (
   network: Network,
   rpcType = "main",
 ): string => {
-  const chainConfig = chainConfiguration[chain]
-  if (!chainConfig) {
+  const config = chainConfig[chain]
+  if (!config) {
     throw new Error(`Chain configuration not found for ${chain}`)
   }
 
-  const networkConfig = chainConfig.networks[network]
+  const networkConfig = config.networks[network]
   if (!networkConfig) {
     throw new Error(`Network configuration not found for ${chain} ${network}`)
   }

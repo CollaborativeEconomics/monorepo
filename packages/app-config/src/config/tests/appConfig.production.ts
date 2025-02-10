@@ -1,5 +1,5 @@
 import type { AppConfig, AuthTypes } from "@cfce/types"
-import chainConfig from "~/chainConfig"
+import chainConfig from "../../chainConfig"
 import appConfigBase from "../appConfigBase"
 
 const appConfig: AppConfig = {

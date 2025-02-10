@@ -1,5 +1,5 @@
 import type { AppConfig, AuthTypes, Network } from "@cfce/types"
-import chainConfiguration from "~/chainConfig"
+import chainConfiguration from "../../chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {

@@ -1,4 +1,4 @@
-import { chainConfig } from "@cfce/app-config"
+import appConfig, { chainConfig } from "@cfce/app-config"
 import { FreighterWallet } from "@cfce/blockchain-tools"
 import { signTransaction } from "@stellar/freighter-api"
 import {
@@ -28,7 +28,7 @@ interface ReceiptData {
   symbol: string
 }
 
-export const networks = chainConfig.stellar.networks
+const stellar = chainConfig.stellar.networks[appConfig.chainDefaults.network]
 
 // Usage
 // const contractId = getContractIdFromTx(successfulTransactionResponse)
@@ -71,16 +71,6 @@ async function deploy(
   )
   try {
     //const network = networks[nettype]
-    const network = networks[nettype as keyof typeof networks]
-    if (!network) {
-      return {
-        success: false,
-        txid: null,
-        contractId: null,
-        block: null,
-        error: "Network not found",
-      }
-    }
     const scDeployer = new Address(deployer).toScVal()
     const scHash = nativeToScVal(Buffer.from(wasm_hash, "hex"), {
       type: "bytes",
@@ -95,7 +85,7 @@ async function deploy(
     console.log("deploy", scDeployer, scHash, scSalt, scInit)
     const op = ctr.call("deploy", scDeployer, scHash, scSalt, scInit, scArgs)
     console.log("OP", op)
-    const soroban = new rpc.Server(network.rpcUrls.soroban, { allowHttp: true })
+    const soroban = new rpc.Server(stellar.rpcUrls.soroban, { allowHttp: true })
     console.log("X1", owner)
     const account = await soroban.getAccount(owner)
     //const account = await horizon.loadAccount(admin)
@@ -105,7 +95,7 @@ async function deploy(
     const fee = BASE_FEE
     const trx = new TransactionBuilder(account, {
       fee,
-      networkPassphrase: network.networkPassphrase,
+      networkPassphrase: stellar.networkPassphrase,
     })
       .addOperation(op)
       .setTimeout(30)
@@ -145,7 +135,7 @@ async function deploy(
         const account2 = await soroban.getAccount(deployer.toString())
         const trz = new TransactionBuilder(account2, {
           fee: fee2,
-          networkPassphrase: network.networkPassphrase,
+          networkPassphrase: stellar.networkPassphrase,
         })
           .setSorobanData(sdata)
           .addOperation(op)
@@ -163,7 +153,7 @@ async function deploy(
       }
       console.log("XDR", xdr)
       // Now sign it???
-      const opx = { networkPassphrase: network.networkPassphrase }
+      const opx = { networkPassphrase: stellar.networkPassphrase }
       //const opx = {network:network.name, networkPassphrase: network.networkPassphrase, accountToSign: from}
       console.log("OPX", opx)
       //const res = await wallet.signAndSend(xdr, opx)
@@ -178,7 +168,7 @@ async function deploy(
           error: sgn.error.message,
         }
       }
-      if (!network.networkPassphrase) {
+      if (!stellar.networkPassphrase) {
         return {
           success: false,
           txid: null,
@@ -190,7 +180,7 @@ async function deploy(
       // Now send it?
       const txs = TransactionBuilder.fromXDR(
         sgn.signedTxXdr,
-        network.networkPassphrase,
+        stellar.networkPassphrase,
       ) // as Tx
       console.log("TXS", txs)
       //const six = await soroban.simulateTransaction(txs)
@@ -313,7 +303,6 @@ async function deploy(
 async function deployCredits(data: CreditsData) {
   console.log("DATA", data)
   try {
-    const network = networks[data.network]
     const wallet = new FreighterWallet()
     //const wallet = new FreighterWallet(data.chain as ChainSlugs, data.network)
     await wallet.init()
@@ -412,7 +401,6 @@ async function deployCredits(data: CreditsData) {
 async function deployNFTReceipt(data: ReceiptData) {
   console.log("DATA", data)
   try {
-    const network = networks[data.network]
     const wallet = new FreighterWallet()
     //const wallet = new FreighterWallet(data.chain as ChainSlugs, data.network)
     await wallet.init()

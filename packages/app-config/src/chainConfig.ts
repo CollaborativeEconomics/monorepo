@@ -16,6 +16,7 @@ const chainConfiguration: Chains = {
         symbol: "ARB",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/arb.webp",
         explorer: {
           url: "https://arbiscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -62,6 +63,7 @@ const chainConfiguration: Chains = {
         symbol: "ARB",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/arb.webp",
         explorer: {
           url: "https://sepolia.arbiscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -119,6 +121,7 @@ const chainConfiguration: Chains = {
         symbol: "AVAX",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/avax.webp",
         explorer: {
           url: "https://snowtrace.io",
           nftPath: "/nft/{{contractId}}/{{tokenId}}?chainid={{chainId}}",
@@ -146,6 +149,7 @@ const chainConfiguration: Chains = {
         symbol: "AVAX",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/avax.webp",
         contracts: {
           Receipt_NFT: "0xadc5b1b42f366215525bae1f0d81ad485c60c75e",
         },
@@ -186,6 +190,7 @@ const chainConfiguration: Chains = {
         symbol: "BASE",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/base.webp",
         explorer: {
           url: "https://basescan.org",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -213,6 +218,7 @@ const chainConfiguration: Chains = {
         symbol: "BASE",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/base.webp",
         contracts: {
           Receipt_NFT: "0xde0015317c273298503cf7fef681ed50d5c58048",
         },
@@ -251,6 +257,7 @@ const chainConfiguration: Chains = {
         symbol: "BNB",
         decimals: 18,
         gasprice: "9000000000",
+        icon: "/icons/bnb.webp",
         explorer: {
           url: "https://bscscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -278,6 +285,7 @@ const chainConfiguration: Chains = {
         symbol: "BNB",
         decimals: 18,
         gasprice: "9000000000",
+        icon: "/icons/bnb.webp",
         contracts: {
           Receipt_NFT: "0xb7c157a81f6ddb0c65e9de5a4ff31f84b4af22a3",
         },
@@ -316,6 +324,7 @@ const chainConfiguration: Chains = {
         symbol: "CELO",
         decimals: 18,
         gasprice: "10000000000",
+        icon: "/icons/celo.webp",
         explorer: {
           url: "https://explorer.celo.org",
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
@@ -343,6 +352,7 @@ const chainConfiguration: Chains = {
         symbol: "CELO",
         decimals: 18,
         gasprice: "27500000000",
+        icon: "/icons/celo.webp",
         contracts: {
           Receipt_NFT: "0xf9f861b4fca89628d3b9b7f7b6cd4ba4073a3d93",
         },
@@ -381,6 +391,7 @@ const chainConfiguration: Chains = {
         symbol: "EOS",
         decimals: 4,
         gasprice: "250000000",
+        icon: "/icons/eos.webp",
         explorer: {
           url: "https://eosauthority.com",
           // NOTE: it's unclear whether EOS has NFTs, but this is the best we can do for now
@@ -409,6 +420,7 @@ const chainConfiguration: Chains = {
         symbol: "EOS",
         decimals: 4,
         gasprice: "250000000",
+        icon: "/icons/eos.webp",
         explorer: {
           url: "https://eosauthority.com",
           // NOTE: it's unclear whether EOS has NFTs, but this is the best we can do for now
@@ -445,6 +457,7 @@ const chainConfiguration: Chains = {
         symbol: "ETH",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/eth.webp",
         explorer: {
           url: "https://etherscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -472,6 +485,7 @@ const chainConfiguration: Chains = {
         symbol: "ETH",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/eth.webp",
         explorer: {
           url: "https://sepolia.etherscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -507,6 +521,7 @@ const chainConfiguration: Chains = {
         symbol: "FIL",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/fil.webp",
         explorer: {
           url: "https://filscan.io",
           nftPath: "/en/message/{{transactionId}}/",
@@ -534,6 +549,7 @@ const chainConfiguration: Chains = {
         symbol: "FIL",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/fil.webp",
         explorer: {
           url: "https://calibration.filscan.io",
           nftPath: "/en/message/{{transactionId}}/",
@@ -569,6 +585,7 @@ const chainConfiguration: Chains = {
         symbol: "FLR",
         decimals: 18,
         gasprice: "25000000000",
+        icon: "/icons/flr.webp",
         explorer: {
           url: "https://flare-explorer.flare.network",
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
@@ -596,6 +613,7 @@ const chainConfiguration: Chains = {
         symbol: "FLR",
         decimals: 18,
         gasprice: "25000000000",
+        icon: "/icons/flr.webp",
         contracts: {
           Receipt_NFT: "0xeea9557589cfff5dd3d849da94201fa8cb782c12",
         },
@@ -635,6 +653,7 @@ const chainConfiguration: Chains = {
         symbol: "OP",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/op.webp",
         explorer: {
           url: "https://optimistic.etherscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -670,6 +689,7 @@ const chainConfiguration: Chains = {
         symbol: "OP",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/op.webp",
         explorer: {
           url: "https://sepolia-optimism.etherscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -713,6 +733,7 @@ const chainConfiguration: Chains = {
         symbol: "MATIC",
         decimals: 18,
         gasprice: "20000000000",
+        icon: "/icons/matic.webp",
         explorer: {
           url: "https://polygonscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -740,6 +761,7 @@ const chainConfiguration: Chains = {
         symbol: "MATIC",
         decimals: 18,
         gasprice: "20000000000",
+        icon: "/icons/matic.webp",
         explorer: {
           url: "https://amoy.polygonscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -768,13 +790,14 @@ const chainConfiguration: Chains = {
     icon: "/icons/strk.webp",
     networks: {
       mainnet: {
-        id: constants.StarknetChainId.SN_MAIN,
+        id: Number(constants.StarknetChainId.SN_MAIN),
         name: "Starknet",
         slug: "starknet",
         network: "mainnet",
         symbol: "STRK",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/strk.webp",
         explorer: {
           url: "https://starkscan.co",
           nftPath: "/nft/{{contractId}}/{{tokenId}}",
@@ -827,13 +850,14 @@ const chainConfiguration: Chains = {
         wssurl: "",
       },
       testnet: {
-        id: constants.StarknetChainId.SN_SEPOLIA,
+        id: Number(constants.StarknetChainId.SN_SEPOLIA),
         name: "Starknet",
         slug: "starknet",
         network: "testnet",
         symbol: "STRK",
         decimals: 18,
         gasprice: "250000000",
+        icon: "/icons/strk.webp",
         explorer: {
           url: "https://sepolia.starkscan.co/",
           nftPath: "/nft/{{contractId}}/{{tokenId}}",
@@ -903,6 +927,7 @@ const chainConfiguration: Chains = {
         symbol: "XLM",
         decimals: 6,
         gasprice: "250000000",
+        icon: "/icons/xlm.webp",
         explorer: {
           url: "https://stellarchain.io",
           nftPath: "/accounts/{{contractId}}",
@@ -943,6 +968,7 @@ const chainConfiguration: Chains = {
         symbol: "XLM",
         decimals: 6,
         gasprice: "250000000",
+        icon: "/icons/xlm.webp",
         explorer: {
           url: "https://stellarchain.io",
           nftPath: "/accounts/{{contractId}}",
@@ -1001,6 +1027,7 @@ const chainConfiguration: Chains = {
         symbol: "TRX",
         decimals: 6, // TODO: verify
         gasprice: "250000000", // TODO: verify
+        icon: "/icons/trx.webp",
         explorer: {
           url: "https://tronscan.io",
           nftPath: "/#/transaction/{{transactionId}}",
@@ -1028,6 +1055,7 @@ const chainConfiguration: Chains = {
         symbol: "TRX",
         decimals: 6,
         gasprice: "250000000",
+        icon: "/icons/trx.webp",
         explorer: {
           url: "https://shasta.tronscan.io",
           nftPath: "/#/transaction/{{transactionId}}",
@@ -1062,6 +1090,7 @@ const chainConfiguration: Chains = {
         network: "mainnet",
         symbol: "XDC",
         decimals: 18,
+        icon: "/icons/xdc.webp",
         explorer: {
           url: "https://xdcscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -1097,6 +1126,7 @@ const chainConfiguration: Chains = {
         network: "testnet",
         symbol: "XDC",
         decimals: 18,
+        icon: "/icons/xdc.webp",
         gasprice: "15000000000",
         explorer: {
           url: "https://testnet.xdcscan.com",
@@ -1141,6 +1171,7 @@ const chainConfiguration: Chains = {
         symbol: "XRP",
         decimals: 6,
         gasprice: "250000000",
+        icon: "/icons/xrp.webp",
         explorer: {
           url: "https://livenet.xrpl.org",
           nftPath: "/transactions/{{transactionId}}",
@@ -1168,6 +1199,7 @@ const chainConfiguration: Chains = {
         symbol: "XRP",
         decimals: 6,
         gasprice: "250000000",
+        icon: "/icons/xrp.webp",
         explorer: {
           url: "https://testnet.xrpl.org",
           nftPath: "/transactions/{{transactionId}}",

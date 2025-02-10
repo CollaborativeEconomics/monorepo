@@ -1,5 +1,5 @@
+import { chainConfig } from "@cfce/app-config"
 import type { ChainSlugs } from "@cfce/types"
-import { chainConfig } from "./chains"
 
 export const getWalletSecret = (chain: ChainSlugs) => {
   const config = chainConfig[chain]

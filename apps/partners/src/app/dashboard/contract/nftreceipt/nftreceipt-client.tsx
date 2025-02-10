@@ -126,7 +126,7 @@ export default function NFTReceiptClient({
       setButtonState(ButtonState.WAIT)
 
       // DEPLOY
-      const address = appChainConfig?.contracts?.receiptFactory || ""
+      const address = appChainConfig?.contracts?.ReceiptFactory || ""
       console.log("CTR", address)
       const factory = factoryDeployers[chainSlug]
       console.log("FAC", factory)

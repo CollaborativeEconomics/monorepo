@@ -55,6 +55,7 @@ export interface AppConfig {
     wallet: ClientInterfaces
     chain: ChainSlugs
     coin: TokenTickerSymbol
+    defaultAddress?: string
   }
 }
 

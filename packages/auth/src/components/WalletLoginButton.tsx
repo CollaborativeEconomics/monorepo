@@ -59,7 +59,7 @@ export function WalletLoginButton({
 
     const redirectUrl = await walletLogin(method, {
       walletAddress,
-      network: network.slug,
+      network: network.network,
       chain,
     })
     if (redirectUrl) {

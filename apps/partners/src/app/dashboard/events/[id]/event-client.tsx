@@ -51,10 +51,11 @@ export default function EventClient({
 
   // Constants
   // TODO: move to app config
-  const FactoryAddress = "0xD4E47912a12f506843F522Ea58eA31Fd313eB2Ee"
-  const usdcAddress =
-    chainConfig.arbitrum.networks[appConfig.chainDefaults.network].tokens?.USDC
-      ?.contract
+  const arbitrum =
+    chainConfig.arbitrum.networks[appConfig.chainDefaults.network]
+  // const FactoryAddress = "0xD4E47912a12f506843F522Ea58eA31Fd313eB2Ee"
+  const FactoryAddress = arbitrum?.contracts?.VolunteersFactory
+  const usdcAddress = arbitrum.tokens.find((t) => t.symbol === "USDC")?.contract
   let NFTBlockNumber: number
   let distributorBlockNumber: number
 
@@ -68,7 +69,7 @@ export default function EventClient({
       // ConnectorNotConnected error when Metamask is not active
       // Enable Metamask first then retry
       const hash = await writeContractAsync({
-        address: FactoryAddress,
+        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
         abi: FactoryAbi,
         functionName: "deployVolunteerNFT",
         args: [uri as `0x${string}`, address as `0x${string}`],
@@ -85,7 +86,7 @@ export default function EventClient({
       NFTBlockNumber = Number(nftReceipt.blockNumber)
 
       const NFTAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress,
+        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
         abi: FactoryAbi,
         functionName: "getDeployedVolunteerNFT",
         args: [address as `0x${string}`],
@@ -122,7 +123,7 @@ export default function EventClient({
       console.log("ARGS", args)
 
       const hash = await writeContractAsync({
-        address: FactoryAddress,
+        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
         abi: FactoryAbi,
         functionName: "deployTokenDistributor",
         args: [
@@ -144,7 +145,7 @@ export default function EventClient({
       distributorBlockNumber = Number(distributorReceipt.blockNumber)
 
       const distributorAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress,
+        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
         abi: FactoryAbi,
         functionName: "getDeployedTokenDistributor",
         args: [address as `0x${string}`],
