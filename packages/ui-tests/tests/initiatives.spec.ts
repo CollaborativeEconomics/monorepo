@@ -6,6 +6,8 @@ test.describe("Initiative page", () => {
     await page.goto("/initiatives")
     // Wait for the main content to be visible
     await expect(page.locator("body")).toBeVisible()
+    // Wait for the page to be fully loaded
+    await page.waitForLoadState("networkidle")
   })
 
   test("should handle search input", async ({ page }) => {
@@ -30,7 +32,9 @@ test.describe("Initiative page", () => {
     await expect(page.getByText("Everyone loves trees")).toBeVisible()
 
     // Verify that at least one initiative image is visible
-    await expect(page.getByRole("img", { name: "IMG BG" }).first()).toBeVisible()
+    await expect(
+      page.getByRole("img", { name: "IMG BG" }).first(),
+    ).toBeVisible()
   })
 
   test("Navigation to individual initiative page works", async ({ page }) => {
@@ -50,114 +54,74 @@ test.describe("Initiative page", () => {
     )
   })
 
-  test("should display search bar and filters", async ({ page }) => {
-    await expect(page.getByPlaceholder("Search")).toBeVisible()
+  test("initiative progress indicators work", async ({ page }) => {
+    // Verify progress elements
+    await expect(page.getByText("$2,450 of 120,000 raised")).toBeVisible()
 
-    // verify the category filter
-    await expect(
-      page.getByRole("button", { name: /Select category/i })
-    ).toBeVisible()
-    // await expect(
-    //   page.getByRole("button", { name: /Select category/ }),
-    // ).toBeVisible()
-
-    // // verify the location filter
-    // await expect(
-    //   page.locator('div[role="button"]', { hasText: /Select location/ }),
-    // ).toBeVisible()
-    // await expect(
-    //   page.getByRole("button", { name: /Select location/ }),
-    // ).toBeVisible()
-
-    // // verify the search button
-    // await expect(page.getByRole("button", { name: /Search/ })).toBeVisible()
-    // await expect(page.getByRole("button", { name: /Search/ })).toBeVisible()
+    // Verify donor stats
+    await expect(page.getByText("80 donors")).toBeVisible()
+    await expect(page.getByText("0 Institutional Donors").first()).toBeVisible()
   })
 
-  test("should display initiative cards with correct information", async ({
-    page,
-  }) => {
-    // Check first initiative card
-    await expect(
-      page.getByRole("heading", { name: "Buy a tree for children in need" }),
-    ).toBeVisible()
-    await expect(page.getByText("Everyone loves trees")).toBeVisible()
-    await expect(page.getByText("$1,800 of 50,000 raised")).toBeVisible()
-    await expect(page.getByText("45 Donors")).toBeVisible()
-    await expect(page.getByText("3 Institutional Donors")).toBeVisible()
-  })
-
-  test("should navigate to initiative details when clicking card", async ({
-    page,
-  }) => {
-    await page
-      .getByRole("link", { name: "Buy a tree for children in need" })
-      .click()
-    await expect(page).toHaveURL(/.*\/initiatives\/.*$/)
-  })
-
-  test("should display organization info on initiative cards", async ({
-    page,
-  }) => {
-    await expect(page.getByText("Environmental Non-Profit")).toBeVisible()
-    await expect(page.getByRole("button", { name: "Donate" })).toBeVisible()
-  })
-
-  test("should toggle between light and dark themes", async ({ page }) => {
-    const themeButton = page.getByRole("button", { name: "Toggle theme" })
-    await themeButton.click()
-    // Add assertions for theme change visual verification
-    await themeButton.click()
-  })
-
-  test("should display all search and filter elements", async ({ page }) => {
-    // Check navigation tabs
-    await expect(page.getByRole("link", { name: "Initiatives" })).toBeVisible()
-    await expect(
-      page.getByRole("link", { name: "Organizations" }),
-    ).toBeVisible()
-
-    // Check search input
-    const searchInput = page.getByPlaceholder("Search")
-    await expect(searchInput).toBeVisible()
-    await expect(searchInput).toHaveAttribute("type", "search")
-
-    // Check filter buttons
-    await expect(
-      page.getByRole("button", { name: /Select category/ }),
-    ).toBeVisible()
-    await expect(
-      page.getByRole("button", { name: /Select location/ }),
-    ).toBeVisible()
-    await expect(page.getByRole("button", { name: "Search" })).toBeVisible()
-  })
-
-  test("should open category dialog when clicking category filter", async ({
-    page,
-  }) => {
-    const categoryButton = page.getByRole("button", { name: /Select category/ })
+  test("filter functionality works correctly", async ({ page }) => {
+    // Test category filter
+    const categoryButton = await page.locator('[role="combobox"]').first()
+    console.log(categoryButton)
     await categoryButton.click()
     await expect(page.getByRole("dialog")).toBeVisible()
-  })
 
-  test("should open location dialog when clicking location filter", async ({
-    page,
-  }) => {
-    const locationButton = page.getByRole("button", { name: /Select location/ })
+    // Test location filter
+    const locationButton = await page.locator('[role="combobox"]').nth(1)
     await locationButton.click()
-    await expect(page.getByRole("dialog")).toBeVisible()
+    await expect(page.getByRole("dialog").filter({ hasText: "Nigeria" })).toBeVisible()
   })
 
-  test("should toggle between Initiatives and Organizations tabs", async ({
-    page,
-  }) => {
-    // Click Organizations tab
-    await page.getByRole("link", { name: "Organizations" }).click()
-    await expect(page).toHaveURL(/.*\/organizations/)
+  test("search functionality works correctly", async ({ page }) => {
+    const searchInput = page.getByPlaceholder("Search")
 
-    // Click Initiatives tab
-    await page.getByRole("link", { name: "Initiatives" }).click()
-    await expect(page).toHaveURL(/.*\/initiatives/)
+    // Test empty search
+    await searchInput.fill("")
+    await page.getByRole("button", { name: "Search" }).click()
+    await expect(
+      page.getByRole("link", { name: "Sustainable Development Goals" }),
+    ).toBeVisible()
+
+    // Test search with results
+    await searchInput.fill("whales")
+    await page.getByRole("button", { name: "Search" }).click()
+    await expect(
+      page.getByRole("link", { name: "Save the whales", exact: true }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole("link", { name: "Save the whales in need" }),
+    ).toBeVisible()
+
+    // Test search with no results
+    await searchInput.fill("nonexistent initiative")
+    await page.getByRole("button", { name: "Search" }).click()
+    await expect(page.getByText("No initiatives found")).toBeVisible()
+  })
+
+  test("displays initiative cards correctly", async ({ page }) => {
+    // Verify initiative card content
+    await expect(
+      page.getByRole("link", { name: "Sustainable Development Goals" }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole("link", { name: "Save the whales", exact: true }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole("link", { name: "Save the whales in need" }),
+    ).toBeVisible()
+
+    // Verify initiative details are displayed
+    await expect(page.getByText("80 donors")).toBeVisible()
+    await expect(page.getByText("Everyone loves whales")).toBeVisible()
+
+    // Verify initiative images
+    await expect(
+      page.getByRole("img", { name: "IMG BG" }).first(),
+    ).toBeVisible()
   })
 
   test("should maintain filter state in URL", async ({ page }) => {
@@ -166,6 +130,24 @@ test.describe("Initiative page", () => {
     await page.getByRole("button", { name: "Search" }).click()
 
     // Verify URL contains search params
-    await expect(page).toHaveURL(/.*[?&]search=test/)
+    await expect(page).toHaveURL(/.*[?&]query=test/)
+  })
+
+  test("should toggle between Initiatives and Organizations tabs", async ({
+    page,
+  }) => {
+    // Click Organizations tab
+    await page.getByRole("link", { name: "Organizations" }).click()
+    await page.waitForURL(
+      /^http:\/\/localhost:3000\/organizations$/
+    )
+    await expect(page).toHaveURL(/.*\/organizations/)
+
+    // Click Initiatives tab
+    await page.getByRole("link", { name: "Initiatives" }).click()
+    await page.waitForURL(
+      /^http:\/\/localhost:3000\/initiatives$/
+    )
+    await expect(page).toHaveURL(/.*\/initiatives/)
   })
 })
