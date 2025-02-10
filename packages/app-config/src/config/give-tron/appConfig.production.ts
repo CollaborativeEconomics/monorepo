@@ -1,4 +1,5 @@
 import type { AppConfig, AuthTypes } from "@cfce/types"
+import chainConfiguration from "~/chainConfig"
 import appConfigBase from "../appConfigBase"
 
 const appConfig: AppConfig = {
@@ -18,21 +19,13 @@ appConfig.siteInfo = {
 
 // Override chains
 appConfig.chains = {
-  xdc: {
-    slug: "xdc",
-    network: "mainnet",
-    contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-    },
-    enabledWallets: ["metamask"],
-    tokens: ["XDC"],
-  },
   tron: {
-    slug: "tron",
-    network: "mainnet",
-    contracts: {},
+    ...chainConfiguration.tron.networks.mainnet,
+    contracts: {
+      ...chainConfiguration.tron.networks.mainnet.contracts,
+      Receipt_NFT: "",
+    },
     enabledWallets: ["freighter"],
-    tokens: ["TRX", "USDT"],
   },
 }
 

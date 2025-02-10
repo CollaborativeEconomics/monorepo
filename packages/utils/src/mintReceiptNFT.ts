@@ -282,10 +282,10 @@ export async function mintAndSaveReceiptNFT({
     }> = []
     for (const chainSlug of Object.keys(appConfig.chains) as ChainSlugs[]) {
       const chain = appConfig.chains[chainSlug]
-      if (chain?.contracts.receiptMintbotERC721) {
+      if (chain?.contracts.Receipt_NFT) {
         receiptContractsByChain.push({
           chain: chainSlug as ChainSlugs,
-          contract: chain.contracts.receiptMintbotERC721,
+          contract: chain.contracts.Receipt_NFT,
         })
       }
     }
@@ -322,7 +322,7 @@ export async function mintAndSaveReceiptNFT({
 */
 
     // #region: Mint NFT on current chain only
-    const receiptContract = currentChain.contracts.receiptMintbotERC721
+    const receiptContract = currentChain.contracts.Receipt_NFT
     console.log("CTR", receiptContract)
 
     // WARN: XRPL doesn't use contracts

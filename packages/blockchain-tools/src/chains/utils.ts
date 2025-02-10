@@ -1,18 +1,25 @@
-import type { Chain, ChainConfig, NetworkConfig } from "@cfce/types"
+import type {
+  Chain,
+  ChainConfig,
+  Network,
+  NetworkConfig,
+  RuntimeChainConfig,
+} from "@cfce/types"
 
-import appConfig from "@cfce/app-config"
 import type { NFTData } from "@cfce/database"
 import type { ChainSlugs } from "@cfce/types"
 
 import chainConfiguration from "./chainConfig"
 
 /**
- * Get the network config for the chain, using appConfig.chainDefaults.network
+ * Get the network config for the chain, using the app environment
  * @param slug - The chain slug
  * @returns The network config object
  */
 export const getNetworkForChain = (slug: ChainSlugs): NetworkConfig =>
-  chainConfiguration[slug].networks[appConfig.chainDefaults.network]
+  chainConfiguration[slug].networks[
+    process.env.NEXT_PUBLIC_APP_ENV === "production" ? "mainnet" : "testnet"
+  ]
 
 /**
  * Get the chain config for the chain, using the chain ID (only ones defined by CFCE)
@@ -51,24 +58,6 @@ export const getChainConfigBySlug = (slug: ChainSlugs): ChainConfig => {
 }
 
 /**
- * Get the chain configuration for chains defined in appConfig
- * @returns
- */
-export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
-  const chainKeys = Object.keys(
-    appConfig.chains,
-  ) as (keyof typeof appConfig.chains)[]
-
-  return chainKeys.reduce(
-    (obj, key) => {
-      obj[key] = chainConfiguration[key]
-      return obj
-    },
-    {} as Record<ChainSlugs, ChainConfig>,
-  )
-}
-
-/**
  * Get the chain configuration by the chain name
  * @param name - The chain name
  * @returns The chain configuration
@@ -91,7 +80,7 @@ export const getChainConfigurationByName = (name: Chain): ChainConfig => {
  */
 export const getRpcUrl = (
   chain: ChainSlugs,
-  network: string,
+  network: Network,
   rpcType = "main",
 ): string => {
   const chainConfig = chainConfiguration[chain]
@@ -124,7 +113,7 @@ export const getNftPath = (
   }
   // TODO: Add this to the type in prisma
   const chainConfig = getChainConfigurationByName(chain as Chain)
-  const networkConfig = chainConfig.networks[network]
+  const networkConfig = chainConfig.networks[network as Network]
   if (!networkConfig) {
     throw new Error(`Network configuration not found for ${chain} ${network}`)
   }

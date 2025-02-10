@@ -1,4 +1,5 @@
 import type { AppConfig, AuthTypes } from "@cfce/types"
+import chainConfiguration from "~/chainConfig"
 import appConfigBase from "../appConfigBase"
 
 const appConfig: AppConfig = {
@@ -24,23 +25,13 @@ appConfig.siteInfo = {
 // Override chains
 appConfig.chains = {
   starknet: {
-    slug: "starknet",
-    network: "mainnet",
+    ...chainConfiguration.starknet.networks.mainnet,
     contracts: {
-      receiptMintbotERC721:"",
-      credits: "0x1a35e6a801710eddfa9071eb27e4fc702c81b1b609efb34d46d419035275a38"
+      ...chainConfiguration.starknet.networks.mainnet.contracts,
+      Credits:
+        "0x1a35e6a801710eddfa9071eb27e4fc702c81b1b609efb34d46d419035275a38",
     },
     enabledWallets: ["argent"],
-    tokens: ["ETH", "STRK"],
-  },
-  xdc: {
-    slug: "xdc",
-    network: "mainnet",
-    contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab"
-    },
-    enabledWallets: [],
-    tokens: [],
   },
 } satisfies AppConfig["chains"]
 

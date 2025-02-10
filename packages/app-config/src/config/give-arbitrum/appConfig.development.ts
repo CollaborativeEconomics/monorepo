@@ -15,16 +15,7 @@ const apis: AppConfig["apis"] = {
 }
 
 const chains: AppConfig["chains"] = {
-  arbitrum: {
-    slug: "arbitrum",
-    network: "testnet",
-    contracts: {
-      receiptMintbotERC721: "0xb430c12668789F97F03695cEc53240451105C12C",
-    },
-    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
-    enabledWallets: ["metamask"],
-    tokens: ["ETH"],
-  },
+  ...appConfig.chains,
 }
 
 const chainDefaults: AppConfig["chainDefaults"] = {

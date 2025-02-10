@@ -1,5 +1,6 @@
-import type { AppConfig, AuthTypes } from "@cfce/types"
-import appConfigBase from "../appConfigBase"
+import type { AppConfig } from "@cfce/types"
+import chainConfig from "~/chainConfig"
+import appConfigBase from "~/config/appConfigBase"
 
 const appConfig: AppConfig = {
   ...appConfigBase,
@@ -23,14 +24,8 @@ appConfig.siteInfo = {
 // Override chains
 appConfig.chains = {
   arbitrum: {
-    slug: "arbitrum",
-    network: "mainnet",
-    contracts: {
-      receiptMintbotERC721: "0x0535D460955bAa8a373053FD7C225675A9D1fA16",
-    },
-    wallet: "0x1540026E002b09bc1720D130d90CB674b06121e2",
+    ...chainConfig.arbitrum.networks.mainnet,
     enabledWallets: ["metamask"],
-    tokens: ["ETH"],
   },
 }
 

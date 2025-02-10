@@ -1,4 +1,5 @@
 import type { AppConfig, AuthTypes, Network } from "@cfce/types"
+import chainConfig from "~/chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo: AppConfig["siteInfo"] = {
@@ -31,14 +32,8 @@ const apis: AppConfig["apis"] = {
 
 const chains: AppConfig["chains"] = {
   arbitrum: {
-    slug: "arbitrum",
-    network: "testnet",
-    contracts: {
-      receiptMintbotERC721: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
-    },
-    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
+    ...chainConfig.arbitrum.networks.testnet,
     enabledWallets: ["metamask"],
-    tokens: ["ETH"],
   },
 }
 

@@ -60,6 +60,7 @@ export type Network = "mainnet" | "testnet"
 
 type FactoryContract =
   | "CreditsFactory"
+  | "CreditsHash" // soroban only
   | "ReceiptFactory"
   | "VolunteersFactory"
   | "ReceiptFactory"
@@ -71,13 +72,17 @@ export type Contract =
   | "TBA_Implementation"
   | "TBA_NFT"
   | "Receipt_NFT"
+  | "Receipt_NFTHash" // soroban only
   | "Story_NFT"
   | "Credits"
+  | "Volunteers_Distributor"
+  | "Volunteers_NFT"
 
 export interface NetworkConfig {
-  id: number
-  name: string
-  slug: Network
+  id: number | string
+  name: Chain
+  slug: ChainSlugs
+  network: Network
   symbol: string
   decimals: number
   gasprice: string
@@ -90,7 +95,7 @@ export interface NetworkConfig {
     [key: string]: string
   }
   wssurl: string
-  tokens?: Partial<Record<TokenTickerSymbol, TokenConfig>>
+  tokens: TokenConfig[]
   networkPassphrase?: string
   contracts?: Partial<Record<Contract, string>>
   wallet?: string
@@ -121,9 +126,11 @@ export const TokenTickerSymbol = [
 export type TokenTickerSymbol = (typeof TokenTickerSymbol)[number]
 
 interface TokenConfig {
-  contract: string
+  isNative: boolean // Distinguishes native tokens from ERC-20s, trustlines, etc.
+  contract?: string // Only exists for non-native tokens
+  issuer?: string // Used for XRPL, Stellar, and other issuer-based tokens
   name: string
-  symbol: string
+  symbol: TokenTickerSymbol
   decimals: number
   icon: string
 }
@@ -133,7 +140,7 @@ export interface ChainConfig {
   name: Chain
   symbol: string
   icon: string // This should be a string path to the icon
-  networks: Record<string, NetworkConfig>
+  networks: Record<Network, NetworkConfig>
 }
 
 export type ClientInterfaces =

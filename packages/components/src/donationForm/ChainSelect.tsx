@@ -20,7 +20,7 @@ export function ChainSelect() {
 
   const chains: ChainOption[] = React.useMemo(
     () =>
-      Object.entries(getChainConfiguration()).map(([_, chain]) => ({
+      Object.entries(appConfig.chains).map(([_, chain]) => ({
         value: chain.slug,
         label: chain.name,
         icon: chain.icon,

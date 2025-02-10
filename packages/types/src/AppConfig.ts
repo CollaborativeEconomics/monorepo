@@ -1,21 +1,20 @@
 import type { AuthTypes } from "./Auth"
 import type {
+  ChainConfig,
   ChainSlugs,
   ClientInterfaces,
   Contract,
   Network,
+  NetworkConfig,
   TokenTickerSymbol,
 } from "./BlockchainTools"
 
-export interface AppChainConfig {
-  slug: ChainSlugs
-  network: Network
-  contracts: Partial<Record<Contract, string>>
-  wallet?: string
+// App-specific chain settings
+// Can override/merge anything from the NetworkConfig
+export interface AppChainSettings extends NetworkConfig {
   enabledWallets: ClientInterfaces[]
-  tokens: TokenTickerSymbol[]
-  destinationTag?: string
   defaultAddress?: string
+  destinationTag?: string
 }
 
 export interface AppConfig {
@@ -50,12 +49,16 @@ export interface AppConfig {
     }
   }
   auth: AuthTypes[]
-  chains: Partial<Record<ChainSlugs, AppChainConfig>>
+  chains: Partial<Record<ChainSlugs, AppChainSettings>>
   chainDefaults: {
     network: Network
     wallet: ClientInterfaces
     chain: ChainSlugs
     coin: TokenTickerSymbol
-    defaultAddress?: string
   }
+}
+
+// Helper type to access combined chain configuration
+export type RuntimeChainConfig = ChainConfig & {
+  appSettings: AppChainSettings
 }

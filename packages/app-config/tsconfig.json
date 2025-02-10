@@ -5,7 +5,10 @@
     "baseUrl": "./src",
     "sourceMap": true,
     "declaration": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "~/*": ["./*"]
+    }
   },
   "include": ["src", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]

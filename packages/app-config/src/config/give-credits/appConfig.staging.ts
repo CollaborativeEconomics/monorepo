@@ -1,10 +1,5 @@
-import type {
-  AppChainConfig,
-  AppConfig,
-  AuthTypes,
-  ChainSlugs,
-  Network,
-} from "@cfce/types"
+import type { AppConfig, AuthTypes, Network } from "@cfce/types"
+import chainConfiguration from "~/chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {
@@ -20,17 +15,18 @@ const apis = {
   },
 }
 
-const chains = {
-  ...appConfig.chains,
+const chains: AppConfig["chains"] = {
   stellar: {
-    ...appConfig.chains.stellar,
+    ...chainConfiguration.stellar.networks.testnet,
     contracts: {
-      ...appConfig.chains.stellar?.contracts,
-      credits: "CAGENCA7RDSBTGL7OJUC3XHPMGE43AXAZ3RVFFH5E3P22COOG7TUPDPN",
+      ...chainConfiguration.stellar.networks.testnet.contracts,
+      Credits: "CAGENCA7RDSBTGL7OJUC3XHPMGE43AXAZ3RVFFH5E3P22COOG7TUPDPN",
     },
-    network: "testnet" as Network,
+    network: "testnet",
+    enabledWallets: ["freighter"],
   },
 }
+
 const chainDefaults = {
   ...appConfig.chainDefaults,
   network: "testnet" as Network,

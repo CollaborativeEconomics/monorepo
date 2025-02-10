@@ -1,4 +1,5 @@
 import type { AppConfig, AuthTypes } from "@cfce/types"
+import chainConfiguration from "../../chainConfig"
 import appConfigBase from "../appConfigBase"
 
 const appConfig: AppConfig = {
@@ -17,16 +18,8 @@ appConfig.apis = {
 
 appConfig.chains = {
   xdc: {
-    slug: "xdc",
-    network: "mainnet",
-    contracts: {
-      receiptMintbotERC721: "0xD218A3C26DeEFa93eb74a785463B6bbF48A5a1b4",
-      storyERC1155: "0x013da344B34447360aE4A01E86a4a4c2aAd3CEbb",
-      volunteersFactory: "0x0eD50ddEE2c561016A9aaB9DaFC891DB3Afe554d",
-    },
-    wallet: "0x1540026E002b09bc1720D130d90CB674b06121e2",
+    ...chainConfiguration.xdc.networks.mainnet,
     enabledWallets: ["metamask"],
-    tokens: ["XDC"],
   },
 }
 

@@ -1,4 +1,5 @@
 import type { AppConfig } from "@cfce/types"
+import { chainConfig } from "../.."
 import appConfig from "./appConfig.production"
 
 const siteInfo = {
@@ -25,44 +26,29 @@ const apis = {
 }
 
 const chains: AppConfig["chains"] = {
-  ...appConfig.chains,
   arbitrum: {
-    slug: "arbitrum",
-    network: "testnet",
-    contracts: {
-      // creditsFactory: "0x0???",
-      // credits: "0x0???",
-      receiptMintbotERC721: "0x2c647e44003f403bb3e483ff810279efb136c304",
-      storyERC1155: "0xc917ff4128525a65639d18f1d240a788081f022d",
-      volunteersFactory: "0xfbB261eADa2b1D881715984222De161F3F3E914e",
-    },
-    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
+    ...chainConfig.arbitrum.networks.testnet,
     enabledWallets: ["metamask"],
-    tokens: ["ETH"],
   },
   stellar: {
-    slug: "stellar",
-    network: "testnet",
+    ...chainConfig.stellar.networks.testnet,
     contracts: {
-      creditsFactory:
+      ...chainConfig.stellar.networks.testnet.contracts,
+      CreditsFactory:
         "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
-      credits: "CDHYT3A4XGBNSWP2P7XQTS2AT5XICKD5KOAZ7S2Y2APJMXRDIENP2LZR",
-      creditsHash:
-        "8c850c8ad832e8fcba395dc89009dad9b68c78902b275a5da565c55fe0091c7f",
-      receiptFactory:
+      ReceiptFactory:
         "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
-      receiptMintbotERC721:
-        "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
-      receiptMintbotERC721Hash:
-        "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
-      xlmNativeCoin: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
     },
-    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
     enabledWallets: ["freighter"],
-    tokens: ["XLM"],
   },
-  xdc: appConfig.chains.xdc,
-  xrpl: appConfig.chains.xrpl,
+  xdc: {
+    ...chainConfig.xdc.networks.testnet,
+    enabledWallets: ["freighter"],
+  },
+  xrpl: {
+    ...chainConfig.xrpl.networks.testnet,
+    enabledWallets: ["gemwallet", "xaman"],
+  },
 }
 
 export default {

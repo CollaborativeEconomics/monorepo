@@ -1,10 +1,5 @@
-import type {
-  AppChainConfig,
-  AppConfig,
-  AuthTypes,
-  ChainSlugs,
-  Network,
-} from "@cfce/types"
+import type { AppConfig, AuthTypes, Network } from "@cfce/types"
+import chainConfiguration from "~/chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {
@@ -21,16 +16,16 @@ const apis = {
 }
 
 // use testnet
-const chains = Object.entries(appConfig.chains).reduce(
-  (obj, [key, chain]) => {
-    obj[key as ChainSlugs] = {
-      ...chain,
-      network: "testnet",
-    }
-    return obj
+const chains: AppConfig["chains"] = {
+  tron: {
+    ...chainConfiguration.tron.networks.testnet,
+    contracts: {
+      ...chainConfiguration.tron.networks.testnet.contracts,
+      Receipt_NFT: "",
+    },
+    enabledWallets: ["metamask"],
   },
-  {} as Record<ChainSlugs, AppChainConfig>,
-)
+}
 
 const chainDefaults = {
   ...appConfig.chainDefaults,
