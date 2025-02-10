@@ -21,9 +21,9 @@ import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 //   return exchangeRate
 // }
 
+// TODO: handle stablecoins
 export default async function getCoinRate({
-  chain,
-  symbol,
+  symbol, chain
 }: { symbol: TokenTickerSymbol; chain?: ChainSlugs }): Promise<number> {
   try {
     // const response = await mobula.fetchAssetMarketData({

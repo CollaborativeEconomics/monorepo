@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { getInitiatives } from '@cfce/database';
 import { InitiativeCard } from '@cfce/components/initiative';
 import { SearchBar } from '@cfce/components/search';
 import { Card } from '@cfce/components/ui';
+import { getInitiatives } from '@cfce/database';
 
 export default async function Initiatives({
   searchParams,
@@ -26,7 +26,7 @@ export default async function Initiatives({
   console.log('INITS', initiatives.length)
 
   return (
-    <main className="flex min-h-screen flex-col items-stretch container pt-24 mt-12">
+    <main className="flex min-h-screen flex-col items-stretch container pt-24">
       <Card className="flex">
         <SearchBar />
       </Card>
@@ -35,7 +35,7 @@ export default async function Initiatives({
           initiatives.map((initiative) => {
             const initPlain = JSON.parse(JSON.stringify(initiative))
             return (
-              <InitiativeCard key={initiative.id} data={initPlain} />
+              <InitiativeCard key={initPlain.id} initiative={initPlain} />
             )
           })
         ) : (

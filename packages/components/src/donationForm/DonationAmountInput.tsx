@@ -45,13 +45,14 @@ export function DonationAmountInput({
         id="amount"
         step="any"
         value={amount.toString()}
+        autoComplete="off"
         onChange={({ target: { value } }) => {
-          if (value === "" || !Number.isNaN(Number.parseFloat(value))) {
-            setDonationForm((draft) => {
-              draft.amount = Number.parseFloat(value)
-              draft.date = new Date()
-            })
-          }
+          // if (value === "" || !Number.isNaN(Number.parseFloat(value))) {
+          setDonationForm((draft) => {
+            draft.amount = value
+            draft.date = new Date()
+          })
+          // }
         }}
         text={showUsd ? "| USD" : `| ${selectedToken}`}
       />

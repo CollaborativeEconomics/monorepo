@@ -11,10 +11,10 @@ interface InitiativeQuery extends ListQuery {
 }
 
 export async function getInitiatives(query: InitiativeQuery) {
-  let where = {}
-  const skip = 0
-  const take = 100
-  const include = {
+  let where: Prisma.InitiativeWhereInput = {}
+  let skip: Prisma.InitiativeFindManyArgs["skip"] = 0
+  let take: Prisma.InitiativeFindManyArgs["take"] = 100
+  const include: Prisma.InitiativeInclude = {
     category: true,
     credits: true,
     organization: {
@@ -31,6 +31,9 @@ export async function getInitiatives(query: InitiativeQuery) {
             category: true,
           },
         },
+      },
+      orderBy: {
+        created: "desc",
       },
     },
   }
@@ -73,13 +76,6 @@ export async function getInitiatives(query: InitiativeQuery) {
     }
   }
 
-  const filter: Prisma.InitiativeFindManyArgs = {
-    where,
-    include,
-    skip,
-    take,
-    orderBy: { title: "asc" },
-  }
   if (query?.page || query?.size) {
     let page = Number.parseInt(query?.page || "0")
     let size = Number.parseInt(query?.size || "100")
@@ -93,65 +89,58 @@ export async function getInitiatives(query: InitiativeQuery) {
       size = 200
     }
     const start = page * size
-    filter.skip = start
-    filter.take = size
+    skip = start
+    take = size
   }
-  return prismaClient.initiative.findMany(filter)
+  return prismaClient.initiative.findMany({
+    where,
+    include,
+    skip,
+    take,
+    orderBy: { title: "asc" },
+  })
 }
 
-export async function getInitiativeById(id: string) {
-  const include = {
-    category: true,
-    credits: true,
-    organization: {
-      include: {
-        wallets: true,
-      },
+const initiativeDeepInclude = {
+  category: true,
+  credits: true,
+  organization: {
+    include: {
+      wallets: true,
     },
-    wallets: true,
-    stories: {
-      include: {
-        media: true,
-        organization: true,
-        initiative: {
-          include: {
-            category: true,
-          },
+  },
+  wallets: true,
+  stories: {
+    include: {
+      media: true,
+      organization: true,
+      initiative: {
+        include: {
+          category: true,
         },
       },
     },
-  }
+  },
+}
+
+export type InitiativeWithRelations = Prisma.InitiativeGetPayload<{
+  include: typeof initiativeDeepInclude
+}>
+
+export async function getInitiativeById(
+  id: string,
+): Promise<InitiativeWithRelations | null> {
   const result = await prismaClient.initiative.findUnique({
     where: { id },
-    include,
+    include: initiativeDeepInclude,
   })
   return result
 }
 
 export async function getInitiativeByTag(tag: number) {
-  const include = {
-    category: true,
-    credits: true,
-    organization: {
-      include: {
-        wallets: true,
-      },
-    },
-    stories: {
-      include: {
-        media: true,
-        organization: true,
-        initiative: {
-          include: {
-            category: true,
-          },
-        },
-      },
-    },
-  }
   const result = await prismaClient.initiative.findUnique({
     where: { tag },
-    include,
+    include: initiativeDeepInclude,
   })
   return result
 }

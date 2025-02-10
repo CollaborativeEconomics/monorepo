@@ -12,9 +12,9 @@ import {
   isCreatedNode,
   isModifiedNode,
 } from "xrpl"
-import { getNetworkForChain } from "../chains/utils"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
 import chainConfiguration from "../chains/chainConfig"
+import { getNetworkForChain } from "../chains/utils"
 
 type transactionMethods =
   | "tx"
@@ -35,6 +35,8 @@ export default class XrplCommon extends InterfaceBaseClass {
   async getTransactionInfo(txId: string) {
     const payload = { transaction: txId, binary: false }
     const txInfo = await this.fetchLedger("tx", payload)
+
+    console.log("TX INFO", txInfo, payload)
 
     if (!txInfo || "error" in txInfo.result) {
       throw new Error(
@@ -100,7 +102,9 @@ export default class XrplCommon extends InterfaceBaseClass {
     } catch (ex) {
       console.error(ex)
       if (ex instanceof Error) {
-        return { error: ex.message }
+        return {
+          error: `fetchLedger error: ${ex.message}\n ${JSON.stringify({ method, params })}`,
+        }
       }
       return { error: "Unknown error" }
     }

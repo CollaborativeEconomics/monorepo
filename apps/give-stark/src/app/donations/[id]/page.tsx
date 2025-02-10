@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { getDonationById } from '@cfce/database';
 import { OrganizationAvatar } from '@cfce/components/organization';
 import { Card, CardContent } from '@cfce/components/ui';
+import { getDonationById } from '@cfce/database';
 import NotFound from '@cfce/pages/not-found';
 import Image from 'next/image';
-import Link from 'next/link';
 
 export default async function Donation(props: {
   params: Promise<{ id: string }>;
@@ -14,6 +13,7 @@ export default async function Donation(props: {
   const donation = await getDonationById(id, {
     initiative: true,
     category: true,
+    organization: true,
   });
   if (!donation) {
     return <NotFound />;
@@ -42,14 +42,7 @@ export default async function Donation(props: {
               <p className="">{donation.initiative.description}</p>
               <div className="flex flex-row justify-between border-t mt-4 pt-4">
                 {donation.organization && (
-                  <div>
-                    <Link href={`/organizations/${donation.organization.id}`}>
-                      <OrganizationAvatar
-                        name={donation.organization.name}
-                        image={donation.organization.image}
-                      />
-                    </Link>
-                  </div>
+                  <OrganizationAvatar organization={donation.organization} />
                 )}
                 <div className="flex flex-col items-center">
                   {donation.category ? (

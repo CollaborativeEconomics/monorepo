@@ -1,7 +1,7 @@
 import appConfig from "@cfce/app-config"
 import { Address, nativeToScVal } from "@stellar/stellar-sdk"
 import { checkContract } from "~/contracts/credits/server"
-import { networks } from "~/contracts/networks"
+import { networks } from "../networks"
 
 export default async function restoreContract(contractId: string) {
   try {

@@ -1,7 +1,7 @@
-"use client"
-import React from "react"
-import Link from "next/link"
-import { ActionBarBox, ActionBarButton } from "./ActionBarContent"
+'use client';
+import Link from 'next/link';
+import React from 'react';
+import { ActionBarBox, ActionBarButton } from './ActionBarContent';
 
 export default function ActionBar() {
   return (
@@ -35,10 +35,10 @@ export default function ActionBar() {
         </span>
         <div className="flex flex-row gap-3">
           <ActionBarButton>
-            <Link href="/signin">Sign Up</Link>
+            <Link href="https://cfce.io/contact/">Sign Up</Link>
           </ActionBarButton>
         </div>
       </ActionBarBox>
     </div>
-  )
+  );
 }

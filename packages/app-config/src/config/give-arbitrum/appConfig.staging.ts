@@ -19,7 +19,8 @@ const chains: AppConfig["chains"] = {
     slug: "xdc",
     network: "testnet",
     contracts: {
-      receiptMintbotERC721: "0xfeceaea75565961b805e2dbe58e00488f5bc1495",
+      receiptMintbotERC721: "0x527c11e62Eca1a2eAE42BD7de4A6c152BCee2B41",
+      //receiptMintbotERC721: "0xfeceaea75565961b805e2dbe58e00488f5bc1495", NOT WORKING
     },
     wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
     enabledWallets: ["metamask"],
