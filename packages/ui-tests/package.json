@@ -13,5 +13,8 @@
     "@synthetixio/synpress": "^4.0.2",
     "@types/node": "^20.11.24",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@synthetixio/synpress": "^4.0.5"
   }
 }
