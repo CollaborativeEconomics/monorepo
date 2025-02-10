@@ -5,14 +5,13 @@
   "type": "module",
   "scripts": {
     "test": "playwright test",
-    "test:headed": "playwright test --headed"
+    "test:headed": "playwright test --headed",
+    "synpress:cache": "synpress /wallet-setup"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
+    "@synthetixio/synpress": "^4.0.2",
     "@types/node": "^20.11.24",
     "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "@synthetixio/synpress": "^4.0.5"
   }
 }

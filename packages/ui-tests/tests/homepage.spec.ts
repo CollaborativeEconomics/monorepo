@@ -2,9 +2,9 @@ import { expect, test } from "@playwright/test"
 
 test.describe("Homepage", () => {
   test.beforeEach(async ({ page }) => {
-    test.setTimeout(100000)
+    //   test.setTimeout(100000)
     await page.goto("/")
-    // Wait for the main content to be visible
+    //   // Wait for the main content to be visible
     await expect(page.locator("body")).toBeVisible()
   })
 
@@ -58,9 +58,7 @@ test.describe("Homepage", () => {
 
     // Test navigation
     await findOrgButton.click()
-    await page.waitForURL(
-      /^http:\/\/localhost:3000\/organizations$/
-    )
+    await page.waitForURL(/^http:\/\/localhost:3000\/organizations$/)
     await expect(page).toHaveURL(/.*\/organizations/)
 
     // Go back to homepage
@@ -79,15 +77,11 @@ test.describe("Homepage", () => {
 
     // Test navigation
     await findInitiativesButton.click()
-    await page.waitForURL(
-      /^http:\/\/localhost:3000\/initiatives$/
-    )
+    await page.waitForURL(/^http:\/\/localhost:3000\/initiatives$/)
     await expect(page).toHaveURL(/.*\/initiatives/)
 
     // Verify we're on the initiatives page by checking for specific content
-    await expect(
-      page.getByRole("link", { name: "Initiatives" }),
-    ).toBeVisible()
+    await expect(page.getByRole("link", { name: "Initiatives" })).toBeVisible()
   })
 
   test("carousel functionality", async ({ page }) => {

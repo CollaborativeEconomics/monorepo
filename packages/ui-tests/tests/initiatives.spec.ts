@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test"
 
 test.describe("Initiative page", () => {
   test.beforeEach(async ({ page }) => {
-    test.setTimeout(100000)
+    // test.setTimeout(100000)
     await page.goto("/initiatives")
     // Wait for the main content to be visible
     await expect(page.locator("body")).toBeVisible()
@@ -73,7 +73,9 @@ test.describe("Initiative page", () => {
     // Test location filter
     const locationButton = await page.locator('[role="combobox"]').nth(1)
     await locationButton.click()
-    await expect(page.getByRole("dialog").filter({ hasText: "Nigeria" })).toBeVisible()
+    await expect(
+      page.getByRole("dialog").filter({ hasText: "Nigeria" }),
+    ).toBeVisible()
   })
 
   test("search functionality works correctly", async ({ page }) => {
@@ -138,16 +140,12 @@ test.describe("Initiative page", () => {
   }) => {
     // Click Organizations tab
     await page.getByRole("link", { name: "Organizations" }).click()
-    await page.waitForURL(
-      /^http:\/\/localhost:3000\/organizations$/
-    )
+    await page.waitForURL(/^http:\/\/localhost:3000\/organizations$/)
     await expect(page).toHaveURL(/.*\/organizations/)
 
     // Click Initiatives tab
     await page.getByRole("link", { name: "Initiatives" }).click()
-    await page.waitForURL(
-      /^http:\/\/localhost:3000\/initiatives$/
-    )
+    await page.waitForURL(/^http:\/\/localhost:3000\/initiatives$/)
     await expect(page).toHaveURL(/.*\/initiatives/)
   })
 })
