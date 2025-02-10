@@ -1,3 +1,4 @@
+import { chainConfig } from "@cfce/app-config"
 // import { Transaction } from "../types/transaction"
 import type {
   ChainConfig,
@@ -15,7 +16,6 @@ import type {
 } from "@stellar/stellar-sdk"
 // import Stellar, { StellarNetworks } from "./common"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import chainConfig from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 import Contract721 from "../contracts/soroban/nft721/server"
 

@@ -1,23 +1,23 @@
-'use client';
+"use client"
 
-import { chainConfig } from '@cfce/blockchain-tools';
-import type { Prisma } from '@cfce/database';
-import type { ChainSlugs } from '@cfce/types';
-import copy from 'clipboard-copy';
-import { Clipboard, Trash2 } from 'lucide-react';
-import Image from 'next/image';
+import { chainConfig } from "@cfce/app-config"
+import type { Prisma } from "@cfce/database"
+import type { ChainSlugs } from "@cfce/types"
+import copy from "clipboard-copy"
+import { Clipboard, Trash2 } from "lucide-react"
+import Image from "next/image"
 // import { removeWallet } from './actions';
 
 type WalletRowProps = {
   wallet: Prisma.UserGetPayload<{
-    include: { wallets: true };
-  }>['wallets'][number];
-};
+    include: { wallets: true }
+  }>["wallets"][number]
+}
 
 export function WalletRow({ wallet }: WalletRowProps) {
   const handleCopyAddress = async (address: string) => {
-    await copy(address);
-  };
+    await copy(address)
+  }
 
   // @deprecated, many edge cases
   // const handleRemoveWallet = async () => {
@@ -57,5 +57,5 @@ export function WalletRow({ wallet }: WalletRowProps) {
         <Trash2 size={18} />
       </button> */}
     </div>
-  );
+  )
 }

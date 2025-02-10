@@ -1,3 +1,4 @@
+import { chainConfig } from "@cfce/app-config"
 import type { ChainConfig } from "@cfce/types"
 import type { NetworkConfig } from "@cfce/types"
 import { get } from "lodash"
@@ -13,7 +14,6 @@ import {
   isModifiedNode,
 } from "xrpl"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import chainConfiguration from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 
 type transactionMethods =
@@ -29,7 +29,7 @@ export default class XrplCommon extends InterfaceBaseClass {
 
   constructor() {
     super()
-    this.chain = chainConfiguration.xrpl
+    this.chain = chainConfig.xrpl
     this.network = getNetworkForChain("xrpl")
   }
   async getTransactionInfo(txId: string) {

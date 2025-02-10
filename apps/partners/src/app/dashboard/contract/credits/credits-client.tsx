@@ -1,7 +1,7 @@
 "use client"
 
 import appConfig from "@cfce/app-config"
-import { chainConfig } from "@cfce/blockchain-tools"
+import { chainConfig } from "@cfce/app-config"
 import type { ChainSlugs, Network } from "@cfce/types"
 import { useState } from "react"
 import { useForm } from "react-hook-form"

@@ -1,5 +1,6 @@
 /// <reference path="./metamask.d.ts" />
 
+import { chainConfig } from "@cfce/app-config"
 import type {
   ChainSlugs,
   Network,
@@ -26,7 +27,6 @@ import type {
   ProviderRpcError,
 } from "web3"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import chainConfig from "../chains/chainConfig"
 import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
 

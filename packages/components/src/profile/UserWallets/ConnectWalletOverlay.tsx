@@ -1,22 +1,17 @@
 "use client"
 
-import appConfig from "@cfce/app-config"
+import appConfig, { chainConfig } from "@cfce/app-config"
 import {
   BlockchainClientInterfaces,
-  chainConfig,
-  getChainConfiguration,
   getWalletConfiguration,
-  walletConfig,
 } from "@cfce/blockchain-tools"
 import { chainAtom } from "@cfce/state"
 import type { AuthTypes, ChainSlugs, ClientInterfaces } from "@cfce/types"
 import { useAtom } from "jotai"
 import { Plus } from "lucide-react"
-import { revalidatePath } from "next/cache"
 import { useCallback, useState } from "react"
 import { useToast } from "../../hooks/use-toast"
 import { Button } from "../../ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card"
 import {
   Dialog,
   DialogContent,

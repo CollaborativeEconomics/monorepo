@@ -1,5 +1,5 @@
 import type { AppConfig, AuthTypes } from "@cfce/types"
-import chainConfiguration from "../../chainConfig"
+import chainConfiguration from "~/chainConfig"
 import appConfig from "./appConfig.staging"
 
 const siteInfo: AppConfig["siteInfo"] = {

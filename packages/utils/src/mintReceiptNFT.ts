@@ -1,10 +1,9 @@
 "use server"
 import "server-only"
 import { posthogNodeClient } from "@cfce/analytics/server"
-import appConfig from "@cfce/app-config"
-import { BlockchainServerInterfaces, chainConfig } from "@cfce/blockchain-tools"
+import appConfig, { chainConfig } from "@cfce/app-config"
+import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
-import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,

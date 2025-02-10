@@ -1,9 +1,8 @@
 "use client"
 
 import appConfig from "@cfce/app-config"
-import { getChainConfiguration } from "@cfce/blockchain-tools"
 import { chainAtom } from "@cfce/state"
-import type { AppChainConfig, ChainSlugs } from "@cfce/types"
+import type { ChainSlugs } from "@cfce/types"
 import { useAtom } from "jotai"
 import React from "react"
 import { DonationFormSelect } from "./DonationFormSelect"
@@ -44,8 +43,15 @@ export function ChainSelect() {
               `Chain ${chain} not found in appConfig. Check ${process.env.NEXT_PUBLIC_APP_ID}/appConfig.${process.env.NEXT_PUBLIC_ENV}.ts`,
             )
           }
-          const defaultToken = chainConfig.tokens[0]
-          draft.selectedToken = defaultToken
+          const defaultToken = chainConfig.tokens.find(
+            (token) => token.isNative,
+          )
+          if (!defaultToken) {
+            throw new Error(
+              `No native token found for chain ${chain} in appConfig. Check ${process.env.NEXT_PUBLIC_APP_ID}/appConfig.${process.env.NEXT_PUBLIC_ENV}.ts`,
+            )
+          }
+          draft.selectedToken = defaultToken.symbol
         })
       }}
       placeHolderText="...select a cryptocurrency"

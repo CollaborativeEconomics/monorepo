@@ -1,10 +1,10 @@
+import { chainConfig } from "@cfce/app-config"
 import type { ChainSlugs } from "@cfce/types"
 import _get from "lodash/get"
 import { http, createPublicClient, createWalletClient } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
 import Web3 from "web3"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import chainConfig from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 import Abi721inc from "../contracts/solidity/erc721/erc721inc-abi.json" // autoincrements tokenid
 import Abi721tba from "../contracts/solidity/erc721/erc721tba-abi.json" // must pass tokenid and metadatauri
