@@ -285,13 +285,19 @@ export async function submit(
   }
 }
 
-export async function checkContract(
-  network: any,
-  secret: string,
-  contractId: string,
-  method: string,
-  args: any,
-) {
+export async function checkContract({
+  network,
+  secret,
+  contractId,
+  method,
+  args,
+}: {
+  network: any
+  secret: string
+  contractId: string
+  method: string
+  args: any
+}) {
   try {
     console.log("CHECK", network, secret, contractId, method)
     const source = Keypair.fromSecret(secret)

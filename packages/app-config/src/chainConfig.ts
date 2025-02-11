@@ -51,6 +51,7 @@ const chainConfiguration: Chains = {
         ],
         contracts: {
           Receipt_NFT: "0x0535D460955bAa8a373053FD7C225675A9D1fA16",
+          VolunteersFactory: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
         },
         wallet: "0x1540026E002b09bc1720D130d90CB674b06121e2",
         wssurl: "",
@@ -99,7 +100,6 @@ const chainConfiguration: Chains = {
         ],
         contracts: {
           Receipt_NFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
-          Story_NFT: "0xc917ff4128525a65639d18f1d240a788081f022d",
           VolunteersFactory: "0xfbB261eADa2b1D881715984222De161F3F3E914e",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
