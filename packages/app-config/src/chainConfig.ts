@@ -932,6 +932,12 @@ const chainConfiguration: Chains = {
           url: "https://stellarchain.io",
           nftPath: "/accounts/{{contractId}}",
         },
+        contracts: {
+          Receipt_NFT: "xxx",
+          Receipt_NFTHash: "xxx",
+          Credits: "xxx",
+          CreditsHash: "xxx",
+        },
         rpcUrls: {
           main: "https://horizon.stellar.org",
           soroban:
@@ -997,16 +1003,13 @@ const chainConfiguration: Chains = {
           },
         ],
         contracts: {
-          Credits: "CAIRWEYKTLVRQBXQGYNLDUAKWIUV4NO6WPTCMVHH2BOMUUUBTXRJF43R",
-          // TODO: are these contracts dead?
-          // Credits: "CDHYT3A4XGBNSWP2P7XQTS2AT5XICKD5KOAZ7S2Y2APJMXRDIENP2LZR",
-          // CreditsHash:
-          //   "8c850c8ad832e8fcba395dc89009dad9b68c78902b275a5da565c55fe0091c7f",
+          Credits: "CDHYT3A4XGBNSWP2P7XQTS2AT5XICKD5KOAZ7S2Y2APJMXRDIENP2LZR",
+          CreditsHash:
+            "8c850c8ad832e8fcba395dc89009dad9b68c78902b275a5da565c55fe0091c7f",
           Receipt_NFT:
-            "CCUOIXOK4BIV2O7ANQ2JKUCMQS7JUQW3XISWNZTEQUIUGPHX7I5KV5UD",
-          // Receipt_NFT: "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
-          //   Receipt_NFTHash:
-          // "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
+            "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
+          Receipt_NFTHash:
+            "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
         },
         wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
         wssurl: "",
