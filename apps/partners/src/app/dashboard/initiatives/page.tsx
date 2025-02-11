@@ -1,4 +1,5 @@
 import { auth } from "@cfce/auth"
+import Link from "next/link"
 import { type Initiative, getOrganizationById } from "@cfce/database"
 import InitiativeCard from "~/components/InitiativeCard"
 import Title from "~/components/title"
@@ -29,7 +30,9 @@ export default async function Page() {
       {initiatives.length > 0 ? (
         initiatives.map((item: Initiative) => (
           <div className={styles.mainBox} key={item.id}>
-            <InitiativeCard key={item.id} {...item} />
+            <Link href={`/dashboard/initiatives/${item.id}`}>
+              <InitiativeCard key={item.id} {...item} />
+            </Link>
           </div>
         ))
       ) : (

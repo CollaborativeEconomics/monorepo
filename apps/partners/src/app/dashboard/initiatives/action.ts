@@ -28,6 +28,7 @@ type FormData = {
 //  return resp.json()
 //}
 
+
 export async function createInitiative(
   data: FormData,
   orgId: string,
@@ -119,4 +120,13 @@ export async function createInitiative(
       error: ex instanceof Error ? ex.message : "Unknown error",
     }
   }
+}
+
+
+export async function editInitiative(data:FormData){
+  console.log('EDIT', data)
+    return {
+      success: false,
+      error: 'Not ready',
+    }
 }

@@ -11,16 +11,21 @@ import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover"
 interface DatePickerProps {
   register?: UseFormRegisterReturn
   label?: string
+  initialValue?: string
 }
 
 export function DatePicker({
-  register,
   label = "Pick a date",
+  initialValue,
+  register
 }: DatePickerProps) {
-  const [date, setDate] = React.useState<Date>()
+  console.log('INITIAL DATE', initialValue, new Date(initialValue??0))
+  const initialDate = initialValue ? new Date(initialValue) : new Date()
+  const [date, setDate] = React.useState<Date>(initialDate)
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
-    setDate(selectedDate)
+    console.log('SELDATE', selectedDate)
+    setDate(selectedDate ?? new Date())
     if (register?.onChange) {
       register.onChange({
         target: { value: selectedDate },
@@ -44,7 +49,7 @@ export function DatePicker({
           {date ? format(date, "PPP") : <span>{label}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="w-auto p-0 bg-gray-700">
         <Calendar mode="single" selected={date} onSelect={handleDateSelect} />
       </PopoverContent>
     </Popover>
