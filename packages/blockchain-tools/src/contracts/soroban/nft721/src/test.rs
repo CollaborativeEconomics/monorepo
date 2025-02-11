@@ -132,13 +132,11 @@ fn test_burn() {
     token.mint(&user1);
     let token_id = token.supply();
     assert_eq!(token.balance(&user1), 1);
-    assert_eq!(token.owner(&token_id), user1);
+    assert_eq!(token.owner(&token_id), Some(user1.clone()));
 
     token.approve(&user1, &user2);
     token.burn(&user1, &token_id);
-    // Use a non-existent token id (e.g. 0) to get the default zero address
-    let expected_zero_address = token.owner(&0);
-    assert_eq!(token.owner(&token_id), expected_zero_address);
+    assert_eq!(token.owner(&token_id), None);
     assert_eq!(token.balance(&user1), 0);
 
     // Mint another token for burn_from (should be token id 2)
@@ -146,7 +144,7 @@ fn test_burn() {
     let token_id2 = token.supply();
     assert_eq!(token.balance(&user1), 1);
     token.burn_from(&user2, &user1, &token_id2);
-    assert_eq!(token.owner(&token_id2), expected_zero_address);
+    assert_eq!(token.owner(&token_id2), None);
     assert_eq!(token.balance(&user1), 0);
 }
 
