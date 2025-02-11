@@ -1,53 +1,48 @@
-'use client';
+"use client"
 
-import { DatePicker } from '@cfce/components/form';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import ButtonBlue from '~/components/buttonblue';
-import FileView from '~/components/form/fileview';
-import Select from '~/components/form/select'
-import TextArea from '~/components/form/textarea';
-import TextInput from '~/components/form/textinput';
-import dateToPrisma from '~/utils/DateToPrisma';
-import { createInitiative } from './action';
+import { DatePicker } from "@cfce/components/form"
+import { useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import ButtonBlue from "~/components/buttonblue"
+import FileView from "~/components/form/fileview"
+import Select from "~/components/form/select"
+import TextArea from "~/components/form/textarea"
+import TextInput from "~/components/form/textinput"
+import dateToPrisma from "~/utils/DateToPrisma"
+import { createInitiative } from "./action"
 
 type InitiativeFormProps = {
-  orgId: string;
-};
+  orgId: string
+}
 
 type FormData = {
-  title: string;
-  description: string;
-  start?: string;
-  finish?: string;
-  image: FileList;
-};
+  title: string
+  description: string
+  start?: Date
+  finish?: Date
+  image: FileList
+}
 
 export default function InitiativeForm({ orgId }: InitiativeFormProps) {
   //const [providers, setProviders] = useState([])
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [buttonText, setButtonText] = useState('SUBMIT');
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [buttonText, setButtonText] = useState("SUBMIT")
   const [message, setMessage] = useState(
-    'Enter initiative info and upload image',
-  );
+    "Enter initiative info and upload image",
+  )
 
-  const today = dateToPrisma();
-  const nextMonth = dateToPrisma(
-    new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-  );
-
-  const { register, handleSubmit, watch } = useForm<FormData>({
+  const { register, handleSubmit, watch, control } = useForm<FormData>({
     defaultValues: {
-      title: '',
-      description: '',
-      start: today,
-      finish: nextMonth,
+      title: "",
+      description: "",
+      start: new Date(),
+      finish: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     },
-  });
+  })
 
-  const image = watch('image');
+  const image = watch("image")
 
-/*
+  /*
   function listCredits() {
     return [
       { id: '0', name: 'No credits' },
@@ -68,54 +63,74 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
     return list
   }
 */
-  
+
   const onSubmit = async (data: FormData) => {
-    console.log('FORM', data);
+    console.log("FORM", data)
 
     if (!data.title || !data.description || !data.image) {
-      setMessage('Error: Missing required fields');
-      return;
+      setMessage("Error: Missing required fields")
+      return
     }
-    setButtonDisabled(true);
-    setButtonText('WAIT');
-    setMessage('Saving initiative...');
+    setButtonDisabled(true)
+    setButtonText("WAIT")
+    setMessage("Saving initiative...")
     try {
-      const result = await createInitiative(data, orgId);
+      const result = await createInitiative(data, orgId)
 
       if (result.success) {
-        setMessage('Initiative saved successfully');
-        setButtonText('DONE');
+        setMessage("Initiative saved successfully")
+        setButtonText("DONE")
       } else {
-        setMessage(`Error: ${result.error}`);
-        setButtonText('SUBMIT');
-        setButtonDisabled(false);
+        setMessage(`Error: ${result.error}`)
+        setButtonText("SUBMIT")
+        setButtonDisabled(false)
       }
     } catch (error) {
       setMessage(
-        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
-      setButtonText('SUBMIT');
-      setButtonDisabled(false);
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      )
+      setButtonText("SUBMIT")
+      setButtonDisabled(false)
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FileView
         id="imgFile"
-        {...register('image')}
+        {...register("image")}
         source="/media/upload.jpg"
         width={250}
         height={250}
         multiple={false}
       />
       {/*<input type="file" {...register('image')} className="mt-4 w-full" />*/}
-      <TextInput label="Title" {...register('title')} />
-      <TextArea label="Description" {...register('description')} />
-      <DatePicker label="Start Date" {...register('start')} />
-      <DatePicker label="End Date" {...register('finish')} />
+      <TextInput label="Title" {...register("title")} />
+      <TextArea label="Description" {...register("description")} />
+      <Controller
+        control={control}
+        name="start"
+        render={({ field }) => (
+          <DatePicker
+            label="Start Date"
+            onChange={field.onChange}
+            value={field.value}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="finish"
+        render={({ field }) => (
+          <DatePicker
+            label="End Date"
+            onChange={field.onChange}
+            value={field.value}
+          />
+        )}
+      />
 
-{/*
+      {/*
       <Select
         label="Credits"
         register={register('creditType')}
@@ -149,5 +164,5 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
         {message}
       </p>
     </form>
-  );
+  )
 }

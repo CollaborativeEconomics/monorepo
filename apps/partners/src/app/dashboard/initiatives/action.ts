@@ -6,6 +6,7 @@ import { newTBAccount } from "@cfce/tbas"
 import { EntityType } from "@cfce/types"
 import { uploadFile } from "@cfce/utils"
 import { snakeCase } from "lodash"
+import { revalidatePath } from "next/cache"
 import { randomNumber, randomString } from "~/utils/random"
 
 type FormData = {
@@ -27,7 +28,6 @@ type FormData = {
 //  })
 //  return resp.json()
 //}
-
 
 export async function createInitiative(
   data: FormData,
@@ -112,6 +112,7 @@ export async function createInitiative(
       console.log("TBA created", account)
     }
 
+    revalidatePath("/dashboard/initiatives")
     return { success: true, data: result }
   } catch (ex) {
     console.error(ex)
@@ -122,11 +123,10 @@ export async function createInitiative(
   }
 }
 
-
-export async function editInitiative(data:FormData){
-  console.log('EDIT', data)
-    return {
-      success: false,
-      error: 'Not ready',
-    }
+export async function editInitiative(data: FormData) {
+  console.log("EDIT", data)
+  return {
+    success: false,
+    error: "Not ready",
+  }
 }

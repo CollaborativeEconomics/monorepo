@@ -1,39 +1,21 @@
+"use client"
+
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import * as React from "react"
-import type { UseFormRegisterReturn } from "react-hook-form"
 
 import { cn } from "~/shadCnUtil"
-import { Button } from "~/ui"
+import { Button } from "~/ui/button"
 import { Calendar } from "~/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover"
 
 interface DatePickerProps {
-  register?: UseFormRegisterReturn
-  label?: string
-  initialValue?: string
+  label: string
+  value?: Date
+  onChange: (date: Date) => void
 }
 
-export function DatePicker({
-  label = "Pick a date",
-  initialValue,
-  register
-}: DatePickerProps) {
-  console.log('INITIAL DATE', initialValue, new Date(initialValue??0))
-  const initialDate = initialValue ? new Date(initialValue) : new Date()
-  const [date, setDate] = React.useState<Date>(initialDate)
-
-  const handleDateSelect = (selectedDate: Date | undefined) => {
-    console.log('SELDATE', selectedDate)
-    setDate(selectedDate ?? new Date())
-    if (register?.onChange) {
-      register.onChange({
-        target: { value: selectedDate },
-        type: "change",
-      })
-    }
-  }
-
+export function DatePicker({ label, value, onChange }: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -41,16 +23,21 @@ export function DatePicker({
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground",
+            !value && "text-muted-foreground",
           )}
-          {...register} // Spread register props here
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>{label}</span>}
+          {value ? format(value, "PPP") : <span>{label ?? "Pick a date"}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 bg-gray-700">
-        <Calendar mode="single" selected={date} onSelect={handleDateSelect} />
+      <PopoverContent className="w-auto p-0">
+        <Calendar
+          mode="single"
+          selected={value}
+          onSelect={(date) => date && onChange(date)}
+          required
+          initialFocus
+        />
       </PopoverContent>
     </Popover>
   )
