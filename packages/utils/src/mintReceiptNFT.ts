@@ -323,7 +323,7 @@ export async function mintAndSaveReceiptNFT({
     // #region: Mint NFT on current chain only
     let receiptContract = currentChain?.contracts?.Receipt_NFT
     console.log("CTR", receiptContract)
-    if (currentChain?.slug !== "xrpl") {
+    if (currentChain?.slug === "xrpl") {
       receiptContract = "xrpl"
     }
 
