@@ -1,8 +1,8 @@
 "use client"
 
-import { DatePicker } from "@cfce/components/form"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { DatePicker } from "@cfce/components/form"
 import ButtonBlue from "~/components/buttonblue"
 import FileView from "~/components/form/fileview"
 import Select from "~/components/form/select"
@@ -27,9 +27,7 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
   //const [providers, setProviders] = useState([])
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const [buttonText, setButtonText] = useState("SUBMIT")
-  const [message, setMessage] = useState(
-    "Enter initiative info and upload image",
-  )
+  const [message, setMessage] = useState("Enter initiative info and upload image")
 
   const { register, handleSubmit, watch, control } = useForm<FormData>({
     defaultValues: {

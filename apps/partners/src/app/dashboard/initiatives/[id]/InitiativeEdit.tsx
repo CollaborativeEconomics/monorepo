@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from "react-hook-form"
 import type { Initiative } from "@cfce/database"
 import { DatePicker } from '@cfce/components/form';
 import ButtonBlue from '~/components/buttonblue';
@@ -17,23 +17,25 @@ type FormProps = {
 }
 
 type FormData = {
+  initiativeId: string;
+  organizationId: string;
   title: string;
   description: string;
-  start?: string;
-  finish?: string;
+  start?: Date;
+  finish?: Date;
   image: FileList;
+  imageUri?: string;
+  defaultAsset?: string;
 };
 
 export default function InitiativeEdit({ initiative }: FormProps) {
   //console.log('INIT', initiative)
-  //const [providers, setProviders] = useState([])
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, setMessage] = useState('Enter initiative info and upload image');
-  const iniDate = dateToPrisma(initiative.start||'');
-  const endDate = dateToPrisma(initiative.finish||'');
-  //console.log('DATES', iniDate, endDate)
-  const { register, handleSubmit, watch } = useForm<FormData>({
+  const iniDate = new Date(initiative.start||new Date().toJSON());
+  const endDate = new Date(initiative.finish||new Date().toJSON());
+  const { register, handleSubmit, watch, control } = useForm<FormData>({
     defaultValues: {
       title: initiative.title,
       description: initiative.description,
@@ -42,46 +44,22 @@ export default function InitiativeEdit({ initiative }: FormProps) {
     },
   });
 
-  //const [start, finish] = watch(['start', 'finish']) // << Doesn't work
   const image = watch('image');
   const imageSource = initiative.defaultAsset
 
-/*
-  function listCredits() {
-    return [
-      { id: '0', name: 'No credits' },
-      { id: '1', name: 'Carbon credits' },
-      { id: '2', name: 'Plastic credits' },
-      { id: '3', name: 'Biodiversity credits' }
-    ]
-  }
-
-  function listProviders() {
-    if (!providers) {
-      return [{ id: 0, name: 'No providers' }]
-    }
-    const list = []
-    for (let i = 0; i < providers.length; i++) {
-      list.push({ id: providers[i].id, name: providers[i].name })
-    }
-    return list
-  }
-*/
-  
   const onSubmit = async (data: FormData) => {
     console.log('INIT', initiative)
+    data.initiativeId = initiative.id
+    data.organizationId = initiative.organizationId
+    data.imageUri = initiative.imageUri || undefined
+    data.defaultAsset = initiative.defaultAsset || undefined
     console.log('FORM', data);
 
-    if (!data.title || !data.description || !data.image) {
-      setMessage('Error: Missing required fields');
-      return;
-    }
     setButtonDisabled(true);
     setButtonText('WAIT');
     setMessage('Saving initiative...');
     try {
       const result = await editInitiative(data);
-
       if (result.success) {
         setMessage('Initiative saved successfully');
         setButtonText('DONE');
@@ -91,9 +69,7 @@ export default function InitiativeEdit({ initiative }: FormProps) {
         setButtonDisabled(false);
       }
     } catch (error) {
-      setMessage(
-        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
+      setMessage(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setButtonText('SUBMIT');
       setButtonDisabled(false);
     }
@@ -112,10 +88,33 @@ export default function InitiativeEdit({ initiative }: FormProps) {
       {/*<input type="file" {...register('image')} className="mt-4 w-full" />*/}
       <TextInput label="Title" {...register('title')} />
       <TextArea label="Description" {...register('description')} />
-      <DatePicker label="Start Date" initialValue={iniDate} {...register('start')} />
-      <DatePicker label="End Date" initialValue={endDate} {...register('finish')} />
-
+      <Controller
+        control={control}
+        name="start"
+        render={({ field }) => (
+          <DatePicker
+            label="Start Date"
+            onChange={field.onChange}
+            value={field.value}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="finish"
+        render={({ field }) => (
+          <DatePicker
+            label="End Date"
+            onChange={field.onChange}
+            value={field.value}
+          />
+        )}
+      />
 {/*
+
+      <DatePicker label="Start Date"  {...register('start')} onChange={(x)=>{console.log(x)}} />
+      <DatePicker label="End Date"  {...register('finish')} onChange={(y)=>{console.log(y)}} />
+
       <Select
         label="Credits"
         register={register('creditType')}

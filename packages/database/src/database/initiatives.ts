@@ -150,10 +150,7 @@ export async function newInitiative(data: Prisma.InitiativeCreateInput) {
   return result
 }
 
-export async function updateInitiative(
-  id: string,
-  data: Prisma.InitiativeUpdateInput,
-) {
+export async function updateInitiative(id: string, data: Prisma.InitiativeUpdateInput) {
   const result = await prismaClient.initiative.update({ where: { id }, data })
   return result
 }
