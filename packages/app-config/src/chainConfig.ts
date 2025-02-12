@@ -122,6 +122,9 @@ const chainConfiguration: Chains = {
         decimals: 18,
         gasprice: "250000000",
         icon: "/icons/avax.webp",
+        contracts: {
+          Receipt_NFT: "0x39d1d1FD5660D4D892a859BD53212f8b580c55Ea",
+        },
         explorer: {
           url: "https://snowtrace.io",
           nftPath: "/nft/{{contractId}}/{{tokenId}}?chainid={{chainId}}",
@@ -191,6 +194,9 @@ const chainConfiguration: Chains = {
         decimals: 18,
         gasprice: "250000000",
         icon: "/icons/base.webp",
+        contracts: {
+          Receipt_NFT: "0xf1956D22B0A36f9088B1a7c3A1b6a0E7ccad361F",
+        },
         explorer: {
           url: "https://basescan.org",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -258,6 +264,9 @@ const chainConfiguration: Chains = {
         decimals: 18,
         gasprice: "9000000000",
         icon: "/icons/bnb.webp",
+        contracts: {
+          Receipt_NFT: "0xA4F55421608c012d03D92abeec8543397FD99ADe",
+        },
         explorer: {
           url: "https://bscscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -325,6 +334,9 @@ const chainConfiguration: Chains = {
         decimals: 18,
         gasprice: "10000000000",
         icon: "/icons/celo.webp",
+        contracts: {
+          Receipt_NFT: "0x96E4bf46dFb0Fc888DeFE6F893A90b78E8be023C",
+        },
         explorer: {
           url: "https://explorer.celo.org",
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
@@ -933,8 +945,10 @@ const chainConfiguration: Chains = {
           nftPath: "/accounts/{{contractId}}",
         },
         contracts: {
-          Receipt_NFT: "xxx",
-          Receipt_NFTHash: "xxx",
+          Receipt_NFT:
+            "CDOWTLX7NE5ZUM6JRVFPROIW2URA7733XKALB57IT4OLTMYODWIVNOXB",
+          Receipt_NFTHash:
+            "e8bf985b6e949ae21e618e04cdc924eda863c9226205a64afe35c9dd7f14a9ff",
           Credits: "xxx",
           CreditsHash: "xxx",
         },
