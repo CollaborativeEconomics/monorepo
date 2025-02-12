@@ -1,33 +1,50 @@
-import type { ChainSlugs, RuntimeChainConfig } from "@cfce/types"
+import type {
+  AppChainSettings,
+  ChainSlugs,
+  Chains,
+  NetworkConfig,
+} from "@cfce/types"
 import chainConfig from "./chainConfig"
-
-import appConfig from "./appConfig"
 
 // Simple helper to combine configs, with override handling
 export function getChainConfig(
   chain: ChainSlugs,
-): RuntimeChainConfig | undefined {
+  chainSettings: AppChainSettings,
+) {
   const baseConfig = chainConfig[chain]
-  const appSettings = appConfig.chains[chain]
 
-  if (!baseConfig || !appSettings) return undefined
+  if (!baseConfig || !chainSettings) return undefined
 
-  // Deep merge the network config with any overrides
-  const mergedConfig = {
+  // 1. Get the selected network configuration
+  const selectedNetwork = baseConfig.networks[
+    chainSettings.network
+  ] as NetworkConfig
+  if (!selectedNetwork) return undefined
+
+  // 2. Merge contracts
+  const mergedContracts = {
+    ...(selectedNetwork.contracts || {}),
+    ...chainSettings.contracts,
+  }
+
+  // 3. Create the default network configuration
+  const defaultNetwork = {
+    ...selectedNetwork,
+    contracts: mergedContracts,
+    wallet: chainSettings.wallet ?? selectedNetwork.wallet,
+  }
+
+  // 4. Combine everything into the final config
+  const mergedConfig: Chains[ChainSlugs] & {
+    networks: {
+      default: NetworkConfig
+    }
+  } = {
     ...baseConfig,
     networks: {
       ...baseConfig.networks,
-      default: {
-        ...baseConfig.networks[appSettings.network],
-        contracts: {
-          ...baseConfig.networks[appSettings.network].contracts,
-          ...appSettings.contracts,
-        },
-        wallet:
-          appSettings.wallet ?? baseConfig.networks[appSettings.network].wallet,
-      },
+      default: defaultNetwork,
     },
-    appSettings,
   }
 
   return mergedConfig

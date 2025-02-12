@@ -1,7 +1,7 @@
 import type { Chains } from "@cfce/types"
 import { constants } from "starknet"
 
-const chainConfiguration: Chains = {
+const chainConfiguration = {
   arbitrum: {
     slug: "arbitrum",
     name: "Arbitrum",
@@ -1241,6 +1241,6 @@ const chainConfiguration: Chains = {
       },
     },
   },
-} as const
+} satisfies Chains
 
 export default chainConfiguration

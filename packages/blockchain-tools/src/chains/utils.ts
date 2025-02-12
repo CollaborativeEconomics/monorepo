@@ -82,7 +82,7 @@ export const getRpcUrl = (
     throw new Error(`Chain configuration not found for ${chain}`)
   }
 
-  const networkConfig = config.networks[network]
+  const networkConfig = config.networks[network] as NetworkConfig
   if (!networkConfig) {
     throw new Error(`Network configuration not found for ${chain} ${network}`)
   }

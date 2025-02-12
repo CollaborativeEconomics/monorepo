@@ -1,5 +1,5 @@
 import type { AppConfig, AuthTypes } from "@cfce/types"
-import chainConfiguration from "../../chainConfig"
+import chainConfig from "../../chainConfig"
 import appConfigBase from "../appConfigBase"
 
 const appConfig: AppConfig = {
@@ -18,7 +18,7 @@ appConfig.apis = {
 
 appConfig.chains = {
   xdc: {
-    ...chainConfiguration.xdc.networks.mainnet,
+    ...chainConfig.xdc.networks.mainnet,
     enabledWallets: ["metamask"],
   },
 }

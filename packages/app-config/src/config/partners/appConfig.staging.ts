@@ -1,5 +1,5 @@
 import type { AppConfig } from "@cfce/types"
-import { chainConfig } from "../.."
+import chainConfig from "../../chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {

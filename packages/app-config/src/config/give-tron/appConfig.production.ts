@@ -22,7 +22,7 @@ appConfig.chains = {
   tron: {
     ...chainConfiguration.tron.networks.mainnet,
     contracts: {
-      ...chainConfiguration.tron.networks.mainnet.contracts,
+      // ...chainConfiguration.tron.networks.mainnet.contracts,
       Receipt_NFT: "",
     },
     enabledWallets: ["freighter"],

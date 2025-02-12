@@ -58,8 +58,3 @@ export interface AppConfig {
     defaultAddress?: string
   }
 }
-
-// Helper type to access combined chain configuration
-export type RuntimeChainConfig = ChainConfig & {
-  appSettings: AppChainSettings
-}
