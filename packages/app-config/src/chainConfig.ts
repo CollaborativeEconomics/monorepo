@@ -534,6 +534,9 @@ const chainConfiguration: Chains = {
         decimals: 18,
         gasprice: "250000000",
         icon: "/icons/fil.webp",
+        contracts: {
+          Receipt_NFT: "0x96E4bf46dFb0Fc888DeFE6F893A90b78E8be023C",
+        },
         explorer: {
           url: "https://filscan.io",
           nftPath: "/en/message/{{transactionId}}/",
