@@ -535,7 +535,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/fil.webp",
         contracts: {
-          Receipt_NFT: "0x96E4bf46dFb0Fc888DeFE6F893A90b78E8be023C",
+          Receipt_NFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4 ",
         },
         explorer: {
           url: "https://filscan.io",
@@ -565,6 +565,9 @@ const chainConfiguration = {
         decimals: 18,
         gasprice: "250000000",
         icon: "/icons/fil.webp",
+        contracts: {
+          Receipt_NFT: "0x0ff170753fA7B1ADa5f120b52c8F4903fe066090 ",
+        },
         explorer: {
           url: "https://calibration.filscan.io",
           nftPath: "/en/message/{{transactionId}}/",
@@ -601,6 +604,9 @@ const chainConfiguration = {
         decimals: 18,
         gasprice: "25000000000",
         icon: "/icons/flr.webp",
+        contracts: {
+          Receipt_NFT: "0x08E1cc1EcD7A5Cb9B33B5173BF63c2e8BD4e59d0",
+        },
         explorer: {
           url: "https://flare-explorer.flare.network",
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
@@ -669,6 +675,9 @@ const chainConfiguration = {
         decimals: 18,
         gasprice: "250000000",
         icon: "/icons/op.webp",
+        contracts: {
+          Receipt_NFT: "0x0eD50ddEE2c561016A9aaB9DaFC891DB3Afe554d",
+        },
         explorer: {
           url: "https://optimistic.etherscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -705,6 +714,9 @@ const chainConfiguration = {
         decimals: 18,
         gasprice: "250000000",
         icon: "/icons/op.webp",
+        contracts: {
+          Receipt_NFT: "0xADC5b1B42F366215525Bae1f0d81aD485c60C75e",
+        },
         explorer: {
           url: "https://sepolia-optimism.etherscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -749,6 +761,9 @@ const chainConfiguration = {
         decimals: 18,
         gasprice: "20000000000",
         icon: "/icons/matic.webp",
+        contracts: {
+          Receipt_NFT: "0x1540026E002b09bc1720D130d90CB674b06121e2",
+        },
         explorer: {
           url: "https://polygonscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -777,6 +792,9 @@ const chainConfiguration = {
         decimals: 18,
         gasprice: "20000000000",
         icon: "/icons/matic.webp",
+        contracts: {
+          Receipt_NFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
+        },
         explorer: {
           url: "https://amoy.polygonscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
