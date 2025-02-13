@@ -1,9 +1,10 @@
 const path = require('node:path');
+const { PrismaPlugin } = require('@prisma/nextjs-monorepo-workaround-plugin')
 
 const webpackConfig = (config, { isServer }) => {
   if (isServer) {
     config.ignoreWarnings = [{ module: /opentelemetry/ }];
-    // config.externals.push('@cfce/database');
+    config.plugins = [...config.plugins, new PrismaPlugin()]
     // ^^^ https://github.com/prisma/prisma/issues/6051#issuecomment-831136748
   } else {
     config.externals = config.externals || [];

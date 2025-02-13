@@ -5,6 +5,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "dependencies": {
+    "@prisma/nextjs-monorepo-workaround-plugin": "^6.3.1",
     "@types/node": "^22.10.1"
   },
   "devDependencies": {
