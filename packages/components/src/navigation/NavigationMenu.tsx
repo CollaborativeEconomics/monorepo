@@ -1,11 +1,11 @@
-import { auth } from '@cfce/auth';
-import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import Image from 'next/image';
-import Link from 'next/link';
-import * as React from 'react';
-import { cn } from '~/shadCnUtil';
-import { Button } from '~/ui/button';
-import DarkModeSwitcher from './DarkModeSwitcher';
+import { auth } from "@cfce/auth"
+import { HamburgerMenuIcon } from "@radix-ui/react-icons"
+import Image from "next/image"
+import Link from "next/link"
+import * as React from "react"
+import { cn } from "~/shadCnUtil"
+import { Button } from "~/ui/button"
+import DarkModeSwitcher from "./DarkModeSwitcher"
 
 import {
   NavigationMenu,
@@ -15,7 +15,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '~/ui/navigation-menu';
+} from "~/ui/navigation-menu"
 
 import {
   Sheet,
@@ -25,15 +25,14 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '~/ui/sheet';
+} from "~/ui/sheet"
 
 export default async function NavMenu() {
-  const session = await auth();
-  const status = session?.user ? 'authenticated' : 'unauthenticated';
-  console.log('Header Session', session, status);
-  const avatar = session?.user?.image || '/media/nopic.png';
+  const session = await auth()
+  const status = session?.user ? "authenticated" : "unauthenticated"
+  const avatar = session?.user?.image || "/media/nopic.png"
   // @ts-ignore - module augmentation is hard
-  const userurl = session?.user.id ? `/profile/${session?.user.id}` : '';
+  const userurl = session?.user.id ? `/profile/${session?.user.id}` : ""
 
   return (
     <>
@@ -58,9 +57,9 @@ export default async function NavMenu() {
               </NavigationMenuContent>
             </NavigationMenuItem> */}
             <NavigationMenuItem>
-              {status === 'authenticated' ? (
+              {status === "authenticated" ? (
                 <NavigationMenuLink
-                  className={navigationMenuTriggerStyle({ type: 'avatar' })}
+                  className={navigationMenuTriggerStyle({ type: "avatar" })}
                   href={userurl}
                 >
                   <Image src={avatar} fill alt="Avatar" className="rounded" />
@@ -107,12 +106,12 @@ export default async function NavMenu() {
         </Sheet>
       </div>
     </>
-  );
+  )
 }
 
 const ListItem = React.forwardRef<
-  React.ElementRef<'a'>,
-  React.ComponentPropsWithoutRef<'a'>
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => {
   return (
     <li>
@@ -120,7 +119,7 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className,
           )}
           {...props}
@@ -132,6 +131,6 @@ const ListItem = React.forwardRef<
         </a>
       </NavigationMenuLink>
     </li>
-  );
-});
-ListItem.displayName = 'ListItem';
+  )
+})
+ListItem.displayName = "ListItem"
