@@ -1226,7 +1226,7 @@ const chainConfiguration = {
             icon: "icons/xrp.webp",
           },
         ],
-        wallet: "rDnRVpHyefiph7rkHm8xPakXu9BMuH5eKz",
+        wallet: "rEzcJJqT5KwZYfv2Vfwqan2sEDthuW2JS7",
         wssurl: "",
       },
       testnet: {
