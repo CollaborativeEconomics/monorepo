@@ -3,7 +3,7 @@ const path = require('node:path');
 const webpackConfig = (config, { isServer }) => {
   if (isServer) {
     config.ignoreWarnings = [{ module: /opentelemetry/ }];
-    config.externals.push('@cfce/database');
+    // config.externals.push('@cfce/database');
     // ^^^ https://github.com/prisma/prisma/issues/6051#issuecomment-831136748
   } else {
     config.externals = config.externals || [];
