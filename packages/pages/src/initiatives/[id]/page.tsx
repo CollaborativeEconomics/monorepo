@@ -121,12 +121,12 @@ export default async function Initiative(props: {
           </div>
         </div>
 
-        <Separator className="py-4" />
+        <Separator className="my-6" />
 
         {/* Stories and Initiatives  */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <p className="text-3xl font-semibold py-6">
+            <p className="text-3xl font-semibold mb-6">
               <span id="more">Other Initiatives</span>
             </p>
             <div className="grid grid-cols-1 gap-4 w-full">
@@ -148,7 +148,7 @@ export default async function Initiative(props: {
             </div>
           </div>
           <div>
-            <p className="text-3xl font-semibold py-6">
+            <p className="text-3xl font-semibold mb-6">
               <span id="stories">Stories</span>
             </p>
             <div className="grid grid-cols-1 xxl:grid-cols-2 gap-4">

@@ -25,11 +25,18 @@ export default async function InitiativeCard({
   const donations = await getDonations({ initid: initiative.id })
 
   const donationsSum = donations.reduce(
-    (acc, donation) => acc + Number(donation.amount),
+    (acc, donation) => acc + Number(donation.usdvalue),
     0,
   )
   const startDate = new Date(initiative?.start).getTime()
   const progress = (donationsSum / initiative.goal) * 100
+  console.log(
+    "PROGRESS",
+    initiative.title,
+    progress,
+    donationsSum,
+    initiative.goal,
+  )
 
   return (
     <Card className="flex flex-col overflow-hidden h-auto">
@@ -57,15 +64,15 @@ export default async function InitiativeCard({
         </div>
         <OrgStats
           stats={{
-            amountRaised: initiative.lastmonth,
+            amountRaised: donationsSum,
             amountTarget: initiative.goal,
-            donorCount: initiative.donors,
+            donorCount: donations.length,
             institutionalDonorCount: initiative.institutions,
           }}
         />
         <div>
           <Separator />
-          <div className="px-6 pt-6 inline-flex justify-between">
+          <div className="px-6 pt-6 inline-flex justify-between w-full gap-2">
             <OrganizationAvatar organization={initiative.organization} />
             <Link href={initurl}>
               <Button className="p-6 bg-blue-600 text-white text-lg rounded-lg hover:bg-blue-700 hover:shadow-inner">

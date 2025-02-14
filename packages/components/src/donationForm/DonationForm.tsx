@@ -328,6 +328,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           draft.paymentStatus = PAYMENT_STATUS.minted
           draft.date = new Date()
         })
+        setTimeout(() => {
+          setDonationForm((draft) => {
+            draft.paymentStatus = PAYMENT_STATUS.ready
+            draft.date = new Date()
+          })
+        }, 1800)
       } catch (error) {
         toast({
           variant: "destructive",
@@ -634,7 +640,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         <Separator />
         <div className="flex flex-col items-center justify-center">
           <MintButton onClick={onSubmit} />
-          <p className="mt-2 text-sm">{buttonMessage}</p>
+          <p className="mt-2 text-sm px-4">{buttonMessage}</p>
         </div>
       </Card>
       <Dialog open={balanceDialogOpen} onOpenChange={setBalanceDialogOpen}>
