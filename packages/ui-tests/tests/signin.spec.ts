@@ -8,21 +8,15 @@ import {
 import basicSetup from "../wallet-setup/basic.setup.js"
 
 const test = testWithSynpress(metaMaskFixtures(basicSetup))
-const expect = test.expect
+const { expect} = test
 
-test.describe("Signin", () => {
-  test.beforeEach(async ({ page }) => {
-    //   test.setTimeout(100000)
+
+test("Should navigate to signin page", async ({ page }) => {
     await page.goto("/")
-    //   // Wait for the main content to be visible
-    await expect(page.locator("body")).toBeVisible()
-  })
-
-  test("Should navigate to signin page", async ({ page }) => {
     await page.getByRole("link", { name: "Sign in" }).click()
     await page.waitForURL(/^http:\/\/localhost:3000\/signin$/)
     await expect(page).toHaveURL(/.*\/signin/)
-  })
+})
 
   test("Should display wallet login options", async ({ page }) => {
     // Navigate to signin page
@@ -60,12 +54,17 @@ test.describe("Signin", () => {
       basicSetup.walletPassword,
       extensionId,
     )
-
     // Navigate to the homepage
+    await page.goto("/")
     await page.getByRole("link", { name: "Sign in" }).click()
+    const signinPage = page.getByRole("heading", { name: "Sign in" })
+    console.log(await signinPage.textContent())
+    await expect(signinPage).toBeVisible()
 
     // Click the connect button
     await page.getByText("Login with Metamask Wallet").click()
+
+    await metamask.unlock()
 
     // Connect MetaMask to the dapp
     await metamask.connectToDapp()
@@ -83,4 +82,3 @@ test.describe("Signin", () => {
       page.getByText("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"),
     ).toBeVisible()
   })
-})

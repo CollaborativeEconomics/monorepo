@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build-packages": "turbo build '--filter=./packages/*'",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "pnpm biome format --write /**/*.{ts,tsx,md}",
