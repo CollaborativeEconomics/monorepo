@@ -148,6 +148,8 @@ test.describe("Initiative page", () => {
     await searchInput.fill("test")
     await page.getByRole("button", { name: "Search" }).click()
 
+    await page.waitForURL(/^http:\/\/localhost:3000\/initiatives\?.*$/)
+
     // Verify URL contains search params
     await expect(page).toHaveURL(/.*[?&]query=test/)
   })
