@@ -945,7 +945,7 @@ const chainConfiguration = {
             "0x3cfdb23c07a9a059090c871df3f2a242c6738e25351749be334f2b23d764368",
         },
         wallet:
-          "0x063783605f5f8a4c716ec82453815ac5a5d9bb06fe27c0df022495a137a5a74f",
+          "0x01f6B30cd3c82a56ea6428B5906284D1797a26eA8F03FCd1F56b7A83cf94Cc34",
         wssurl: "",
       },
     },
