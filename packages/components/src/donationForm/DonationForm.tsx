@@ -503,7 +503,10 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //  return false
       //}
       try {
-        const donationResp = await createDonation(donation)
+        const donationResp = await createDonation(
+          JSON.parse(JSON.stringify(donation)),
+        )
+        console.log("SAVED DONATION", donationResp)
         if (!donationResp) {
           const error = new Error("Error saving donation")
           toast({

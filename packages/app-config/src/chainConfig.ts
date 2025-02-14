@@ -50,7 +50,7 @@ const chainConfiguration = {
           },
         ],
         contracts: {
-          Receipt_NFT: "0x0535D460955bAa8a373053FD7C225675A9D1fA16",
+          Receipt_NFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4",
           VolunteersFactory: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
         },
         wallet: "0x1540026E002b09bc1720D130d90CB674b06121e2",
@@ -99,7 +99,9 @@ const chainConfiguration = {
           },
         ],
         contracts: {
-          Receipt_NFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
+          // Receipt_NFT: "0xd5D9defAe9b60FBD0f7E9c7Be361f462d8715eef",
+          // Receipt_NFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
+          Receipt_NFT: "0x5465D45A11F468DB302d72Fd337745D8fdb4727A",
           VolunteersFactory: "0xfbB261eADa2b1D881715984222De161F3F3E914e",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
@@ -123,7 +125,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/avax.webp",
         contracts: {
-          Receipt_NFT: "0x39d1d1FD5660D4D892a859BD53212f8b580c55Ea",
+          Receipt_NFT: "0x6c50278D100425E8772EEbAC60515768Ee3A9aD2",
         },
         explorer: {
           url: "https://snowtrace.io",
@@ -154,7 +156,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/avax.webp",
         contracts: {
-          Receipt_NFT: "0xadc5b1b42f366215525bae1f0d81ad485c60c75e",
+          Receipt_NFT: "0x47E8183e14AD2683B7e5Ec5Ea0a1179Ef522e4F9",
         },
         explorer: {
           url: "https://testnet.snowtrace.io",
@@ -195,7 +197,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/base.webp",
         contracts: {
-          Receipt_NFT: "0xf1956D22B0A36f9088B1a7c3A1b6a0E7ccad361F",
+          Receipt_NFT: "0x6c50278D100425E8772EEbAC60515768Ee3A9aD2",
         },
         explorer: {
           url: "https://basescan.org",
@@ -226,7 +228,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/base.webp",
         contracts: {
-          Receipt_NFT: "0xde0015317c273298503cf7fef681ed50d5c58048",
+          Receipt_NFT: "0x81F6fa8b6FD288b26e748978Eb9Ab9F9F0C77C45",
         },
         explorer: {
           url: "https://sepolia.basescan.org",
@@ -264,9 +266,10 @@ const chainConfiguration = {
         decimals: 18,
         gasprice: "9000000000",
         icon: "/icons/bnb.webp",
-        contracts: {
-          Receipt_NFT: "0xA4F55421608c012d03D92abeec8543397FD99ADe",
-        },
+        // TODO: add NFT contract, BNB is expensive
+        // contracts: {
+        //   Receipt_NFT: "",
+        // },
         explorer: {
           url: "https://bscscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
@@ -296,7 +299,7 @@ const chainConfiguration = {
         gasprice: "9000000000",
         icon: "/icons/bnb.webp",
         contracts: {
-          Receipt_NFT: "0xb7c157a81f6ddb0c65e9de5a4ff31f84b4af22a3",
+          Receipt_NFT: "0x45b59b55DF3532C9Bd7C1a5f2a96c82A1Bb1aa03",
         },
         explorer: {
           url: "https://testnet.bscscan.com",
@@ -335,7 +338,7 @@ const chainConfiguration = {
         gasprice: "10000000000",
         icon: "/icons/celo.webp",
         contracts: {
-          Receipt_NFT: "0x96E4bf46dFb0Fc888DeFE6F893A90b78E8be023C",
+          Receipt_NFT: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
         },
         explorer: {
           url: "https://explorer.celo.org",
@@ -366,7 +369,7 @@ const chainConfiguration = {
         gasprice: "27500000000",
         icon: "/icons/celo.webp",
         contracts: {
-          Receipt_NFT: "0xf9f861b4fca89628d3b9b7f7b6cd4ba4073a3d93",
+          Receipt_NFT: "0x1AC546d21473062F3c3B16B6392A2EC26F4539f0",
         },
         explorer: {
           url: "https://celo-alfajores.blockscout.com",
@@ -535,7 +538,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/fil.webp",
         contracts: {
-          Receipt_NFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4 ",
+          Receipt_NFT: "0x24265D9042d8602Ba26607750894CFC5718d7FC0 ",
         },
         explorer: {
           url: "https://filscan.io",
@@ -566,7 +569,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/fil.webp",
         contracts: {
-          Receipt_NFT: "0x0ff170753fA7B1ADa5f120b52c8F4903fe066090 ",
+          Receipt_NFT: "0xa3a3d70Ec57bC30472CD687F3D530b3431292989 ",
         },
         explorer: {
           url: "https://calibration.filscan.io",
@@ -605,7 +608,7 @@ const chainConfiguration = {
         gasprice: "25000000000",
         icon: "/icons/flr.webp",
         contracts: {
-          Receipt_NFT: "0x08E1cc1EcD7A5Cb9B33B5173BF63c2e8BD4e59d0",
+          Receipt_NFT: "0xA503e5EF51A3dEf3099CCa81C8334C4635B1761f",
         },
         explorer: {
           url: "https://flare-explorer.flare.network",
@@ -636,6 +639,7 @@ const chainConfiguration = {
         gasprice: "25000000000",
         icon: "/icons/flr.webp",
         contracts: {
+          // too much trouble to verify, TODO later
           Receipt_NFT: "0xeea9557589cfff5dd3d849da94201fa8cb782c12",
         },
         explorer: {
@@ -676,7 +680,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/op.webp",
         contracts: {
-          Receipt_NFT: "0x0eD50ddEE2c561016A9aaB9DaFC891DB3Afe554d",
+          Receipt_NFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4",
         },
         explorer: {
           url: "https://optimistic.etherscan.io",
@@ -715,7 +719,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/op.webp",
         contracts: {
-          Receipt_NFT: "0xADC5b1B42F366215525Bae1f0d81aD485c60C75e",
+          Receipt_NFT: "0x6750eA8Ff1f2afE7179d300be052C8D161D1F003",
         },
         explorer: {
           url: "https://sepolia-optimism.etherscan.io",
@@ -762,7 +766,7 @@ const chainConfiguration = {
         gasprice: "20000000000",
         icon: "/icons/matic.webp",
         contracts: {
-          Receipt_NFT: "0x1540026E002b09bc1720D130d90CB674b06121e2",
+          Receipt_NFT: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
         },
         explorer: {
           url: "https://polygonscan.com",
@@ -1082,7 +1086,7 @@ const chainConfiguration = {
             icon: "icons/trx.webp",
           },
         ],
-        wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
+        wallet: "TRR8FCQtJMiwYDWVhrSurGyMTLGTxYJbSw",
         wssurl: "",
       },
       testnet: {
@@ -1110,7 +1114,7 @@ const chainConfiguration = {
             icon: "icons/trx.webp",
           },
         ],
-        wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
+        wallet: "TTidpZfw6nvMe3bLhYSWZF8c241RwiS6Jp",
         wssurl: "",
       },
     },
