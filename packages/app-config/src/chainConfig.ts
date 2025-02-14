@@ -881,9 +881,11 @@ const chainConfiguration = {
           },
         ],
         contracts: {
-          Receipt_NFT: "",
+          Receipt_NFT:
+            "0x032d27a295ddb4d41197494fe5ec06188edcfcc3cebf3faf0dd6c4bab6146e16",
         },
-        wallet: "", // TODO: add wallet
+        wallet:
+          "0x004F83aDfFf854e6337505728bD61c34D829f0f28F9040AE1C533be512A46A15", // TODO: add wallet
         wssurl: "",
       },
       testnet: {
