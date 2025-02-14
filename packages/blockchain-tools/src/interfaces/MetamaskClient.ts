@@ -453,7 +453,9 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       }
 
       // Convert amount to wei using parseEther
-      const value = parseEther(amount.toString())
+      // const value = parseEther(amount.toString())
+      const value = this.toBaseUnit(amount)
+      console.log("VALUE", value)
 
       // Prepare transaction parameters
       const transaction = {

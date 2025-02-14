@@ -109,13 +109,13 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred"
 
-      const canRetryWithGas =
-        errorMessage.includes("gasless") ||
-        errorMessage.includes("insufficient funds") ||
-        errorMessage.includes("rejected") ||
-        errorMessage.includes("No API keys found")
+      // const canRetryWithGas =
+      //   errorMessage.includes("gasless") ||
+      //   errorMessage.includes("insufficient funds") ||
+      //   errorMessage.includes("rejected") ||
+      //   errorMessage.includes("No API keys found")
 
-      if (canRetryWithGas) {
+      if (errorMessage.includes("gasless")) {
         setErrorDialogState(true)
       }
 
@@ -175,8 +175,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     return ""
   }, [organization, initiative, chain])
 
-  console.log("DESTINATION WALLET", destinationWalletAddress)
-
   const checkBalance = useCallback(async () => {
     console.log("BALANCE")
     const balanceCheck = await chainInterface?.getBalance?.()
@@ -185,8 +183,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const error = new Error(balanceCheck?.error ?? "Failed to check balance")
       throw error
     }
+    console.log("BALANCE CHECK", { balanceCheck, coinAmount })
     return balanceCheck.balance >= coinAmount
-  }, [chainInterface, coinAmount, network.id])
+  }, [chainInterface, coinAmount])
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
