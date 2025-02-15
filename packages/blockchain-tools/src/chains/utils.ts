@@ -113,9 +113,11 @@ export const getRpcUrl = (
 }
 
 export const getNftPath = (
-  nftData: Pick<
-    NFTData,
-    "chainName" | "network" | "contractId" | "tokenId" | "transactionId"
+  nftData: Partial<
+    Pick<
+      NFTData,
+      "chainName" | "network" | "contractId" | "tokenId" | "transactionId"
+    >
   >,
 ): string => {
   const { chainName: chain, network } = nftData
