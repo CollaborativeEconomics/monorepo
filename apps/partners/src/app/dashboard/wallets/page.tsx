@@ -27,7 +27,7 @@ export default async function WalletsPage() {
   }));
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Wallets" />
       <p className={styles.intro}>
         Enter crypto wallets you&apos;d like to accept donations through.

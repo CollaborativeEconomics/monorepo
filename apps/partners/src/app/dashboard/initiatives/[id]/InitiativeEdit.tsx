@@ -11,6 +11,7 @@ import TextArea from '~/components/form/textarea';
 import TextInput from '~/components/form/textinput';
 import dateToPrisma from '~/utils/DateToPrisma';
 import { editInitiative } from '../action';
+import InitiativeStatusSelect from '~/components/InitiativeStatusSelect'
 
 type FormProps = {
   initiative: Initiative 
@@ -26,6 +27,7 @@ type FormData = {
   image: FileList;
   imageUri?: string;
   defaultAsset?: string;
+  status?: number;
 };
 
 export default function InitiativeEdit({ initiative }: FormProps) {
@@ -33,6 +35,7 @@ export default function InitiativeEdit({ initiative }: FormProps) {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, setMessage] = useState('Enter initiative info and upload image');
+  const [initiativeStatus, setInitiativeStatus] = useState(initiative.status||0);
   const iniDate = new Date(initiative.start||new Date().toJSON());
   const endDate = new Date(initiative.finish||new Date().toJSON());
   const { register, handleSubmit, watch, control } = useForm<FormData>({
@@ -41,6 +44,7 @@ export default function InitiativeEdit({ initiative }: FormProps) {
       description: initiative.description,
       start: iniDate,
       finish: endDate,
+      status: initiative.status || 0
     },
   });
 
@@ -53,6 +57,7 @@ export default function InitiativeEdit({ initiative }: FormProps) {
     data.organizationId = initiative.organizationId
     data.imageUri = initiative.imageUri || undefined
     data.defaultAsset = initiative.defaultAsset || undefined
+    data.status = initiativeStatus // from select control
     console.log('FORM', data);
 
     setButtonDisabled(true);
@@ -109,6 +114,15 @@ export default function InitiativeEdit({ initiative }: FormProps) {
             value={field.value}
           />
         )}
+      />
+
+      <InitiativeStatusSelect 
+        status={initiative.status||0}
+        handler={val => {
+          const newStatus = Number.parseInt(val)
+          console.log('STATUS CHANGED', newStatus)
+          setInitiativeStatus(newStatus)
+        }}
       />
 {/*
 

@@ -1,10 +1,10 @@
 import { auth } from "@cfce/auth"
 import Link from "next/link"
 import { type Initiative, getOrganizationById } from "@cfce/database"
-import InitiativeCard from "~/components/InitiativeCard"
-import Title from "~/components/title"
 import styles from "~/styles/dashboard.module.css"
+import Title from "~/components/title"
 import InitiativeForm from "./InitiativeForm"
+import InitiativeCard from "~/components/InitiativeCard"
 
 export default async function Page() {
   const session = await auth()
@@ -16,7 +16,7 @@ export default async function Page() {
     organization?.initiative.map((i) => ({ ...i, organization })) || []
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Create a Funding Initiative" />
       <p className={styles.intro}>
         Creating an initiative allows donors to contribute to a specific

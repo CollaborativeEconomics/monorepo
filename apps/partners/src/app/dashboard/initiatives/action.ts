@@ -15,6 +15,7 @@ type FormData = {
   start?: Date
   finish?: Date
   image: FileList
+  status?: number
 }
 
 type EditData = {
@@ -27,6 +28,7 @@ type EditData = {
   image: FileList;
   imageUri?: string;
   defaultAsset?: string;
+  status?: number;
 };
 
 //async function saveImageToIPFS(data: { name: string; file: File }) {
@@ -93,6 +95,7 @@ export async function createInitiative(
           id: orgId,
         },
       },
+      status: data.status || 0
     }
 
     const result = await newInitiative(record)
@@ -171,6 +174,7 @@ export async function editInitiative(data: EditData) {
       finish: data.finish,
       defaultAsset,
       imageUri,
+      status: data.status || 0
       //tag: Number.parseInt(randomNumber(8)),
       //organization: {
       //  connect: {

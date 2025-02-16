@@ -1,20 +1,20 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { Prisma } from '@cfce/database';
+import type { Prisma, Organization } from '@cfce/database';
 import FileView from '~/components/form/fileview';
 import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
 import TextInput from '~/components/form/textinput';
 import styles from '~/styles/dashboard.module.css';
-import { createOrganizationAction } from './actions';
+import { updateOrganizationAction } from '../actions';
 
 interface Category {
   id: string;
   name: string;
 }
 
-type OrgData = {
+type EditData = {
   //id: string;
   name: string;
   slug?: string;
@@ -34,9 +34,11 @@ type OrgData = {
   categoryId?: string;
 };
 
-export default function AddOrganizationForm({
-  categories,
+export default function OrganizationEdit({
+  organization,
+  categories
 }: {
+  organization: Organization;
   categories: Category[];
 }) {
   // Sort categories
@@ -49,8 +51,8 @@ export default function AddOrganizationForm({
   const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
 
   function getFormData(form: HTMLFormElement) {
-    //const data = {} as Prisma.OrganizationCreateInput;
-    const data = {} as OrgData
+    //const data = {} as Prisma.OrganizationUpdateInput;
+    const data = {} as EditData
     const formData = new FormData(form);
     //console.log('FORM', formData);
     for (const [name, value] of formData) {
@@ -65,12 +67,12 @@ export default function AddOrganizationForm({
     return data;
   }
 
-  //async function onSubmit(data: Prisma.OrganizationCreateInput) {
+  //async function onSubmit(data: Prisma.OrganizationUpdateInput) {
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     const data = getFormData(event.currentTarget as HTMLFormElement);
     console.log('SUBMIT', data);
-
+    
     if (!data.name) {
       showMessage('Name is required');
       return;
@@ -80,11 +82,14 @@ export default function AddOrganizationForm({
       return;
     }
 
+    //data.id = organization.id
+    data.imageUrl = organization.image || ''
+    data.backgroundUrl = organization.background || ''
+
     try {
-      showMessage('Saving organization, it may take a while...');
+      showMessage('Saving organization to database...');
       setButtonState(ButtonState.WAIT);
-      const useTBA = true;
-      const result = await createOrganizationAction(data, useTBA);
+      const result = await updateOrganizationAction(organization.id, data);
       if (result.success) {
         setChange(change + 1);
         showMessage('Organization saved');
@@ -125,21 +130,24 @@ export default function AddOrganizationForm({
   // Form data
   const { register, watch } = useForm({
     defaultValues: {
-      name: '',
-      description: '',
-      email: '',
-      EIN: '',
-      phone: '',
-      mailingAddress: '',
-      country: '',
-      image: '',
-      background: '',
-      url: '',
-      twitter: '',
-      facebook: '',
-      categoryId: '',
+      name: organization.name,
+      description: organization.description,
+      email: organization.email,
+      EIN: organization.EIN,
+      phone: organization.phone,
+      mailingAddress: organization.mailingAddress,
+      country: organization.country,
+      image: organization.image,
+      background: organization.background,
+      url: organization.url,
+      twitter: organization.twitter,
+      facebook: organization.facebook,
+      categoryId: organization.categoryId,
     },
   });
+  const imageSource = organization.image || '/media/upload.jpg'
+  const backSource = organization.background || '/media/upload.jpg'
+
   const [
     name,
     description,
@@ -181,7 +189,7 @@ export default function AddOrganizationForm({
         <FileView
           id="imgFile"
           {...register('image')}
-          source='/media/upload.jpg'
+          source={imageSource}
           width={250}
           height={250}
           multiple={false}
@@ -190,7 +198,7 @@ export default function AddOrganizationForm({
         <FileView
           id="bgFile"
           {...register('background')}
-          source='/media/upload.jpg'
+          source={backSource}
           width={500}
           height={250}
           multiple={false}
@@ -202,6 +210,8 @@ export default function AddOrganizationForm({
         <TextInput label="Phone" {...register('phone')} />
         <TextInput label="Address" {...register('mailingAddress')} />
         <TextInput label="Country" {...register('country')} />
+        {/*<TextInput label="Image (url)" {...register('image')} />*/}
+        {/*<TextInput label="Background (url)" {...register('background')} />*/}
         <TextInput label="website" {...register('url')} />
         <TextInput label="Twitter" {...register('twitter')} />
         <TextInput label="Facebook" {...register('facebook')} />
