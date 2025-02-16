@@ -21,11 +21,11 @@ Run `pnpm update-dependencies` to update all the dependencies in the monorepo
 Run `pnpm match-versions` to make sure all the versions are synced (especially important for typescript and jotai)
 
 
- You can run `turbo watch build` to automatically build packages as you change and update them so the changes appear immediately as you're developing.
+You can run `turbo watch build` to automatically build packages as you change and update them so the changes appear immediately as you're developing.
 
- ### 'Image' cannot be used as a jsx component
+### 'Image' cannot be used as a jsx component
 
- This usually means there's a type version mismatch in react or react-dom. Use syncpack to check for version mismatches (`npx syncpack list-mismatches` then `npx syncpack fix-mismatches`). You'll need to run `pnpm install` after fixing the mismatches.
+This usually means there's a type version mismatch in react or react-dom. Use syncpack to check for version mismatches (`npx syncpack list-mismatches` then `npx syncpack fix-mismatches`). You'll need to run `pnpm install` after fixing the mismatches.
 
 ## Apps
 
@@ -53,7 +53,7 @@ Run `pnpm match-versions` to make sure all the versions are synced (especially i
 
 1. Add the chain to `packages/database/src/prisma/schema.prisma` chain enum
 2. Add the chain to `packages/types/src/BlockchainTools.ts` (Chain, TokenTickerSymbol if relevant, ChainNames, and ChainSlugs)
-3. Add the chain to `packages/blockchain-tools/src/chains/chainConfig.ts` (entry + at least one network)
+3. Add the chain to `packages/app-config/src/chainConfig.ts` (entry + at least one network)
 
 ## Using the blockchain tools
 

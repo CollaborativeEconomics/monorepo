@@ -1,32 +1,20 @@
 import type { AuthTypes } from "./Auth"
 import type {
+  ChainConfig,
   ChainSlugs,
   ClientInterfaces,
+  Contract,
   Network,
+  NetworkConfig,
   TokenTickerSymbol,
 } from "./BlockchainTools"
 
-type ContractType =
-  | "credits" // default carbon credit contract, deprecated in favor of DB-based contracts
-  | "creditsFactory" // deploy credits contract through partner portal
-  | "creditsHash"
-  | "factory"
-  | "receiptFactory" // deploy NFTReceipt contract through partner portal
-  | "receiptMintbotERC721" // automatically mint receipt NFTs
-  | "receiptMintbotERC721Hash"
-  | "storyERC1155" // story NFT contract
-  | "xlmNativeCoin"
-  | "volunteersFactory"
-
-export interface AppChainConfig {
-  slug: ChainSlugs
-  network: Network
-  contracts: Partial<Record<ContractType, string>>
-  wallet?: string
+// App-specific chain settings
+// Can override/merge anything from the NetworkConfig
+export interface AppChainSettings extends NetworkConfig {
   enabledWallets: ClientInterfaces[]
-  tokens: TokenTickerSymbol[]
-  destinationTag?: string
   defaultAddress?: string
+  destinationTag?: string
 }
 
 export interface AppConfig {
@@ -61,7 +49,7 @@ export interface AppConfig {
     }
   }
   auth: AuthTypes[]
-  chains: Partial<Record<ChainSlugs, AppChainConfig>>
+  chains: Partial<Record<ChainSlugs, AppChainSettings>>
   chainDefaults: {
     network: Network
     wallet: ClientInterfaces

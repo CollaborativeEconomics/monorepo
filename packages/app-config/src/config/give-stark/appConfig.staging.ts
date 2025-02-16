@@ -1,4 +1,5 @@
 import type { AppConfig, AuthTypes, Network } from "@cfce/types"
+import chainConfiguration from "../../chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo: AppConfig["siteInfo"] = {
@@ -22,27 +23,15 @@ const apis: AppConfig["apis"] = {
 }
 
 const chains: AppConfig["chains"] = {
-  xdc: {
-    slug: "xdc",
-    network: "testnet",
-    contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-    },
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
-    enabledWallets: [],
-    tokens: ["XDC"],
-  },
   starknet: {
-    slug: "starknet",
-    network: "testnet",
+    ...chainConfiguration.starknet.networks.testnet,
     contracts: {
-      receiptMintbotERC721:
-        "0x3cfdb23c07a9a059090c871df3f2a242c6738e25351749be334f2b23d764368",
+      ...chainConfiguration.starknet.networks.testnet.contracts,
+      Credits: "",
     },
     wallet:
       "0x063783605f5f8a4c716ec82453815ac5a5d9bb06fe27c0df022495a137a5a74f",
     enabledWallets: ["argent"],
-    tokens: ["STRK"],
   },
 }
 

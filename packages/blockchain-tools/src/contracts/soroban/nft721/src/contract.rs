@@ -128,7 +128,7 @@ impl NonFungibleToken {
     read_operator(&e, owner)
   }
 
-  pub fn owner(e: Env, id: i128) -> Address {
+  pub fn owner(e: Env, id: i128) -> Option<Address> {
     read_owner(&e, id)
   }
 

@@ -1,16 +1,10 @@
-import type {
-  AppChainConfig,
-  AppConfig,
-  AuthTypes,
-  ChainSlugs,
-  Network,
-} from "@cfce/types"
+import type { AppConfig, AuthTypes, Network } from "@cfce/types"
+import chainConfiguration from "../../chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {
   ...appConfig.siteInfo,
   title: "Give Credit (Staging)",
-  description: "Make tax-deductible donations of carbon credits (Staging)",
   featuredInitiatives: ["30c0636f-b0f1-40d5-bb9c-a531dc4d69e2"],
 }
 
@@ -21,16 +15,18 @@ const apis = {
   },
 }
 
-const chains = Object.entries(appConfig.chains).reduce(
-  (obj, [key, chain]) => {
-    obj[key as ChainSlugs] = {
-      ...chain,
-      network: "testnet" as Network,
-    }
-    return obj
+const chains: AppConfig["chains"] = {
+  stellar: {
+    ...chainConfiguration.stellar.networks.testnet,
+    contracts: {
+      ...chainConfiguration.stellar.networks.testnet.contracts,
+      Credits: "CAGENCA7RDSBTGL7OJUC3XHPMGE43AXAZ3RVFFH5E3P22COOG7TUPDPN",
+    },
+    network: "testnet",
+    enabledWallets: ["freighter"],
   },
-  {} as Record<ChainSlugs, AppChainConfig>,
-)
+}
+
 const chainDefaults = {
   ...appConfig.chainDefaults,
   network: "testnet" as Network,

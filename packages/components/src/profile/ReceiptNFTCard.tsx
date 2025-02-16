@@ -1,10 +1,6 @@
 "use client"
-import appConfig from "@cfce/app-config"
-import {
-  chainConfig,
-  getChainConfigurationByName,
-  getNftPath,
-} from "@cfce/blockchain-tools"
+import appConfig, { chainConfig } from "@cfce/app-config"
+import { getChainConfigurationByName, getNftPath } from "@cfce/blockchain-tools"
 import type { NFTDataWithRelations } from "@cfce/database"
 import { type Chain, ChainNames } from "@cfce/types"
 import { format } from "date-fns"

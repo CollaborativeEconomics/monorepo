@@ -1,10 +1,9 @@
 "use server"
 import "server-only"
 import { posthogNodeClient } from "@cfce/analytics/server"
-import appConfig from "@cfce/app-config"
-import { BlockchainServerInterfaces, chainConfig } from "@cfce/blockchain-tools"
+import appConfig, { chainConfig } from "@cfce/app-config"
+import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
-import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,
@@ -36,6 +35,8 @@ interface MintAndSaveReceiptNFTParams {
     donorWalletAddress: string
     destinationWalletAddress: string
     amount: number
+    usdValue: number
+    rate: number
     date: string
   }
   initiativeId: string
@@ -60,12 +61,15 @@ export async function mintAndSaveReceiptNFT({
       donorWalletAddress,
       destinationWalletAddress,
       amount,
+      usdValue,
+      rate,
       date,
     } = transaction
     console.log("MINT", chain, txId)
     console.log("Chain", chain)
     console.log("Token", token)
-    const rate = await getCoinRate({ symbol: token })
+    console.log("Amounts", amount, usdValue)
+    //const rate = await getCoinRate({ chain, symbol: token }) // We should get the rate only once in form and pass it as param here
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {
@@ -83,10 +87,7 @@ export async function mintAndSaveReceiptNFT({
       return { success: false, error: "Invalid donor wallet address" }
     }
 
-    if (
-      !destinationWalletAddress ||
-      typeof destinationWalletAddress !== "string"
-    ) {
+    if (!destinationWalletAddress || typeof destinationWalletAddress !== "string") {
       return { success: false, error: "Invalid destination wallet address" }
     }
 
@@ -193,7 +194,7 @@ export async function mintAndSaveReceiptNFT({
 
     // #region: Calculate amounts and prepare metadata
     const amountCUR = (+amount).toFixed(4)
-    const amountUSD = (+amount * rate).toFixed(4)
+    const amountUSD = (+usdValue).toFixed(4)
     console.log("Image URI", initiative?.imageUri)
 
     const uriImage = initiative?.imageUri
@@ -242,11 +243,11 @@ export async function mintAndSaveReceiptNFT({
       organization: organizationName,
       initiative: initiativeName,
       image: uriImage, // Already sanitized above
-      coinCode: token,
-      coinIssuer: chain,
+      chain,
+      network,
+      symbol: token,
       coinValue: amountCUR,
       usdValue: amountUSD,
-      network,
     }
 
     console.log("META", metadata)
@@ -282,10 +283,10 @@ export async function mintAndSaveReceiptNFT({
     }> = []
     for (const chainSlug of Object.keys(appConfig.chains) as ChainSlugs[]) {
       const chain = appConfig.chains[chainSlug]
-      if (chain?.contracts.receiptMintbotERC721) {
+      if (chain?.contracts.Receipt_NFT) {
         receiptContractsByChain.push({
           chain: chainSlug as ChainSlugs,
-          contract: chain.contracts.receiptMintbotERC721,
+          contract: chain.contracts.Receipt_NFT,
         })
       }
     }
@@ -322,10 +323,13 @@ export async function mintAndSaveReceiptNFT({
 */
 
     // #region: Mint NFT on current chain only
-    const receiptContract = currentChain.contracts.receiptMintbotERC721
+    let receiptContract = currentChain?.contracts?.Receipt_NFT
     console.log("CTR", receiptContract)
+    if (currentChain?.slug === "xrpl") {
+      receiptContract = "xrpl"
+    }
 
-    // WARN: XRPL doesn't use contracts
+    // XRPL doesn't use contracts
     if (!receiptContract) {
       console.error("No receipt contracts found")
       return { success: false, error: "No receipt contract found" }

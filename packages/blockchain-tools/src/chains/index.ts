@@ -3,7 +3,5 @@ export {
   BlockchainServerInterfaces,
   BlockchainClientInterfaces,
 } from "./BlockchainInterfaces"
-export { default as chainConfig } from "./chainConfig"
-export * from "./chainConfig"
 export * from "./useWalletClient"
-export * from './utils'
+export * from "./utils"
