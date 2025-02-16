@@ -10,7 +10,7 @@ export default async function Page() {
   const donationsPlain = JSON.parse(JSON.stringify(donations))
 
   return (
-    <div className={styles.content}>
+    <div>
       <DonationsTable data={donationsPlain} />
     </div>
   );

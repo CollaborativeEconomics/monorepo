@@ -17,7 +17,7 @@ export default async function DashboardPage() {
   const categoriesPlain = JSON.parse(JSON.stringify(categories))
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Share a Story: Post a Story NFT" />
       <p className={styles.intro}>
         Story NFTs allow you to share your donors what their donations are

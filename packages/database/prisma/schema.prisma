@@ -204,6 +204,7 @@ model Initiative {
   contractcredit String?          @db.VarChar(255)
   unitvalue      Int?             @default(0)
   unitlabel      String?          @db.VarChar(20)
+  status         Int?             @default(0) @db.SmallInt
   credits        Credit[]
   donations      Donation[]
   category       Category?        @relation(fields: [categoryId], references: [id])

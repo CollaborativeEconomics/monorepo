@@ -208,8 +208,7 @@ export default function EventClient({
   }
 
   return (
-    <Dashboard>
-      <div className={styles.content}>
+      <div>
         <Title text="Volunteer To Earn Event" />
         <div className={styles.mainBox}>
           {event.created && (
@@ -248,6 +247,5 @@ export default function EventClient({
           )}
         </div>
       </div>
-    </Dashboard>
   );
 }

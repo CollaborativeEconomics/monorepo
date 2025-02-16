@@ -87,7 +87,7 @@ export default function RewardClient({
   }
 
   return (
-    <div className={styles.content}>
+    <div>
       <div className={styles.mainBox}>
         <Title text="VOLUNTEER TO EARN" />
         <h1>{event.name}</h1>
