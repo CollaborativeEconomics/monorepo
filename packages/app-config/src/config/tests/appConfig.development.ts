@@ -1,10 +1,4 @@
-import type {
-  AppChainConfig,
-  AppConfig,
-  AuthTypes,
-  ChainSlugs,
-  Network,
-} from "@cfce/types"
+import type { AppConfig, AuthTypes, Network } from "@cfce/types"
 import appConfig from "./appConfig.staging"
 
 const siteInfo = {

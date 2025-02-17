@@ -7,13 +7,9 @@ fn zero_address(e: &Env) -> Address {
   Address::from_string_bytes(&Bytes::from_slice(&e, &[0; 32]))
 }
 
-pub fn read_owner(e: &Env, id: i128) -> Address {
+pub fn read_owner(e: &Env, id: i128) -> Option<Address> {
   let key = DataKey::Owner(id);
-  let val = e.storage().instance().get(&key);
-  match val {
-    Some(owner) => owner,
-    None => zero_address(&e)
-  }
+  e.storage().instance().get(&key)
 }
 
 pub fn write_owner(e: &Env, id: i128, owner: Address) {
@@ -23,10 +19,10 @@ pub fn write_owner(e: &Env, id: i128, owner: Address) {
 
 pub fn check_owner(e: &Env, user: Address, id: i128) {
   let owner = read_owner(&e, id);
-  assert!(user == owner, "user not the owner");
+  assert!(owner == Some(user), "user not the owner");
 }
 
 pub fn clear_owner(e: &Env, id: i128) {
   let key = DataKey::Owner(id);
-  e.storage().instance().set(&key, &zero_address(&e));
+  e.storage().instance().remove(&key);
 }

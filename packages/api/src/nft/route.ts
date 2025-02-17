@@ -1,4 +1,4 @@
-import { chainConfig } from "@cfce/blockchain-tools"
+import { chainConfig } from "@cfce/app-config"
 import { getNFTbyTokenId, getNftData, newNftData } from "@cfce/database"
 import type { ChainSlugs } from "@cfce/types"
 import { type NextRequest, NextResponse } from "next/server"

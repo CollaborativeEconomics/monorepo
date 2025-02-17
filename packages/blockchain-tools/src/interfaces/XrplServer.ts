@@ -1,3 +1,4 @@
+import { chainConfig } from "@cfce/app-config"
 import type {
   ChainConfig,
   ChainSlugs,
@@ -15,7 +16,6 @@ import {
   convertStringToHex,
   isoTimeToRippleTime,
 } from "xrpl"
-import chainConfig from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 import XrplCommon from "./XrplCommon"
 
@@ -75,7 +75,8 @@ export default class XrplServer extends XrplCommon {
       client = new Client(this.network.wssurl || "")
       await client.connect()
       const txInfo = await client.submitAndWait(tx, { wallet })
-      const txRes = (txInfo?.result?.meta as TransactionMetadata).TransactionResult
+      const txRes = (txInfo?.result?.meta as TransactionMetadata)
+        .TransactionResult
       console.log("Result:", txRes)
       if (txRes === "tesSUCCESS") {
         //console.log('TXINFO', JSON.stringify(txInfo))

@@ -4,13 +4,8 @@ import {
   executeCalls,
   fetchGasTokenPrices,
 } from "@avnu/gasless-sdk"
-import appConfig from "@cfce/app-config"
-import type {
-  ChainConfig,
-  ChainSlugs,
-  Network,
-  NetworkConfig,
-} from "@cfce/types"
+import { chainConfig } from "@cfce/app-config"
+import type { ChainConfig, NetworkConfig } from "@cfce/types"
 import {
   constants,
   Account,
@@ -33,7 +28,6 @@ import {
 } from "starknetkit"
 import { formatEther, parseEther } from "viem"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import chainConfiguration from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 import { ERC20 } from "../contracts/starknet/ERC20Abi"
 
@@ -51,7 +45,7 @@ class StarknetWallet extends InterfaceBaseClass {
   constructor() {
     super()
     this.network = getNetworkForChain("starknet")
-    this.chain = chainConfiguration.starknet
+    this.chain = chainConfig.starknet
 
     this.provider = new RpcProvider({
       nodeUrl: this.network.rpcUrls.main,
@@ -81,7 +75,8 @@ class StarknetWallet extends InterfaceBaseClass {
 
     const account = await connector?.account(this.provider)
     const currentChain = await this.provider?.getChainId()
-    const envChain = appConfig.chains.starknet?.network
+    const envChain =
+      process.env.NEXT_PUBLIC_APP_ENV === "production" ? "mainnet" : "testnet"
 
     // Determine target network based on environment
     const targetChainId =
@@ -193,7 +188,7 @@ class StarknetWallet extends InterfaceBaseClass {
   }
 
   private prepareTransferCall(address: string, amount: number): Call[] {
-    const envChain = appConfig.chains.starknet?.network
+    const envChain = this.network.network
     const smartContractAddress =
       envChain === "mainnet"
         ? "0x1a35e6a801710eddfa9071eb27e4fc702c81b1b609efb34d46d419035275a38"
@@ -365,7 +360,7 @@ class StarknetWallet extends InterfaceBaseClass {
     try {
       const provider = this.provider
 
-      const minterAddress = appConfig.chains.starknet?.wallet
+      const minterAddress = this.network.wallet
       if (!minterAddress || !walletSeed) {
         throw new Error("Minter address or wallet seed not available")
       }
@@ -389,7 +384,9 @@ class StarknetWallet extends InterfaceBaseClass {
 
       if (
         events.length === 0 ||
-        !events[0]["openzeppelin_token::erc721::erc721::ERC721Component::Transfer"]
+        !events[0][
+          "openzeppelin_token::erc721::erc721::ERC721Component::Transfer"
+        ]
       ) {
         return { success: false, error: "Transfer event not found." }
       }

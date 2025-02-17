@@ -1,4 +1,5 @@
-import type { AppConfig, AuthTypes } from "@cfce/types"
+import type { AppConfig } from "@cfce/types"
+import chainConfig from "../../chainConfig"
 import appConfigBase from "../appConfigBase"
 
 const appConfig: AppConfig = {
@@ -22,42 +23,21 @@ appConfig.siteInfo = {
 
 // Override chains
 appConfig.chains = {
-  xdc: {
-    slug: "xdc",
-    network: "mainnet",
-    contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-    },
+  arbitrum: {
+    ...chainConfig.arbitrum.networks.mainnet,
     enabledWallets: ["metamask"],
-    tokens: ["XDC"],
-  },
-  stellar: {
-    slug: "stellar",
-    network: "mainnet",
-    contracts: {},
-    enabledWallets: ["freighter"],
-    tokens: ["XLM", "USDC"],
-  },
-  xrpl: {
-    slug: "xrpl",
-    network: "mainnet",
-    contracts: {},
-    enabledWallets: ["xaman"],
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
-    tokens: ["XRP"],
-    destinationTag: "77777777",
   },
 }
 
 // Override auth
-appConfig.auth = ["freighter", "metamask", "xaman"]
+appConfig.auth = ["metamask"]
 
 // Override chainDefaults
 appConfig.chainDefaults = {
   network: "mainnet",
-  wallet: "xaman",
-  chain: "xrpl",
-  coin: "XRP",
+  wallet: "metamask",
+  chain: "arbitrum",
+  coin: "ETH",
 }
 
 export default appConfig

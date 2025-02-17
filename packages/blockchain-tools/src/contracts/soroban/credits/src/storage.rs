@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-use soroban_sdk::{contracttype, Address, Bytes, Env};
+use soroban_sdk::{contracttype, Address, Bytes, Env, String};
 
 //pub(crate) const DAY_IN_LEDGERS: u32 = 17280;
 //pub(crate) const BALANCE_BUMP_AMOUNT: u32 = 30 * DAY_IN_LEDGERS;
@@ -70,16 +70,16 @@ pub fn write_bucket(e: &Env, value: i128) {
   e.storage().instance().set(&key, &value);
 }
 
-pub fn read_initiative(e: &Env) -> u128 {
+pub fn read_initiative(e: &Env) -> String {
   let key = DataKey::Initiative;
   let val = e.storage().instance().get(&key);
   match val {
     Some(amount) => amount,
-    None => 0
+    None => String::from_str(&e, "")
   }
 }
 
-pub fn write_initiative(e: &Env, value: u128) {
+pub fn write_initiative(e: &Env, value: String) {
   let key = DataKey::Initiative;
   e.storage().instance().set(&key, &value);
 }

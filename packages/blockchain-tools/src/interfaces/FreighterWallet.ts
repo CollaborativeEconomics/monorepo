@@ -1,3 +1,4 @@
+import { chainConfig } from "@cfce/app-config"
 import type { ChainConfig, NetworkConfig } from "@cfce/types"
 import {
   getNetwork,
@@ -8,7 +9,6 @@ import {
 } from "@stellar/freighter-api"
 import * as StellarSDK from "@stellar/stellar-sdk"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import chainConfiguration from "../chains/chainConfig"
 import { getNetworkForChain } from "../chains/utils"
 
 class FreighterWallet extends InterfaceBaseClass {
@@ -25,7 +25,7 @@ class FreighterWallet extends InterfaceBaseClass {
   constructor() {
     super()
     this.network = getNetworkForChain("stellar")
-    this.chain = chainConfiguration.stellar
+    this.chain = chainConfig.stellar
     this.horizon = new StellarSDK.Horizon.Server(this.network.rpcUrls.main)
     //console.log("FREIGHT INIT")
     //console.log("RPC", this.network)
