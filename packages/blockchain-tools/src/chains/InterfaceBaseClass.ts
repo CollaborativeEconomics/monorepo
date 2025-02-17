@@ -1,4 +1,3 @@
-import appConfig from "@cfce/app-config"
 import type {
   Chain,
   ChainConfig,
@@ -8,7 +7,6 @@ import type {
 } from "@cfce/types"
 import type { Web3 } from "web3"
 import type { Transaction } from "../types/transaction"
-import chainConfiguration from "./chainConfig"
 
 export default abstract class InterfaceBaseClass {
   public chain?: ChainConfig

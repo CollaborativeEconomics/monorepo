@@ -1,30 +1,30 @@
 import "server-only"
 
+import { chainConfig } from "@cfce/app-config"
 // Not really for practical use, but useful for testing
 import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
-import chainConfiguration from "../chains/chainConfig"
 import getCoinRate from "./getCoinRate"
 
 export type CoinRateResult = {
-  chain: ChainSlugs
+  // chain: ChainSlugs
   symbol: TokenTickerSymbol
   rate: number
 }
 
 export async function getAllCoinRates(): Promise<CoinRateResult[]> {
   const results: CoinRateResult[] = []
-  const chains = Object.values(chainConfiguration)
+  const chains = Object.values(chainConfig)
 
   // Process all requests concurrently
   const ratePromises = chains.map(async (chain) => {
     try {
       const rate = await getCoinRate({
-        chain: chain.slug,
+        // chain: chain.slug,
         symbol: chain.symbol as TokenTickerSymbol,
       })
 
       return {
-        chain: chain.slug,
+        // chain: chain.slug,
         symbol: chain.symbol as TokenTickerSymbol,
         rate,
       }

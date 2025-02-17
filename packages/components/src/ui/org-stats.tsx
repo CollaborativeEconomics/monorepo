@@ -60,14 +60,15 @@ function buildList(props: Stats): Array<React.JSX.Element> {
       text={`${props.donorCount} Donor${donorPlural}`}
     />,
   )
-  const institutionalDonorPlural =
-    props.institutionalDonorCount === 1 ? "" : "s"
-  items.push(
-    <ListObject
-      Icon={Building2}
-      text={`${props.institutionalDonorCount} Institutional Donor${institutionalDonorPlural}`}
-    />,
-  )
+  // TODO: Add institutional donor count when we have logic for it
+  // const institutionalDonorPlural =
+  //   props.institutionalDonorCount === 1 ? "" : "s"
+  // items.push(
+  //   <ListObject
+  //     Icon={Building2}
+  //     text={`${props.institutionalDonorCount} Institutional Donor${institutionalDonorPlural}`}
+  //   />,
+  // )
   return items
 }
 

@@ -12,7 +12,7 @@ use crate::storage::{
   read_vendor_fees, write_vendor_fees,
   read_xlm, write_xlm,
 };
-use soroban_sdk::{contract, contractimpl, token, Address, Env};
+use soroban_sdk::{contract, contractimpl, token, Address, Env, String};
 
 //const xlmNative: &str = "CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT";  // futurenet
 //const xlmNative: &str = "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC";  // testnet
@@ -23,7 +23,7 @@ pub struct Credits;
 
 #[contractimpl]
 impl Credits {
-  pub fn initialize(e: Env, admin: Address, initiative: u128, provider: Address, vendor: Address, bucket: i128, xlm: Address) {
+  pub fn initialize(e: Env, admin: Address, initiative: String, provider: Address, vendor: Address, bucket: i128, xlm: Address) {
     if has_administrator(&e) { panic!("already initialized") }
     write_administrator(&e, &admin);
     write_balance(&e, 0);
@@ -97,7 +97,7 @@ impl Credits {
     read_bucket(&e)
   }
 
-  pub fn getInitiative(e: Env) -> u128 {
+  pub fn getInitiative(e: Env) -> String {
     read_initiative(&e)
   }
 

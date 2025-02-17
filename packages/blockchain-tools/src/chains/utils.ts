@@ -1,18 +1,19 @@
-import type { Chain, ChainConfig, NetworkConfig } from "@cfce/types"
+import type { Chain, ChainConfig, Network, NetworkConfig } from "@cfce/types"
 
-import appConfig from "@cfce/app-config"
 import type { NFTData } from "@cfce/database"
 import type { ChainSlugs } from "@cfce/types"
 
-import chainConfiguration from "./chainConfig"
+import { chainConfig } from "@cfce/app-config"
 
 /**
- * Get the network config for the chain, using appConfig.chainDefaults.network
+ * Get the network config for the chain, using the app environment
  * @param slug - The chain slug
  * @returns The network config object
  */
 export const getNetworkForChain = (slug: ChainSlugs): NetworkConfig =>
-  chainConfiguration[slug].networks[appConfig.chainDefaults.network]
+  chainConfig[slug].networks[
+    process.env.NEXT_PUBLIC_APP_ENV === "production" ? "mainnet" : "testnet"
+  ]
 
 /**
  * Get the chain config for the chain, using the chain ID (only ones defined by CFCE)
@@ -24,7 +25,7 @@ export const getChainByChainId = (chainId: number): ChainConfig => {
   if (chainId === 0) {
     throw new Error("Chain ID 0 is not a valid chain ID")
   }
-  const idToChainMapping = Object.values(chainConfiguration).reduce(
+  const idToChainMapping = Object.values(chainConfig).reduce(
     (acc, chain) => {
       // Check IDs for each network
       for (const network of Object.values(chain.networks)) {
@@ -43,29 +44,11 @@ export const getChainByChainId = (chainId: number): ChainConfig => {
 }
 
 export const getChainConfigBySlug = (slug: ChainSlugs): ChainConfig => {
-  const chainConfig = chainConfiguration[slug]
-  if (!chainConfig) {
+  const config = chainConfig[slug]
+  if (!config) {
     throw new Error(`Chain configuration not found for ${slug}`)
   }
-  return chainConfig
-}
-
-/**
- * Get the chain configuration for chains defined in appConfig
- * @returns
- */
-export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
-  const chainKeys = Object.keys(
-    appConfig.chains,
-  ) as (keyof typeof appConfig.chains)[]
-
-  return chainKeys.reduce(
-    (obj, key) => {
-      obj[key] = chainConfiguration[key]
-      return obj
-    },
-    {} as Record<ChainSlugs, ChainConfig>,
-  )
+  return config
 }
 
 /**
@@ -74,7 +57,7 @@ export const getChainConfiguration = (): Record<ChainSlugs, ChainConfig> => {
  * @returns The chain configuration
  */
 export const getChainConfigurationByName = (name: Chain): ChainConfig => {
-  const configs = Object.values(chainConfiguration)
+  const configs = Object.values(chainConfig)
   const config = configs.find((config) => config.name === name)
   if (!config) {
     throw new Error(`Chain configuration not found for ${name}`)
@@ -91,15 +74,15 @@ export const getChainConfigurationByName = (name: Chain): ChainConfig => {
  */
 export const getRpcUrl = (
   chain: ChainSlugs,
-  network: string,
+  network: Network,
   rpcType = "main",
 ): string => {
-  const chainConfig = chainConfiguration[chain]
-  if (!chainConfig) {
+  const config = chainConfig[chain]
+  if (!config) {
     throw new Error(`Chain configuration not found for ${chain}`)
   }
 
-  const networkConfig = chainConfig.networks[network]
+  const networkConfig = config.networks[network] as NetworkConfig
   if (!networkConfig) {
     throw new Error(`Network configuration not found for ${chain} ${network}`)
   }
@@ -126,7 +109,7 @@ export const getNftPath = (
   }
   // TODO: Add this to the type in prisma
   const chainConfig = getChainConfigurationByName(chain as Chain)
-  const networkConfig = chainConfig.networks[network]
+  const networkConfig = chainConfig.networks[network as Network]
   if (!networkConfig) {
     throw new Error(`Network configuration not found for ${chain} ${network}`)
   }

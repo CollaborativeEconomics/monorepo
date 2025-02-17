@@ -1,6 +1,6 @@
 /// <reference path="./metamask.d.ts" />
 
-import appConfig from "@cfce/app-config"
+import { chainConfig } from "@cfce/app-config"
 import type {
   ChainSlugs,
   Network,
@@ -17,11 +17,11 @@ import {
   sendTransaction,
 } from "@wagmi/core"
 import { injected } from "@wagmi/core"
-import { 
+import {
   arbitrum,
   arbitrumSepolia,
-  avalancheFuji,
   avalanche,
+  avalancheFuji,
   base,
   baseSepolia,
   bsc,
@@ -53,12 +53,13 @@ import type {
   ProviderRpcError,
 } from "web3"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import chainConfig from "../chains/chainConfig"
 import { getChainByChainId, getNetworkForChain } from "../chains/utils"
 import type { Transaction } from "../types/transaction"
 
-function stringToHex(str?:string){
-  return str ? `0x${Buffer.from(str, "utf8").toString("hex")}` as `0x${string}` : undefined
+function stringToHex(str?: string) {
+  return str
+    ? (`0x${Buffer.from(str, "utf8").toString("hex")}` as `0x${string}`)
+    : undefined
 }
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
@@ -96,12 +97,16 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       polygonMumbai,
       sepolia,
       xdc,
-      xdcTestnet
+      xdcTestnet,
     ],
     transports: {
       [arbitrum.id]: http(chainConfig.arbitrum.networks.mainnet.rpcUrls.main),
-      [arbitrumSepolia.id]: http(chainConfig.arbitrum.networks.testnet.rpcUrls.main),
-      [avalancheFuji.id]: http(chainConfig.avalanche.networks.testnet.rpcUrls.main),
+      [arbitrumSepolia.id]: http(
+        chainConfig.arbitrum.networks.testnet.rpcUrls.main,
+      ),
+      [avalancheFuji.id]: http(
+        chainConfig.avalanche.networks.testnet.rpcUrls.main,
+      ),
       [avalanche.id]: http(chainConfig.avalanche.networks.mainnet.rpcUrls.main),
       [base.id]: http(chainConfig.base.networks.mainnet.rpcUrls.main),
       [baseSepolia.id]: http(chainConfig.base.networks.testnet.rpcUrls.main),
@@ -112,19 +117,25 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       [eos.id]: http(chainConfig.eos.networks.mainnet.rpcUrls.main),
       [eosTestnet.id]: http(chainConfig.eos.networks.testnet.rpcUrls.main),
       [filecoin.id]: http(chainConfig.filecoin.networks.mainnet.rpcUrls.main),
-      [filecoinCalibration.id]: http(chainConfig.filecoin.networks.testnet.rpcUrls.main),
+      [filecoinCalibration.id]: http(
+        chainConfig.filecoin.networks.testnet.rpcUrls.main,
+      ),
       [flare.id]: http(chainConfig.flare.networks.mainnet.rpcUrls.main),
       [flareTestnet.id]: http(chainConfig.flare.networks.testnet.rpcUrls.main),
       [goerli.id]: http(chainConfig.ethereum.networks.testnet.rpcUrls.main),
       [mainnet.id]: http(chainConfig.ethereum.networks.mainnet.rpcUrls.main),
       [optimism.id]: http(chainConfig.optimism.networks.mainnet.rpcUrls.main),
-      [optimismSepolia.id]: http(chainConfig.optimism.networks.testnet.rpcUrls.main),
+      [optimismSepolia.id]: http(
+        chainConfig.optimism.networks.testnet.rpcUrls.main,
+      ),
       [polygon.id]: http(chainConfig.polygon.networks.mainnet.rpcUrls.main),
-      [polygonMumbai.id]: http(chainConfig.polygon.networks.testnet.rpcUrls.main),
+      [polygonMumbai.id]: http(
+        chainConfig.polygon.networks.testnet.rpcUrls.main,
+      ),
       [sepolia.id]: http(chainConfig.ethereum.networks.testnet.rpcUrls.main),
       [xdc.id]: http(chainConfig.xdc.networks.mainnet.rpcUrls.main),
       [xdcTestnet.id]: http(chainConfig.xdc.networks.testnet.rpcUrls.main),
-    }
+    },
   })
 
   async connect(newChainId?: number) {
@@ -150,8 +161,10 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       const connection = await connect(this.config, { connector: injected() })
       this.connectedWallet = connection.accounts[0]
       console.log("MM Wallet", this.connectedWallet)
-      const newChainIsSameAsConnectedChain = Number(newChainId) === Number(this.network?.id)
-      const metamaskChainIsSameAsConnectedChain = Number(metamaskChainId) === Number(this.network?.id)
+      const newChainIsSameAsConnectedChain =
+        Number(newChainId) === Number(this.network?.id)
+      const metamaskChainIsSameAsConnectedChain =
+        Number(metamaskChainId) === Number(this.network?.id)
       // early return if chainId and wallet are already set correctly
       console.log(
         "newChainIsSameAsConnectedChain",
@@ -528,7 +541,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     amount,
     memo,
   }: { address: string; amount: number; memo?: string }) {
-    console.log('METAMASK PAYMENT', address, amount, memo)
+    console.log("METAMASK PAYMENT", address, amount, memo)
     if (!this.network) {
       console.error("Network not set, connect or setChain first")
       return { success: false, error: "Network not set" }
@@ -547,24 +560,25 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       }
 
       // Convert amount to wei using parseEther
-      const value = parseEther(amount.toString())
-      console.log('VALUE', value)
+      // const value = parseEther(amount.toString())
+      const value = this.toBaseUnit(amount)
+      console.log("VALUE", value)
 
       // Prepare transaction parameters
       const account = this.connectedWallet as `0x${string}`
       const to = address as `0x${string}`
       const data = stringToHex(memo)
       const preTx = { account, to, value, data }
-      console.log('PRETX', preTx)
-      console.log('CONFIG', this.config)
+      console.log("PRETX", preTx)
+      console.log("CONFIG", this.config)
       const estimated = await estimateGas(this.config, preTx)
-      console.log('EST', estimated)
+      console.log("EST", estimated)
       const gas = BigInt(Number(estimated) * 1.2) // 20% just to be safe
-      console.log('GAS', gas)
+      console.log("GAS", gas)
       const transaction = { account, to, value, data, gas }
-      console.log('TX', transaction)
+      console.log("TX", transaction)
       const result = await sendTransaction(this.config, transaction)
-      console.log('TXID:', result)
+      console.log("TXID:", result)
 
       return {
         success: true,
