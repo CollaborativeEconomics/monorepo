@@ -53,7 +53,7 @@ This usually means there's a type version mismatch in react or react-dom. Use sy
 
 1. Add the chain to `packages/database/src/prisma/schema.prisma` chain enum
 2. Add the chain to `packages/types/src/BlockchainTools.ts` (Chain, TokenTickerSymbol if relevant, ChainNames, and ChainSlugs)
-3. Add the chain to `packages/blockchain-tools/src/chains/chainConfig.ts` (entry + at least one network)
+3. Add the chain to `packages/app-config/src/chainConfig.ts` (entry + at least one network)
 
 ## Using the blockchain tools
 

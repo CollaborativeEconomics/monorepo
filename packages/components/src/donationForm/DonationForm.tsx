@@ -1,10 +1,9 @@
 "use client"
 import { usePostHog } from "@cfce/analytics"
-import appConfig from "@cfce/app-config"
+import appConfig, { chainConfig } from "@cfce/app-config"
 import { createAnonymousUser, fetchUserByWallet } from "@cfce/auth"
 import {
   BlockchainClientInterfaces,
-  chainConfig,
   getChainConfigurationByName,
 } from "@cfce/blockchain-tools"
 import type {
@@ -89,7 +88,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   })
   //console.log('INIT STATE', chainState)
 
-  const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState
+  const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
+    chainState
   const [donationForm, setDonationForm] = useAtom(donationFormAtom)
   const { emailReceipt, name, email, amount } = donationForm
   const coinAmount = useAtomValue(amountCoinAtom)
@@ -100,7 +100,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   const chainInterface = BlockchainClientInterfaces[selectedWallet]
 
-  const [buttonMessage, setButtonMessage] = useState("One wallet confirmation required")
+  const [buttonMessage, setButtonMessage] = useState(
+    "One wallet confirmation required",
+  )
   const [errorDialogState, setErrorDialogState] = useState(false)
   const { toast } = useToast()
 
@@ -109,13 +111,13 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred"
 
-      const canRetryWithGas =
-        errorMessage.includes("gasless") ||
-        errorMessage.includes("insufficient funds") ||
-        errorMessage.includes("rejected") ||
-        errorMessage.includes("No API keys found")
+      // const canRetryWithGas =
+      //   errorMessage.includes("gasless") ||
+      //   errorMessage.includes("insufficient funds") ||
+      //   errorMessage.includes("rejected") ||
+      //   errorMessage.includes("No API keys found")
 
-      if (canRetryWithGas) {
+      if (errorMessage.includes("gasless")) {
         setErrorDialogState(true)
       }
 
@@ -133,26 +135,29 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
   // Disable chains that don't have wallets
   useEffect(() => {
-    async function updateView(){
+    async function updateView() {
       console.log("CHAIN STATE", chainState)
       console.log("SELECTED CHAIN", selectedChain)
-      const nameToSlug = (name: Chain): ChainSlugs => getChainConfigurationByName(name).slug
+      const nameToSlug = (name: Chain): ChainSlugs =>
+        getChainConfigurationByName(name).slug
       const orgWallets = organization?.wallets.map((w) => nameToSlug(w.chain))
-      const initiativeWallets = initiative?.wallets.map((w) => nameToSlug(w.chain))
+      const initiativeWallets = initiative?.wallets.map((w) =>
+        nameToSlug(w.chain),
+      )
       const symbol = chain.symbol as TokenTickerSymbol
       const rate = await getRate(symbol)
       setCoinRate(rate)
       console.log("COIN", symbol)
       console.log("RATE", rate)
-      setChainState((draft) => { 
-        draft.enabledChains = [...orgWallets, ...initiativeWallets] 
+      setChainState((draft) => {
+        draft.enabledChains = [...orgWallets, ...initiativeWallets]
         //draft.exchangeRate = rate
       })
       console.log("UPDATED")
     }
     updateView()
-  }, [initiative, organization, selectedChain]) // setChainState, chainState, 
-  
+  }, [initiative, organization, selectedChain]) // setChainState, chainState,
+
   //const destinationWalletAddress = 'raHkr5qJNYez8bQQDMVLwvaRvxMripVznT' // hardcoded for testing
   const destinationWalletAddress = useMemo(() => {
     console.log("CHAIN", chain)
@@ -185,8 +190,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     return ""
   }, [organization, initiative, chain])
 
-  console.log("DESTINATION WALLET", destinationWalletAddress)
-
   const checkBalance = useCallback(async () => {
     //if (!chainInterface?.connect) {
     //  const error = new Error("No connect method on chain interface")
@@ -200,8 +203,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const error = new Error(balanceCheck?.error ?? "Failed to check balance")
       throw error
     }
+    console.log("BALANCE CHECK", { balanceCheck, coinAmount })
     return balanceCheck.balance >= coinAmount
-  }, [chainInterface, coinAmount, network.id])
+  }, [chainInterface, coinAmount])
 
   const sendPayment = useCallback(
     async (address: string, amount: number) => {
@@ -284,7 +288,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     }) => {
       try {
         // FIX: if coin switcher is selecting USD amounts are right, if set to coin, values get changed back to USD
-        console.log('SWITCHUSD', donationForm)
+        console.log("SWITCHUSD", donationForm)
         setButtonMessage("Minting NFT receipt, please wait...")
         const data = {
           donorName: name || "Anonymous",
@@ -324,6 +328,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           draft.paymentStatus = PAYMENT_STATUS.minted
           draft.date = new Date()
         })
+        setTimeout(() => {
+          setDonationForm((draft) => {
+            draft.paymentStatus = PAYMENT_STATUS.ready
+            draft.date = new Date()
+          })
+        }, 1800)
       } catch (error) {
         toast({
           variant: "destructive",
@@ -349,7 +359,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       setDonationForm,
       toast,
       coinAmount,
-      usdAmount
+      usdAmount,
     ],
   )
 
@@ -388,13 +398,21 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       console.log("AMOUNTS", coinAmount, usdAmount)
 
       if (appConfig.siteInfo.options.enableGaslessTransactions) {
-        console.log("SENDING GASLESS PAYMENT TO", destinationWalletAddress, coinAmount)
+        console.log(
+          "SENDING GASLESS PAYMENT TO",
+          destinationWalletAddress,
+          coinAmount,
+        )
         paymentResult = await sendGaslessPayment(
           destinationWalletAddress,
           coinAmount,
         )
       } else {
-        console.log("SENDING GAS PAYMENT TO", destinationWalletAddress, coinAmount)
+        console.log(
+          "SENDING GAS PAYMENT TO",
+          destinationWalletAddress,
+          coinAmount,
+        )
         paymentResult = await sendPayment(destinationWalletAddress, coinAmount)
       }
 
@@ -421,7 +439,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         return
       }
 
-      let user = await fetchUserByWallet(paymentResult?.walletAddress || '')
+      let user = await fetchUserByWallet(paymentResult?.walletAddress || "")
 
       if (!user) {
         user = await createAnonymousUser({
@@ -538,8 +556,10 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //  return false
       //}
       try {
-        const donationResp = await createDonation(donation)
-        console.log("RESULT", donationResp)
+        const donationResp = await createDonation(
+          JSON.parse(JSON.stringify(donation)),
+        )
+        console.log("SAVED DONATION", donationResp)
         if (!donationResp) {
           const error = new Error("Error saving donation")
           toast({
@@ -620,7 +640,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         <Separator />
         <div className="flex flex-col items-center justify-center">
           <MintButton onClick={onSubmit} />
-          <p className="mt-2 text-sm">{buttonMessage}</p>
+          <p className="mt-2 text-sm px-4">{buttonMessage}</p>
         </div>
       </Card>
       <Dialog open={balanceDialogOpen} onOpenChange={setBalanceDialogOpen}>

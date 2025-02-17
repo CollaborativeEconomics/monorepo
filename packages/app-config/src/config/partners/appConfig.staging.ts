@@ -1,10 +1,10 @@
 import type { AppConfig } from "@cfce/types"
+import chainConfig from "../../chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo = {
   ...appConfig.siteInfo,
   title: "Partners Portal (Staging)",
-  description: "Make tax-deductible donations with crypto",
 }
 
 const apis = {
@@ -26,18 +26,28 @@ const apis = {
 }
 
 const chains: AppConfig["chains"] = {
-  ...appConfig.chains,
-  xdc: {
-    slug: "xdc",
-    network: "testnet",
-    contracts: {
-      // receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-      storyERC1155: "0xc917ff4128525a65639d18f1d240a788081f022d",
-      volunteersFactory: "0xD4E47912a12f506843F522Ea58eA31Fd313eB2Ee",
-    },
-    wallet: "0x1AC546d21473062F3c3B16B6392A2EC26F4539f0",
+  arbitrum: {
+    ...chainConfig.arbitrum.networks.testnet,
     enabledWallets: ["metamask"],
-    tokens: ["XDC"],
+  },
+  stellar: {
+    ...chainConfig.stellar.networks.testnet,
+    contracts: {
+      ...chainConfig.stellar.networks.testnet.contracts,
+      CreditsFactory:
+        "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      ReceiptFactory:
+        "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+    },
+    enabledWallets: ["freighter"],
+  },
+  xdc: {
+    ...chainConfig.xdc.networks.testnet,
+    enabledWallets: ["freighter"],
+  },
+  xrpl: {
+    ...chainConfig.xrpl.networks.testnet,
+    enabledWallets: ["gemwallet", "xaman"],
   },
 }
 

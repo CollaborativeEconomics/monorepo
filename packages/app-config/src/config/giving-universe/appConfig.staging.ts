@@ -1,4 +1,5 @@
 import type { AppConfig, AuthTypes, Network } from "@cfce/types"
+import chainConfiguration from "../../chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo: AppConfig["siteInfo"] = {
@@ -15,31 +16,42 @@ const apis: AppConfig["apis"] = {
 }
 
 const chains: AppConfig["chains"] = {
-  xdc: {
-    slug: "xdc",
-    network: "testnet",
-    contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-    },
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
+  arbitrum: {
+    ...chainConfiguration.arbitrum.networks.testnet,
     enabledWallets: ["metamask"],
-    tokens: ["XDC"],
+  },
+  avalanche: {
+    ...chainConfiguration.avalanche.networks.testnet,
+    wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
+    enabledWallets: ["metamask"],
+  },
+  base: {
+    ...chainConfiguration.base.networks.testnet,
+    enabledWallets: ["metamask"],
+  },
+  binance: {
+    ...chainConfiguration.binance.networks.testnet,
+    enabledWallets: ["metamask"],
+  },
+  celo: {
+    ...chainConfiguration.celo.networks.testnet,
+    enabledWallets: ["metamask"],
+  },
+  flare: {
+    ...chainConfiguration.flare.networks.testnet,
+    enabledWallets: ["metamask"],
+  },
+  xdc: {
+    ...chainConfiguration.xdc.networks.testnet,
+    enabledWallets: ["metamask"],
   },
   stellar: {
-    slug: "stellar",
-    network: "testnet",
-    contracts: {},
-    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
+    ...chainConfiguration.stellar.networks.testnet,
     enabledWallets: ["freighter"],
-    tokens: ["XLM", "USDC"],
   },
   xrpl: {
-    slug: "xrpl",
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
-    network: "testnet",
-    contracts: {},
+    ...chainConfiguration.xrpl.networks.testnet,
     enabledWallets: ["xaman", "gemwallet"],
-    tokens: ["XRP"],
     destinationTag: "77777777",
   },
 }

@@ -1,4 +1,5 @@
 import type { AppConfig, AuthTypes, Network } from "@cfce/types"
+import chainConfiguration from "../../chainConfig"
 import appConfig from "./appConfig.production"
 
 const siteInfo: AppConfig["siteInfo"] = {
@@ -15,23 +16,9 @@ const apis: AppConfig["apis"] = {
 }
 
 const chains: AppConfig["chains"] = {
-  xdc: {
-    slug: "xdc",
-    network: "testnet",
-    contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-    },
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
-    enabledWallets: [],
-    tokens: [],
-  },
   xrpl: {
-    slug: "xrpl",
-    wallet: "rptMtpnyen12V45z6Fhtj797kkhG7u3Rnp",
-    network: "testnet",
-    contracts: {},
+    ...chainConfiguration.xrpl.networks.testnet,
     enabledWallets: ["xaman", "gemwallet"],
-    tokens: ["XRP"],
     destinationTag: "77777777",
   },
 }

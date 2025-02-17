@@ -1,10 +1,9 @@
 "use server"
 import "server-only"
 import { posthogNodeClient } from "@cfce/analytics/server"
-import appConfig from "@cfce/app-config"
-import { BlockchainServerInterfaces, chainConfig } from "@cfce/blockchain-tools"
+import appConfig, { chainConfig } from "@cfce/app-config"
+import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
 import { getWalletSecret } from "@cfce/blockchain-tools"
-import { InterfaceBaseClass } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import {
   type Chain,
@@ -284,10 +283,10 @@ export async function mintAndSaveReceiptNFT({
     }> = []
     for (const chainSlug of Object.keys(appConfig.chains) as ChainSlugs[]) {
       const chain = appConfig.chains[chainSlug]
-      if (chain?.contracts.receiptMintbotERC721) {
+      if (chain?.contracts.Receipt_NFT) {
         receiptContractsByChain.push({
           chain: chainSlug as ChainSlugs,
-          contract: chain.contracts.receiptMintbotERC721,
+          contract: chain.contracts.Receipt_NFT,
         })
       }
     }
@@ -324,10 +323,13 @@ export async function mintAndSaveReceiptNFT({
 */
 
     // #region: Mint NFT on current chain only
-    const receiptContract = currentChain.contracts.receiptMintbotERC721
+    let receiptContract = currentChain?.contracts?.Receipt_NFT
     console.log("CTR", receiptContract)
+    if (currentChain?.slug === "xrpl") {
+      receiptContract = "xrpl"
+    }
 
-    // WARN: XRPL doesn't use contracts
+    // XRPL doesn't use contracts
     if (!receiptContract) {
       console.error("No receipt contracts found")
       return { success: false, error: "No receipt contract found" }

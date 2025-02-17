@@ -1,11 +1,17 @@
-import { Address, BASE_FEE, Contract, TransactionBuilder, nativeToScVal, rpc, type xdr } from '@stellar/stellar-sdk'
+import appConfig, { chainConfig } from "@cfce/app-config"
+import { FreighterWallet } from "@cfce/blockchain-tools"
 import { signTransaction } from "@stellar/freighter-api"
-import { FreighterWallet, chainConfig } from "@cfce/blockchain-tools"
-import type { ChainSlugs } from "@cfce/types"
-import { getContract } from '~/utils/registry-client'
-import { randomNumber } from '~/utils/random'
-import type { ContractFactoryDeployer, FactoryReturnType } from ".."
-
+import {
+  Address,
+  BASE_FEE,
+  Contract,
+  TransactionBuilder,
+  nativeToScVal,
+  rpc,
+  type xdr,
+} from "@stellar/stellar-sdk"
+import { randomNumber } from "~/utils/random"
+import { getContract } from "~/utils/registry-client"
 
 interface CreditsData {
   chain: string
@@ -22,7 +28,7 @@ interface ReceiptData {
   symbol: string
 }
 
-export const networks = chainConfig.stellar.networks
+const stellar = chainConfig.stellar.networks[appConfig.chainDefaults.network]
 
 // Usage
 // const contractId = getContractIdFromTx(successfulTransactionResponse)
@@ -50,29 +56,37 @@ async function deploy(
   wasm_hash: string,
   salt: string,
   init_fn: string,
-  init_args: xdr.ScVal
-){
-  console.log('DEPLOY', nettype, factory, owner, deployer, wasm_hash, salt, init_fn, init_args)
+  init_args: xdr.ScVal,
+) {
+  console.log(
+    "DEPLOY",
+    nettype,
+    factory,
+    owner,
+    deployer,
+    wasm_hash,
+    salt,
+    init_fn,
+    init_args,
+  )
   try {
     //const network = networks[nettype]
-    const network = networks[nettype as keyof typeof networks]
-    if (!network) {
-      return { success: false, txid: null, contractId: null, block: null, error: "Network not found" }
-    }
     const scDeployer = new Address(deployer).toScVal()
-    const scHash = nativeToScVal(Buffer.from(wasm_hash, 'hex'), {type: 'bytes'})
-    const scSalt = nativeToScVal(Buffer.from(salt), {type: 'bytes'})
-    const scInit = nativeToScVal(init_fn, {type: 'symbol'})
+    const scHash = nativeToScVal(Buffer.from(wasm_hash, "hex"), {
+      type: "bytes",
+    })
+    const scSalt = nativeToScVal(Buffer.from(salt), { type: "bytes" })
+    const scInit = nativeToScVal(init_fn, { type: "symbol" })
     const scArgs = init_args
     const ctr = new Contract(factory)
     console.log("CTR", ctr)
     console.log("ARG", scArgs)
     //const op = ctr.call('deploy', ...args)
-    console.log('deploy', scDeployer, scHash, scSalt, scInit)
-    const op = ctr.call('deploy', scDeployer, scHash, scSalt, scInit, scArgs)
-    console.log('OP', op)
-    const soroban = new rpc.Server(network.rpcUrls.soroban, { allowHttp: true })
-    console.log('X1', owner)
+    console.log("deploy", scDeployer, scHash, scSalt, scInit)
+    const op = ctr.call("deploy", scDeployer, scHash, scSalt, scInit, scArgs)
+    console.log("OP", op)
+    const soroban = new rpc.Server(stellar.rpcUrls.soroban, { allowHttp: true })
+    console.log("X1", owner)
     const account = await soroban.getAccount(owner)
     //const account = await horizon.loadAccount(admin)
     console.log("ACT", account)
@@ -81,7 +95,7 @@ async function deploy(
     const fee = BASE_FEE
     const trx = new TransactionBuilder(account, {
       fee,
-      networkPassphrase: network.networkPassphrase,
+      networkPassphrase: stellar.networkPassphrase,
     })
       .addOperation(op)
       .setTimeout(30)
@@ -92,8 +106,8 @@ async function deploy(
     console.log("SIM", sim)
     //window.sim = sim
     if (rpc.Api.isSimulationSuccess(sim) && sim.result !== undefined) {
-      console.log('RES', sim.result)
-      let xdr = ''
+      console.log("RES", sim.result)
+      let xdr = ""
       const firstTime = false // for now
       if (firstTime) {
         // Increment tx resources to avoid first time bug
@@ -121,7 +135,7 @@ async function deploy(
         const account2 = await soroban.getAccount(deployer.toString())
         const trz = new TransactionBuilder(account2, {
           fee: fee2,
-          networkPassphrase: network.networkPassphrase,
+          networkPassphrase: stellar.networkPassphrase,
         })
           .setSorobanData(sdata)
           .addOperation(op)
@@ -139,7 +153,7 @@ async function deploy(
       }
       console.log("XDR", xdr)
       // Now sign it???
-      const opx = { networkPassphrase: network.networkPassphrase }
+      const opx = { networkPassphrase: stellar.networkPassphrase }
       //const opx = {network:network.name, networkPassphrase: network.networkPassphrase, accountToSign: from}
       console.log("OPX", opx)
       //const res = await wallet.signAndSend(xdr, opx)
@@ -154,7 +168,7 @@ async function deploy(
           error: sgn.error.message,
         }
       }
-      if (!network.networkPassphrase) {
+      if (!stellar.networkPassphrase) {
         return {
           success: false,
           txid: null,
@@ -166,7 +180,7 @@ async function deploy(
       // Now send it?
       const txs = TransactionBuilder.fromXDR(
         sgn.signedTxXdr,
-        network.networkPassphrase,
+        stellar.networkPassphrase,
       ) // as Tx
       console.log("TXS", txs)
       //const six = await soroban.simulateTransaction(txs)
@@ -191,13 +205,19 @@ async function deploy(
           error: "Error deploying contract (950)",
         } // get error
       }
-      if(res?.status.toString() === 'SUCCESS'){
-        console.log('TX SUCCESS')
+      if (res?.status.toString() === "SUCCESS") {
+        console.log("TX SUCCESS")
         const transactionInfo = await soroban.getTransaction(txid)
         const contractId = getContractIdFromTx(transactionInfo)
         console.log("Contract ID:", contractId)
         // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
-        return {success:true, txid, contractId, block:transactionInfo?.latestLedger.toString(), error:null}
+        return {
+          success: true,
+          txid,
+          contractId,
+          block: transactionInfo?.latestLedger.toString(),
+          error: null,
+        }
       }
       // Wait for confirmation
       const secs = 1000
@@ -280,10 +300,9 @@ async function deploy(
 // DATA {provider, vendor, bucket}
 // VARS [deployer, wasm_hash, salt, init_fn, init_args]
 // ARGS [admin, initiative, provider, vendor, bucket, xlm]
-async function deployCredits(data:CreditsData) {
-  console.log('DATA', data)
+async function deployCredits(data: CreditsData) {
+  console.log("DATA", data)
   try {
-    const network = networks[data.network]
     const wallet = new FreighterWallet()
     //const wallet = new FreighterWallet(data.chain as ChainSlugs, data.network)
     await wallet.init()
@@ -292,32 +311,63 @@ async function deployCredits(data:CreditsData) {
     console.log("-- Deploying")
 
     // Factory contract
-    const factory = await getContract(data.chain, data.network, 'Factory', 'ALL')
-    console.log('FACTORY', factory)
-    if(!factory){
-      return {success:false, txid:null, contractId:null, block:null, error:'Factory contract not found'}
+    const factory = await getContract(
+      data.chain,
+      data.network,
+      "Factory",
+      "ALL",
+    )
+    console.log("FACTORY", factory)
+    if (!factory) {
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Factory contract not found",
+      }
     }
-    const contractHash = await getContract(data.chain, data.network, 'CreditsHash', 'ALL')
-    console.log('HASH', contractHash)
-    if(!contractHash){
-      return {success:false, txid:null, contractId:null, block:null, error:'Credits Hash not found'}
+    const contractHash = await getContract(
+      data.chain,
+      data.network,
+      "CreditsHash",
+      "ALL",
+    )
+    console.log("HASH", contractHash)
+    if (!contractHash) {
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Credits Hash not found",
+      }
     }
-    const xlmContract = 'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC' // TODO: constant from config
+    const xlmContract =
+      "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC" // TODO: constant from config
     //const orgwallet = walletInfo.account
     const orgwallet = walletInfo.walletAddress
     if (!orgwallet) {
-      return { success: false, txid: null, contractId: null, block: null, error: "Wallet address not found" }
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Wallet address not found",
+      }
     }
     const owner = orgwallet
     const deployer = orgwallet
     const salt = randomNumber(32)
-    const init_fn = 'initialize'
+    const init_fn = "initialize"
     // Args
     const admin = new Address(owner).toScVal()
     const initiative = nativeToScVal(1, { type: "u128" }) // Not used ???
     const provider = new Address(data.provider)
     const vendor = new Address(data.vendor).toScVal()
-    const bucket = nativeToScVal(Number(data.bucket) * 1000000, { type: "i128" })
+    const bucket = nativeToScVal(Number(data.bucket) * 1000000, {
+      type: "i128",
+    })
     const xlm = new Address(xlmContract).toScVal()
     const init_args = nativeToScVal(
       [admin, initiative, provider, vendor, bucket, xlm],
@@ -325,19 +375,33 @@ async function deployCredits(data:CreditsData) {
     )
     //const args = [deployer, wasm_hash, salt, init_fn, init_args]
     //console.log('ARGS', args)
-    const result = await deploy(data.network, factory, owner, deployer, contractHash, salt, init_fn, init_args)
+    const result = await deploy(
+      data.network,
+      factory,
+      owner,
+      deployer,
+      contractHash,
+      salt,
+      init_fn,
+      init_args,
+    )
     return result
   } catch (ex) {
     console.log("ERROR", ex)
-    return { success: false, txid: "", contractId: null, block: null, error: ex instanceof Error ? ex.message : "Unknown error" }
+    return {
+      success: false,
+      txid: "",
+      contractId: null,
+      block: null,
+      error: ex instanceof Error ? ex.message : "Unknown error",
+    }
   }
 }
 
-async function deployNFTReceipt(data:ReceiptData) {
-  console.log('DATA', data)
+async function deployNFTReceipt(data: ReceiptData) {
+  console.log("DATA", data)
   try {
-    const network = networks[data.network]
-    const wallet  = new FreighterWallet()
+    const wallet = new FreighterWallet()
     //const wallet = new FreighterWallet(data.chain as ChainSlugs, data.network)
     await wallet.init()
     const walletInfo = await wallet.connect()
@@ -345,26 +409,54 @@ async function deployNFTReceipt(data:ReceiptData) {
     console.log("-- Deploying")
 
     // Factory contract
-    const factory = await getContract(data.chain, data.network, 'Factory', 'ALL')
-    console.log('FACTORY', factory)
-    if(!factory){
-      return {success:false, txid:null, contractId:null, block:null, error:'Factory contract not found'}
+    const factory = await getContract(
+      data.chain,
+      data.network,
+      "Factory",
+      "ALL",
+    )
+    console.log("FACTORY", factory)
+    if (!factory) {
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Factory contract not found",
+      }
     }
-    const contractHash = await getContract(data.chain, data.network, 'NFTReceiptHash', 'ALL')
-    console.log('HASH', contractHash)
-    if(!contractHash || contractHash?.error){
-      return {success:false, txid:null, contractId:null, block:null, error:'Contract Hash not found'}
+    const contractHash = await getContract(
+      data.chain,
+      data.network,
+      "NFTReceiptHash",
+      "ALL",
+    )
+    console.log("HASH", contractHash)
+    if (!contractHash || contractHash?.error) {
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Contract Hash not found",
+      }
     }
 
     //const orgwallet = walletInfo.account
     const orgwallet = walletInfo.walletAddress
     if (!orgwallet) {
-      return { success: false, txid: null, contractId: null, block: null, error: "Wallet address not found" }
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Wallet address not found",
+      }
     }
     const owner = orgwallet
     const deployer = orgwallet
     const salt = randomNumber(32)
-    const init_fn = 'initialize'
+    const init_fn = "initialize"
     // Args
     const admin = new Address(owner).toScVal()
     const name = nativeToScVal(data.name, { type: "string" })
@@ -372,7 +464,16 @@ async function deployNFTReceipt(data:ReceiptData) {
     const init_args = nativeToScVal([admin, name, symbol], { type: "vector" })
     //const args = [deployer, wasm_hash, salt, init_fn, init_args]
     //console.log('ARGS', args)
-    const result = await deploy(data.network, factory, owner, deployer, contractHash, salt, init_fn, init_args)
+    const result = await deploy(
+      data.network,
+      factory,
+      owner,
+      deployer,
+      contractHash,
+      salt,
+      init_fn,
+      init_args,
+    )
     return result
   } catch (ex) {
     console.log("ERROR", ex)

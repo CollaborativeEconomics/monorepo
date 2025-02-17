@@ -24,29 +24,7 @@ const apis: AppConfig["apis"] = {
   },
 }
 
-const chains: AppConfig["chains"] = {
-  // xdc: {
-  //   slug: "xdc",
-  //   network: "testnet",
-  //   contracts: {
-  //     receiptMintbotERC721: "0xfeceaea75565961b805e2dbe58e00488f5bc1495",
-  //   },
-  //   wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
-  //   enabledWallets: [],
-  //   tokens: [],
-  // },
-  xrpl: {
-    slug: "xrpl",
-    wallet: "r3qr25QnANd8RRT9NYtgUrrty3yTfpGx9c",
-    network: "testnet",
-    contracts: {
-      receiptMintbotERC721: "0xNotNeeded",
-    },
-    enabledWallets: ["gemwallet", "xaman"],
-    tokens: ["XRP"],
-    destinationTag: "77777777",
-  },
-}
+const chains: AppConfig["chains"] = appConfig.chains
 
 const chainDefaults: AppConfig["chainDefaults"] = {
   ...appConfig.chainDefaults,
