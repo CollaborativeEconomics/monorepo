@@ -2,7 +2,7 @@
 import appConfig, { chainConfig } from "@cfce/app-config"
 import { getChainConfigurationByName, getNftPath } from "@cfce/blockchain-tools"
 import type { NFTDataWithRelations } from "@cfce/database"
-import { type Chain, ChainNames } from "@cfce/types"
+import { type Chain, ChainNames, Network } from "@cfce/types"
 import { format } from "date-fns"
 import Image from "next/image"
 import Link from "next/link"
@@ -110,9 +110,9 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
           <Link
             target="_blank"
             href={getNftPath({
-              chainName,
-              network,
-              contractId,
+              chain: chainDetails.slug,
+              network: network as Network,
+              contractType: "Receipt_NFT",
               tokenId,
               transactionId,
             })}

@@ -1,5 +1,5 @@
-import appConfig from "@cfce/app-config"
-import { chainConfig, getNftPath } from "@cfce/blockchain-tools"
+import appConfig, { chainConfig } from "@cfce/app-config"
+import { getNftPath } from "@cfce/blockchain-tools"
 import type { StoryWithRelations } from "@cfce/database"
 import { ExternalLinkIcon } from "lucide-react"
 import Link from "next/link"
@@ -39,11 +39,9 @@ export function NFTMetadataCard({ story, onFlip }: NFTMetadataCardProps) {
   const image = story.image ?? "/nopic.png"
 
   const nftPath = getNftPath({
-    chainName: "XDC",
+    chain: "xdc",
     network: appConfig.chainDefaults.network,
-    contractId:
-      chainConfig.xdc.networks[appConfig.chainDefaults.network]?.contracts
-        ?.receiptMintbotERC721 ?? "",
+    contractType: "Story_NFT",
     tokenId: story?.tokenId ?? "",
   })
 
@@ -63,10 +61,10 @@ export function NFTMetadataCard({ story, onFlip }: NFTMetadataCardProps) {
   ]
 
   return (
-    <Card className="w-full h-full flex flex-col overflow-hidden bg-[#2d1810] text-[#ffa07a]">
-      <CardContent className="flex-1 p-0 pt-6 px-6 font-mono text-sm overflow-hidden">
+    <Card className="w-full h-full flex flex-col overflow-hidden bg-[#261d0f] text-[#89c28d]">
+      <CardContent className="flex-1 p-0 pt-6 font-mono text-sm overflow-hidden">
         <div className="h-full flex flex-col space-y-4">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center px-6">
             <Link href={nftPath} target="_blank">
               <span className="text-[#ffd700] inline-flex items-center gap-1">
                 NFT Metadata
@@ -81,7 +79,7 @@ export function NFTMetadataCard({ story, onFlip }: NFTMetadataCardProps) {
               Back
             </Button>
           </div>
-          <div className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden pb-6">
+          <div className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden pb-6 px-6">
             {metadata.map((item, index) => (
               <JsonLine
                 key={item.label}
