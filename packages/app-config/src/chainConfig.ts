@@ -22,7 +22,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://arb1.arbitrum.io/rpc",
+          default: "https://arb1.arbitrum.io/rpc",
         },
         tokens: [
           {
@@ -70,7 +70,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://sepolia-rollup.arbitrum.io/rpc",
+          default: "https://sepolia-rollup.arbitrum.io/rpc",
         },
         tokens: [
           {
@@ -132,7 +132,7 @@ const chainConfiguration = {
           nftPath: "/nft/{{contractId}}/{{tokenId}}?chainid={{chainId}}",
         },
         rpcUrls: {
-          main: "https://avalanche-mainnet.infura.io",
+          default: "https://avalanche-mainnet.infura.io",
         },
         tokens: [
           {
@@ -164,8 +164,8 @@ const chainConfiguration = {
             "/nft/{{contractId}}/{{tokenId}}?chainid={{chainId}}&type=erc721",
         },
         rpcUrls: {
-          main: "https://api.avax-test.network/ext/bc/C/rpc",
-          //main: "https://ethereum-goerli.publicnode.com",
+          default: "https://api.avax-test.network/ext/bc/C/rpc",
+          //default: "https://ethereum-goerli.publicnode.com",
         },
         tokens: [
           {
@@ -204,7 +204,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://mainnet.base.org",
+          default: "https://mainnet.base.org",
         },
         tokens: [
           {
@@ -235,7 +235,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://sepolia.base.org",
+          default: "https://sepolia.base.org",
         },
         tokens: [
           {
@@ -275,7 +275,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://bsc-dataseed.binance.org",
+          default: "https://bsc-dataseed.binance.org",
         },
         tokens: [
           {
@@ -306,7 +306,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://data-seed-prebsc-1-s1.binance.org:8545",
+          default: "https://data-seed-prebsc-1-s1.binance.org:8545",
         },
         tokens: [
           {
@@ -345,7 +345,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://forno.celo.org",
+          default: "https://forno.celo.org",
         },
         tokens: [
           {
@@ -376,7 +376,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://alfajores-forno.celo-testnet.org",
+          default: "https://alfajores-forno.celo-testnet.org",
         },
         tokens: [
           {
@@ -413,7 +413,7 @@ const chainConfiguration = {
           nftPath: "/transaction/{{transactionId}}?network=eos",
         },
         rpcUrls: {
-          main: "https://api.eos.io",
+          default: "https://api.eos.io",
         },
         tokens: [
           {
@@ -442,7 +442,7 @@ const chainConfiguration = {
           nftPath: "/transaction/{{transactionId}}?network=eosiotest",
         },
         rpcUrls: {
-          main: "https://api.testnet.eos.io",
+          default: "https://api.testnet.eos.io",
         },
         tokens: [
           {
@@ -478,7 +478,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://ethereum.publicnode.com",
+          default: "https://ethereum.publicnode.com",
         },
         tokens: [
           {
@@ -506,7 +506,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://ethereum-sepolia-rpc.publicnode.com",
+          default: "https://ethereum-sepolia-rpc.publicnode.com",
         },
         tokens: [
           {
@@ -545,7 +545,7 @@ const chainConfiguration = {
           nftPath: "/en/message/{{transactionId}}/",
         },
         rpcUrls: {
-          main: "https://api.node.glif.io",
+          default: "https://api.node.glif.io",
         },
         tokens: [
           {
@@ -576,7 +576,7 @@ const chainConfiguration = {
           nftPath: "/en/message/{{transactionId}}/",
         },
         rpcUrls: {
-          main: "https://api.calibration.node.glif.io",
+          default: "https://api.calibration.node.glif.io",
         },
         tokens: [
           {
@@ -615,7 +615,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://mainnet.flare.network",
+          default: "https://mainnet.flare.network",
         },
         tokens: [
           {
@@ -647,8 +647,8 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://coston2-api.flare.network/ext/C/rpc",
-          //main: "https://coston2-api.flare.network/ext/bc/C/rpc",
+          default: "https://coston2-api.flare.network/ext/C/rpc",
+          //default: "https://coston2-api.flare.network/ext/bc/C/rpc",
         },
         tokens: [
           {
@@ -687,7 +687,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://mainnet.optimism.io",
+          default: "https://mainnet.optimism.io",
         },
         tokens: [
           {
@@ -726,7 +726,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://sepolia.optimism.io",
+          default: "https://sepolia.optimism.io",
         },
         tokens: [
           {
@@ -773,7 +773,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://polygon-rpc.com",
+          default: "https://polygon-rpc.com",
         },
         tokens: [
           {
@@ -804,7 +804,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://rpc-amoy.polygon.technology/",
+          default: "https://rpc-amoy.polygon.technology/",
         },
         tokens: [
           {
@@ -840,7 +840,8 @@ const chainConfiguration = {
           nftPath: "/nft/{{contractId}}/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://starknet-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+          default:
+            "https://starknet-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
         },
         tokens: [
           {
@@ -902,7 +903,7 @@ const chainConfiguration = {
           nftPath: "/nft/{{contractId}}/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://free-rpc.nethermind.io/sepolia-juno/",
+          default: "https://free-rpc.nethermind.io/sepolia-juno/",
         },
         tokens: [
           {
@@ -980,7 +981,7 @@ const chainConfiguration = {
           CreditsHash: "xxx",
         },
         rpcUrls: {
-          main: "https://horizon.stellar.org",
+          default: "https://horizon.stellar.org",
           soroban:
             "https://mainnet.stellar.validationcloud.io/v1/QW6tYBRenqUwP8d9ZJds44Dm-txH1497oDXcdC07xDo",
           // You can add more RPC URLs here as needed
@@ -1021,7 +1022,7 @@ const chainConfiguration = {
           nftPath: "/accounts/{{contractId}}",
         },
         rpcUrls: {
-          main: "https://horizon-testnet.stellar.org",
+          default: "https://horizon-testnet.stellar.org",
           soroban: "https://soroban-testnet.stellar.org",
         },
         networkPassphrase: "Test SDF Network ; September 2015",
@@ -1077,7 +1078,7 @@ const chainConfiguration = {
           nftPath: "/#/transaction/{{transactionId}}",
         },
         rpcUrls: {
-          main: "https://api.trongrid.io/jsonrpc",
+          default: "https://api.trongrid.io/jsonrpc",
         },
         tokens: [
           {
@@ -1105,7 +1106,7 @@ const chainConfiguration = {
           nftPath: "/#/transaction/{{transactionId}}",
         },
         rpcUrls: {
-          main: "https://api.shasta.trongrid.io/jsonrpc",
+          default: "https://api.shasta.trongrid.io/jsonrpc",
         },
         tokens: [
           {
@@ -1141,14 +1142,14 @@ const chainConfiguration = {
         },
         gasprice: "15000000000",
         rpcUrls: {
-          main: "https://rpc.xdcrpc.com",
+          default: "https://rpc.apothem.network",
         },
         contracts: {
           TBA_Registry: "0xCD4C114E31E909Cc589836596E206D837c9cb00a",
           TBA_Implementation: "0x2b4ac04B9feB82C7529f2B17db5a441FCB3c05D4",
           TBA_NFT: "0xb7e30f0e9feE9b77f617EbEC16156b46A8e19908",
           Receipt_NFT: "0xD218A3C26DeEFa93eb74a785463B6bbF48A5a1b4",
-          Story_NFT: "0x013da344B34447360aE4A01E86a4a4c2aAd3CEbb",
+          Story_NFT: "0x414ab15be1468E4aa2201B51429AE1EC649C00a0",
           VolunteersFactory: "0x0eD50ddEE2c561016A9aaB9DaFC891DB3Afe554d",
         },
         tokens: [
@@ -1177,7 +1178,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://rpc.apothem.network",
+          default: "https://rpc.apothem.network",
         },
         tokens: [
           {
@@ -1193,8 +1194,8 @@ const chainConfiguration = {
           TBA_Registry: "0x000000006551c19487814612e58fe06813775758",
           TBA_Implementation: "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",
           TBA_NFT: "0x88Bb2D04f180631BdC4Cd6129106665A0B6790D8", // 0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7
-          Receipt_NFT: "0xa3a3d70Ec57bC30472CD687F3D530b3431292989",
-          Story_NFT: "0xc917ff4128525a65639d18f1d240a788081f022d",
+          Receipt_NFT: "0x291Dfd56A9A244286B26c24DB7eE9091Dd1EC401",
+          Story_NFT: "0x40774DeBD32F73372D3AA48adCea23A81856A512",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",
@@ -1221,7 +1222,7 @@ const chainConfiguration = {
           nftPath: "/transactions/{{transactionId}}",
         },
         rpcUrls: {
-          main: "https://xrplcluster.com",
+          default: "https://xrplcluster.com",
         },
         tokens: [
           {
@@ -1249,7 +1250,7 @@ const chainConfiguration = {
           nftPath: "/transactions/{{transactionId}}",
         },
         rpcUrls: {
-          main: "https://s.altnet.rippletest.net:51234",
+          default: "https://s.altnet.rippletest.net:51234",
         },
         tokens: [
           {

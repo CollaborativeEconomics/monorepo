@@ -141,6 +141,10 @@ export default function AddStoryForm({
       setButtonText("ERROR")
       setButtonDisabled(true)
     }
+    setTimeout(() => {
+      setButtonDisabled(false)
+      setButtonText("SUBMIT")
+    }, 1800)
   }
 
   return (

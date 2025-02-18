@@ -87,7 +87,7 @@ export default class XrplCommon extends InterfaceBaseClass {
     params: Record<string, unknown>,
   ) {
     try {
-      const url = this.network.rpcUrls.main
+      const url = this.network.rpcUrls.default
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -193,7 +193,7 @@ export default class XrplCommon extends InterfaceBaseClass {
       Destination: address,
       Amount: wei,
     } as Payment
-    const url = this.network.rpcUrls.main
+    const url = this.network.rpcUrls.default
     const client = new Client(url)
     await client.connect()
     //const payment = await client.autofill(transaction)

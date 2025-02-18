@@ -10,9 +10,7 @@ import { EntityType } from "@cfce/types"
 const uuidToUint256 = (uuid: string) => {
   const hex = uuid.replace(/-/g, "")
   const bigIntUUID = BigInt(`0x${hex}`)
-  // Since UUID is 128-bit, we shift it left by 128 places to fit into a 256-bit space
-  const uint256 = bigIntUUID << BigInt(128)
-  return uint256
+  return bigIntUUID // Don't shift, just use the UUID value directly
 }
 
 /**
@@ -30,7 +28,7 @@ export async function mintStoryNFT(
   const network =
     process.env.NEXT_PUBLIC_APP_ENV === "production" ? "mainnet" : "testnet"
   const uint256 = uuidToUint256(storyId)
-  const tokenId = uint256.toString()
+  const tokenId = Number(uint256)
   const uri = tokenCID
   //const uri = new TextEncoder().encode(tokenCID).buffer;
 
