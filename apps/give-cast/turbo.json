@@ -17,7 +17,6 @@
         "IPFS_API_KEY",
         "IPFS_API_SECRET",
         "IPFS_DEFAULT_REGION",
-        "IPFS_DEFAULT_BUCKET",
         "IPFS_AVATARS_BUCKET",
         "IPFS_BUCKET_TOKEN",
         "IPFS_GATEWAY_URL",

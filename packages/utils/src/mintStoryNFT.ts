@@ -1,9 +1,5 @@
-// @ts-ignore turbo should error out if these are not set
-// const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
-
-import appConfig, { chainConfig } from "@cfce/app-config"
+import { chainConfig } from "@cfce/app-config"
 import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
-//import { BlockchainManager } from "@cfce/blockchain-tools"
 import { getTokenBoundAccount } from "@cfce/database"
 import { EntityType } from "@cfce/types"
 
