@@ -1,4 +1,5 @@
 import type { AppConfig, AuthTypes } from "@cfce/types"
+import chainConfiguration from "../../chainConfig"
 import appConfigBase from "../appConfigBase"
 
 const appConfig: AppConfig = {
@@ -18,22 +19,9 @@ appConfig.siteInfo = {
 
 // Override chains
 appConfig.chains = {
-  xdc: {
-    slug: "xdc",
-    network: "mainnet",
-    contracts: {
-      receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-    },
-    enabledWallets: [],
-    tokens: [],
-  },
   xrpl: {
-    slug: "xrpl",
-    network: "mainnet",
-    contracts: {},
+    ...chainConfiguration.xrpl.networks.mainnet,
     enabledWallets: ["gemwallet", "xaman"],
-    wallet: "r3qr25QnANd8RRT9NYtgUrrty3yTfpGx9c",
-    tokens: ["XRP"],
     destinationTag: "77777777",
   },
 }

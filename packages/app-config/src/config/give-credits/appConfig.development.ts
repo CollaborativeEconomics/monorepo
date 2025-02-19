@@ -1,16 +1,9 @@
-import type {
-  AppChainConfig,
-  AppConfig,
-  AuthTypes,
-  ChainSlugs,
-  Network,
-} from "@cfce/types"
+import type { AppConfig, AuthTypes } from "@cfce/types"
 import appConfig from "./appConfig.staging"
 
 const siteInfo = {
   ...appConfig.siteInfo,
   title: "Give Credit (Development)",
-  description: "Make tax-deductible donations of carbon credits (Development)",
 }
 
 const apis = {
@@ -20,20 +13,9 @@ const apis = {
   },
 }
 
-const chains = Object.entries(appConfig.chains).reduce(
-  (obj, [key, chain]) => {
-    obj[key as ChainSlugs] = {
-      ...chain,
-      network: "testnet" as Network,
-    }
-    return obj
-  },
-  {} as Record<ChainSlugs, AppChainConfig>,
-)
-const chainDefaults = {
-  ...appConfig.chainDefaults,
-  network: "testnet" as Network,
-}
+const chains = appConfig.chains
+
+const chainDefaults = appConfig.chainDefaults
 
 const auth = appConfig.auth as AuthTypes[]
 

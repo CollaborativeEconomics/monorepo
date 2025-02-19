@@ -13,10 +13,13 @@
     "build": "rm -rf dist && tsc"
   },
   "devDependencies": {
-    "next": "^15.1.0",
     "@cfce/types": "workspace:*",
     "@types/node": "^22.10.1",
+    "next": "^15.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "starknet": "^6.11.0"
   }
 }

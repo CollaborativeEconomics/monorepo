@@ -1,7 +1,6 @@
 import React from "react"
 
-import appConfig from "@cfce/app-config"
-import { chainConfig } from "@cfce/blockchain-tools"
+import appConfig, { chainConfig } from "@cfce/app-config"
 import { OrganizationAvatar } from "@cfce/components/organization"
 import { Card, CardContent } from "@cfce/components/ui"
 import { getNFTById } from "@cfce/database"
