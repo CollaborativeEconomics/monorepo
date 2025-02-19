@@ -1149,7 +1149,7 @@ const chainConfiguration = {
           TBA_Implementation: "0x2b4ac04B9feB82C7529f2B17db5a441FCB3c05D4",
           TBA_NFT: "0xb7e30f0e9feE9b77f617EbEC16156b46A8e19908",
           Receipt_NFT: "0xD218A3C26DeEFa93eb74a785463B6bbF48A5a1b4",
-          Story_NFT: "0x414ab15be1468E4aa2201B51429AE1EC649C00a0",
+          Story_NFT: "0xf6eD42f808DfD4034aE3485Bf1ae72cba6ED8AE3",
           VolunteersFactory: "0x0eD50ddEE2c561016A9aaB9DaFC891DB3Afe554d",
         },
         tokens: [
@@ -1174,8 +1174,8 @@ const chainConfiguration = {
         icon: "/icons/xdc.webp",
         gasprice: "15000000000",
         explorer: {
-          url: "https://testnet.xdcscan.com",
-          nftPath: "/token/{{contractId}}?a={{tokenId}}",
+          url: "https://explorer.apothem.network",
+          nftPath: "/nft/{{contractId}}/{{tokenId}}",
         },
         rpcUrls: {
           default: "https://rpc.apothem.network",
@@ -1194,8 +1194,8 @@ const chainConfiguration = {
           TBA_Registry: "0x000000006551c19487814612e58fe06813775758",
           TBA_Implementation: "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",
           TBA_NFT: "0x88Bb2D04f180631BdC4Cd6129106665A0B6790D8", // 0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7
-          Receipt_NFT: "0x291Dfd56A9A244286B26c24DB7eE9091Dd1EC401",
-          Story_NFT: "0x40774DeBD32F73372D3AA48adCea23A81856A512",
+          Receipt_NFT: "0xfd92E8Ae8FC075C15375f2F57BE54ADd717c1085",
+          Story_NFT: "0xcA942Ca2817A2688788e88958918D3f93A9E85F5",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",

@@ -125,20 +125,21 @@ export default class Web3Server extends InterfaceBaseClass {
           const nftSex = getObjectValue(receipt, "logs.0.topics.3")
           const nftSeq = Number.parseInt(nftSex, 16)
           console.log("SEQ", nftSeq, nftSex)
-          tokenNum = ` #${nftSeq}`
+          tokenNum = nftSeq.toString()
         } else {
           const supply = await instance.methods.totalSupply.call({
             from: minter,
           }) // last minted is total nfts
           console.log("SUPPLY", supply)
           const nftSeq = Number.parseInt(supply.toString(), 10) - 1
-          tokenNum = ` #${nftSeq}`
+          // tokenNum = ` #${nftSeq}`
+          tokenNum = nftSeq.toString()
         }
-        const tokenId = contractId + tokenNum
+        // const tokenId = contractId + tokenNum
         const result = {
           success: true,
           txId: receipt?.transactionHash.toString(),
-          tokenId,
+          tokenId: tokenNum,
         }
         console.log("RESULT", result)
         return result
@@ -269,8 +270,6 @@ export default class Web3Server extends InterfaceBaseClass {
     const minter = acct.address
     const instance = new this.web3.eth.Contract(Abi1155, contractId)
     const noncex = await this.web3.eth.getTransactionCount(minter, "latest")
-    const code = await this.web3.eth.getCode(contractId)
-    console.log("Contract code exists:", code !== "0x")
     const nonce = Number(noncex) + 1
     console.log("MINTER", minter)
     console.log("NONCE", nonce)
@@ -279,14 +278,7 @@ export default class Web3Server extends InterfaceBaseClass {
     //const bytes = this.web3.utils.toHex(uri)
     const bytes = new TextEncoder().encode(uri)
     const hex = bytesToHex(bytes)
-    const tokenInt = Number(tokenId)
-    // const tokenInt = BigInt(tokenId)
-
-    console.log("Transaction data:", {
-      address,
-      tokenId: tokenInt,
-      uri,
-    })
+    const tokenInt = BigInt(tokenId)
     const data = instance.methods.mint(address, tokenInt, 1, hex).encodeABI()
     console.log("DATA", data)
     const { gasPrice, gasLimit } = await this.getGasPrice(
@@ -305,108 +297,33 @@ export default class Web3Server extends InterfaceBaseClass {
     }
     console.log("TX", tx)
 
-    if (!this.network) {
-      console.error("Network not set")
-      return { success: false, error: "Network not set" }
+    const sign = await this.web3.eth.accounts.signTransaction(tx, walletSeed)
+    const info = await this.web3.eth.sendSignedTransaction(sign.rawTransaction)
+    console.log("INFO", info)
+    const hasLogs = info.logs.length > 0
+    let tokenNum = 0
+    if (hasLogs) {
+      //console.log('LOGS.0', JSON.stringify(info?.logs[0].topics,null,2))
+      //console.log('LOGS.0.data', info?.logs[0].data)
+      // tokenNum = _get(info, "logs.0").data?.toString().substr(0, 66) || ""
+      //const num = info?.logs[0].data.substr(66)
+      //const int = num.replace(/^0+/,'')
+      // const txt = `0x${BigInt(num).toString(16)}`
+      // tokenNum = `${contractId} #${txt}`
+      //tokenNum = contract + ' #'+Number.parseInt(num)
+      tokenNum = Number(info.logs[0].topics?.[3] ?? 0)
     }
-    const nativeCurrency = this.network.tokens.find((t) => t.isNative)
-    if (!nativeCurrency) {
-      console.error("Native currency not found")
-      return { success: false, error: "Native currency not found" }
-    }
-    const chain = {
-      id: this.network.id,
-      name: this.network.name,
-      nativeCurrency: {
-        name: nativeCurrency.name,
-        symbol: nativeCurrency.symbol,
-        decimals: nativeCurrency.decimals,
-      },
-      rpcUrls: {
-        default: { http: [this.network.rpcUrls.default] },
-      },
-    }
-    const publicClient = createPublicClient({
-      transport: http(this.network?.rpcUrls?.default),
-      chain,
-    })
-
-    const walletClient = createWalletClient({
-      transport: http(this.network?.rpcUrls?.default),
-      chain,
-    })
-    console.log(
-      "Public client created",
-      this.network?.rpcUrls?.default,
-      walletClient,
-    )
-
-    try {
-      // Improved error logging
-      console.log("Detailed transaction data:", {
-        error: null,
-        contractId,
-        address,
-        uri,
-        chain: this.chain,
-        wallet: acct.address,
-      })
-
-      // First try simulating the transaction to get more detailed error info
-      const { request } = await publicClient.simulateContract({
-        account: acct.address as `0x${string}`,
-        address: contractId as `0x${string}`,
-        abi: Abi1155,
-        functionName: "mint",
-        args: [address, tokenInt, 1, hex],
-      })
-
-      const hash = await walletClient.writeContract(request)
-
-      const receipt = await publicClient.waitForTransactionReceipt({ hash })
-
-      if (receipt.status === "success") {
-        let tokenNum = ""
-        if (receipt.logs?.length > 0) {
-          console.log(
-            "LOGS.0",
-            JSON.stringify(receipt?.logs[0].topics, null, 2),
-          )
-
-          const nftSex = getObjectValue(receipt, "logs.0.topics.3")
-          const nftSeq = Number.parseInt(nftSex, 16)
-          console.log("SEQ", nftSeq, nftSex)
-          tokenNum = ` #${nftSeq}`
-        } else {
-          const supply = await instance.methods.totalSupply.call({
-            from: minter,
-          }) // last minted is total nfts
-          console.log("SUPPLY", supply)
-          const nftSeq = Number.parseInt(supply.toString(), 10) - 1
-          tokenNum = ` #${nftSeq}`
-        }
-        const tokenId = contractId + tokenNum
-        const result = {
-          success: true,
-          txId: receipt?.transactionHash.toString(),
-          tokenId,
-        }
-        console.log("RESULT", result)
-        return result
+    console.log("LOGS", info.logs?.[0]?.topics)
+    if (info.status === 1n) {
+      const result = {
+        success: true,
+        txId: Buffer.from(info?.transactionHash).toString("hex"),
+        tokenId: tokenNum,
       }
-      return { success: false, error: "Something went wrong" }
-    } catch (error) {
-      // Improved error logging
-      console.error("Detailed error:", {
-        error,
-        contractId,
-        address,
-        uri,
-        chain: this.chain,
-        wallet: acct.address,
-      })
-      return { success: false, error: "Transaction failed" }
+      console.log("RESULT", result)
+      return result
     }
+    return { success: false, error: "Something went wrong" }
   }
 
   async createSellOffer({

@@ -111,7 +111,7 @@ export default abstract class InterfaceBaseClass {
   }): Promise<{
     success: boolean
     txId?: string
-    tokenId?: string
+    tokenId?: number
     error?: string
   }>
 

@@ -116,8 +116,7 @@ export const getNftPath = (nftData: {
     throw new Error("Chain label and network are required")
   }
 
-  // Convert tokenId to BigInt
-  const tokenIdNumber = BigInt(nftData.tokenId)
+  const tokenIdNumber = nftData.tokenId
 
   // Get chain and network configuration
   const networkConfig = getNetworkForChain(chain)
@@ -136,6 +135,13 @@ export const getNftPath = (nftData: {
   const contractId = providedContractId || contractFromType
 
   const explorer = networkConfig.explorer
+  console.log(
+    "EXPLORER",
+    explorer,
+    contractId,
+    tokenIdNumber,
+    nftData.transactionId,
+  )
   const path = explorer.nftPath
     .replace("{{contractId}}", contractId)
     .replace("{{tokenId}}", tokenIdNumber.toString())

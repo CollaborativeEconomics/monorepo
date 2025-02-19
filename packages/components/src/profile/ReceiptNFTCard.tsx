@@ -2,7 +2,7 @@
 import appConfig, { chainConfig } from "@cfce/app-config"
 import { getChainConfigurationByName, getNftPath } from "@cfce/blockchain-tools"
 import type { NFTDataWithRelations } from "@cfce/database"
-import { type Chain, ChainNames, Network } from "@cfce/types"
+import { type Chain, ChainNames, type Network } from "@cfce/types"
 import { format } from "date-fns"
 import Image from "next/image"
 import Link from "next/link"
@@ -41,6 +41,22 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
     return null
   }
   const chainDetails = getChainConfigurationByName(chainName)
+
+  const nftPath = getNftPath({
+    chain: chainDetails.slug,
+    network: network as Network,
+    contractType: "Receipt_NFT",
+    tokenId,
+    transactionId,
+  })
+
+  console.log("NFT PATH", {
+    chain: chainDetails.slug,
+    network: network as Network,
+    contractType: "Receipt_NFT",
+    tokenId,
+    transactionId,
+  })
 
   const CardFront: React.FC<CardSideProps> = ({ onFlip }) => (
     <Card className="w-full border-1 bg-background shadow-xl">
@@ -107,16 +123,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
 
       <CardFooter className="p-4 pt-0 gap-2 shrink-0">
         <Button variant="default" className="flex-1">
-          <Link
-            target="_blank"
-            href={getNftPath({
-              chain: chainDetails.slug,
-              network: network as Network,
-              contractType: "Receipt_NFT",
-              tokenId,
-              transactionId,
-            })}
-          >
+          <Link target="_blank" href={nftPath}>
             View NFT
           </Link>
         </Button>
@@ -237,17 +244,10 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
       </CardContent>
 
       <CardFooter className="p-4 pt-0 gap-2 shrink-0">
-        <Button
-          variant="default"
-          className="flex-1"
-          onClick={() => {
-            const url = `${
-              chainConfig.xdc.networks[appConfig.chainDefaults.network].explorer
-            }/token/${tokenId}`
-            window.open(url, "_blank")
-          }}
-        >
-          View NFT
+        <Button variant="default" className="flex-1">
+          <Link href={nftPath} target="_blank">
+            View NFT
+          </Link>
         </Button>
         <Button variant="outline" className="flex-1" onClick={onFlip}>
           Back
