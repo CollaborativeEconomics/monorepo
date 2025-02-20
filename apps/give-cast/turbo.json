@@ -4,9 +4,7 @@
     "build": {
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
       "env": [
-        "PROVIDER_URL",
         "MINTER_CONTRACT",
-        "MINTER_ADDRESS",
         "MINTER_PRIVATE",
         "TICKER_API_KEY",
         "OFFICIAL_CFCE_API_KEY",

@@ -5,9 +5,7 @@ import { z } from "zod"
 
 // App-specific schema
 const appSchema = {
-  PROVIDER_URL: z.string().url(),
   MINTER_CONTRACT: z.string().refine(isAddress),
-  MINTER_ADDRESS: z.string().refine(isAddress),
   MINTER_PRIVATE: z.string(),
   TICKER_API_KEY: z.string(),
 } as const
