@@ -14,7 +14,6 @@
         "CFCE_REGISTRY_API_KEY",
         "IPFS_API_KEY",
         "IPFS_API_SECRET",
-        "CFCE_SECRET_KEY",
         "MAILGUN_API_KEY"
       ],
       "dependsOn": ["^build"]
