@@ -1596,6 +1596,9 @@ importers:
       '@stellar/stellar-sdk':
         specifier: ^13.1.0
         version: 13.1.0
+      '@t3-oss/env-nextjs':
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.7.3)(valibot@0.31.1)(zod@3.24.1)
       '@tanstack/react-query':
         specifier: ^5.62.7
         version: 5.65.1(react@19.0.0)
@@ -1635,6 +1638,9 @@ importers:
       decimal.js:
         specifier: ^10.4.3
         version: 10.5.0
+      jiti:
+        specifier: 1.21.7
+        version: 1.21.7
       jwt-decode:
         specifier: 4.0.0
         version: 4.0.0
@@ -1677,6 +1683,9 @@ importers:
       web3:
         specifier: ^4.16.0
         version: 4.16.0(bufferutil@4.0.9)(encoding@0.1.12)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.24.1)
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
     devDependencies:
       '@types/lodash':
         specifier: ^4.17.13
