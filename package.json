@@ -11,7 +11,8 @@
     "update-dependencies": "syncpack update",
     "delete-node-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
     "delete-builds": "find packages/* -type d -name \"dist\" -exec rm -rf {} +",
-    "delete-cache": "find .turbo/cache  -mtime +14  -exec rm {} +"
+    "delete-cache": "find .turbo/cache  -mtime +14  -exec rm {} +",
+    "delete-turbo": "find . -name .turbo -type d -exec rm -rf {} +"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
