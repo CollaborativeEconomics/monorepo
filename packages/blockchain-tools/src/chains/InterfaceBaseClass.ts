@@ -104,14 +104,14 @@ export default abstract class InterfaceBaseClass {
 
   public async mintNFT1155?(params: {
     address: string
-    tokenId: string
+    tokenId: number
     uri: string
     contractId: string
     walletSeed: string
   }): Promise<{
     success: boolean
     txId?: string
-    tokenId?: string
+    tokenId?: number
     error?: string
   }>
 

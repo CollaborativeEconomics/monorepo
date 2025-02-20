@@ -234,9 +234,11 @@ export default async function createStory(
     })
     posthogNodeClient.shutdown()
 
+    console.log("TOKEN ID", tokenId, BigInt(tokenId).toString())
+
     // Update the story with token information
     const result = await updateStory(dbStory.id, {
-      tokenId,
+      tokenId: BigInt(tokenId).toString(),
       metadata: `ipfs:${tokenCID}`,
     })
     return result

@@ -17,7 +17,6 @@ export const env = createEnv({
     IPFS_API_KEY: z.string(),
     IPFS_API_SECRET: z.string(),
     IPFS_DEFAULT_REGION: z.string(),
-    IPFS_DEFAULT_BUCKET: z.string(),
     IPFS_AVATARS_BUCKET: z.string(),
     IPFS_BUCKET_TOKEN: z.string(),
     IPFS_GATEWAY_URL: z.string().url(),

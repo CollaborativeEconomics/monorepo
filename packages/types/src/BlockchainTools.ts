@@ -92,7 +92,7 @@ export interface NetworkConfig {
     nftPath: string
   }
   rpcUrls: {
-    main: string
+    default: string
     [key: string]: string
   }
   wssurl: string
