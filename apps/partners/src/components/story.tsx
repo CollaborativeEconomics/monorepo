@@ -1,21 +1,18 @@
-import Image from 'next/image';
-import type { Story } from '@cfce/database';
-import { DateTime } from 'luxon';
+import type { Story } from "@cfce/database"
+import { ipfsCIDToUrl } from "@cfce/utils"
+import { DateTime } from "luxon"
+import Image from "next/image"
 
-const Story = (item: Story) => {
+const StoryCard = (item: Story) => {
   return (
     <div className="flex flex-row justify-start w-full">
       {item.image ? (
         <Image
-          src={
-            item.image.startsWith('ipfs:')
-              ? process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL + item.image.substr(5)
-              : item.image
-          }
+          src={ipfsCIDToUrl(item.image)}
           width={100}
           height={100}
           className="w-32 h-32 mr-6 rounded"
-          alt={item.name ?? 'Story image'}
+          alt={item.name ?? "Story image"}
         />
       ) : null}
       <div>
@@ -24,7 +21,7 @@ const Story = (item: Story) => {
         <h3 className="text-base">{item.description}</h3>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Story;
+export default StoryCard

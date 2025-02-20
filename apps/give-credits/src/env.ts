@@ -1,13 +1,10 @@
 import { runtimeEnv, sharedEnvSchema } from "@cfce/app-config"
 import { createEnv } from "@t3-oss/env-nextjs"
-import { isAddress } from "ethers"
 import { z } from "zod"
 
 // App-specific schema
 const appSchema = {
-  MINTER_CONTRACT: z.string().refine(isAddress),
-  MINTER_PRIVATE: z.string(),
-  TICKER_API_KEY: z.string(),
+  STELLAR_WALLET_SECRET: z.string(),
 } as const
 
 // App-specific runtime env
@@ -21,12 +18,20 @@ export const env = createEnv({
     ...sharedEnvSchema.cfce,
     ...sharedEnvSchema.storage,
     ...sharedEnvSchema.mail,
+    ...sharedEnvSchema.auth,
+    ...sharedEnvSchema.database,
+    ...sharedEnvSchema.api,
+    ...sharedEnvSchema.features,
   },
   client: sharedEnvSchema.client,
   runtimeEnv: {
     ...runtimeEnv.cfce,
     ...runtimeEnv.storage,
     ...runtimeEnv.mail,
+    ...runtimeEnv.auth,
+    ...runtimeEnv.database,
+    ...runtimeEnv.api,
+    ...runtimeEnv.features,
     ...runtimeEnv.client,
     ...appRuntimeEnv,
   },

@@ -1,14 +1,26 @@
 {
   "extends": ["//"],
-  "globalEnv": [
-    "POSTGRES_PRISMA_URL",
-    "NEXT_PUBLIC_APP_ENV",
-    "NEXT_PUBLIC_APP_ID",
-    "MOBULA_API_KEY"
-  ],
   "tasks": {
     "build": {
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
+      "env": [
+        "NEXT_PUBLIC_APP_ENV",
+        "NEXT_PUBLIC_APP_ID",
+        "OFFICIAL_CFCE_API_KEY",
+        "CFCE_REGISTRY_API_URL",
+        "CFCE_REGISTRY_API_KEY",
+        "IPFS_API_KEY",
+        "IPFS_API_SECRET",
+        "BLOB_READ_WRITE_TOKEN",
+        "MAILGUN_API_KEY",
+        "XDC_WALLET_SECRET",
+        "POSTGRES_PRISMA_URL",
+        "MOBULA_API_KEY",
+        "ENABLE_ANCHAIN",
+        "ENABLE_GLOBALID",
+        "STELLAR_CARBON",
+        "CRON_SECRET"
+      ],
       "dependsOn": ["^build"]
     }
   }
