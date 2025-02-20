@@ -51,7 +51,7 @@ const chainConfiguration = {
         ],
         contracts: {
           Receipt_NFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4",
-          VolunteersFactory: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
+          VolunteersFactory: "0x24265D9042d8602Ba26607750894CFC5718d7FC0",
         },
         wallet: "0x1540026E002b09bc1720D130d90CB674b06121e2",
         wssurl: "",
@@ -102,7 +102,7 @@ const chainConfiguration = {
           // Receipt_NFT: "0xd5D9defAe9b60FBD0f7E9c7Be361f462d8715eef",
           // Receipt_NFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
           Receipt_NFT: "0x5465D45A11F468DB302d72Fd337745D8fdb4727A",
-          VolunteersFactory: "0xfbB261eADa2b1D881715984222De161F3F3E914e",
+          VolunteersFactory: "0xd96E5542C1fb269b959C36f6F331EbBd6C1EDB61",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",
