@@ -57,18 +57,20 @@ export default function RewardClient({
 
     try {
       const registered = volunteers?.map(it => it.address);
-      console.log('REGISTERED', registered, {
+      console.log('REGISTERED', registered)
+      console.log('TX', {
         address: distributor,
         abi: DistributorAbi,
-        functionName: 'distributeTokensByUnit',
+        functionName: 'distributeTokensByUnit' as const,
         args: [registered as `0x${string}`[]],
         chain: defaultChain,
         account: account.address,
       });
+      
       const hash = await writeContractAsync({
         address: distributor,
         abi: DistributorAbi,
-        functionName: 'distributeTokensByUnit',
+        functionName: 'distributeTokensByUnit' as const,
         args: [registered as `0x${string}`[]],
         chain: defaultChain,
         account: account.address,

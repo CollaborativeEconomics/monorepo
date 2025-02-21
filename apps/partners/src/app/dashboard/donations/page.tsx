@@ -6,7 +6,8 @@ import DonationsTable from './DonationsTable';
 export default async function Page() {
   const session = await auth();
   const orgId = session?.orgId ?? '';
-  const donations = await getDonations({ orgId: orgId });
+  console.log('ORGID', orgId)
+  const donations = await getDonations({ orgId });
   const donationsPlain = JSON.parse(JSON.stringify(donations))
 
   return (

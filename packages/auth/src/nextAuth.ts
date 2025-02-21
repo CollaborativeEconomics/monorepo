@@ -38,10 +38,10 @@ const authOptions: NextAuthConfig = {
       }
       // Handle session updates
       if (trigger === "update" && session) {
-        //console.log('AUTH UPDATE', session)
+        console.log('AUTH UPDATE', session)
         token.name = session?.name || ""
         token.email = session?.email || ""
-        token.picture = session?.image || "/media/nopic.png"
+        token.picture = session?.image || "/nopic.png"
         if (session?.orgId) {
           token.orgId = session.orgId
         }
@@ -89,6 +89,7 @@ const authOptions: NextAuthConfig = {
           token.orgName = "User"
         }
       }
+      //console.log('AUTH TOKEN', token)
       return token
     },
     async session(args) {

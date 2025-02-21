@@ -49,12 +49,12 @@ export default function EventClient({
   )
 
   // Constants
-  // TODO: move to app config
-  const arbitrum =
-    chainConfig.arbitrum.networks[appConfig.chainDefaults.network]
-  // const FactoryAddress = "0xD4E47912a12f506843F522Ea58eA31Fd313eB2Ee"
+  const arbitrum = chainConfig.arbitrum.networks[appConfig.chainDefaults.network]
   const FactoryAddress = arbitrum?.contracts?.VolunteersFactory
-  const usdcAddress = arbitrum.tokens.find((t) => t.symbol === "USDC")?.contract
+  const payToken = arbitrum.tokens.find((t) => t.symbol === "USDC")
+  const usdcAddress = payToken?.contract || ''
+  const tokenDecimals = payToken?.decimals || 0
+
   let NFTBlockNumber: number
   let distributorBlockNumber: number
 
@@ -106,6 +106,9 @@ export default function EventClient({
         throw new Error("USDC address not found")
       }
 
+      //const baseFee = parseEther(event.unitvalue?.toString() || "0.0001"),
+      const baseFee = BigInt((event.unitvalue||1) * (10**tokenDecimals)) // usdc uses only 6 decimals
+
       const args = {
         address: FactoryAddress,
         abi: FactoryAbi,
@@ -113,13 +116,13 @@ export default function EventClient({
         args: [
           usdcAddress as `0x${string}`,
           NFTAddress as `0x${string}`,
-          parseEther(event.unitvalue?.toString() || "0"),
+          baseFee
         ],
         chain: defaultChain,
         account: address,
       }
 
-      console.log("ARGS", args)
+      console.log("DeployTokenDistributor ARGS", args)
 
       const hash = await writeContractAsync({
         address: FactoryAddress as `0x${string}`, // other chains don't use 0x
@@ -128,8 +131,7 @@ export default function EventClient({
         args: [
           usdcAddress as `0x${string}`,
           NFTAddress as `0x${string}`,
-          // parseEther(event.unitvalue?.toString() || '0'),
-          BigInt(0),
+          baseFee
         ],
         chain: defaultChain,
         account: address,

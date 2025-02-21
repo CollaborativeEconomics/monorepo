@@ -48,6 +48,8 @@ export async function getWallets(
 export async function newWallet(
   data: Prisma.WalletCreateInput,
 ): Promise<Wallet> {
+  console.log('NEW DATA', data)
   const result = await prismaClient.wallet.create({ data })
+  console.log('RES DATA', result)
   return result
 }
