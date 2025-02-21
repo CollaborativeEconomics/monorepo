@@ -26,7 +26,7 @@ class FreighterWallet extends InterfaceBaseClass {
     super()
     this.network = getNetworkForChain("stellar")
     this.chain = chainConfig.stellar
-    this.horizon = new StellarSDK.Horizon.Server(this.network.rpcUrls.main)
+    this.horizon = new StellarSDK.Horizon.Server(this.network.rpcUrls.default)
     //console.log("FREIGHT INIT")
     //console.log("RPC", this.network)
   }
@@ -87,7 +87,7 @@ class FreighterWallet extends InterfaceBaseClass {
       const opr = StellarSDK.Operation.payment(data)
       const opt = {
         fee: `${fee}`,
-        network: this.network.rpcUrls.main,
+        network: this.network.rpcUrls.default,
         networkPassphrase: this.network.networkPassphrase,
       }
       console.log("OPR:", data)

@@ -31,7 +31,7 @@ export default class Web3Server extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {
     this.chain = chainConfig[slug]
     this.network = getNetworkForChain(slug)
-    this.web3 = new Web3(this.network.rpcUrls.main)
+    this.web3 = new Web3(this.network.rpcUrls.default)
   }
 
   async getGasPrice(minter: string, contractId: string, data: string) {
@@ -90,7 +90,7 @@ export default class Web3Server extends InterfaceBaseClass {
 
     const account = privateKeyToAccount(walletSeed as `0x${string}`)
 
-    const RPC_URL = this.network?.rpcUrls?.main
+    const RPC_URL = this.network?.rpcUrls?.default
     console.log("RPC_URL", RPC_URL)
 
     const publicClient = createPublicClient({
@@ -125,20 +125,21 @@ export default class Web3Server extends InterfaceBaseClass {
           const nftSex = getObjectValue(receipt, "logs.0.topics.3")
           const nftSeq = Number.parseInt(nftSex, 16)
           console.log("SEQ", nftSeq, nftSex)
-          tokenNum = ` #${nftSeq}`
+          tokenNum = nftSeq.toString()
         } else {
           const supply = await instance.methods.totalSupply.call({
             from: minter,
           }) // last minted is total nfts
           console.log("SUPPLY", supply)
           const nftSeq = Number.parseInt(supply.toString(), 10) - 1
-          tokenNum = ` #${nftSeq}`
+          // tokenNum = ` #${nftSeq}`
+          tokenNum = nftSeq.toString()
         }
-        const tokenId = contractId + tokenNum
+        // const tokenId = contractId + tokenNum
         const result = {
           success: true,
           txId: receipt?.transactionHash.toString(),
-          tokenId,
+          tokenId: tokenNum,
         }
         console.log("RESULT", result)
         return result
@@ -250,7 +251,7 @@ export default class Web3Server extends InterfaceBaseClass {
     walletSeed,
   }: {
     address: string
-    tokenId: string
+    tokenId: number
     uri: string
     contractId: string
     walletSeed: string
@@ -300,16 +301,17 @@ export default class Web3Server extends InterfaceBaseClass {
     const info = await this.web3.eth.sendSignedTransaction(sign.rawTransaction)
     console.log("INFO", info)
     const hasLogs = info.logs.length > 0
-    let tokenNum = ""
+    let tokenNum = 0
     if (hasLogs) {
       //console.log('LOGS.0', JSON.stringify(info?.logs[0].topics,null,2))
       //console.log('LOGS.0.data', info?.logs[0].data)
-      const num = _get(info, "logs.0").data?.toString().substr(0, 66) || ""
+      // tokenNum = _get(info, "logs.0").data?.toString().substr(0, 66) || ""
       //const num = info?.logs[0].data.substr(66)
       //const int = num.replace(/^0+/,'')
-      const txt = `0x${BigInt(num).toString(16)}`
-      tokenNum = `${contractId} #${txt}`
+      // const txt = `0x${BigInt(num).toString(16)}`
+      // tokenNum = `${contractId} #${txt}`
       //tokenNum = contract + ' #'+Number.parseInt(num)
+      tokenNum = Number(info.logs[0].topics?.[3] ?? 0)
     }
     console.log("LOGS", info.logs?.[0]?.topics)
     if (info.status === 1n) {
@@ -426,7 +428,7 @@ export default class Web3Server extends InterfaceBaseClass {
       console.error("Chain not set, run setChain first")
       return { success: false, error: "Chain not set" }
     }
-    console.log("FETCH", this?.network?.rpcUrls?.main)
+    console.log("FETCH", this?.network?.rpcUrls?.default)
     const data = { id: "1", jsonrpc: "2.0", method, params }
     const body = JSON.stringify(data)
     const opt = {
@@ -435,7 +437,7 @@ export default class Web3Server extends InterfaceBaseClass {
       body,
     }
     try {
-      const res = await fetch(this.network.rpcUrls.main, opt)
+      const res = await fetch(this.network.rpcUrls.default, opt)
       const inf = await res.json()
       return inf?.result
     } catch (ex) {

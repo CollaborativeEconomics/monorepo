@@ -11,11 +11,11 @@ export class RegistryApi {
 
   constructor() {
     // Use window.location.origin in the browser, fallback to "/" for SSR
-    // this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : `${process.env.NEXTAUTH_URL}/api`
+    // this.baseUrl = typeof window !== "undefined" ? `${window.location.origin}/api` : `${process.env.AUTH_URL}/api`
     if (typeof window !== "undefined") {
       this.baseUrl = `${window.location.origin}/api`
-    } else if (process.env.NEXTAUTH_URL) {
-      this.baseUrl = `${process.env.NEXTAUTH_URL}/api`
+    } else if (process.env.AUTH_URL) {
+      this.baseUrl = `${process.env.AUTH_URL}/api`
     } else if (appConfig.apis.registry.apiUrl) {
       this.baseUrl = appConfig.apis.registry.apiUrl
     } else {
@@ -47,7 +47,7 @@ export class RegistryApi {
       //  data,
       //  success: true,
       //}
-      
+
       //const data: ApiResponse<T> = await response.json()
       //if (!data.success) {
       //  throw new Error(data.error || "An error occurred")
@@ -74,7 +74,10 @@ export class RegistryApi {
     endpoint: string,
     data: U,
   ): Promise<ApiResponse<T>> {
-    const res = await this.request<T>(endpoint, { method: "POST", body: JSON.stringify(data) })
+    const res = await this.request<T>(endpoint, {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
     //console.log('RES', res)
     return res
   }
@@ -93,7 +96,7 @@ export class RegistryApi {
 
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
     const res = await this.request<T>(endpoint, { method: "DELETE" })
-    console.log('RES', res)
+    console.log("RES", res)
     return res
   }
 }

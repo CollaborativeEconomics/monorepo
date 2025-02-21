@@ -21,7 +21,7 @@ const chains: AppConfig["chains"] = {
     ...chainConfiguration.tron.networks.testnet,
     contracts: {
       // ...chainConfiguration.tron.networks.testnet.contracts,
-      Receipt_NFT: "",
+      ReceiptNFT: "",
     },
     enabledWallets: ["metamask"],
   },

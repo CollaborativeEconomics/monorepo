@@ -28,7 +28,7 @@ export default class StellarServer extends InterfaceBaseClass {
     super()
     this.chain = chainConfig.stellar
     this.network = getNetworkForChain(this.chain.slug)
-    this.sorobanServer = new rpc.Server(this.network.rpcUrls.main)
+    this.sorobanServer = new rpc.Server(this.network.rpcUrls.default)
   }
 
   async mintNFT({
@@ -52,10 +52,10 @@ export default class StellarServer extends InterfaceBaseClass {
       "in",
       this.network.slug,
     )
-    console.log("CTR", contractId, this.network.rpcUrls.main)
+    console.log("CTR", contractId, this.network.rpcUrls.default)
     const contract = new Contract721({
       contractId,
-      rpcUrl: this.network.rpcUrls.main,
+      rpcUrl: this.network.rpcUrls.default,
       secret: walletSeed,
     })
     //console.log('CTR', contract.spec)
@@ -139,7 +139,7 @@ export default class StellarServer extends InterfaceBaseClass {
 
   async fetchLedger(query: string) {
     try {
-      const url = `${this.network.rpcUrls.main}/${query}`
+      const url = `${this.network.rpcUrls.default}/${query}`
       console.log("FETCH", url)
       const options = {
         method: "GET",

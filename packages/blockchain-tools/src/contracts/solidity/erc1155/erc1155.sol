@@ -1187,10 +1187,10 @@ abstract contract ERC1155Burnable is ERC1155 {
   }
 }
 
-// File: NFT1155.sol
+// File: StoryNFT1155.sol
 pragma solidity ^0.8.9;
 
-contract NFT1155 is ERC1155, Ownable, ERC1155Burnable, ERC1155Supply {
+contract StoryNFT1155 is ERC1155, Ownable, ERC1155Burnable, ERC1155Supply {
   constructor() ERC1155("https://give.cfce.io/nft") {}
 
   function setURI(string memory newuri) public onlyOwner {

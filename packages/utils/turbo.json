@@ -5,12 +5,8 @@
     "IPFS_API_KEY",
     "IPFS_API_SECRET",
     "BLOB_READ_WRITE_TOKEN",
-    "XDC_MINTER_WALLET",
-    "XDC_MINTER_SECRET",
-    "XDC_NFT721_CONTRACT",
-    "XDC_NFT1155_CONTRACT",
+    "XDC_WALLET_SECRET",
     "XDC_NFT6551_CONTRACT",
-    "XDC_NETWORK",
     "TURBO_ENV"
   ],
   "tasks": {
@@ -21,8 +17,6 @@
         "IPFS_API_KEY",
         "IPFS_API_SECRET",
         "BLOB_READ_WRITE_TOKEN",
-        "XDC_MINTER_SECRET",
-        "XDC_NETWORK",
         "TURBO_ENV"
       ],
       "dependsOn": [
