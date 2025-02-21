@@ -45,7 +45,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
   const nftPath = getNftPath({
     chain: chainDetails.slug,
     network: network as Network,
-    contractType: "Receipt_NFT",
+    contractType: "ReceiptNFT",
     tokenId,
     transactionId,
   })
@@ -53,7 +53,7 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
   console.log("NFT PATH", {
     chain: chainDetails.slug,
     network: network as Network,
-    contractType: "Receipt_NFT",
+    contractType: "ReceiptNFT",
     tokenId,
     transactionId,
   })

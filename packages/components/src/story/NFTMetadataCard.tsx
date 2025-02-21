@@ -41,7 +41,7 @@ export function NFTMetadataCard({ story, onFlip }: NFTMetadataCardProps) {
   const nftPath = getNftPath({
     chain: "xdc",
     network: appConfig.chainDefaults.network,
-    contractType: "Story_NFT",
+    contractType: "StoryNFT",
     tokenId: story?.tokenId ?? "",
   })
 

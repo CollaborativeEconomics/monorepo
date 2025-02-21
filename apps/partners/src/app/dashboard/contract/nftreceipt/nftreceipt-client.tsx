@@ -137,7 +137,7 @@ export default function NFTReceiptClient({
       }
 
       // This only works for Stellar, refactor and universalize
-      const wasm_hash = appChainConfig?.contracts?.Receipt_NFTHash || ""
+      const wasm_hash = appChainConfig?.contracts?.ReceiptNFTHash || ""
       const init_fn = "initialize"
       const init_args = [name, symbol]
       const res = await factory.NFTReceipt.deploy({

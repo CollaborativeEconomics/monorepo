@@ -37,7 +37,7 @@ export async function mintStoryNFT(
   )
   const address = tbaRec?.account_address // || appConfig.chains?.xdc?.wallet // mint to story TBA address
   //const address = '0x878528f2eb64b5eb47faecf5909d476e2cbda55f' // TEST
-  const contractId = chainConfig.xdc.networks[network]?.contracts?.Story_NFT
+  const contractId = chainConfig.xdc.networks[network]?.contracts?.StoryNFT
   const walletSeed = process.env.XDC_WALLET_SECRET
   console.log({ tokenId, tokenCID, contractId, address })
 
