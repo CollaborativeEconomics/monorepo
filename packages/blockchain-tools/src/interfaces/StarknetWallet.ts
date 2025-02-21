@@ -426,7 +426,8 @@ class StarknetWallet extends InterfaceBaseClass {
       const {
         balance: { low },
       } = balance
-      return { success: true, balance: low }
+      const modifiedBalance = Number(low) / 10 ** 18
+      return { success: true, balance: modifiedBalance }
     } catch (error) {
       return { success: false, error: "Error getting balance" }
     }
