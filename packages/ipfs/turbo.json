@@ -1,12 +1,8 @@
 {
   "extends": ["//"],
   "globalEnv": [
-    "IPFS_GATEWAY_URL",
-    "IPFS_API_ENDPOINT",
-    "IPFS_API_PINNING",
     "IPFS_API_KEY",
     "IPFS_API_SECRET",
-    "IPFS_DEFAULT_REGION",
     "BLOB_READ_WRITE_TOKEN",
     "TURBO_ENV"
   ],
