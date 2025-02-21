@@ -55,10 +55,14 @@ export default function EventClient({
 
   // Constants
   const arbNetwork = getNetworkForChain("arbitrum")
-  const FactoryAddress = arbNetwork.contracts?.volunteers?.factory
+  const FactoryAddress = appConfig.chains.arbitrum?.contracts?.volunteersFactory
   const usdcAddress = arbNetwork.tokens?.USDC?.contract
   let NFTBlockNumber: number
   let distributorBlockNumber: number
+
+  if (!FactoryAddress || !usdcAddress) {
+    throw new Error("Factory or USDC address not found")
+  }
 
   async function deployNFT() {
     try {
@@ -70,7 +74,7 @@ export default function EventClient({
       // ConnectorNotConnected error when Metamask is not active
       // Enable Metamask first then retry
       const hash = await writeContractAsync({
-        address: FactoryAddress,
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "deployVolunteerNFT",
         args: [uri as `0x${string}`, address as `0x${string}`],
@@ -87,7 +91,7 @@ export default function EventClient({
       NFTBlockNumber = Number(nftReceipt.blockNumber)
 
       const NFTAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress,
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "getDeployedVolunteerNFT",
         args: [address as `0x${string}`],
@@ -124,7 +128,7 @@ export default function EventClient({
       console.log("ARGS", args)
 
       const hash = await writeContractAsync({
-        address: FactoryAddress,
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "deployTokenDistributor",
         args: [
@@ -146,7 +150,7 @@ export default function EventClient({
       distributorBlockNumber = Number(distributorReceipt.blockNumber)
 
       const distributorAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress,
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "getDeployedTokenDistributor",
         args: [address as `0x${string}`],
