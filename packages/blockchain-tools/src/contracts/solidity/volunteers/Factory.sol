@@ -34,8 +34,7 @@ contract VolunteerFactory {
         external
         returns (address)
     {
-        TokenDistributor token_distributor =
-            new TokenDistributor(_token, msg.sender, _nftContract, _baseFee); // @dev Create a new TokenDistributor
+        TokenDistributor token_distributor = new TokenDistributor(_token, msg.sender, _nftContract, _baseFee); // @dev Create a new TokenDistributor
         deployedTokenDistributors[msg.sender] = address(token_distributor); // @dev Store the deployed contract address
         emit VolunteerDeployed(msg.sender, address(token_distributor)); // @dev Emit event for deployment
         return address(token_distributor); // @dev Return the address of the deployed contract

@@ -542,4 +542,3 @@ export const VolunteersNFTAbi = [
     ]
   }
 ] as const;
-  

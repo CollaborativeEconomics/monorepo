@@ -54,7 +54,6 @@ export default function EventClient({
   const payToken = arbitrum.tokens.find((t) => t.symbol === "USDC")
   const usdcAddress = payToken?.contract || ''
   const tokenDecimals = payToken?.decimals || 0
-
   let NFTBlockNumber: number
   let distributorBlockNumber: number
 
@@ -207,44 +206,38 @@ export default function EventClient({
   }
 
   return (
-      <div>
-        <Title text="Volunteer To Earn Event" />
-        <div className={styles.mainBox}>
-          {event.created && (
-            <DateDisplay timestamp={event.created} className="p-4" />
-          )}
-          <div className="p-4 mt-2">
-            <Gallery images={media} />
-          </div>
-          <div className="flex flex-col pb-8 pt-3 gap-3 px-4">
-            <h1 className="mt-4 text-4xl">{event.name}</h1>
-            <p>{event.description}</p>
-          </div>
-
-          {!eventStarted && (
-            <div className="w-full flex flex-col justify-center align-center items-center mb-8">
-              <ButtonBlue text="START EVENT" onClick={deploy} />
-              <p>{message}</p>
-            </div>
-          )}
-
-          {eventStarted && (
-            <div className="w-full flex flex-row justify-between mb-8">
-              <LinkButton
-                href={`/dashboard/events/register/${id}`}
-                text="REGISTER"
-              />
-              <LinkButton
-                href={`/dashboard/events/report/${id}`}
-                text="REPORT"
-              />
-              <LinkButton
-                href={`/dashboard/events/reward/${id}`}
-                text="REWARD"
-              />
-            </div>
-          )}
+    <div>
+      <Title text="Volunteer To Earn Event" />
+      <div className={styles.mainBox}>
+        {event.created && (
+          <DateDisplay timestamp={event.created} className="p-4" />
+        )}
+        <div className="p-4 mt-2">
+          <Gallery images={media} />
         </div>
+        <div className="flex flex-col pb-8 pt-3 gap-3 px-4">
+          <h1 className="mt-4 text-4xl">{event.name}</h1>
+          <p>{event.description}</p>
+        </div>
+
+        {!eventStarted && (
+          <div className="w-full flex flex-col justify-center align-center items-center mb-8">
+            <ButtonBlue text="START EVENT" onClick={deploy} />
+            <p>{message}</p>
+          </div>
+        )}
+
+        {eventStarted && (
+          <div className="w-full flex flex-row justify-between mb-8">
+            <LinkButton
+              href={`/dashboard/events/register/${id}`}
+              text="REGISTER"
+            />
+            <LinkButton href={`/dashboard/events/report/${id}`} text="REPORT" />
+            <LinkButton href={`/dashboard/events/reward/${id}`} text="REWARD" />
+          </div>
+        )}
       </div>
-  );
+    </div>
+  )
 }

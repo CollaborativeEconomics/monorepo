@@ -34,10 +34,11 @@ const chains: AppConfig["chains"] = {
     ...chainConfig.stellar.networks.testnet,
     contracts: {
       ...chainConfig.stellar.networks.testnet.contracts,
-      CreditsFactory:
-        "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
-      ReceiptFactory:
-        "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      CreditsFactory: "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      ReceiptFactory: "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      //receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
+      //storyERC1155: "0xc917ff4128525a65639d18f1d240a788081f022d",
+      //volunteersFactory: "0xd96E5542C1fb269b959C36f6F331EbBd6C1EDB61",
     },
     enabledWallets: ["freighter"],
   },

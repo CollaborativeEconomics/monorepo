@@ -106,11 +106,13 @@ contract TokenDistributor is Owned, IVolunteer {
     }
 
     /**
-     * @dev Removes an address from the whitelist
-     * @param user The address to be removed from the whitelist
+     * @dev Withdraws the remaining tokens from the contract after the campaign has ended
+     * This function is only callable by the owner
      */
-    function removeFromWhitelist(address user) external onlyOwner {
-        whitelisted[user] = false; // @dev Mark the address as not whitelisted
+    function withdrawToken() external onlyOwner {
+        IERC20 tokenContract = IERC20(s_token);
+        uint256 tokenBalance = tokenContract.balanceOf(address(this)); // @dev Get the token balance of the contract
+        tokenContract.transfer(owner, tokenBalance); // @dev Send the remaining tokens to the owner
     }
 
     /**
@@ -149,8 +151,9 @@ contract TokenDistributor is Owned, IVolunteer {
     }
 
     /**
-     * @dev Returns the list of whitelisted addresses
-     * @return whitelist The list of whitelisted addresses
+     *
+     * @dev Returns the current base fee
+     * @return _baseFee The current base fee
      */
     function getWhitelistedAddresses() external view returns (address[] memory whitelist) {
         whitelist = s_registeredAddresses; // @dev Return the list of registered addresses
@@ -166,12 +169,11 @@ contract TokenDistributor is Owned, IVolunteer {
     }
 
     /**
-     * @dev Checks if a user is whitelisted
-     * @param user The address to check
-     * @return status True if the user is whitelisted, false otherwise
+     * @dev Returns the NFT contract address
+     * @return _nftContract The NFT contract address
      */
-    function isWhitelisted(address user) external view returns (bool status) {
-        status = whitelisted[user]; // @dev Return the whitelist status of the user
+    function getNFTAddress() external view returns (address) {
+        return address(i_nftContract);
     }
 
     function getNFTAddress() external view returns (ERC1155) {
