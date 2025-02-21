@@ -1,11 +1,9 @@
-import appConfig from "@cfce/app-config"
 import type { Event as EventType } from "@cfce/database"
 import { ipfsCIDToUrl } from "@cfce/utils"
 import { DateTime } from "luxon"
 import Image from "next/image"
 
 const Event = (event: EventType) => {
-  const ipfsGatewayUrl = appConfig.apis.ipfs.gateway
   return (
     <div className="flex flex-row justify-start w-full">
       {event.image ? (
