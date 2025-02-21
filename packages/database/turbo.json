@@ -2,7 +2,6 @@
   "extends": ["//"],
   "globalEnv": [
     "POSTGRES_PRISMA_URL",
-    "IPFS_GATEWAY_URL",
     "IPFS_API_KEY",
     "IPFS_API_SECRET",
     "BLOB_READ_WRITE_TOKEN"
