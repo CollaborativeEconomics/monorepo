@@ -30,18 +30,6 @@ const chains: AppConfig["chains"] = {
     ...chainConfig.arbitrum.networks.testnet,
     enabledWallets: ["metamask"],
   },
-  stellar: {
-    ...chainConfig.stellar.networks.testnet,
-    contracts: {
-      ...chainConfig.stellar.networks.testnet.contracts,
-      CreditsFactory: "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
-      ReceiptFactory: "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
-      //receiptMintbotERC721: "0x4b3a0c6d668b43f3f07904e125cc234a00a1f9ab",
-      //storyERC1155: "0xc917ff4128525a65639d18f1d240a788081f022d",
-      //volunteersFactory: "0xd96E5542C1fb269b959C36f6F331EbBd6C1EDB61",
-    },
-    enabledWallets: ["freighter"],
-  },
   xdc: {
     ...chainConfig.xdc.networks.testnet,
     enabledWallets: ["freighter"],
@@ -49,6 +37,22 @@ const chains: AppConfig["chains"] = {
   xrpl: {
     ...chainConfig.xrpl.networks.testnet,
     enabledWallets: ["gemwallet", "xaman"],
+  },
+  stellar: {
+    slug: "stellar",
+    network: "testnet",
+    contracts: {
+      CreditsFactory: "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      Credits: "CDHYT3A4XGBNSWP2P7XQTS2AT5XICKD5KOAZ7S2Y2APJMXRDIENP2LZR",
+      CreditsHash: "8c850c8ad832e8fcba395dc89009dad9b68c78902b275a5da565c55fe0091c7f",
+      ReceiptFactory: "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
+      Receipt_NFT: "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
+      Receipt_NFTHash: "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
+      xlmNativeCoin: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+    },
+    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
+    enabledWallets: ["freighter"],
+    //tokens: ["XLM"],
   },
 }
 

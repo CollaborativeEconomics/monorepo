@@ -57,6 +57,10 @@ export default function EventClient({
   let NFTBlockNumber: number
   let distributorBlockNumber: number
 
+  if (!FactoryAddress || !usdcAddress) {
+    throw new Error("Factory or USDC address not found")
+  }
+
   async function deployNFT() {
     try {
       setMessage("Initiating NFT deployment, please wait...")
@@ -67,7 +71,7 @@ export default function EventClient({
       // ConnectorNotConnected error when Metamask is not active
       // Enable Metamask first then retry
       const hash = await writeContractAsync({
-        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "deployVolunteerNFT",
         args: [uri as `0x${string}`, address as `0x${string}`],
@@ -84,7 +88,7 @@ export default function EventClient({
       NFTBlockNumber = Number(nftReceipt.blockNumber)
 
       const NFTAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "getDeployedVolunteerNFT",
         args: [address as `0x${string}`],
@@ -124,7 +128,7 @@ export default function EventClient({
       console.log("DeployTokenDistributor ARGS", args)
 
       const hash = await writeContractAsync({
-        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "deployTokenDistributor",
         args: [
@@ -145,7 +149,7 @@ export default function EventClient({
       distributorBlockNumber = Number(distributorReceipt.blockNumber)
 
       const distributorAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "getDeployedTokenDistributor",
         args: [address as `0x${string}`],
