@@ -39,8 +39,7 @@ const chains: AppConfig["chains"] = {
     enabledWallets: ["gemwallet", "xaman"],
   },
   stellar: {
-    slug: "stellar",
-    network: "testnet",
+    ...chainConfig.stellar.networks.testnet,
     contracts: {
       CreditsFactory: "CDQLMKKGLL3RR2ZQJJW6LO4JUFCRJRT337CAXHAYHN2DSH4RPKEV576N",
       Credits: "CDHYT3A4XGBNSWP2P7XQTS2AT5XICKD5KOAZ7S2Y2APJMXRDIENP2LZR",
@@ -50,9 +49,7 @@ const chains: AppConfig["chains"] = {
       Receipt_NFTHash: "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
       xlmNativeCoin: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
     },
-    wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
     enabledWallets: ["freighter"],
-    //tokens: ["XLM"],
   },
 }
 
