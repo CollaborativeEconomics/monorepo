@@ -10,6 +10,15 @@ module.exports = {
     },
     extend: {
       colors: {
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        background: "rgb(var(--background))",
+        foreground: "var(--foreground)",
+        popover: {
+          DEFAULT: "var(--popover)",
+          foreground: "var(--popover-foreground)",
+        },
         slate: {
           100: '#e2e8f0',
           200: '#cbd5e1',

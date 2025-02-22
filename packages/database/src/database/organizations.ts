@@ -145,11 +145,16 @@ export async function getOrganizations(
 
 export async function getOrganizationById(
   id: string,
+  includeAll=true
 ): Promise<OrganizationData | null> {
-  const organization = await prismaClient.organization.findUnique({
+  const filter = {
     where: { id },
-    include: includePayload,
-  })
+    include: {} as Prisma.OrganizationInclude
+  }
+  if(includeAll){
+    filter.include = includePayload
+  }
+  const organization = await prismaClient.organization.findUnique(filter)
   return organization
 }
 
