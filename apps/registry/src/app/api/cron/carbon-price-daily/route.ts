@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const url = `${process.env.STELLAR_CARBON}/carbon-quote?carbon_amount=1`
+    const url = `${process.env.STELLAR_CARBON}/carbon/carbon-quote?carbon_amount=1`
     const inf = await fetch(url)
     const jsn = await inf.json()
     console.log("DATA", jsn)
