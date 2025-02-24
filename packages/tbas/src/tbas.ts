@@ -40,10 +40,11 @@ const network = appConfig.chainDefaults.network
 const settings = chainConfig.xdc.networks[network]
 //console.log('SET', settings)
 const chainId = settings.id.toString()
-const registryAddress = (settings.contracts?.TBA_Registry || "0x0") as Address
-const implementationAddress = (settings.contracts?.TBA_Implementation ||
+const registryAddress = (settings.contracts?.TokenBoundRegistry ||
   "0x0") as Address
-const tokenContract = settings.contracts?.TBA_NFT || "0x0"
+const implementationAddress = (settings.contracts?.TokenBoundImplementation ||
+  "0x0") as Address
+const tokenContract = settings.contracts?.TokenBoundNFT || "0x0"
 const baseSalt =
   "0x0000000000000000000000000000000000000000000000000000000000000001" as Address
 

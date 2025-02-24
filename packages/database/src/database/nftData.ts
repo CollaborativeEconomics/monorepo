@@ -21,6 +21,9 @@ export async function getNftData(query: NFTDataQuery) {
     skip: 0,
     take: 100,
     where: {},
+    orderBy: {
+      created: "desc",
+    },
   }
 
   if (query?.orgId) {

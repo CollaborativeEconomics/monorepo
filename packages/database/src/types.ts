@@ -1,3 +1,5 @@
+import type { Prisma } from "@prisma/client"
+
 export type {
   Account,
   Action,
@@ -33,3 +35,10 @@ export type {
   Wallet,
 } from "@prisma/client"
 
+export type StoryWithRelations = Prisma.StoryGetPayload<{
+  include: {
+    media: true
+    organization: true
+    initiative: { include: { category: true } }
+  }
+}>
