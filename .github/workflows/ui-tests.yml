@@ -1,0 +1,99 @@
+name: UI Tests
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  ui-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - name: Setup pnpm config
+        run: pnpm config set store-dir ~/.pnpm-store
+          
+      - name: Install dependencies
+        run: pnpm install
+          
+      - name: Build packages
+        run: pnpm turbo build --filter="./packages/*"
+        
+      - name: Install Playwright browsers
+        working-directory: packages/ui-tests
+        run: pnpm exec playwright install --with-deps
+        
+      - name: Build give-arbitrum
+        working-directory: apps/give-arbitrum
+        env:
+          NODE_ENV: test
+          NEXT_PUBLIC_API_URL: http://localhost:3000
+        run: pnpm build
+          
+      - name: Start give-arbitrum
+        working-directory: apps/give-arbitrum
+        env:
+          NODE_ENV: test
+          PORT: 3000
+          NEXT_PUBLIC_API_URL: http://localhost:3000
+        run: |
+          pnpm start &
+          echo $! > .nextpid
+          
+          # Wait for the app to be ready
+          pnpm exec wait-on -t 60000 http://localhost:3000
+          if [ $? -ne 0 ]; then
+            echo "App failed to start within 60 seconds"
+            kill $(cat .nextpid)
+            exit 1
+          fi
+          
+      - name: Run UI tests
+        working-directory: packages/ui-tests
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
+          CI: true
+        run: pnpm test
+          
+      - name: Cleanup
+        if: always()
+        run: |
+          if [ -f apps/give-arbitrum/.nextpid ]; then
+            kill $(cat apps/give-arbitrum/.nextpid) || true
+          fi
+          
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            packages/ui-tests/playwright-report/
+            packages/ui-tests/test-results/
+          retention-days: 30
+          
+      # Optional: Upload logs if tests fail
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: |
+            apps/give-arbitrum/.next/logs/
+            packages/ui-tests/logs/
+          retention-days: 7 
