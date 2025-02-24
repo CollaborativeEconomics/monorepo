@@ -1,6 +1,7 @@
 import type { ListQuery } from "@cfce/types"
 import type { Prisma, Story } from "@prisma/client"
 import { prismaClient } from ".."
+import type { StoryWithRelations } from "../types"
 
 interface StoryQuery extends ListQuery {
   orgId?: string
@@ -8,14 +9,6 @@ interface StoryQuery extends ListQuery {
   recent?: number
   userId?: string // filter by user's donations
 }
-
-export type StoryWithRelations = Prisma.StoryGetPayload<{
-  include: {
-    media: true
-    organization: true
-    initiative: { include: { category: true } }
-  }
-}>
 
 export async function getStories(
   query: StoryQuery,
