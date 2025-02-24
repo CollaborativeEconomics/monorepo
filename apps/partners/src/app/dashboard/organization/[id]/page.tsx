@@ -1,24 +1,33 @@
-import React from 'react';
-import { getCategories, getOrganizationById } from '@cfce/database';
-import Title from '~/components/title';
-import styles from '~/styles/dashboard.module.css';
-import OrganizationEdit from './OrganizationEdit';
+import { getCategories, getOrganizationById } from '@cfce/database'
+import Title from '~/components/title'
+import styles from '~/styles/dashboard.module.css'
+import OrganizationForm from '~/components/OrganizationForm'
+import { FormMode, type OrganizationData } from '../types'
+import { sortCategories } from '~/utils/data'
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }
 
 export default async function Page({ params }: PageProps) {
-  const { id } = await params;
-  const data = await getOrganizationById(id, false); // No include sub-models
-  const organization = JSON.parse(JSON.stringify(data))
-  const categories = await getCategories({});
-  const list = categories.map(it=>{ return {id:it.id, name:it.title} })
+  try {
+    const { id } = await params
+    const data = await getOrganizationById(id, false) // No sub-models
+    if (!data) {
+      throw new Error(`Organization not found: ${id}`)
+    }
+    const organization = JSON.parse(JSON.stringify(data))
+    const list = await getCategories({})
+    const categories = sortCategories(list)
 
-  return (
-    <div>
-      <Title text="Edit Organization" />
-      <OrganizationEdit organization={organization} categories={list} />
-    </div>
-  );
+    return (
+      <div className={styles.mainBox}>
+        <Title text="Edit Organization" />
+        <OrganizationForm id={id} organization={organization} categories={categories} formMode={FormMode.Edit} />
+      </div>
+    );
+  } catch (error) {
+    console.error('Failed to fetch organization:', error)
+    throw error
+  }
 }

@@ -1,5 +1,4 @@
 'use server';
-
 import { type Prisma, newOrganization, updateOrganization } from '@cfce/database';
 import { revalidatePath } from 'next/cache';
 import { EntityType } from "@cfce/types"
@@ -7,27 +6,7 @@ import { newTBAccount } from "@cfce/tbas"
 import { snakeCase } from "lodash"
 import { randomNumber, randomString } from "~/utils/random"
 import { uploadFile } from "@cfce/utils"
-
-type OrgData = {
-  //id: string;
-  name: string;
-  slug?: string;
-  description: string;
-  email: string;
-  EIN?: string;
-  phone?: string;
-  mailingAddress?: string;
-  country?: string;
-  imageUrl?: string;
-  backgroundUrl?: string;
-  image?: File;
-  background?: File;
-  url?: string;
-  twitter?: string;
-  facebook?: string;
-  categoryId?: string;
-};
-
+import type { OrganizationData } from './types'
 
 async function fileUpload(file: File){
   try {
@@ -52,10 +31,9 @@ async function fileUpload(file: File){
   }
 }
 
-
   //organization: Prisma.OrganizationCreateInput,
 export async function createOrganizationAction(
-  data: OrgData,
+  data: OrganizationData,
   tba = false
 ) {
   try {
@@ -113,7 +91,7 @@ export async function createOrganizationAction(
   }
 }
 
-export async function updateOrganizationAction(id: string, data: OrgData){
+export async function updateOrganizationAction(id: string, data: OrganizationData){
   try {
     let image = ''
     let background = ''

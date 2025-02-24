@@ -7,6 +7,7 @@ import type { Category, Initiative } from '@cfce/database';
 import React, { useState, type FormEvent } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import FileView from '~/components/form/fileview';
+import FilePick from '~/components/form/filepick';
 import styles from '~/styles/dashboard.module.css';
 import ButtonBlue from '../../../components/buttonblue';
 import Select from '../../../components/form/select';
@@ -188,15 +189,11 @@ export default function AddStoryForm({
         </div>
 
         {/* Media Input */}
-        <div>
-          <label htmlFor="media">Other media (PDF, MP3, MP4, etc.):</label>
-          <Input
-            type="file"
-            id="media"
-            {...register('media')}
-            accept=".pdf,.mp3,.mp4,.webm"
-          />
-        </div>
+        <FilePick
+          label="Other media (PDF, MP3, MP4, etc.):"
+          accept=".pdf,.mp3,.mp4,.webm"
+          {...register('media')}
+        /> 
 
         {/* Additional form inputs */}
         <Select

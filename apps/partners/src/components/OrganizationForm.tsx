@@ -1,71 +1,40 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { Prisma } from '@cfce/database';
+import type { Prisma, Organization } from '@cfce/database';
 import FileView from '~/components/form/fileview';
 import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
 import TextInput from '~/components/form/textinput';
 import styles from '~/styles/dashboard.module.css';
-import { createOrganizationAction } from './actions';
+import { createOrganizationAction, updateOrganizationAction } from '~/app/dashboard/organization/actions';
+import type { CategoryItem, OrganizationData, FormMode } from '~/app/dashboard/organization/types';
+import { FormMode as Mode } from '~/app/dashboard/organization/types';
 
-interface Category {
-  id: string;
-  name: string;
-}
 
-type OrgData = {
-  //id: string;
-  name: string;
-  slug?: string;
-  description: string;
-  email: string;
-  EIN?: string;
-  phone?: string;
-  mailingAddress?: string;
-  country?: string;
-  image?: File;
-  background?: File;
-  imageUrl?: string;
-  backgroundUrl?: string;
-  url?: string;
-  twitter?: string;
-  facebook?: string;
-  categoryId?: string;
-};
-
-export default function AddOrganizationForm({
+export default function OrganizationForm({
+  id,
+  organization,
   categories,
+  formMode
 }: {
-  categories: Category[];
+  id?: string;
+  organization: OrganizationData;
+  categories: CategoryItem[];
+  formMode: FormMode
 }) {
-  // Sort categories
-  const categoryOptions = categories.sort((item1, item2) => {
-    if (item1.name.toLowerCase() < item2.name.toLowerCase()) return -1;
-    if (item1.name.toLowerCase() > item2.name.toLowerCase()) return 1;
-    return 0;
-  });
-
-  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
 
   function getFormData(form: HTMLFormElement) {
-    //const data = {} as Prisma.OrganizationCreateInput;
-    const data = {} as OrgData
+    const data:OrganizationData = {name:'', description:'', email:''}
     const formData = new FormData(form);
     //console.log('FORM', formData);
     for (const [name, value] of formData) {
-      console.log(name, value);
-      //if (name === 'categoryId') {
-      //  data.category = { connect: { id: value as string } };
-      //} else {
-        // @ts-ignore: I hate this
-        data[name as string] = value as string;
-      //}
+      //console.log(name, value);
+      data[name as keyof OrganizationData] = value as string & File;
     }
     return data;
   }
 
-  //async function onSubmit(data: Prisma.OrganizationCreateInput) {
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     const data = getFormData(event.currentTarget as HTMLFormElement);
@@ -83,14 +52,28 @@ export default function AddOrganizationForm({
     try {
       showMessage('Saving organization, it may take a while...');
       setButtonState(ButtonState.WAIT);
-      const useTBA = true;
-      const result = await createOrganizationAction(data, useTBA);
-      if (result.success) {
-        setChange(change + 1);
+      let result = null
+      switch(formMode){
+        case Mode.New: {
+          const useTBA = true;
+          result = await createOrganizationAction(data, useTBA);
+          break;
+        }
+        case Mode.Edit: {
+          data.imageUrl = organization.imageUrl || ''
+          data.backgroundUrl = organization.backgroundUrl || ''
+          if(id){
+            result = await updateOrganizationAction(id, data);
+          }
+          break;
+        }
+        default: break;
+      }
+      if (result?.success) {
         showMessage('Organization saved');
         setButtonState(ButtonState.DONE);
       } else {
-        showMessage(`Error saving organization: ${result.error}`);
+        showMessage(`Error saving organization: ${result?.error}`);
         setButtonState(ButtonState.READY);
       }
     } catch (ex: unknown) {
@@ -99,6 +82,8 @@ export default function AddOrganizationForm({
       setButtonState(ButtonState.READY);
     }
   }
+
+  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
 
   function setButtonState(state: number) {
     switch (state) {
@@ -120,26 +105,28 @@ export default function AddOrganizationForm({
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, showMessage] = useState('Enter organization info and click on submit');
-  const [change, setChange] = useState(0);
 
-  // Form data
+  const imageSource = organization.image || '/media/upload.jpg'
+  const backSource = organization.background || '/media/upload.jpg'
+
   const { register, watch } = useForm({
     defaultValues: {
-      name: '',
-      description: '',
-      email: '',
-      EIN: '',
-      phone: '',
-      mailingAddress: '',
-      country: '',
-      image: '',
-      background: '',
-      url: '',
-      twitter: '',
-      facebook: '',
-      categoryId: '',
-    },
-  });
+      name: organization.name,
+      description: organization.description,
+      email: organization.email,
+      EIN: organization.EIN,
+      phone: organization.phone,
+      mailingAddress: organization.mailingAddress,
+      country: organization.country,
+      image: organization.image,
+      background: organization.background,
+      url: organization.url,
+      twitter: organization.twitter,
+      facebook: organization.facebook,
+      categoryId: organization.categoryId,
+    }
+  })
+
   const [
     name,
     description,
@@ -170,12 +157,9 @@ export default function AddOrganizationForm({
     'categoryId',
   ]);
 
-  useEffect(() => {
-    console.log('Org changed!', change);
-  }, [change]);
 
   return (
-    <div className={styles.mainBox}>
+    <>
       <form className={styles.vbox} onSubmit={onSubmit}>
         <p className="text-center">Organization image</p>
         <FileView
@@ -185,6 +169,7 @@ export default function AddOrganizationForm({
           width={250}
           height={250}
           multiple={false}
+          accept="image/jpeg,image/png,image/webp"
         />
         <p className="text-center">Background image</p>
         <FileView
@@ -194,6 +179,7 @@ export default function AddOrganizationForm({
           width={500}
           height={250}
           multiple={false}
+          accept=".pdf,.mp3,.mp4,.webm"
         />
         <TextInput label="Name" {...register('name')} />
         <TextInput label="Description" {...register('description')} />
@@ -202,13 +188,13 @@ export default function AddOrganizationForm({
         <TextInput label="Phone" {...register('phone')} />
         <TextInput label="Address" {...register('mailingAddress')} />
         <TextInput label="Country" {...register('country')} />
-        <TextInput label="website" {...register('url')} />
+        <TextInput label="Website" {...register('url')} />
         <TextInput label="Twitter" {...register('twitter')} />
         <TextInput label="Facebook" {...register('facebook')} />
         <Select
           label="Category"
           {...register('categoryId')}
-          options={categoryOptions}
+          options={categories}
         />
         <ButtonBlue
           type="submit"
@@ -220,6 +206,6 @@ export default function AddOrganizationForm({
       <p id="message" className="text-center">
         {message}
       </p>
-    </div>
-  );
+    </>
+  )
 }

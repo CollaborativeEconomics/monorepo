@@ -53,13 +53,20 @@ export default function InitiativeEdit({ initiative }: FormProps) {
 
   const onSubmit = async (data: FormData) => {
     console.log('INIT', initiative)
+    if (!data.title || !data.description) {
+      setMessage('Title and description are required');
+      return;
+    }
+    if (data.start && data.finish && data.start > data.finish) {
+      setMessage('Start date must be before end date');
+      return;
+    }
     data.initiativeId = initiative.id
     data.organizationId = initiative.organizationId
     data.imageUri = initiative.imageUri || undefined
     data.defaultAsset = initiative.defaultAsset || undefined
     data.status = initiativeStatus // from select control
     console.log('FORM', data);
-
     setButtonDisabled(true);
     setButtonText('WAIT');
     setMessage('Saving initiative...');
