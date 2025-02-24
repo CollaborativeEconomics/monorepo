@@ -2,7 +2,7 @@ import { getCategories } from '@cfce/database'
 import Title from '~/components/title'
 import styles from '~/styles/dashboard.module.css'
 import OrganizationForm from '~/components/OrganizationForm'
-import { FormMode, type OrganizationData } from './types'
+import { FormMode, type OrganizationData } from '~/types/data'
 import { sortCategories } from '~/utils/data'
 
 export default async function Page() {

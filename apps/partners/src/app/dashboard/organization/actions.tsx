@@ -6,7 +6,7 @@ import { newTBAccount } from "@cfce/tbas"
 import { snakeCase } from "lodash"
 import { randomNumber, randomString } from "~/utils/random"
 import { uploadFile } from "@cfce/utils"
-import type { OrganizationData } from './types'
+import type { OrganizationData } from '~/types/data'
 
 async function fileUpload(file: File){
   try {

@@ -7,9 +7,9 @@ import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
 import TextInput from '~/components/form/textinput';
 import styles from '~/styles/dashboard.module.css';
+import type { CategoryItem, OrganizationData, FormMode } from '~/types/data'
+import { FormMode as Mode } from '~/types/data'
 import { createOrganizationAction, updateOrganizationAction } from '~/app/dashboard/organization/actions';
-import type { CategoryItem, OrganizationData, FormMode } from '~/app/dashboard/organization/types';
-import { FormMode as Mode } from '~/app/dashboard/organization/types';
 
 
 export default function OrganizationForm({
