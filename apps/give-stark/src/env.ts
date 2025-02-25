@@ -5,6 +5,8 @@ import { z } from "zod"
 // App-specific schema
 const appSchema = {
   STARKNET_WALLET_SECRET: z.string(),
+  NEXT_PUBLIC_AVNU_PUBLIC_KEY: z.string(),
+  NEXT_PUBLIC_AVNU_KEY: z.string(),
 } as const
 
 // App-specific runtime env

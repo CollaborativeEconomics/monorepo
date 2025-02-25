@@ -20,7 +20,9 @@
         "MOBULA_API_KEY",
         "ENABLE_ANCHAIN",
         "ENABLE_GLOBALID",
-        "STARKNET_WALLET_SECRET"
+        "STARKNET_WALLET_SECRET",
+        "NEXT_PUBLIC_AVNU_PUBLIC_KEY",
+        "NEXT_PUBLIC_AVNU_KEY"
       ],
       "dependsOn": ["^build"]
     }
