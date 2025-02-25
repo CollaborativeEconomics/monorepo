@@ -1,7 +1,7 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin"
 import createJiti from "jiti"
-
 const jiti = createJiti(fileURLToPath(import.meta.url))
 
 // Import env here to validate during build
@@ -52,6 +52,9 @@ const nextConfig = {
     ],
   },
   webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()]
+    }
     if (!isServer) {
       config.externals = config.externals || []
       config.externals.push(({ context, request }, callback) => {
