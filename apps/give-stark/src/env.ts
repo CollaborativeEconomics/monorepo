@@ -5,6 +5,9 @@ import { z } from "zod"
 // App-specific schema
 const appSchema = {
   STARKNET_WALLET_SECRET: z.string(),
+} as const
+
+const clientSchema = {
   NEXT_PUBLIC_AVNU_PUBLIC_KEY: z.string(),
   NEXT_PUBLIC_AVNU_KEY: z.string(),
 } as const
@@ -13,6 +16,10 @@ const appSchema = {
 const appRuntimeEnv = Object.fromEntries(
   Object.keys(appSchema).map((key) => [key, process.env[key]]),
 ) as Record<keyof typeof appSchema, string | undefined>
+
+const clientRuntimeEnv = Object.fromEntries(
+  Object.keys(clientSchema).map((key) => [key, process.env[key]]),
+) as Record<keyof typeof clientSchema, string | undefined>
 
 export const env = createEnv({
   server: {
@@ -25,7 +32,10 @@ export const env = createEnv({
     ...sharedEnvSchema.api,
     ...sharedEnvSchema.features,
   },
-  client: sharedEnvSchema.client,
+  client: {
+    ...clientSchema,
+    ...sharedEnvSchema.client,
+  },
   runtimeEnv: {
     ...runtimeEnv.cfce,
     ...runtimeEnv.storage,
@@ -35,6 +45,7 @@ export const env = createEnv({
     ...runtimeEnv.api,
     ...runtimeEnv.features,
     ...runtimeEnv.client,
+    ...clientRuntimeEnv,
     ...appRuntimeEnv,
   },
 })
