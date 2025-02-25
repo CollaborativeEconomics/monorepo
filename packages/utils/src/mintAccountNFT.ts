@@ -1,7 +1,3 @@
-// @ts-ignore turbo should error out if these are not set
-// const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
-
-//import { BlockchainManager } from "@cfce/blockchain-tools"
 import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
 
 //const serverInterface = BlockchainManager.xdc.server
@@ -26,7 +22,7 @@ export async function mintAccountNFT(entityId: string) {
   const walletSeed = process.env.XDC_WALLET_SECRET
   const contractId = process.env.XDC_NFT6551_CONTRACT // 0xcBbB500f1CF1D6C44B0d7C9ff40292f8a0E756D7
   const tokenId = uuidToUint256(entityId).toString()
-  const metadataUri = '' // TODO: no metadata for user ?
+  const metadataUri = "" // TODO: no metadata for user ?
   console.log({ contractId, address, tokenId })
 
   if (!address || !contractId || !walletSeed) {
@@ -38,7 +34,7 @@ export async function mintAccountNFT(entityId: string) {
     tokenId,
     contractId,
     walletSeed,
-    metadataUri
+    metadataUri,
   })
   if ("error" in response) {
     throw new Error(response.error)
