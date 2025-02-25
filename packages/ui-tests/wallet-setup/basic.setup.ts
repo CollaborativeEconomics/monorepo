@@ -7,13 +7,14 @@ export const SEED_PHRASE =
 export const PASSWORD = "Tester@1234"
 
 // Define the basic wallet setup
-export default defineWalletSetup(PASSWORD, async (context, walletPage) => {
-  const extensionId = await getExtensionId(context, "MetaMask")
-  // Create a new MetaMask instance
-  const metamask = new MetaMask(context, walletPage, PASSWORD, extensionId)
+export default defineWalletSetup(
+  PASSWORD,
+  async (context, walletPage) => {
+    // const extensionId = await getExtensionId(context, "MetaMask")
+    // Create a new MetaMask instance
+    const metamask = new MetaMask(context, walletPage, PASSWORD)
 
-  // Import the wallet using the seed phrase
-  await metamask.importWallet(SEED_PHRASE)
-})
-
-
+    // Import the wallet using the seed phrase
+    await metamask.importWallet(SEED_PHRASE)
+  }
+)

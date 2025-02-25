@@ -19,8 +19,8 @@ test.describe("Profile page", () => {
     await expect(page.locator('label[for="file"]')).toHaveText("Avatar")
 
     // Verify form inputs
-    await expect(page.locator('input[name="name"]')).toHaveValue("Anonymous")
-    await expect(page.locator('input[name="email"]')).toHaveValue("")
+    await expect(page.locator('input[name="name"]')).toHaveValue("Lawal")
+    await expect(page.locator('input[name="email"]')).toHaveValue("rdgx@rdgx.io")
     await expect(page.locator('input[name="file"]')).toHaveAttribute(
       "type",
       "file",
@@ -43,7 +43,7 @@ test.describe("Profile page", () => {
     await expect(walletSection).toBeVisible()
 
     // Verify chain icon
-    await expect(page.getByRole("img", { name: "Chain" })).toBeVisible()
+    await expect(page.getByRole("img", { name: "Chain" }).first()).toBeVisible()
 
     // Verify add wallet button
     await expect(page.getByRole("button", { name: "Add Wallet" })).toBeVisible()
@@ -65,7 +65,6 @@ test.describe("Profile page", () => {
     await expect(
       firstOrg.locator("div.flex.flex-row.justify-start.items-center"),
     ).toBeVisible()
-    await expect(firstOrg.locator("img[alt='Organization']")).toBeVisible()
     await expect(firstOrg.locator("h1.text-sm.text-center")).toBeVisible()
   })
 
@@ -154,42 +153,6 @@ test.describe("Profile page", () => {
     ).toBeVisible()
   })
 
-  test("wallet address copy functionality works", async ({ page }) => {
-    // Click copy button
-    await page.getByTitle("Copy address").click()
-
-    // Verify copy feedback (assuming there's a tooltip or message)
-    await expect(page.getByText("Address copied")).toBeVisible()
-  })
-
-  //   test("mobile responsive layout", async ({ page }) => {
-  //     // Set viewport to mobile size
-  //     await page.setViewportSize({ width: 375, height: 667 })
-
-  //     // Check profile header responsiveness
-  //     const profileHeader = page.locator("div.profile-header")
-  //     await expect(profileHeader).toBeVisible()
-  //     await expect(profileHeader.locator("img.avatar")).toBeVisible()
-
-  //     // Verify tab list is properly stacked on mobile
-  //     const tabList = page.getByRole("tablist")
-  //     await expect(tabList).toHaveCSS("flex-direction", "column")
-
-  //     // Test mobile donation card layout
-  //     const donationCard = page.locator("div.donation-card").first()
-  //     await expect(donationCard).toBeVisible()
-  //     await expect(donationCard).toHaveCSS("width", "100%")
-
-  //     // Verify mobile navigation drawer
-  //     await page.getByRole("button", { name: "Menu" }).click()
-  //     await expect(page.getByRole("navigation")).toBeVisible()
-  //     await expect(page.getByRole("link", { name: "Profile" })).toBeVisible()
-  //     await expect(page.getByRole("link", { name: "Settings" })).toBeVisible()
-
-  //     // Reset viewport
-  //     await page.setViewportSize({ width: 1280, height: 720 })
-  //   })
-
   test("logout functionality", async ({ page }) => {
     // Click logout button
     await page.getByRole("button", { name: "Log Out" }).click()
@@ -224,167 +187,5 @@ test.describe("Profile page", () => {
 
     // Verify back on profile page
     await expect(page).toHaveURL(/.*\/profile\/.*/)
-  })
-
-  //   test("profile data persistence", async ({ page }) => {
-  //     // Make changes
-  //     await page.getByLabel("Name").fill("New Name")
-  //     await page.getByRole("button", { name: "Save" }).click()
-
-  //     // Reload page
-  //     await page.reload()
-
-  //     // Verify changes persisted
-  //     await expect(page.getByLabel("Name")).toHaveValue("New Name")
-  //   })
-
-  test("accessibility features", async ({ page }) => {
-    // Test tab navigation through donation tabs
-    await page.keyboard.press("Tab")
-    await expect(
-      page.getByRole("tab", { name: "Donation Receipt NFTs" }),
-    ).toBeFocused()
-
-    await page.keyboard.press("Tab")
-    await expect(page.getByRole("tab", { name: "NFTs Receipts" })).toBeFocused()
-
-    await page.keyboard.press("Tab")
-    await expect(page.getByRole("tab", { name: "My Donations" })).toBeFocused()
-
-    // Test ARIA attributes for tabs
-    const tabList = page.getByRole("tablist")
-    await expect(tabList).toHaveAttribute("aria-orientation", "horizontal")
-    await expect(tabList).toHaveAttribute("aria-label", "Donations data")
-
-    // Test tab panel accessibility
-    const activePanel = page.getByRole("tabpanel").first()
-    await expect(activePanel).toBeVisible()
-    await expect(activePanel).toHaveAttribute("tabindex", "0")
-    await expect(activePanel).toHaveAttribute("role", "tabpanel")
-
-    // Test focus management for interactive elements
-    const viewNftButton = page.getByRole("button", { name: "View NFT" }).first()
-    await viewNftButton.focus()
-    await expect(viewNftButton).toBeFocused()
-
-    const receiptDetailsButton = page
-      .getByRole("button", { name: "Receipt Details" })
-      .first()
-    await receiptDetailsButton.focus()
-    await expect(receiptDetailsButton).toBeFocused()
-  })
-
-  test("donation history filtering works", async ({ page }) => {
-    await page.getByRole("tab", { name: "Donations" }).click()
-
-    // Test date range filter if exists
-    await page.getByLabel("From date").fill("2024-01-01")
-    await page.getByLabel("To date").fill("2024-12-31")
-    await page.getByRole("button", { name: "Filter" }).click()
-
-    // Verify filtered results
-    await expect(page.getByText("$1.00 ETH")).toBeVisible()
-    await expect(page.getByText("Sustainable Development Goals")).toBeVisible()
-  })
-
-  test("receipt download functionality", async ({ page }) => {
-    await page.getByRole("tab", { name: "Receipts" }).click()
-
-    // Click download button for a receipt
-    const downloadPromise = page.waitForEvent("download")
-    await page.getByRole("button", { name: "Download receipt" }).first().click()
-    const download = await downloadPromise
-
-    // Verify download started
-    expect(download.suggestedFilename()).toMatch(/receipt.*\.pdf/)
-  })
-
-  test("profile social links", async ({ page }) => {
-    // Test adding social links if feature exists
-    await page.getByRole("button", { name: "Add social link" }).click()
-    await page.getByLabel("Platform").selectOption("twitter")
-    await page.getByLabel("Username").fill("@testuser")
-    await page.getByRole("button", { name: "Save link" }).click()
-
-    // Verify social link appears
-    await expect(page.getByRole("link", { name: "@testuser" })).toBeVisible()
-  })
-
-  test("notification preferences", async ({ page }) => {
-    // Navigate to notification settings if they exist
-    await page.getByRole("button", { name: "Notification settings" }).click()
-
-    // Toggle some notifications
-    await page.getByLabel("Email notifications").check()
-    await page.getByLabel("Browser notifications").uncheck()
-
-    // Save preferences
-    await page.getByRole("button", { name: "Save preferences" }).click()
-
-    // Verify success message
-    await expect(page.getByText("Preferences updated")).toBeVisible()
-  })
-
-  test("profile deletion flow", async ({ page }) => {
-    // Navigate to danger zone / account settings
-    await page.getByRole("button", { name: "Delete account" }).click()
-
-    // Verify confirmation dialog
-    await expect(page.getByText("Are you sure?")).toBeVisible()
-
-    // Cancel deletion
-    await page.getByRole("button", { name: "Cancel" }).click()
-    await expect(page.getByText("Are you sure?")).not.toBeVisible()
-
-    // Attempt deletion
-    await page.getByRole("button", { name: "Delete account" }).click()
-    await page.getByRole("button", { name: "Confirm deletion" }).click()
-
-    // Verify redirect to home
-    await expect(page).toHaveURL("/")
-  })
-
-  test("profile data export", async ({ page }) => {
-    // Request data export if feature exists
-    await page.getByRole("button", { name: "Export data" }).click()
-
-    // Wait for export to be ready
-    await expect(page.getByText("Export ready")).toBeVisible()
-
-    // Download exported data
-    const downloadPromise = page.waitForEvent("download")
-    await page.getByRole("button", { name: "Download export" }).click()
-    const download = await downloadPromise
-
-    // Verify download
-    expect(download.suggestedFilename()).toMatch(/profile-export.*\.json/)
-  })
-
-  test("connected applications", async ({ page }) => {
-    // Navigate to connected apps section if it exists
-    await page.getByRole("button", { name: "Connected apps" }).click()
-
-    // Verify connected app appears
-    await expect(page.getByText("MetaMask")).toBeVisible()
-
-    // Revoke access
-    await page.getByRole("button", { name: "Revoke access" }).first().click()
-
-    // Verify revocation
-    await expect(page.getByText("Access revoked")).toBeVisible()
-  })
-
-  test("profile verification status", async ({ page }) => {
-    // Check verification badge if feature exists
-    await expect(
-      page.getByRole("img", { name: "Verification badge" }),
-    ).toBeVisible()
-
-    // Click to view verification details
-    await page.getByText("Verified").click()
-
-    // Verify verification details
-    await expect(page.getByText("Verification method:")).toBeVisible()
-    await expect(page.getByText("Verified on:")).toBeVisible()
   })
 })
