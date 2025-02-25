@@ -87,7 +87,10 @@ export async function mintAndSaveReceiptNFT({
       return { success: false, error: "Invalid donor wallet address" }
     }
 
-    if (!destinationWalletAddress || typeof destinationWalletAddress !== "string") {
+    if (
+      !destinationWalletAddress ||
+      typeof destinationWalletAddress !== "string"
+    ) {
       return { success: false, error: "Invalid destination wallet address" }
     }
 
@@ -283,10 +286,10 @@ export async function mintAndSaveReceiptNFT({
     }> = []
     for (const chainSlug of Object.keys(appConfig.chains) as ChainSlugs[]) {
       const chain = appConfig.chains[chainSlug]
-      if (chain?.contracts.Receipt_NFT) {
+      if (chain?.contracts.ReceiptNFT) {
         receiptContractsByChain.push({
           chain: chainSlug as ChainSlugs,
-          contract: chain.contracts.Receipt_NFT,
+          contract: chain.contracts.ReceiptNFT,
         })
       }
     }
@@ -323,7 +326,7 @@ export async function mintAndSaveReceiptNFT({
 */
 
     // #region: Mint NFT on current chain only
-    let receiptContract = currentChain?.contracts?.Receipt_NFT
+    let receiptContract = currentChain?.contracts?.ReceiptNFT
     console.log("CTR", receiptContract)
     if (currentChain?.slug === "xrpl") {
       receiptContract = "xrpl"
