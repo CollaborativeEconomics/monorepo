@@ -27,9 +27,15 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "give.staging.cfce.io",
+        hostname: "cfce.io",
         port: "",
-        pathname: "/media/**",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "partners.cfce.io",
+        port: "",
+        pathname: "/**",
       },
       {
         protocol: "https",
@@ -66,10 +72,6 @@ const nextConfig = {
     }
     config.externals.push("pino-pretty")
     return config
-  },
-  env: {
-    IPFS_API_KEY: process.env.IPFS_API_KEY,
-    IPFS_API_SECRET: process.env.IPFS_API_SECRET,
   },
 }
 
