@@ -15,6 +15,7 @@ export const sharedEnvSchema = {
   mail: {
     MAILGUN_API_KEY: z.string(),
   },
+  // used by most apps
   blockchain: {
     XDC_WALLET_SECRET: z.string(),
   },

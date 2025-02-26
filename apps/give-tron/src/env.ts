@@ -21,6 +21,7 @@ export const env = createEnv({
     ...sharedEnvSchema.auth,
     ...sharedEnvSchema.database,
     ...sharedEnvSchema.api,
+    ...sharedEnvSchema.blockchain,
   },
   client: sharedEnvSchema.client,
   runtimeEnv: {
@@ -30,6 +31,7 @@ export const env = createEnv({
     ...runtimeEnv.auth,
     ...runtimeEnv.database,
     ...runtimeEnv.api,
+    ...runtimeEnv.blockchain,
     ...runtimeEnv.client,
     ...appRuntimeEnv,
   },
