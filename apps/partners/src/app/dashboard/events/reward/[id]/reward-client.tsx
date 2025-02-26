@@ -4,7 +4,7 @@ import { abiVolunteersDistributor as DistributorAbi } from '@cfce/blockchain-too
 import type { Contract, Event, Volunteer } from '@cfce/database';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { useState } from 'react';
-import { useAccount, useConnect, useWriteContract } from 'wagmi';
+import { useAccount, useConnect, useWriteContract, useEstimateGas } from 'wagmi';
 import { arbitrumSepolia } from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
 import Dashboard from '~/components/dashboard';
@@ -54,6 +54,16 @@ export default function RewardClient({
       setMessage('User not connected');
       return;
     }
+
+    const estimateGas = await useEstimateGas({
+      address: distributor,
+      abi: DistributorAbi,
+      functionName: 'distributeTokensByUnit' as const,
+      args: [registered as `0x${string}`[]],
+      chain: defaultChain,
+    });
+
+    console.log('ESTIMATE GAS', estimateGas);
 
     try {
       const registered = volunteers?.map(it => it.address);
