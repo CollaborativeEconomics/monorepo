@@ -8,6 +8,7 @@ const appSchema = {
   MINTER_CONTRACT: z.string().refine(isAddress),
   MINTER_PRIVATE: z.string(),
   TICKER_API_KEY: z.string(),
+  NEXT_PUBLIC_BLOCKCHAIN: z.enum(["Ethereum", "Base", "Arbitrum", "Optimism"]),
 } as const
 
 // App-specific runtime env
