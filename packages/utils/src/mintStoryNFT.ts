@@ -1,18 +1,12 @@
-// @ts-ignore turbo should error out if these are not set
-// const XDCSDK = new XDCServer({ walletSeed: process.env.XDC_MINTER_SECRET, network: process.env.XDC_NETWORK });
-
-import appConfig, { chainConfig } from "@cfce/app-config"
+import { chainConfig } from "@cfce/app-config"
 import { BlockchainServerInterfaces } from "@cfce/blockchain-tools"
-//import { BlockchainManager } from "@cfce/blockchain-tools"
 import { getTokenBoundAccount } from "@cfce/database"
 import { EntityType } from "@cfce/types"
 
 const uuidToUint256 = (uuid: string) => {
   const hex = uuid.replace(/-/g, "")
   const bigIntUUID = BigInt(`0x${hex}`)
-  // Since UUID is 128-bit, we shift it left by 128 places to fit into a 256-bit space
-  const uint256 = bigIntUUID << BigInt(128)
-  return uint256
+  return bigIntUUID // Don't shift, just use the UUID value directly
 }
 
 /**
@@ -30,7 +24,7 @@ export async function mintStoryNFT(
   const network =
     process.env.NEXT_PUBLIC_APP_ENV === "production" ? "mainnet" : "testnet"
   const uint256 = uuidToUint256(storyId)
-  const tokenId = uint256.toString()
+  const tokenId = Number(uint256)
   const uri = tokenCID
   //const uri = new TextEncoder().encode(tokenCID).buffer;
 
@@ -43,7 +37,7 @@ export async function mintStoryNFT(
   )
   const address = tbaRec?.account_address // || appConfig.chains?.xdc?.wallet // mint to story TBA address
   //const address = '0x878528f2eb64b5eb47faecf5909d476e2cbda55f' // TEST
-  const contractId = chainConfig.xdc.networks[network]?.contracts?.Story_NFT
+  const contractId = chainConfig.xdc.networks[network]?.contracts?.StoryNFT
   const walletSeed = process.env.XDC_WALLET_SECRET
   console.log({ tokenId, tokenCID, contractId, address })
 

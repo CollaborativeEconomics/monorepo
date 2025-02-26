@@ -1,34 +1,33 @@
+import { runtimeEnv, sharedEnvSchema } from "@cfce/app-config"
 import { createEnv } from "@t3-oss/env-nextjs"
 import { isAddress } from "ethers"
 import { z } from "zod"
 
+// App-specific schema
+const appSchema = {
+  MINTER_CONTRACT: z.string().refine(isAddress),
+  MINTER_PRIVATE: z.string(),
+  TICKER_API_KEY: z.string(),
+} as const
+
+// App-specific runtime env
+const appRuntimeEnv = Object.fromEntries(
+  Object.keys(appSchema).map((key) => [key, process.env[key]]),
+) as Record<keyof typeof appSchema, string | undefined>
+
 export const env = createEnv({
   server: {
-    PROVIDER_URL: z.string().url(),
-    MINTER_CONTRACT: z.string().refine(isAddress),
-    MINTER_ADDRESS: z.string().refine(isAddress),
-    MINTER_PRIVATE: z.string(),
-    TICKER_API_KEY: z.string(),
-    OFFICIAL_CFCE_API_KEY: z.string(),
-    CFCE_REGISTRY_API_URL: z.string(),
-    CFCE_REGISTRY_API_KEY: z.string(),
-    IPFS_API_ENDPOINT: z.string().url(),
-    IPFS_API_PINNING: z.string().url(),
-    IPFS_API_KEY: z.string(),
-    IPFS_API_SECRET: z.string(),
-    IPFS_DEFAULT_REGION: z.string(),
-    IPFS_DEFAULT_BUCKET: z.string(),
-    IPFS_AVATARS_BUCKET: z.string(),
-    IPFS_BUCKET_TOKEN: z.string(),
-    IPFS_GATEWAY_URL: z.string().url(),
-    CFCE_SECRET_KEY: z.string(),
-    MAILGUN_API_KEY: z.string(),
+    ...appSchema,
+    ...sharedEnvSchema.cfce,
+    ...sharedEnvSchema.storage,
+    ...sharedEnvSchema.mail,
   },
-  // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
-  // runtimeEnv: {
-  //   DATABASE_URL: process.env.DATABASE_URL,
-  //   OPEN_AI_API_KEY: process.env.OPEN_AI_API_KEY,
-  // },
-  // For Next.js >= 13.4.4, you can just reference process.env:
-  experimental__runtimeEnv: process.env,
+  client: sharedEnvSchema.client,
+  runtimeEnv: {
+    ...runtimeEnv.cfce,
+    ...runtimeEnv.storage,
+    ...runtimeEnv.mail,
+    ...runtimeEnv.client,
+    ...appRuntimeEnv,
+  },
 })

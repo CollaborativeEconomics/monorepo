@@ -22,7 +22,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://arb1.arbitrum.io/rpc",
+          default: "https://arb1.arbitrum.io/rpc",
         },
         tokens: [
           {
@@ -50,8 +50,8 @@ const chainConfiguration = {
           },
         ],
         contracts: {
-          Receipt_NFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4",
-          VolunteersFactory: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
+          ReceiptNFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4",
+          VolunteersFactory: "0x24265D9042d8602Ba26607750894CFC5718d7FC0",
         },
         wallet: "0x1540026E002b09bc1720D130d90CB674b06121e2",
         wssurl: "",
@@ -70,7 +70,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://sepolia-rollup.arbitrum.io/rpc",
+          default: "https://sepolia-rollup.arbitrum.io/rpc",
         },
         tokens: [
           {
@@ -99,10 +99,10 @@ const chainConfiguration = {
           },
         ],
         contracts: {
-          // Receipt_NFT: "0xd5D9defAe9b60FBD0f7E9c7Be361f462d8715eef",
-          // Receipt_NFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
-          Receipt_NFT: "0x5465D45A11F468DB302d72Fd337745D8fdb4727A",
-          VolunteersFactory: "0xfbB261eADa2b1D881715984222De161F3F3E914e",
+          // ReceiptNFT: "0xd5D9defAe9b60FBD0f7E9c7Be361f462d8715eef",
+          // ReceiptNFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
+          ReceiptNFT: "0x5465D45A11F468DB302d72Fd337745D8fdb4727A",
+          VolunteersFactory: "0xd96E5542C1fb269b959C36f6F331EbBd6C1EDB61",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",
@@ -125,14 +125,14 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/avax.webp",
         contracts: {
-          Receipt_NFT: "0x6c50278D100425E8772EEbAC60515768Ee3A9aD2",
+          ReceiptNFT: "0x6c50278D100425E8772EEbAC60515768Ee3A9aD2",
         },
         explorer: {
           url: "https://snowtrace.io",
           nftPath: "/nft/{{contractId}}/{{tokenId}}?chainid={{chainId}}",
         },
         rpcUrls: {
-          main: "https://avalanche-mainnet.infura.io",
+          default: "https://avalanche-mainnet.infura.io",
         },
         tokens: [
           {
@@ -156,7 +156,7 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/avax.webp",
         contracts: {
-          Receipt_NFT: "0x47E8183e14AD2683B7e5Ec5Ea0a1179Ef522e4F9",
+          ReceiptNFT: "0x47E8183e14AD2683B7e5Ec5Ea0a1179Ef522e4F9",
         },
         explorer: {
           url: "https://testnet.snowtrace.io",
@@ -164,8 +164,8 @@ const chainConfiguration = {
             "/nft/{{contractId}}/{{tokenId}}?chainid={{chainId}}&type=erc721",
         },
         rpcUrls: {
-          main: "https://api.avax-test.network/ext/bc/C/rpc",
-          //main: "https://ethereum-goerli.publicnode.com",
+          default: "https://api.avax-test.network/ext/bc/C/rpc",
+          //default: "https://ethereum-goerli.publicnode.com",
         },
         tokens: [
           {
@@ -197,14 +197,14 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/base.webp",
         contracts: {
-          Receipt_NFT: "0x6c50278D100425E8772EEbAC60515768Ee3A9aD2",
+          ReceiptNFT: "0x6c50278D100425E8772EEbAC60515768Ee3A9aD2",
         },
         explorer: {
           url: "https://basescan.org",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://mainnet.base.org",
+          default: "https://mainnet.base.org",
         },
         tokens: [
           {
@@ -228,14 +228,14 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/base.webp",
         contracts: {
-          Receipt_NFT: "0x81F6fa8b6FD288b26e748978Eb9Ab9F9F0C77C45",
+          ReceiptNFT: "0x81F6fa8b6FD288b26e748978Eb9Ab9F9F0C77C45",
         },
         explorer: {
           url: "https://sepolia.basescan.org",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://sepolia.base.org",
+          default: "https://sepolia.base.org",
         },
         tokens: [
           {
@@ -268,14 +268,14 @@ const chainConfiguration = {
         icon: "/icons/bnb.webp",
         // TODO: add NFT contract, BNB is expensive
         // contracts: {
-        //   Receipt_NFT: "",
+        //   ReceiptNFT: "",
         // },
         explorer: {
           url: "https://bscscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://bsc-dataseed.binance.org",
+          default: "https://bsc-dataseed.binance.org",
         },
         tokens: [
           {
@@ -299,14 +299,14 @@ const chainConfiguration = {
         gasprice: "9000000000",
         icon: "/icons/bnb.webp",
         contracts: {
-          Receipt_NFT: "0x45b59b55DF3532C9Bd7C1a5f2a96c82A1Bb1aa03",
+          ReceiptNFT: "0x45b59b55DF3532C9Bd7C1a5f2a96c82A1Bb1aa03",
         },
         explorer: {
           url: "https://testnet.bscscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://data-seed-prebsc-1-s1.binance.org:8545",
+          default: "https://data-seed-prebsc-1-s1.binance.org:8545",
         },
         tokens: [
           {
@@ -338,14 +338,14 @@ const chainConfiguration = {
         gasprice: "10000000000",
         icon: "/icons/celo.webp",
         contracts: {
-          Receipt_NFT: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
+          ReceiptNFT: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
         },
         explorer: {
           url: "https://explorer.celo.org",
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://forno.celo.org",
+          default: "https://forno.celo.org",
         },
         tokens: [
           {
@@ -369,14 +369,14 @@ const chainConfiguration = {
         gasprice: "27500000000",
         icon: "/icons/celo.webp",
         contracts: {
-          Receipt_NFT: "0x1AC546d21473062F3c3B16B6392A2EC26F4539f0",
+          ReceiptNFT: "0x1AC546d21473062F3c3B16B6392A2EC26F4539f0",
         },
         explorer: {
           url: "https://celo-alfajores.blockscout.com",
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://alfajores-forno.celo-testnet.org",
+          default: "https://alfajores-forno.celo-testnet.org",
         },
         tokens: [
           {
@@ -413,7 +413,7 @@ const chainConfiguration = {
           nftPath: "/transaction/{{transactionId}}?network=eos",
         },
         rpcUrls: {
-          main: "https://api.eos.io",
+          default: "https://api.eos.io",
         },
         tokens: [
           {
@@ -442,7 +442,7 @@ const chainConfiguration = {
           nftPath: "/transaction/{{transactionId}}?network=eosiotest",
         },
         rpcUrls: {
-          main: "https://api.testnet.eos.io",
+          default: "https://api.testnet.eos.io",
         },
         tokens: [
           {
@@ -478,7 +478,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://ethereum.publicnode.com",
+          default: "https://ethereum.publicnode.com",
         },
         tokens: [
           {
@@ -506,7 +506,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://ethereum-sepolia-rpc.publicnode.com",
+          default: "https://ethereum-sepolia-rpc.publicnode.com",
         },
         tokens: [
           {
@@ -538,14 +538,14 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/fil.webp",
         contracts: {
-          Receipt_NFT: "0x24265D9042d8602Ba26607750894CFC5718d7FC0 ",
+          ReceiptNFT: "0x24265D9042d8602Ba26607750894CFC5718d7FC0 ",
         },
         explorer: {
           url: "https://filscan.io",
           nftPath: "/en/message/{{transactionId}}/",
         },
         rpcUrls: {
-          main: "https://api.node.glif.io",
+          default: "https://api.node.glif.io",
         },
         tokens: [
           {
@@ -569,14 +569,14 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/fil.webp",
         contracts: {
-          Receipt_NFT: "0xa3a3d70Ec57bC30472CD687F3D530b3431292989 ",
+          ReceiptNFT: "0xa3a3d70Ec57bC30472CD687F3D530b3431292989 ",
         },
         explorer: {
           url: "https://calibration.filscan.io",
           nftPath: "/en/message/{{transactionId}}/",
         },
         rpcUrls: {
-          main: "https://api.calibration.node.glif.io",
+          default: "https://api.calibration.node.glif.io",
         },
         tokens: [
           {
@@ -608,14 +608,14 @@ const chainConfiguration = {
         gasprice: "25000000000",
         icon: "/icons/flr.webp",
         contracts: {
-          Receipt_NFT: "0xA503e5EF51A3dEf3099CCa81C8334C4635B1761f",
+          ReceiptNFT: "0xA503e5EF51A3dEf3099CCa81C8334C4635B1761f",
         },
         explorer: {
           url: "https://flare-explorer.flare.network",
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://mainnet.flare.network",
+          default: "https://mainnet.flare.network",
         },
         tokens: [
           {
@@ -640,15 +640,15 @@ const chainConfiguration = {
         icon: "/icons/flr.webp",
         contracts: {
           // too much trouble to verify, TODO later
-          Receipt_NFT: "0xeea9557589cfff5dd3d849da94201fa8cb782c12",
+          ReceiptNFT: "0xeea9557589cfff5dd3d849da94201fa8cb782c12",
         },
         explorer: {
           url: "https://coston2-explorer.flare.network",
           nftPath: "/token/{{contractId}}/instance/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://coston2-api.flare.network/ext/C/rpc",
-          //main: "https://coston2-api.flare.network/ext/bc/C/rpc",
+          default: "https://coston2-api.flare.network/ext/C/rpc",
+          //default: "https://coston2-api.flare.network/ext/bc/C/rpc",
         },
         tokens: [
           {
@@ -680,14 +680,14 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/op.webp",
         contracts: {
-          Receipt_NFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4",
+          ReceiptNFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4",
         },
         explorer: {
           url: "https://optimistic.etherscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://mainnet.optimism.io",
+          default: "https://mainnet.optimism.io",
         },
         tokens: [
           {
@@ -719,14 +719,14 @@ const chainConfiguration = {
         gasprice: "250000000",
         icon: "/icons/op.webp",
         contracts: {
-          Receipt_NFT: "0x6750eA8Ff1f2afE7179d300be052C8D161D1F003",
+          ReceiptNFT: "0x6750eA8Ff1f2afE7179d300be052C8D161D1F003",
         },
         explorer: {
           url: "https://sepolia-optimism.etherscan.io",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://sepolia.optimism.io",
+          default: "https://sepolia.optimism.io",
         },
         tokens: [
           {
@@ -766,14 +766,14 @@ const chainConfiguration = {
         gasprice: "20000000000",
         icon: "/icons/matic.webp",
         contracts: {
-          Receipt_NFT: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
+          ReceiptNFT: "0xb4b4DA6c737065E4391872b255863ABaF71D2742",
         },
         explorer: {
           url: "https://polygonscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://polygon-rpc.com",
+          default: "https://polygon-rpc.com",
         },
         tokens: [
           {
@@ -797,14 +797,14 @@ const chainConfiguration = {
         gasprice: "20000000000",
         icon: "/icons/matic.webp",
         contracts: {
-          Receipt_NFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
+          ReceiptNFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
         },
         explorer: {
           url: "https://amoy.polygonscan.com",
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          main: "https://rpc-amoy.polygon.technology/",
+          default: "https://rpc-amoy.polygon.technology/",
         },
         tokens: [
           {
@@ -840,7 +840,8 @@ const chainConfiguration = {
           nftPath: "/nft/{{contractId}}/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://starknet-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+          default:
+            "https://starknet-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
         },
         tokens: [
           {
@@ -881,7 +882,7 @@ const chainConfiguration = {
           },
         ],
         contracts: {
-          Receipt_NFT:
+          ReceiptNFT:
             "0x032d27a295ddb4d41197494fe5ec06188edcfcc3cebf3faf0dd6c4bab6146e16",
         },
         wallet:
@@ -902,7 +903,7 @@ const chainConfiguration = {
           nftPath: "/nft/{{contractId}}/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://free-rpc.nethermind.io/sepolia-juno/",
+          default: "https://free-rpc.nethermind.io/sepolia-juno/",
         },
         tokens: [
           {
@@ -943,7 +944,7 @@ const chainConfiguration = {
           },
         ],
         contracts: {
-          Receipt_NFT:
+          ReceiptNFT:
             "0x3cfdb23c07a9a059090c871df3f2a242c6738e25351749be334f2b23d764368",
         },
         wallet:
@@ -972,15 +973,15 @@ const chainConfiguration = {
           nftPath: "/accounts/{{contractId}}",
         },
         contracts: {
-          Receipt_NFT:
+          ReceiptNFT:
             "CDOWTLX7NE5ZUM6JRVFPROIW2URA7733XKALB57IT4OLTMYODWIVNOXB",
-          Receipt_NFTHash:
+          ReceiptNFTHash:
             "e8bf985b6e949ae21e618e04cdc924eda863c9226205a64afe35c9dd7f14a9ff",
           Credits: "xxx",
           CreditsHash: "xxx",
         },
         rpcUrls: {
-          main: "https://horizon.stellar.org",
+          default: "https://horizon.stellar.org",
           soroban:
             "https://mainnet.stellar.validationcloud.io/v1/QW6tYBRenqUwP8d9ZJds44Dm-txH1497oDXcdC07xDo",
           // You can add more RPC URLs here as needed
@@ -1021,7 +1022,7 @@ const chainConfiguration = {
           nftPath: "/accounts/{{contractId}}",
         },
         rpcUrls: {
-          main: "https://horizon-testnet.stellar.org",
+          default: "https://horizon-testnet.stellar.org",
           soroban: "https://soroban-testnet.stellar.org",
         },
         networkPassphrase: "Test SDF Network ; September 2015",
@@ -1047,9 +1048,9 @@ const chainConfiguration = {
           Credits: "CDHYT3A4XGBNSWP2P7XQTS2AT5XICKD5KOAZ7S2Y2APJMXRDIENP2LZR",
           CreditsHash:
             "8c850c8ad832e8fcba395dc89009dad9b68c78902b275a5da565c55fe0091c7f",
-          Receipt_NFT:
+          ReceiptNFT:
             "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
-          Receipt_NFTHash:
+          ReceiptNFTHash:
             "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
         },
         wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
@@ -1077,7 +1078,7 @@ const chainConfiguration = {
           nftPath: "/#/transaction/{{transactionId}}",
         },
         rpcUrls: {
-          main: "https://api.trongrid.io/jsonrpc",
+          default: "https://api.trongrid.io/jsonrpc",
         },
         tokens: [
           {
@@ -1105,7 +1106,7 @@ const chainConfiguration = {
           nftPath: "/#/transaction/{{transactionId}}",
         },
         rpcUrls: {
-          main: "https://api.shasta.trongrid.io/jsonrpc",
+          default: "https://api.shasta.trongrid.io/jsonrpc",
         },
         tokens: [
           {
@@ -1141,14 +1142,15 @@ const chainConfiguration = {
         },
         gasprice: "15000000000",
         rpcUrls: {
-          main: "https://rpc.xdcrpc.com",
+          default: "https://rpc.apothem.network",
         },
         contracts: {
-          TBA_Registry: "0xCD4C114E31E909Cc589836596E206D837c9cb00a",
-          TBA_Implementation: "0x2b4ac04B9feB82C7529f2B17db5a441FCB3c05D4",
-          TBA_NFT: "0xb7e30f0e9feE9b77f617EbEC16156b46A8e19908",
-          Receipt_NFT: "0xD218A3C26DeEFa93eb74a785463B6bbF48A5a1b4",
-          Story_NFT: "0x013da344B34447360aE4A01E86a4a4c2aAd3CEbb",
+          TokenBoundRegistry: "0xCD4C114E31E909Cc589836596E206D837c9cb00a",
+          TokenBoundImplementation:
+            "0x2b4ac04B9feB82C7529f2B17db5a441FCB3c05D4",
+          TokenBoundNFT: "0xb7e30f0e9feE9b77f617EbEC16156b46A8e19908",
+          ReceiptNFT: "0xD218A3C26DeEFa93eb74a785463B6bbF48A5a1b4",
+          StoryNFT: "0xf6eD42f808DfD4034aE3485Bf1ae72cba6ED8AE3",
           VolunteersFactory: "0x0eD50ddEE2c561016A9aaB9DaFC891DB3Afe554d",
         },
         tokens: [
@@ -1173,11 +1175,11 @@ const chainConfiguration = {
         icon: "/icons/xdc.webp",
         gasprice: "15000000000",
         explorer: {
-          url: "https://testnet.xdcscan.com",
-          nftPath: "/token/{{contractId}}?a={{tokenId}}",
+          url: "https://explorer.apothem.network",
+          nftPath: "/nft/{{contractId}}/{{tokenId}}",
         },
         rpcUrls: {
-          main: "https://rpc.apothem.network",
+          default: "https://rpc.apothem.network",
         },
         tokens: [
           {
@@ -1190,11 +1192,12 @@ const chainConfiguration = {
           },
         ],
         contracts: {
-          TBA_Registry: "0x000000006551c19487814612e58fe06813775758",
-          TBA_Implementation: "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",
-          TBA_NFT: "0x88Bb2D04f180631BdC4Cd6129106665A0B6790D8", // 0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7
-          Receipt_NFT: "0xa3a3d70Ec57bC30472CD687F3D530b3431292989",
-          Story_NFT: "0xc917ff4128525a65639d18f1d240a788081f022d",
+          TokenBoundRegistry: "0x000000006551c19487814612e58fe06813775758",
+          TokenBoundImplementation:
+            "0x41c8f39463a868d3a88af00cd0fe7102f30e44ec",
+          TokenBoundNFT: "0x88Bb2D04f180631BdC4Cd6129106665A0B6790D8", // 0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7
+          ReceiptNFT: "0xfd92E8Ae8FC075C15375f2F57BE54ADd717c1085",
+          StoryNFT: "0xcA942Ca2817A2688788e88958918D3f93A9E85F5",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",
@@ -1221,7 +1224,7 @@ const chainConfiguration = {
           nftPath: "/transactions/{{transactionId}}",
         },
         rpcUrls: {
-          main: "https://xrplcluster.com",
+          default: "https://xrplcluster.com",
         },
         tokens: [
           {
@@ -1249,7 +1252,7 @@ const chainConfiguration = {
           nftPath: "/transactions/{{transactionId}}",
         },
         rpcUrls: {
-          main: "https://s.altnet.rippletest.net:51234",
+          default: "https://s.altnet.rippletest.net:51234",
         },
         tokens: [
           {
