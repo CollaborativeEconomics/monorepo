@@ -1,7 +1,7 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin"
 import createJiti from "jiti"
-
 const jiti = createJiti(fileURLToPath(import.meta.url))
 
 // Import env here to validate during build
@@ -27,9 +27,15 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "give.staging.cfce.io",
+        hostname: "cfce.io",
         port: "",
-        pathname: "/media/**",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "partners.cfce.io",
+        port: "",
+        pathname: "/**",
       },
       {
         protocol: "https",
@@ -52,6 +58,9 @@ const nextConfig = {
     ],
   },
   webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()]
+    }
     if (!isServer) {
       config.externals = config.externals || []
       config.externals.push(({ context, request }, callback) => {
@@ -63,10 +72,6 @@ const nextConfig = {
     }
     config.externals.push("pino-pretty")
     return config
-  },
-  env: {
-    IPFS_API_KEY: process.env.IPFS_API_KEY,
-    IPFS_API_SECRET: process.env.IPFS_API_SECRET,
   },
 }
 
