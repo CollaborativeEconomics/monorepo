@@ -36,7 +36,7 @@ appConfig.auth = ["metamask"]
 appConfig.chainDefaults = {
   network: "mainnet",
   wallet: "metamask",
-  chain: "arbitrum",
+  chain: "base",
   coin: "ETH",
 }
 
