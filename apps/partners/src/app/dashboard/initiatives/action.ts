@@ -1,6 +1,5 @@
 "use server"
-
-import { type Prisma, newInitiative, updateInitiative } from "@cfce/database"
+import { type Prisma, type InitiativeStatus, InitiativeStatus as Status, newInitiative, updateInitiative } from "@cfce/database"
 import { uploadFileToIPFS } from "@cfce/ipfs"
 import { newTBAccount } from "@cfce/tbas"
 import { EntityType } from "@cfce/types"
@@ -8,43 +7,10 @@ import { uploadFile } from "@cfce/utils"
 import { snakeCase } from "lodash"
 import { revalidatePath } from "next/cache"
 import { randomNumber, randomString } from "~/utils/random"
+import type { InitiativeData } from '~/types/data'
 
-type FormData = {
-  title: string
-  description: string
-  start?: Date
-  finish?: Date
-  image: FileList
-  status?: number
-}
-
-type EditData = {
-  initiativeId: string;
-  organizationId: string;
-  title: string;
-  description: string;
-  start?: Date;
-  finish?: Date;
-  image: FileList;
-  imageUri?: string;
-  defaultAsset?: string;
-  status?: number;
-};
-
-//async function saveImageToIPFS(data: { name: string; file: File }) {
-//  const body = new FormData()
-//  body.append("name", data.name)
-//  body.append("file", data.file)
-//  //const url = process.env.NEXT_PUBLIC_API_URL
-//  const resp = await fetch('/api/ipfs', {
-//    method: "POST",
-//    body,
-//  })
-//  return resp.json()
-//}
-
-export async function createInitiative(
-  data: FormData,
+export async function createInitiativeAction(
+  data: InitiativeData,
   orgId: string,
   tba = false,
 ) {
@@ -95,7 +61,7 @@ export async function createInitiative(
           id: orgId,
         },
       },
-      status: data.status || 0
+      status: data.status || Status.Draft // Status.Draft
     }
 
     const result = await newInitiative(record)
@@ -138,11 +104,11 @@ export async function createInitiative(
   }
 }
 
-export async function editInitiative(data: EditData) {
+export async function editInitiativeAction(id: string, data: InitiativeData) {
   console.log("EDIT", data)
 
   try {
-    const file = data.image?.length > 0 ? data.image[0] : null
+    const file = data.image && data.image?.length > 0 ? data.image[0] : null
     let imageUri = data.imageUri
     let defaultAsset = data.defaultAsset
     if (file) {
@@ -167,6 +133,7 @@ export async function editInitiative(data: EditData) {
     }
 
     const record = {
+      organizationId: data.organizationId,
       title: data.title,
       slug: snakeCase(data.title),
       description: data.description,
@@ -174,8 +141,7 @@ export async function editInitiative(data: EditData) {
       finish: data.finish,
       defaultAsset,
       imageUri,
-      status: data.status || 0
-      //tag: Number.parseInt(randomNumber(8)),
+      status: data.status || Status.Draft  //Status.Draft
       //organization: {
       //  connect: {
       //    id: data.organizationId,
@@ -183,7 +149,7 @@ export async function editInitiative(data: EditData) {
       //},
     }
 
-    const result = await updateInitiative(data.initiativeId, record)
+    const result = await updateInitiative(id, record)
     console.log("RES", result)
 
     if (!result) {

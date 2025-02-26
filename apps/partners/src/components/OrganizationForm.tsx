@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { Prisma, Organization } from '@cfce/database';
+import type { Organization } from '@cfce/database';
 import FileView from '~/components/form/fileview';
 import ButtonBlue from '~/components/buttonblue';
 import Select from '~/components/form/select';
@@ -23,7 +23,7 @@ export default function OrganizationForm({
   categories: CategoryItem[];
   formMode: FormMode
 }) {
-
+/*
   function getFormData(form: HTMLFormElement) {
     const data:OrganizationData = {name:'', description:'', email:''}
     const formData = new FormData(form);
@@ -34,10 +34,10 @@ export default function OrganizationForm({
     }
     return data;
   }
-
-  async function onSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    const data = getFormData(event.currentTarget as HTMLFormElement);
+*/
+  async function onSubmit(data:OrganizationData) {
+    //event.preventDefault();
+    //const data = getFormData(event.currentTarget as HTMLFormElement);
     console.log('SUBMIT', data);
 
     if (!data.name) {
@@ -49,9 +49,10 @@ export default function OrganizationForm({
       return;
     }
 
+    showMessage('Saving organization, it may take a while...');
+    setButtonState(ButtonState.WAIT);
+
     try {
-      showMessage('Saving organization, it may take a while...');
-      setButtonState(ButtonState.WAIT);
       let result = null
       switch(formMode){
         case Mode.New: {
@@ -84,6 +85,8 @@ export default function OrganizationForm({
   }
 
   const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [buttonText, setButtonText] = useState('SUBMIT');
 
   function setButtonState(state: number) {
     switch (state) {
@@ -102,14 +105,11 @@ export default function OrganizationForm({
     }
   }
 
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [buttonText, setButtonText] = useState('SUBMIT');
   const [message, showMessage] = useState('Enter organization info and click on submit');
-
   const imageSource = organization.image || '/media/upload.jpg'
   const backSource = organization.background || '/media/upload.jpg'
 
-  const { register, watch } = useForm({
+  const { register, handleSubmit, watch } = useForm<OrganizationData>({
     defaultValues: {
       name: organization.name,
       description: organization.description,
@@ -160,7 +160,7 @@ export default function OrganizationForm({
 
   return (
     <>
-      <form className={styles.vbox} onSubmit={onSubmit}>
+      <form className={styles.vbox} onSubmit={handleSubmit(onSubmit)}>
         <p className="text-center">Organization image</p>
         <FileView
           id="imgFile"

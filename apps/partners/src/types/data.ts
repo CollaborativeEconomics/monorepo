@@ -1,3 +1,5 @@
+import type { InitiativeStatus } from "@cfce/database"
+
 export enum FormMode {
   New,
   View,
@@ -27,4 +29,17 @@ export type OrganizationData = {
   twitter?: string;
   facebook?: string;
   categoryId?: string;
+};
+
+export type InitiativeData = {
+  organizationId: string;
+  title: string;
+  description: string;
+  slug?: string;
+  start?: Date;
+  finish?: Date;
+  image?: FileList;
+  imageUri?: string;
+  defaultAsset?: string;
+  status?: InitiativeStatus;
 };

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { InitiativeStatus } from '@cfce/database'
 
 interface CreditType {
   id: string;
@@ -16,21 +17,11 @@ interface InitiativeProps {
   credits?: CreditType[];
   start?: Date;
   end?: Date;
-  status?: number|null;
+  status?: InitiativeStatus|null;
 }
 
 function toDate(date: Date) {
   return new Date(date).toLocaleString();
-}
-
-function showInitiativeStatus(status: number) {
-  switch(status){
-    case 0: return  'Draft';
-    case 1: return  'Active';
-    case 2: return  'Finished';
-    case 3: return  'Archived';
-    default: return 'N/A';
-  }
 }
 
 const InitiativeCard = (initiative: InitiativeProps) => {
@@ -62,7 +53,7 @@ const InitiativeCard = (initiative: InitiativeProps) => {
         <h3 className="text-base">{initiative.description}</h3>
         {hasCredit ? <p className="text-green-500">{creditText}</p> : ''}
         {/*<Link href={'/partners/reports/initiatives?id='+initiative.id} className="text-slate-250">View donations &raquo;</Link>*/}
-        <p className="mt-4 text-right text-gray-500">{showInitiativeStatus(initiative.status||0)}</p>
+        <p className="mt-4 text-right text-gray-500">{initiative.status}</p>
       </div>
     </div>
   );

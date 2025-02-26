@@ -1,19 +1,25 @@
 import { auth } from "@cfce/auth"
 import Link from "next/link"
-import { type Initiative, getOrganizationById } from "@cfce/database"
+import { type Initiative, InitiativeStatus, getOrganizationById } from "@cfce/database"
 import styles from "~/styles/dashboard.module.css"
 import Title from "~/components/title"
-import InitiativeForm from "./InitiativeForm"
+import InitiativeForm from "~/components/InitiativeForm"
 import InitiativeCard from "~/components/InitiativeCard"
+import { type InitiativeData, FormMode } from '~/types/data'
 
 export default async function Page() {
   const session = await auth()
   const orgId = session?.orgId || ""
-
   const organization = await getOrganizationById(orgId)
-
-  const initiatives =
-    organization?.initiative.map((i) => ({ ...i, organization })) || []
+  const initiatives = organization?.initiative.map((it) => ({ ...it, organization })) || []
+  const initiative:InitiativeData = {
+    organizationId: orgId,
+    title: '',
+    description: '',
+    start: new Date(),
+    finish: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    status: InitiativeStatus.Draft,
+  }
 
   return (
     <div>
@@ -25,7 +31,7 @@ export default async function Page() {
         place!
       </p>
       <div className={styles.mainBox}>
-        <InitiativeForm orgId={orgId} />
+        <InitiativeForm initiative={initiative} formMode={FormMode.New} />
       </div>
       {initiatives.length > 0 ? (
         initiatives.map((item: Initiative) => (
