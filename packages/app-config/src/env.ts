@@ -28,11 +28,6 @@ export const sharedEnvSchema = {
   api: {
     MOBULA_API_KEY: z.string(),
   },
-  // Feature flags that are common across apps
-  features: {
-    ENABLE_ANCHAIN: z.enum(["true", "false"]).default("false"),
-    ENABLE_GLOBALID: z.enum(["true", "false"]).default("false"),
-  },
   client: {
     NEXT_PUBLIC_APP_ID: z.string(),
     NEXT_PUBLIC_APP_ENV: z.enum(["development", "staging", "production"]),
@@ -62,7 +57,6 @@ export const runtimeEnv = {
   auth: createEnvMapping(sharedEnvSchema.auth),
   database: createEnvMapping(sharedEnvSchema.database),
   api: createEnvMapping(sharedEnvSchema.api),
-  features: createEnvMapping(sharedEnvSchema.features),
   client: createEnvMapping(sharedEnvSchema.client),
 }
 
@@ -77,7 +71,6 @@ export const createFullRuntimeEnv = (
   ...runtimeEnv.auth,
   ...runtimeEnv.database,
   ...runtimeEnv.api,
-  ...runtimeEnv.features,
   ...runtimeEnv.client,
   ...additionalEnv,
 })
