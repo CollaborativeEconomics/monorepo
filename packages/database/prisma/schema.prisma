@@ -204,7 +204,7 @@ model Initiative {
   contractcredit String?          @db.VarChar(255)
   unitvalue      Int?             @default(0)
   unitlabel      String?          @db.VarChar(20)
-  status         Int?             @default(0) @db.SmallInt
+  status         InitiativeStatus? @default(Draft)
   credits        Credit[]
   donations      Donation[]
   category       Category?        @relation(fields: [categoryId], references: [id])
@@ -567,3 +567,11 @@ enum CreditType {
   Plastic
   Biodiversity
 }
+
+enum InitiativeStatus {
+  Archived
+  Active
+  Finished
+  Draft
+}
+
