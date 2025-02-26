@@ -179,35 +179,36 @@ model Hook {
 }
 
 model Initiative {
-  id             String           @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  created        DateTime         @default(now()) @db.Timestamptz(6)
-  inactive       Boolean          @default(false)
-  slug           String           @db.VarChar(255)
-  organizationId String           @db.Uuid
-  chapterId      String?          @db.Uuid
-  categoryId     String?          @db.Uuid
-  title          String           @db.VarChar(255)
+  id             String            @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  created        DateTime          @default(now()) @db.Timestamptz(6)
+  inactive       Boolean           @default(false)
+  slug           String            @db.VarChar(255)
+  organizationId String            @db.Uuid
+  chapterId      String?           @db.Uuid
+  categoryId     String?           @db.Uuid
+  title          String            @db.VarChar(255)
   description    String
-  defaultAsset   String           @db.VarChar(255)
-  imageUri       String?          @db.VarChar(255)
-  start          DateTime         @default(now()) @db.Timestamptz(6)
-  finish         DateTime?        @db.Timestamptz(6)
-  tag            Int              @unique
-  contractnft    String?          @db.VarChar(255)
-  wallet         String?          @db.VarChar(255)
-  country        String?          @db.VarChar(255)
-  donors         Int              @default(0)
-  institutions   Int              @default(0)
-  goal           Int              @default(0)
-  received       Int              @default(0)
-  lastmonth      Int              @default(0)
-  contractcredit String?          @db.VarChar(255)
-  unitvalue      Int?             @default(0)
-  unitlabel      String?          @db.VarChar(20)
+  defaultAsset   String            @db.VarChar(255)
+  imageUri       String?           @db.VarChar(255)
+  start          DateTime          @default(now()) @db.Timestamptz(6)
+  finish         DateTime?         @db.Timestamptz(6)
+  tag            Int               @unique
+  contractnft    String?           @db.VarChar(255)
+  wallet         String?           @db.VarChar(255)
+  country        String?           @db.VarChar(255)
+  donors         Int               @default(0)
+  institutions   Int               @default(0)
+  goal           Int               @default(0)
+  received       Int               @default(0)
+  lastmonth      Int               @default(0)
+  contractcredit String?           @db.VarChar(255)
+  unitvalue      Int?              @default(0)
+  unitlabel      String?           @db.VarChar(20)
+  status         InitiativeStatus? @default(Draft)
   credits        Credit[]
   donations      Donation[]
-  category       Category?        @relation(fields: [categoryId], references: [id])
-  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category       Category?         @relation(fields: [categoryId], references: [id])
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   tiers          InitiativeTier[]
   nfts           NFTData[]
   stories        Story[]
@@ -565,4 +566,11 @@ enum CreditType {
   Carbon
   Plastic
   Biodiversity
+}
+
+enum InitiativeStatus {
+  Archived
+  Active
+  Finished
+  Draft
 }
