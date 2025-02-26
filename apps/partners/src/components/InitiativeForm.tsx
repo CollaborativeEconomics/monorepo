@@ -1,33 +1,35 @@
 "use client"
+import { DatePicker } from "@cfce/components/form"
+import type { Initiative } from "@cfce/database/types"
+import { InitiativeStatus } from "@cfce/database/types"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import type { Initiative } from "@cfce/database/types"
-import type { InitiativeStatus } from "@cfce/database/types"
-import { InitiativeStatus as Status } from "@cfce/database/types"
+import {
+  createInitiativeAction,
+  editInitiativeAction,
+} from "~/app/dashboard/initiatives/action"
 //import { InitiativeStatus as Status } from "@cfce/types"
-import InitiativeStatusSelect from '~/components/InitiativeStatusSelect'
-import { DatePicker } from "@cfce/components/form"
+import InitiativeStatusSelect from "~/components/InitiativeStatusSelect"
 import ButtonBlue from "~/components/buttonblue"
 import FileView from "~/components/form/fileview"
 import Select from "~/components/form/select"
 import TextArea from "~/components/form/textarea"
 import TextInput from "~/components/form/textinput"
+import type { FormMode, InitiativeData } from "~/types/data"
+import { FormMode as Mode } from "~/types/data"
 import dateToPrisma from "~/utils/DateToPrisma"
-import type { InitiativeData, FormMode } from '~/types/data'
-import { FormMode as Mode } from '~/types/data'
-import { createInitiativeAction, editInitiativeAction } from "~/app/dashboard/initiatives/action"
 
 export default function InitiativeForm({
   id,
   initiative,
-  formMode
+  formMode,
 }: {
-  id?:string;
-  initiative: InitiativeData;
+  id?: string
+  initiative: InitiativeData
   formMode: FormMode
 }) {
-  console.log('INIT', initiative)
-/*
+  console.log("INIT", initiative)
+  /*
   function getFormData(form: HTMLFormElement) {
     const data:InitiativeData = {organizationId:'', title:'', description:''}
     const formData = new FormData(form);
@@ -43,7 +45,7 @@ export default function InitiativeForm({
   async function onSubmit(data: InitiativeData) {
     //event.preventDefault();
     //const data = getFormData(event.currentTarget as HTMLFormElement);
-    console.log('SUBMIT', data);
+    console.log("SUBMIT", data)
 
     if (!data.title) {
       showMessage("Error: Title is a required field")
@@ -58,8 +60,8 @@ export default function InitiativeForm({
       return
     }
     if (data.start && data.finish && data.start > data.finish) {
-      showMessage('Start date must be before end date');
-      return;
+      showMessage("Start date must be before end date")
+      return
     }
 
     //data.initiativeId = initiative.id
@@ -67,7 +69,7 @@ export default function InitiativeForm({
     data.imageUri = initiative.imageUri || undefined
     data.defaultAsset = initiative.defaultAsset || undefined
     data.status = initiativeStatus // from select control
-    console.log('FORM', data);
+    console.log("FORM", data)
 
     setButtonDisabled(true)
     setButtonText("WAIT")
@@ -75,57 +77,66 @@ export default function InitiativeForm({
 
     try {
       let result = null
-      switch(formMode){
+      switch (formMode) {
         case Mode.New: {
-          const useTBA = true;
-          result = await createInitiativeAction(data, initiative.organizationId, useTBA)
-          break;
+          const useTBA = true
+          result = await createInitiativeAction(
+            data,
+            initiative.organizationId,
+            useTBA,
+          )
+          break
         }
         case Mode.Edit: {
-          if(id){
-            result = await editInitiativeAction(id, data);
+          if (id) {
+            result = await editInitiativeAction(id, data)
           }
-          break;
+          break
         }
-        default: break;
+        default:
+          break
       }
       if (result?.success) {
-        showMessage('Initiative saved successfully');
-        setButtonState(ButtonState.DONE);
+        showMessage("Initiative saved successfully")
+        setButtonState(ButtonState.DONE)
       } else {
-        showMessage(`Error saving initiative: ${result?.error}`);
-        setButtonState(ButtonState.READY);
+        showMessage(`Error saving initiative: ${result?.error}`)
+        setButtonState(ButtonState.READY)
       }
     } catch (ex: unknown) {
-      console.error(ex);
-      showMessage(`Error saving initiative: ${(ex as Error).message}`);
-      setButtonState(ButtonState.READY);
+      console.error(ex)
+      showMessage(`Error saving initiative: ${(ex as Error).message}`)
+      setButtonState(ButtonState.READY)
     }
   }
 
-  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 };
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [buttonText, setButtonText] = useState('SUBMIT');
+  const ButtonState = { READY: 0, WAIT: 1, DONE: 2 }
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [buttonText, setButtonText] = useState("SUBMIT")
 
   function setButtonState(state: number) {
     switch (state) {
       case ButtonState.READY:
-        setButtonText('SUBMIT');
-        setButtonDisabled(false);
-        break;
+        setButtonText("SUBMIT")
+        setButtonDisabled(false)
+        break
       case ButtonState.WAIT:
-        setButtonText('WAIT');
-        setButtonDisabled(true);
-        break;
+        setButtonText("WAIT")
+        setButtonDisabled(true)
+        break
       case ButtonState.DONE:
-        setButtonText('DONE');
-        setButtonDisabled(true);
-        break;
+        setButtonText("DONE")
+        setButtonDisabled(true)
+        break
     }
   }
 
-  const [message, showMessage] = useState('Enter initiative info and upload image');
-  const [initiativeStatus, setInitiativeStatus] = useState<InitiativeStatus>(initiative.status||Status.Draft);
+  const [message, showMessage] = useState(
+    "Enter initiative info and upload image",
+  )
+  const [initiativeStatus, setInitiativeStatus] = useState<InitiativeStatus>(
+    initiative.status || InitiativeStatus.Draft,
+  )
 
   const { register, handleSubmit, watch, control } = useForm<InitiativeData>({
     defaultValues: {
@@ -133,41 +144,34 @@ export default function InitiativeForm({
       description: initiative.description,
       start: initiative.start,
       finish: initiative.finish,
-      status: initiative.status || Status.Draft
+      status: initiative.status || InitiativeStatus.Draft,
     },
-  });
+  })
 
   //const image = watch('image');
-  const imageSource = initiative.defaultAsset ?? '/media/upload.jpg'
+  const imageSource = initiative.defaultAsset ?? "/media/upload.jpg"
 
-  const [
-    title,
-    description,
-    start,
-    finish,
-    image,
-    status,
-  ] = watch([
-    'title',
-    'description',
-    'start',
-    'finish',
-    'image',
-    'status',
-  ]);
+  const [title, description, start, finish, image, status] = watch([
+    "title",
+    "description",
+    "start",
+    "finish",
+    "image",
+    "status",
+  ])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FileView
         id="imgFile"
-        {...register('image')}
+        {...register("image")}
         source={imageSource}
         width={250}
         height={250}
         multiple={false}
       />
-      <TextInput label="Title" {...register('title')} />
-      <TextArea label="Description" {...register('description')} />
+      <TextInput label="Title" {...register("title")} />
+      <TextArea label="Description" {...register("description")} />
       <Controller
         control={control}
         name="start"
@@ -190,17 +194,17 @@ export default function InitiativeForm({
           />
         )}
       />
-      <InitiativeStatusSelect 
-        status={(initiative.status||Status.Draft) as string}
-        handler={(val:string) => {
-          console.log('STATUS', val)
+      <InitiativeStatusSelect
+        status={initiative.status || InitiativeStatus.Draft}
+        handler={(val: InitiativeStatus) => {
+          console.log("STATUS", val)
           //const key = val as keyof typeof Status
-          const key = Number.parseInt(val)
-          console.log('KEY', key)
-          const newStatus = Status[key]
+          const key = val
+          console.log("KEY", key)
+          const newStatus = InitiativeStatus[key]
           //const newStatus = Status[val]
-          console.log('STATUS CHANGED', newStatus)
-          console.log('KEYS', Object.keys(Status))
+          console.log("STATUS CHANGED", newStatus)
+          console.log("KEYS", Object.keys(InitiativeStatus))
           //setInitiativeStatus(newStatus)
         }}
       />
@@ -214,5 +218,5 @@ export default function InitiativeForm({
         {message}
       </p>
     </form>
-  );
+  )
 }

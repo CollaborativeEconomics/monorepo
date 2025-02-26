@@ -1,21 +1,19 @@
+// Type exports
 export type {
   Account,
   Action,
   Artwork,
   Category,
-  Chain,
   Chapter,
   Collection,
   Contract,
   Credit,
-  CreditType,
   Cronjob,
   Donation,
   Event,
   EventMedia,
   Hook,
   Initiative,
-  InitiativeStatus,
   InitiativeTier,
   ImpactLink,
   NFTData,
@@ -35,3 +33,6 @@ export type {
   Wallet,
 } from "@prisma/client"
 
+// Value exports (enums)
+import { Chain, CreditType, InitiativeStatus } from "@prisma/client"
+export { InitiativeStatus, CreditType, Chain }
