@@ -1,6 +1,6 @@
 "use client"
 
-import { abiVolunteersNFT as NFTAbi } from "@cfce/blockchain-tools"
+import { abiVolunteersDistributor as DistributorAbi } from "@cfce/blockchain-tools"
 import type { Contract, Event } from "@cfce/database"
 import {
   readContract,
@@ -140,7 +140,7 @@ export default function RegisterClient({
     try {
       const balance = await readContract(wagmiConfig, {
         address: nft,
-        abi: NFTAbi,
+        abi: DistributorAbi,
         functionName: "balanceOf",
         args: [cleanedAddress, tokenId],
       })
@@ -153,7 +153,7 @@ export default function RegisterClient({
 
       const tx = {
         address: nft,
-        abi: NFTAbi,
+        abi: DistributorAbi,
         functionName: "mint",
         args: [cleanedAddress, tokenId, tokenQty],
         chain: defaultChain,
@@ -162,7 +162,7 @@ export default function RegisterClient({
       console.log("TX", tx)
       const hash = await writeContractAsync({
         address: nft,
-        abi: NFTAbi,
+        abi: DistributorAbi,
         functionName: "mint",
         args: [cleanedAddress, tokenId, tokenQty],
         chain: defaultChain,

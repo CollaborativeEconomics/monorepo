@@ -55,15 +55,15 @@ export default function RewardClient({
       return;
     }
 
-    const estimateGas = await useEstimateGas({
-      address: distributor,
-      abi: DistributorAbi,
-      functionName: 'distributeTokensByUnit' as const,
-      args: [registered as `0x${string}`[]],
-      chain: defaultChain,
-    });
+    // const estimateGas = await useEstimateGas({
+    //   address: distributor,
+    //   abi: DistributorAbi,
+    //   functionName: 'distributeTokensByUnit' as const,
+    //   args: [registered as `0x${string}`[]],
+    //   chain: defaultChain,
+    // });
 
-    console.log('ESTIMATE GAS', estimateGas);
+    // console.log('ESTIMATE GAS', estimateGas);
 
     try {
       const registered = volunteers?.map(it => it.address);

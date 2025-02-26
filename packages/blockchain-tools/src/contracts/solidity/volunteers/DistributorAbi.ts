@@ -1,4 +1,4 @@
-export const VolunteersDistributorAbi = [
+export const DistributorAbi = [
   {
     "type": "constructor",
     "inputs": [
