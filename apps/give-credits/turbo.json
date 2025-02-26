@@ -17,7 +17,7 @@
         "AUTH_URL",
         "AUTH_SECRET",
         "POSTGRES_PRISMA_URL",
-        "MOBULA_API_KEY",,
+        "MOBULA_API_KEY",
         "STELLAR_WALLET_SECRET"
       ],
       "dependsOn": ["^build"]
