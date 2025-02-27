@@ -39,11 +39,11 @@ export async function createOrganizationAction(
   try {
     let image = ''
     let background = ''
-    if(data.image && data.image?.size > 0){
-      image = await fileUpload(data.image)
+    if(data.image && data.image.length>0 && data.image[0].size > 0){
+      image = await fileUpload(data.image[0])
     }
-    if(data.background && data.background?.size > 0){
-      background = await fileUpload(data.background)
+    if(data.background && data.background.length>0 && data.background[0].size > 0){
+      background = await fileUpload(data.background[0])
     }
 
     const record = {
@@ -95,11 +95,11 @@ export async function updateOrganizationAction(id: string, data: OrganizationDat
   try {
     let image = ''
     let background = ''
-    if(data.image && data.image?.size > 0){
-      image = await fileUpload(data.image)
+    if(data.image && data.image.length>0 && data.image[0].size > 0){
+      image = await fileUpload(data.image[0])
     }
-    if(data.background && data.background?.size > 0){
-      background = await fileUpload(data.background)
+    if(data.background && data.background.length>0 && data.background[0].size > 0){
+      background = await fileUpload(data.background[0])
     }
 
     const record = {

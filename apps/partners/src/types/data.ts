@@ -21,8 +21,8 @@ export type OrganizationData = {
   phone?: string;
   mailingAddress?: string;
   country?: string;
-  image?: File;
-  background?: File;
+  image?: FileList;
+  background?: FileList;
   imageUrl?: string;
   backgroundUrl?: string;
   url?: string;

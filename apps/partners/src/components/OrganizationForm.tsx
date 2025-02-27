@@ -23,21 +23,8 @@ export default function OrganizationForm({
   categories: CategoryItem[];
   formMode: FormMode
 }) {
-/*
-  function getFormData(form: HTMLFormElement) {
-    const data:OrganizationData = {name:'', description:'', email:''}
-    const formData = new FormData(form);
-    //console.log('FORM', formData);
-    for (const [name, value] of formData) {
-      //console.log(name, value);
-      data[name as keyof OrganizationData] = value as string & File;
-    }
-    return data;
-  }
-*/
+
   async function onSubmit(data:OrganizationData) {
-    //event.preventDefault();
-    //const data = getFormData(event.currentTarget as HTMLFormElement);
     console.log('SUBMIT', data);
 
     if (!data.name) {
@@ -106,8 +93,8 @@ export default function OrganizationForm({
   }
 
   const [message, showMessage] = useState('Enter organization info and click on submit');
-  const imageSource = organization.image || '/media/upload.jpg'
-  const backSource = organization.background || '/media/upload.jpg'
+  const imageSource = organization.imageUrl || '/media/upload.jpg'
+  const backSource = organization.backgroundUrl || '/media/upload.jpg'
 
   const { register, handleSubmit, watch } = useForm<OrganizationData>({
     defaultValues: {
@@ -165,7 +152,7 @@ export default function OrganizationForm({
         <FileView
           id="imgFile"
           {...register('image')}
-          source='/media/upload.jpg'
+          source={imageSource}
           width={250}
           height={250}
           multiple={false}
@@ -175,7 +162,7 @@ export default function OrganizationForm({
         <FileView
           id="bgFile"
           {...register('background')}
-          source='/media/upload.jpg'
+          source={backSource}
           width={500}
           height={250}
           multiple={false}

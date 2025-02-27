@@ -68,12 +68,12 @@ export default function InitiativeForm({
     data.organizationId = initiative.organizationId
     data.imageUri = initiative.imageUri || undefined
     data.defaultAsset = initiative.defaultAsset || undefined
-    data.status = initiativeStatus // from select control
+    data.status = initiativeStatus // as InitiativeStatus // from select control
     console.log("FORM", data)
 
     setButtonDisabled(true)
     setButtonText("WAIT")
-    showMessage("Saving initiative...")
+    showMessage("Saving initiative, it may take a while...")
 
     try {
       let result = null
@@ -199,13 +199,12 @@ export default function InitiativeForm({
         handler={(val: InitiativeStatus) => {
           console.log("STATUS", val)
           //const key = val as keyof typeof Status
-          const key = val
-          console.log("KEY", key)
-          const newStatus = InitiativeStatus[key]
-          //const newStatus = Status[val]
-          console.log("STATUS CHANGED", newStatus)
-          console.log("KEYS", Object.keys(InitiativeStatus))
-          //setInitiativeStatus(newStatus)
+          //const key = val
+          //console.log("KEY", key)
+          //const newStatus = InitiativeStatus[key] // doesn't work
+          //console.log("STATUS CHANGED", newStatus)
+          //console.log("KEYS", Object.keys(InitiativeStatus))
+          setInitiativeStatus(val)
         }}
       />
       <ButtonBlue
