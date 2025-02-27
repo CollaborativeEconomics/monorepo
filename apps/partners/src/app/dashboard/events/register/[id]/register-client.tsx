@@ -89,8 +89,17 @@ export default function RegisterClient({
         if (!result) return
 
         const address = result.getText()
+        const cleanedAddress =
+          address.includes(":") && address.includes("@")
+            ? address.split(":")[1].split("@")[0]
+            : address.includes(":")
+              ? address.split(":")[1]
+              : address.includes("@")
+                ? address.split("@")[0]
+                : address
+
         setMessage("Wallet Scanned!")
-        setValue("address", address)
+        setValue("address", cleanedAddress)
         setScanStatus("ready")
         qrReader.current?.stopContinuousDecode()
       },

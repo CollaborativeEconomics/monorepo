@@ -574,7 +574,3 @@ enum InitiativeStatus {
   Finished
   Draft
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 59d06f13ea3ac1ecf6766502db22c94bf384bc9d

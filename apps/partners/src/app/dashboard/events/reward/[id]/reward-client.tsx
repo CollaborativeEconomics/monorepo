@@ -71,8 +71,7 @@ export default function RewardClient({
       console.log('TX', {
         address: distributor,
         abi: DistributorAbi,
-        functionName: 'distributeTokensByUnit' as const,
-        args: [registered as `0x${string}`[]],
+        functionName: 'distributeTokens' as const,
         chain: defaultChain,
         account: account.address,
       });
@@ -80,8 +79,7 @@ export default function RewardClient({
       const hash = await writeContractAsync({
         address: distributor,
         abi: DistributorAbi,
-        functionName: 'distributeTokensByUnit' as const,
-        args: [registered as `0x${string}`[]],
+        functionName: 'distributeTokens' as const,
         chain: defaultChain,
         account: account.address,
       });
