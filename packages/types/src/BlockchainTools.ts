@@ -67,16 +67,21 @@ type FactoryContract =
   | "VolunteersFactory"
 
 export type Contract =
+  | "Credits"
+  | "CreditsFactory"
+  | "CreditsHash"
   | "FactoryContract"
-  | "TokenBoundRegistry"
-  | "TokenBoundImplementation"
-  | "TokenBoundNFT"
+  | "ReceiptFactory"
   | "ReceiptNFT"
   | "ReceiptNFTHash" // soroban only
   | "StoryNFT"
-  | "Credits"
+  | "TokenBoundRegistry"
+  | "TokenBoundImplementation"
+  | "TokenBoundNFT"
   | "VolunteersDistributor"
+  | "VolunteersFactory"
   | "VolunteersNFT"
+  | "xlmNativeCoin"
 
 export interface NetworkConfig {
   id: number
