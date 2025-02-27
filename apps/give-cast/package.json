@@ -13,12 +13,13 @@
   "dependencies": {
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
+    "@cfce/app-config": "workspace:*",
     "@t3-oss/env-nextjs": "0.12.0",
     "ethers": "^6.13.5",
     "form-data": "^4.0.1",
     "frog": "^0.18.2",
     "hono": "^4.6.7",
-    "jiti": "2.4.2",
+    "jiti": "1.21.7",
     "next": "^15.1.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -31,13 +32,5 @@
     "@types/react-dom": "19.0.0",
     "typescript": "^5.7.2",
     "vercel": "39.3.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "hono": "^4.6.7"
-    },
-    "patchedDependencies": {
-      "frog": "patches/frog.patch"
-    }
   }
 }

@@ -66,7 +66,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   setChain(slug: ChainSlugs) {
     this.chain = chainConfig[slug]
     this.network = getNetworkForChain(slug)
-    this.web3 = new Web3(this.network?.rpcUrls?.main)
+    this.web3 = new Web3(this.network?.rpcUrls?.default)
   }
   connectedWallet? = ""
   wallets?: string[]
@@ -100,41 +100,55 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       xdcTestnet,
     ],
     transports: {
-      [arbitrum.id]: http(chainConfig.arbitrum.networks.mainnet.rpcUrls.main),
+      [arbitrum.id]: http(
+        chainConfig.arbitrum.networks.mainnet.rpcUrls.default,
+      ),
       [arbitrumSepolia.id]: http(
-        chainConfig.arbitrum.networks.testnet.rpcUrls.main,
+        chainConfig.arbitrum.networks.testnet.rpcUrls.default,
       ),
       [avalancheFuji.id]: http(
-        chainConfig.avalanche.networks.testnet.rpcUrls.main,
+        chainConfig.avalanche.networks.testnet.rpcUrls.default,
       ),
-      [avalanche.id]: http(chainConfig.avalanche.networks.mainnet.rpcUrls.main),
-      [base.id]: http(chainConfig.base.networks.mainnet.rpcUrls.main),
-      [baseSepolia.id]: http(chainConfig.base.networks.testnet.rpcUrls.main),
-      [bsc.id]: http(chainConfig.binance.networks.mainnet.rpcUrls.main),
-      [bscTestnet.id]: http(chainConfig.binance.networks.testnet.rpcUrls.main),
-      [celo.id]: http(chainConfig.celo.networks.mainnet.rpcUrls.main),
-      [celoAlfajores.id]: http(chainConfig.celo.networks.testnet.rpcUrls.main),
-      [eos.id]: http(chainConfig.eos.networks.mainnet.rpcUrls.main),
-      [eosTestnet.id]: http(chainConfig.eos.networks.testnet.rpcUrls.main),
-      [filecoin.id]: http(chainConfig.filecoin.networks.mainnet.rpcUrls.main),
+      [avalanche.id]: http(
+        chainConfig.avalanche.networks.mainnet.rpcUrls.default,
+      ),
+      [base.id]: http(chainConfig.base.networks.mainnet.rpcUrls.default),
+      [baseSepolia.id]: http(chainConfig.base.networks.testnet.rpcUrls.default),
+      [bsc.id]: http(chainConfig.binance.networks.mainnet.rpcUrls.default),
+      [bscTestnet.id]: http(
+        chainConfig.binance.networks.testnet.rpcUrls.default,
+      ),
+      [celo.id]: http(chainConfig.celo.networks.mainnet.rpcUrls.default),
+      [celoAlfajores.id]: http(
+        chainConfig.celo.networks.testnet.rpcUrls.default,
+      ),
+      [eos.id]: http(chainConfig.eos.networks.mainnet.rpcUrls.default),
+      [eosTestnet.id]: http(chainConfig.eos.networks.testnet.rpcUrls.default),
+      [filecoin.id]: http(
+        chainConfig.filecoin.networks.mainnet.rpcUrls.default,
+      ),
       [filecoinCalibration.id]: http(
-        chainConfig.filecoin.networks.testnet.rpcUrls.main,
+        chainConfig.filecoin.networks.testnet.rpcUrls.default,
       ),
-      [flare.id]: http(chainConfig.flare.networks.mainnet.rpcUrls.main),
-      [flareTestnet.id]: http(chainConfig.flare.networks.testnet.rpcUrls.main),
-      [goerli.id]: http(chainConfig.ethereum.networks.testnet.rpcUrls.main),
-      [mainnet.id]: http(chainConfig.ethereum.networks.mainnet.rpcUrls.main),
-      [optimism.id]: http(chainConfig.optimism.networks.mainnet.rpcUrls.main),
+      [flare.id]: http(chainConfig.flare.networks.mainnet.rpcUrls.default),
+      [flareTestnet.id]: http(
+        chainConfig.flare.networks.testnet.rpcUrls.default,
+      ),
+      [goerli.id]: http(chainConfig.ethereum.networks.testnet.rpcUrls.default),
+      [mainnet.id]: http(chainConfig.ethereum.networks.mainnet.rpcUrls.default),
+      [optimism.id]: http(
+        chainConfig.optimism.networks.mainnet.rpcUrls.default,
+      ),
       [optimismSepolia.id]: http(
-        chainConfig.optimism.networks.testnet.rpcUrls.main,
+        chainConfig.optimism.networks.testnet.rpcUrls.default,
       ),
-      [polygon.id]: http(chainConfig.polygon.networks.mainnet.rpcUrls.main),
+      [polygon.id]: http(chainConfig.polygon.networks.mainnet.rpcUrls.default),
       [polygonMumbai.id]: http(
-        chainConfig.polygon.networks.testnet.rpcUrls.main,
+        chainConfig.polygon.networks.testnet.rpcUrls.default,
       ),
-      [sepolia.id]: http(chainConfig.ethereum.networks.testnet.rpcUrls.main),
-      [xdc.id]: http(chainConfig.xdc.networks.mainnet.rpcUrls.main),
-      [xdcTestnet.id]: http(chainConfig.xdc.networks.testnet.rpcUrls.main),
+      [sepolia.id]: http(chainConfig.ethereum.networks.testnet.rpcUrls.default),
+      [xdc.id]: http(chainConfig.xdc.networks.mainnet.rpcUrls.default),
+      [xdcTestnet.id]: http(chainConfig.xdc.networks.testnet.rpcUrls.default),
     },
   })
 
@@ -153,7 +167,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       //this.config = createConfig({
       //  chains: [currentChain],
       //  transports: {
-      //    [currentId]: http(this.network?.rpcUrls?.main)
+      //    [currentId]: http(this.network?.rpcUrls?.default)
       //  }
       //})
       //console.log("CONFIG", this.config)
@@ -206,7 +220,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         throw new Error("Error getting wallet")
       }
 
-      this.web3 = new Web3(this.network.rpcUrls.main)
+      this.web3 = new Web3(this.network.rpcUrls.default)
       return {
         success: true,
         network: this.network,
@@ -330,7 +344,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
                   decimals: provider.decimals,
                   symbol: provider.symbol,
                 },
-                rpcUrls: [provider.rpcUrls.main],
+                rpcUrls: [provider.rpcUrls.default],
                 blockExplorerUrls: [provider.explorer.url],
               },
             ],
@@ -681,7 +695,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       body,
     }
     try {
-      const res = await fetch(this.network.rpcUrls.main, opt)
+      const res = await fetch(this.network.rpcUrls.default, opt)
       const inf = await res.json()
       return inf?.result
     } catch (ex) {

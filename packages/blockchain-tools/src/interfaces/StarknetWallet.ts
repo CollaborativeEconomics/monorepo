@@ -48,7 +48,7 @@ class StarknetWallet extends InterfaceBaseClass {
     this.chain = chainConfig.starknet
 
     this.provider = new RpcProvider({
-      nodeUrl: this.network.rpcUrls.main,
+      nodeUrl: this.network.rpcUrls.default,
     })
 
     this.contract = new Contract(
@@ -335,7 +335,7 @@ class StarknetWallet extends InterfaceBaseClass {
       body,
     }
     try {
-      const res = await fetch(this.network.rpcUrls.main, opt)
+      const res = await fetch(this.network.rpcUrls.default, opt)
       const inf = await res.json()
       return inf?.result
     } catch (ex) {
@@ -426,7 +426,8 @@ class StarknetWallet extends InterfaceBaseClass {
       const {
         balance: { low },
       } = balance
-      return { success: true, balance: low }
+      const modifiedBalance = Number(low) / 10 ** 18
+      return { success: true, balance: modifiedBalance }
     } catch (error) {
       return { success: false, error: "Error getting balance" }
     }
