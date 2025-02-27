@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 //import Checkbox from '~/components/form/checkbox';
 // import { Checkbox, CheckboxWithText } from '@cfce/components/ui';
@@ -16,26 +16,26 @@ import TextInput from '../../../components/form/textinput';
 import { saveStory } from './actions';
 
 interface AddStoryFormProps {
-  userId: string;
-  orgId: string;
-  initiatives: Initiative[];
-  categories: Category[];
+  userId: string
+  orgId: string
+  initiatives: Initiative[]
+  categories: Category[]
 }
 
 interface DataForm {
-  initiativeId: string;
-  categoryId: string;
-  name: string;
-  description: string;
-  amount: string;
-  image1: FileList;
-  image2: FileList;
-  image3: FileList;
-  image4: FileList;
-  image5: FileList;
-  media: FileList;
-  unitvalue: string;
-  unitlabel: string;
+  initiativeId: string
+  categoryId: string
+  name: string
+  description: string
+  amount: string
+  image1: FileList
+  image2: FileList
+  image3: FileList
+  image4: FileList
+  image5: FileList
+  media: FileList
+  unitvalue: string
+  unitlabel: string
 }
 
 export default function AddStoryForm({
@@ -45,11 +45,11 @@ export default function AddStoryForm({
   categories,
 }: AddStoryFormProps) {
   // const userId = useAuth();
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [buttonText, setButtonText] = useState('SUBMIT');
-  const [message, setMessage] = useState('Enter story info and upload images');
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [buttonText, setButtonText] = useState("SUBMIT")
+  const [message, setMessage] = useState("Enter story info and upload images")
 
-  console.log('ADD STORY FORM');
+  console.log("ADD STORY FORM")
 
   const {
     register,
@@ -59,41 +59,41 @@ export default function AddStoryForm({
     formState: { errors },
   } = useForm<DataForm>({
     defaultValues: {
-      initiativeId: initiatives[0]?.id || '',
-      categoryId: initiatives[0]?.categoryId || categories[0]?.id || '',
+      initiativeId: initiatives[0]?.id || "",
+      categoryId: initiatives[0]?.categoryId || categories[0]?.id || "",
     },
-  });
+  })
 
-  const initiativesOptions = initiatives.map(initiative => ({
+  const initiativesOptions = initiatives.map((initiative) => ({
     id: initiative.id,
     name: initiative.title,
-  }));
+  }))
 
-  const categoriesOptions = categories.map(category => ({
+  const categoriesOptions = categories.map((category) => ({
     id: category.id,
     name: category.title,
-  }));
+  }))
 
-  const imageFields = watch(['image1', 'image2', 'image3', 'image4', 'image5']);
-  console.log('IMAGE FIELDS', imageFields);
-  const mediaFile = watch('media');
-  const imgSource = '/media/upload.jpg';
+  const imageFields = watch(["image1", "image2", "image3", "image4", "image5"])
+  console.log("IMAGE FIELDS", imageFields)
+  const mediaFile = watch("media")
+  const imgSource = "/media/upload.jpg"
 
-  const onSubmit: SubmitHandler<DataForm> = async data => {
-    console.log('DATA:', data);
+  const onSubmit: SubmitHandler<DataForm> = async (data) => {
+    console.log("DATA:", data)
     if (
       !data.name ||
       !data.description ||
       !data.image1?.[0] ||
       !data.initiativeId
     ) {
-      setMessage('All required fields must be filled');
-      return;
+      setMessage("All required fields must be filled")
+      return
     }
 
-    setButtonDisabled(true);
-    setButtonText('WAIT');
-    setMessage('Uploading files and saving story...');
+    setButtonDisabled(true)
+    setButtonText("WAIT")
+    setMessage("Uploading files and saving story...")
 
     try {
       const images: File[] = [
@@ -102,10 +102,10 @@ export default function AddStoryForm({
         data.image3?.[0],
         data.image4?.[0],
         data.image5?.[0],
-      ].filter((img): img is File => img instanceof File && img.size > 0);
+      ].filter((img): img is File => img instanceof File && img.size > 0)
 
-      const mediaFile = data.media?.[0];
-      const media = mediaFile && mediaFile.size > 0 ? mediaFile : undefined;
+      const mediaFile = data.media?.[0]
+      const media = mediaFile && mediaFile.size > 0 ? mediaFile : undefined
 
       const storyData = {
         userId,
@@ -121,28 +121,32 @@ export default function AddStoryForm({
         initiativeId: data.initiativeId,
         images,
         media,
-      };
-
-      const storyResponse = await saveStory(storyData, true);
-      if (!storyResponse || 'error' in storyResponse) {
-        setMessage(
-          `Error saving story: ${
-            (storyResponse as { error: string })?.error || 'Unknown error'
-          }`,
-        );
-        setButtonDisabled(false);
-        return;
       }
 
-      setMessage('Story saved successfully!');
-      setButtonText('DONE');
+      const storyResponse = await saveStory(storyData, true)
+      if (!storyResponse || "error" in storyResponse) {
+        setMessage(
+          `Error saving story: ${
+            (storyResponse as { error: string })?.error || "Unknown error"
+          }`,
+        )
+        setButtonDisabled(false)
+        return
+      }
+
+      setMessage("Story saved successfully!")
+      setButtonText("DONE")
     } catch (error) {
-      console.error('Error saving story:', error);
-      setMessage('An error occurred while saving the story');
-      setButtonText('ERROR');
-      setButtonDisabled(true);
+      console.error("Error saving story:", error)
+      setMessage("An error occurred while saving the story")
+      setButtonText("ERROR")
+      setButtonDisabled(true)
     }
-  };
+    setTimeout(() => {
+      setButtonDisabled(false)
+      setButtonText("SUBMIT")
+    }, 1800)
+  }
 
   return (
     <div className={styles.mainBox}>
@@ -154,7 +158,7 @@ export default function AddStoryForm({
             width={250}
             height={250}
             source={imgSource}
-            {...register('image1', { required: true })}
+            {...register("image1", { required: true })}
           />
         </div>
         <div className={`${styles.hbox} justify-center`}>
@@ -163,28 +167,28 @@ export default function AddStoryForm({
             width={128}
             height={128}
             source={imgSource}
-            {...register('image2')}
+            {...register("image2")}
           />
           <FileView
             id="image3"
             width={128}
             height={128}
             source={imgSource}
-            {...register('image3')}
+            {...register("image3")}
           />
           <FileView
             id="image4"
             width={128}
             height={128}
             source={imgSource}
-            {...register('image4')}
+            {...register("image4")}
           />
           <FileView
             id="image5"
             width={128}
             height={128}
             source={imgSource}
-            {...register('image5')}
+            {...register("image5")}
           />
         </div>
 
@@ -198,39 +202,45 @@ export default function AddStoryForm({
         {/* Additional form inputs */}
         <Select
           label="Initiative"
-          {...register('initiativeId', { required: true })}
+          {...register("initiativeId", { required: true })}
           options={initiativesOptions}
         />
 
         <Select
           label="Category"
-          {...register('categoryId', { required: true })}
+          {...register("categoryId", { required: true })}
           options={categoriesOptions}
         />
 
         <TextInput
           label="Title"
-          {...register('name', { required: true })}
-          className={errors.name ? 'border-red-500' : ''}
+          {...register("name", { required: true, maxLength: 255 })}
+          className={errors.name ? "border-red-500" : ""}
+          maxLength={255}
         />
 
         <TextArea
           label="Description"
-          {...register('description', { required: true })}
-          className={errors.description ? 'border-red-500' : ''}
+          {...register("description", { required: true, maxLength: 255 })}
+          className={errors.description ? "border-red-500" : ""}
+          maxLength={255}
+          value={watch("description")}
         />
 
         <TextInput
           label="Estimated Amount Spent"
-          {...register('amount', { required: true })}
+          {...register("amount", { required: true, maxLength: 255 })}
+          maxLength={255}
         />
         <TextInput
           label="Dollars per unit ($20 per tree, $5 per meal, $150 per wheelchair)"
-          {...register('unitvalue')}
+          {...register("unitvalue", { maxLength: 255 })}
+          maxLength={255}
         />
         <TextInput
           label="Unit label (tree, meal, wheelchair)"
-          {...register('unitlabel')}
+          {...register("unitlabel", { maxLength: 255 })}
+          maxLength={255}
         />
         <ButtonBlue type="submit" text={buttonText} disabled={buttonDisabled} />
 
@@ -239,13 +249,24 @@ export default function AddStoryForm({
         {errors.description && <p className="error">Description is required</p>}
         {errors.amount && <p className="error">Amount is required</p>}
         {errors.initiativeId && <p className="error">Initiative is required</p>}
+
+        {/* Add validation error messages for maxLength */}
+        {errors.name?.type === "maxLength" && (
+          <p className="error">Title must be less than 255 characters</p>
+        )}
+        {errors.description?.type === "maxLength" && (
+          <p className="error">Description must be less than 255 characters</p>
+        )}
+        {errors.amount?.type === "maxLength" && (
+          <p className="error">Amount must be less than 255 characters</p>
+        )}
       </form>
 
       {message && (
-        <Alert variant={message.includes('Error') ? 'destructive' : 'default'}>
+        <Alert variant={message.includes("Error") ? "destructive" : "default"}>
           <AlertDescription>{message}</AlertDescription>
         </Alert>
       )}
     </div>
-  );
+  )
 }

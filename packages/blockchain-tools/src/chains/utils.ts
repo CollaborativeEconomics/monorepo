@@ -1,4 +1,11 @@
-import type { Chain, ChainConfig, Network, NetworkConfig } from "@cfce/types"
+import type {
+  Chain,
+  ChainConfig,
+  Contract,
+  ContractType,
+  Network,
+  NetworkConfig,
+} from "@cfce/types"
 
 import type { NFTData } from "@cfce/database"
 import type { ChainSlugs } from "@cfce/types"
@@ -95,26 +102,49 @@ export const getRpcUrl = (
   return rpcUrl
 }
 
-export const getNftPath = (
-  nftData: Pick<
-    NFTData,
-    "chainName" | "network" | "contractId" | "tokenId" | "transactionId"
-  >,
-): string => {
-  const { chainName: chain, network } = nftData
+export const getNftPath = (nftData: {
+  chain: ChainSlugs
+  network: Network
+  contractId?: string | null
+  contractType?: Contract
+  tokenId: string | number
+  transactionId?: string | null
+}): string => {
+  const { chain, network } = nftData
+
   if (!chain || !network) {
     throw new Error("Chain label and network are required")
   }
-  // TODO: Add this to the type in prisma
-  const chainConfig = getChainConfigurationByName(chain as Chain)
-  const networkConfig = chainConfig.networks[network as Network]
+
+  const tokenIdNumber = nftData.tokenId
+
+  // Get chain and network configuration
+  const networkConfig = getNetworkForChain(chain)
   if (!networkConfig) {
     throw new Error(`Network configuration not found for ${chain} ${network}`)
   }
+
+  // Determine contractId with clear precedence:
+  // 1. Use provided contractId if it exists
+  // 2. Otherwise, try to get contract from network config if contractType is provided
+  // 3. Fall back to empty string if neither exists
+  const providedContractId = nftData.contractId || ""
+  const contractFromType = nftData.contractType
+    ? networkConfig.contracts?.[nftData.contractType] || ""
+    : ""
+  const contractId = providedContractId || contractFromType
+
   const explorer = networkConfig.explorer
+  console.log(
+    "EXPLORER",
+    explorer,
+    contractId,
+    tokenIdNumber,
+    nftData.transactionId,
+  )
   const path = explorer.nftPath
-    .replace("{{contractId}}", nftData.contractId || "")
-    .replace("{{tokenId}}", nftData.tokenId || "")
+    .replace("{{contractId}}", contractId)
+    .replace("{{tokenId}}", tokenIdNumber.toString())
     .replace("{{transactionId}}", nftData.transactionId || "")
   return `${explorer.url}${path}`
 }

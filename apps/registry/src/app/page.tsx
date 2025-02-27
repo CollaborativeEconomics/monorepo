@@ -1,6 +1,6 @@
-import LoginButton from '~/components/LoginButton';
-import Page from '~/components/Page';
-import styles from '~/styles/Home.module.css';
+import LoginButton from "~/components/LoginButton"
+import Page from "~/components/Page"
+import styles from "~/styles/Home.module.css"
 
 export default function Home() {
   return (
@@ -15,8 +15,8 @@ export default function Home() {
         {/* <LoginButton /> */}
       </main>
       <footer className={styles.footer}>
-        CFCE 2024 &copy; All rights reserved
+        CFCE 2025 &copy; All rights reserved
       </footer>
     </Page>
-  );
+  )
 }
