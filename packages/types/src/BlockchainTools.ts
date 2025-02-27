@@ -67,17 +67,16 @@ type FactoryContract =
   | "VolunteersFactory"
 
 export type Contract =
-  | FactoryContract
-  | "TBA_Registry"
-  | "TBA_Implementation"
-  | "TBA_NFT"
-  | "Receipt_NFT"
-  | "Receipt_NFTHash" // soroban only
-  | "Story_NFT"
+  | "FactoryContract"
+  | "TokenBoundRegistry"
+  | "TokenBoundImplementation"
+  | "TokenBoundNFT"
+  | "ReceiptNFT"
+  | "ReceiptNFTHash" // soroban only
+  | "StoryNFT"
   | "Credits"
-  | "Volunteers_Distributor"
-  | "Volunteers_NFT"
-  | "xlmNativeCoin"
+  | "VolunteersDistributor"
+  | "VolunteersNFT"
 
 export interface NetworkConfig {
   id: number

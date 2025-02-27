@@ -1,4 +1,6 @@
 // Type exports
+import type { Prisma } from "@prisma/client"
+
 export type {
   Account,
   Action,
@@ -35,4 +37,12 @@ export type {
 
 // Value exports (enums)
 import { Chain, CreditType, InitiativeStatus } from "@prisma/client"
-export { InitiativeStatus, CreditType, Chain }
+export { Chain, CreditType, InitiativeStatus }
+
+export type StoryWithRelations = Prisma.StoryGetPayload<{
+  include: {
+    media: true
+    organization: true
+    initiative: { include: { category: true } }
+  }
+}>

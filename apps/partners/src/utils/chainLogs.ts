@@ -1,4 +1,5 @@
-import { getNetworkForChain } from "@cfce/blockchain-tools"
+//import { getNetworkForChain } from "@cfce/blockchain-tools"
+import appConfig, { getChainConfig } from "@cfce/app-config"
 
 const mintTopic =
   "0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62" // keccak for event TransferSingle(address,address,address,uint256,uint256)
@@ -90,7 +91,8 @@ async function getLogs(address: string, topics: string[], fromBlock: string) {
   const hexBlock = `0x${Number.parseInt(fromBlock).toString(16)}`
 
   try {
-    const url = getNetworkForChain("arbitrum").rpcUrls.main
+    //const url = getNetworkForChain("arbitrum").rpcUrls.main
+    const url = getChainConfig("arbitrum").rpcUrls.default
     //console.log('PROVIDER', url)
     if (!url) {
       return { success: false, error: "No chain provider URL" }

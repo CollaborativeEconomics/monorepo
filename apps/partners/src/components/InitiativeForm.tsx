@@ -198,12 +198,8 @@ export default function InitiativeForm({
         status={initiative.status || InitiativeStatus.Draft}
         handler={(val: InitiativeStatus) => {
           console.log("STATUS", val)
-          //const key = val as keyof typeof Status
-          //const key = val
-          //console.log("KEY", key)
+          //setValue("status", val, { shouldValidate: true }) // Rabbit suggests this <<<
           //const newStatus = InitiativeStatus[key] // doesn't work
-          //console.log("STATUS CHANGED", newStatus)
-          //console.log("KEYS", Object.keys(InitiativeStatus))
           setInitiativeStatus(val)
         }}
       />
