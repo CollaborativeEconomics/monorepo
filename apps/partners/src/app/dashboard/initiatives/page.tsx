@@ -1,10 +1,10 @@
 import { auth } from "@cfce/auth"
-import Link from "next/link"
 import { type Initiative, getOrganizationById } from "@cfce/database"
-import styles from "~/styles/dashboard.module.css"
-import Title from "~/components/title"
-import InitiativeForm from "./InitiativeForm"
+import Link from "next/link"
 import InitiativeCard from "~/components/InitiativeCard"
+import Title from "~/components/title"
+import styles from "~/styles/dashboard.module.css"
+import InitiativeForm from "./InitiativeForm"
 
 export default async function Page() {
   const session = await auth()
@@ -14,6 +14,14 @@ export default async function Page() {
 
   const initiatives =
     organization?.initiative.map((i) => ({ ...i, organization })) || []
+
+  // Define a mapping from string enum values to numbers
+  const statusToNumber = {
+    Draft: 0,
+    Active: 1,
+    Finished: 2,
+    Archived: 3,
+  }
 
   return (
     <div>
@@ -31,7 +39,15 @@ export default async function Page() {
         initiatives.map((item: Initiative) => (
           <div className={styles.mainBox} key={item.id}>
             <Link href={`/dashboard/initiatives/${item.id}`}>
-              <InitiativeCard key={item.id} {...item} />
+              <InitiativeCard
+                key={item.id}
+                {...item}
+                status={
+                  typeof item.status === "string"
+                    ? statusToNumber[item.status as keyof typeof statusToNumber]
+                    : item.status
+                }
+              />
             </Link>
           </div>
         ))

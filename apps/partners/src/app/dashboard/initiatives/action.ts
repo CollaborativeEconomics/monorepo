@@ -19,17 +19,17 @@ type FormData = {
 }
 
 type EditData = {
-  initiativeId: string;
-  organizationId: string;
-  title: string;
-  description: string;
-  start?: Date;
-  finish?: Date;
-  image: FileList;
-  imageUri?: string;
-  defaultAsset?: string;
-  status?: number;
-};
+  initiativeId: string
+  organizationId: string
+  title: string
+  description: string
+  start?: Date
+  finish?: Date
+  image: FileList
+  imageUri?: string
+  defaultAsset?: string
+  status?: number
+}
 
 //async function saveImageToIPFS(data: { name: string; file: File }) {
 //  const body = new FormData()
@@ -42,6 +42,14 @@ type EditData = {
 //  })
 //  return resp.json()
 //}
+
+// Convert numeric status to enum value
+const statusMap = {
+  0: "Draft",
+  1: "Active",
+  2: "Finished",
+  3: "Archived",
+} as const
 
 export async function createInitiative(
   data: FormData,
@@ -95,7 +103,10 @@ export async function createInitiative(
           id: orgId,
         },
       },
-      status: data.status || 0
+      status:
+        data.status !== undefined
+          ? statusMap[data.status as keyof typeof statusMap]
+          : "Draft",
     }
 
     const result = await newInitiative(record)
@@ -146,7 +157,7 @@ export async function editInitiative(data: EditData) {
     let imageUri = data.imageUri
     let defaultAsset = data.defaultAsset
     if (file) {
-      console.log('Saving file...')
+      console.log("Saving file...")
       const ext = file.type.split("/")[1]
       if (!["jpg", "jpeg", "png", "webp"].includes(ext)) {
         return { success: false, error: "Invalid image format" }
@@ -174,7 +185,10 @@ export async function editInitiative(data: EditData) {
       finish: data.finish,
       defaultAsset,
       imageUri,
-      status: data.status || 0
+      status:
+        data.status !== undefined
+          ? statusMap[data.status as keyof typeof statusMap]
+          : "Draft",
       //tag: Number.parseInt(randomNumber(8)),
       //organization: {
       //  connect: {

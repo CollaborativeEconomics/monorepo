@@ -10,7 +10,7 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
-  const data = await getOrganizationById(id, false); // No include sub-models
+  const data = await getOrganizationById(id); // No include sub-models
   const organization = JSON.parse(JSON.stringify(data))
   const categories = await getCategories({});
   const list = categories.map(it=>{ return {id:it.id, name:it.title} })
