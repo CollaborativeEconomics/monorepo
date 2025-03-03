@@ -1,99 +1,107 @@
 /** @jsxImportSource frog/jsx */
 
-import type { Prisma } from '@cfce/database';
-import { type ReceiptEmailBody, sendEmailReceipt } from '@cfce/utils';
-import { Button, Frog, TextInput, parseEther } from 'frog';
-import { devtools } from 'frog/dev';
-import { type NeynarVariables, neynar } from 'frog/middlewares';
-import { handle } from 'frog/next';
-import { serveStatic } from 'frog/serve-static';
-import { createSystem } from 'frog/ui';
-import Image from 'next/image';
-import { http, createPublicClient } from 'viem';
-import { arbitrumSepolia } from 'viem/chains';
+import appConfig from "@cfce/app-config"
+import type { Chain, Prisma } from "@cfce/database"
+import { getInitiativeById } from "@cfce/database"
+import { type ReceiptEmailBody, sendEmailReceipt } from "@cfce/utils"
+import { Button, Frog, TextInput, parseEther } from "frog"
+import { devtools } from "frog/dev"
+import { type NeynarVariables, neynar } from "frog/middlewares"
+import { handle } from "frog/next"
+import { serveStatic } from "frog/serve-static"
+import { createSystem } from "frog/ui"
+import Image from "next/image"
+import { http, createPublicClient } from "viem"
+import { arbitrumSepolia } from "viem/chains"
 import {
   ConfirmIntent,
   checkUser,
-  getInitiativeById,
   getInitiatives,
   getRates,
   mintNft,
   newDonation,
   sendReceipt,
-} from '~/utils';
+} from "~/utils"
 
 const client = createPublicClient({
   chain: arbitrumSepolia,
   transport: http(),
-});
+})
 
-const { vars } = createSystem();
+const { vars } = createSystem()
 
-const app = new Frog({
-  assetsPath: '/',
-  basePath: '/api',
-  title: 'GiveCast',
+const app = new Frog<{
+  State: {
+    chain: Chain
+  }
+}>({
+  assetsPath: "/",
+  basePath: "/api",
+  title: appConfig.siteInfo.title,
   ui: { vars },
+  initialState: {
+    chain: "Base" as const,
+  },
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
-});
+})
 
 // Uncomment to use Edge Runtime
 // export const runtime = 'edge'
 let initiatives: Prisma.InitiativeGetPayload<{
-  include: { organization: true };
-}>;
-let rate: number;
-let recipient: string;
+  include: { organization: true }
+}>
+let rate: number
+let recipient: string
 
 interface ExtendedEmailBody extends ReceiptEmailBody {
-  email: string;
+  email: string
 }
 const DonorData: ExtendedEmailBody = {
-  address: '',
-  coinSymbol: '',
-  coinValue: '',
-  date: '',
-  donorName: '',
-  ein: '',
-  organizationName: '',
-  usdValue: '',
-  email: '',
-};
+  address: "",
+  coinSymbol: "",
+  coinValue: "",
+  date: "",
+  donorName: "",
+  ein: "",
+  organizationName: "",
+  usdValue: "",
+  email: "",
+}
 
 //  background: 'linear-gradient(to right, #432889, #17101F)'
 const background = {
-  alignItems: 'center',
-  color: 'white',
-  background: '#334155',
-  backgroundSize: '100% 100%',
-  display: 'flex',
-  flexDirection: 'column',
-  flexWrap: 'nowrap',
+  alignItems: "center",
+  color: "white",
+  background: "#334155",
+  backgroundSize: "100% 100%",
+  display: "flex",
+  flexDirection: "column",
+  flexWrap: "nowrap",
   fontSize: 30,
-  fontStyle: 'normal',
-  height: '100%',
-  padding: '20px',
-  justifyContent: 'center',
-  textAlign: 'center',
-  width: '100%',
-};
+  fontStyle: "normal",
+  height: "100%",
+  padding: "20px",
+  justifyContent: "center",
+  textAlign: "center",
+  width: "100%",
+}
 
 const warning = {
-  alignItems: 'center',
-  color: 'white',
-  background: 'linear-gradient(to right, #991b1b, #171717)',
-  backgroundSize: '100% 100%',
-  display: 'flex',
-  flexDirection: 'column',
-  flexWrap: 'nowrap',
+  alignItems: "center",
+  color: "white",
+  background: "linear-gradient(to right, #991b1b, #171717)",
+  backgroundSize: "100% 100%",
+  display: "flex",
+  flexDirection: "column",
+  flexWrap: "nowrap",
   fontSize: 30,
-  fontStyle: 'normal',
-  height: '100%',
-  padding: '20px',
-  justifyContent: 'center',
-  textAlign: 'center',
-  width: '100%',
-};
+  fontStyle: "normal",
+  height: "100%",
+  padding: "20px",
+  justifyContent: "center",
+  textAlign: "center",
+  width: "100%",
+}
 
 //app.use(
 //neynar({
@@ -102,10 +110,48 @@ const warning = {
 //})
 //);
 
-app.frame('/', async c => {
+app.frame("/", async (c) => {
+  // Set the chain for this session
+  const { deriveState, req } = c
+  const chain = req.query("chain")
+  const initiativeId = req.query("initiativeId")
+  if (chain && ["Base", "Arbitrum", "Optimism", "Polygon"].includes(chain)) {
+    deriveState((prevState) => {
+      prevState.chain = chain as Chain
+    })
+  }
+  if (initiativeId) {
+    const initiative = await getInitiativeById(initiativeId)
+    if (!initiative || !chain) {
+      return c.res({
+        // action: "/",
+        image: <div>No chain or initiative found</div>,
+      })
+    }
+    return c.res({
+      action: "/featured",
+      image: (
+        <img
+          src={initiative?.defaultAsset || "/givecast.jpg"}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "0% 0%",
+          }}
+          alt={initiative.title}
+        />
+      ),
+      intents: [
+        <Button value={initiativeId} key={initiativeId}>
+          {initiative.title} {chain}
+        </Button>,
+      ],
+    })
+  }
   return c.res({
-    action: '/featured',
-    image: '/givecast.jpg',
+    action: "/featured",
+    image: "/givecast.jpg",
     intents: [
       <Button
         value="30c0636f-b0f1-40d5-bb9c-a531dc4d69e2"
@@ -120,20 +166,20 @@ app.frame('/', async c => {
         Hurricane Beryl
       </Button>,
     ],
-  });
-});
+  })
+})
 
-app.frame('/featured', async c => {
-  const { buttonValue, inputText, frameData } = c;
-  const id = buttonValue || ''; // It should never be empty unless accessed directly
-  console.log('ID', id);
-  const initiative = await getInitiativeById(id);
-  console.log('INIT', initiative?.slug);
-  initiatives = initiative;
-  console.log(initiatives.defaultAsset);
+app.frame("/featured", async (c) => {
+  const { buttonValue, inputText, frameData } = c
+  const id = buttonValue || "" // It should never be empty unless accessed directly
+  console.log("ID", id)
+  const initiative = await getInitiativeById(id)
+  console.log("INIT", initiative?.slug)
+  initiatives = initiative
+  console.log(initiatives.defaultAsset)
 
   return c.res({
-    action: '/confirmation',
+    action: "/confirmation",
     image: `${initiative.defaultAsset}`,
     intents: [
       <TextInput placeholder="Enter amount to donate in USD" key="input" />,
@@ -150,20 +196,20 @@ app.frame('/featured', async c => {
         Next
       </Button>,
     ],
-  });
-});
+  })
+})
 
-app.frame('/initiative/:id?', async c => {
-  const id = c.req.param('id') || '';
-  console.log('ID', id);
+app.frame("/initiative/:id?", async (c) => {
+  const id = c.req.param("id") || ""
+  console.log("ID", id)
   // TODO: If not ID redirect to main
-  const initiative = await getInitiativeById(id);
-  console.log('INIT', initiative?.slug);
-  initiatives = initiative;
-  console.log(initiatives.defaultAsset);
+  const initiative = await getInitiativeById(id)
+  console.log("INIT", initiative?.slug)
+  initiatives = initiative
+  console.log(initiatives.defaultAsset)
 
   return c.res({
-    action: '/confirmation',
+    action: "/confirmation",
     image: `${initiative.defaultAsset}`,
     intents: [
       <TextInput placeholder="Enter amount to donate in USD" key="input" />,
@@ -180,26 +226,26 @@ app.frame('/initiative/:id?', async c => {
         Next
       </Button>,
     ],
-  });
-});
+  })
+})
 
-app.frame('/confirmation', async c => {
-  const { buttonValue, inputText, frameData } = c;
-  let amount = 0;
+app.frame("/confirmation", async (c) => {
+  const { buttonValue, inputText, frameData } = c
+  let amount = 0
   if (inputText !== undefined) {
-    amount = Number.parseInt(inputText || '0') || 0;
+    amount = Number.parseInt(inputText || "0") || 0
   } else {
-    amount = Number.parseInt(buttonValue || '0') || 0;
+    amount = Number.parseInt(buttonValue || "0") || 0
   }
-  rate = await getRates('eth');
-  const rates = rate.toFixed(4);
-  const value = amount / rate;
-  console.log('RATE', rate, rates, amount, value);
+  rate = await getRates("eth")
+  const rates = rate.toFixed(4)
+  const value = amount / rate
+  console.log("RATE", rate, rates, amount, value)
 
-  DonorData.coinSymbol = 'ETH';
-  DonorData.organizationName = initiatives?.organization.name;
-  DonorData.usdValue = amount.toFixed(4);
-  DonorData.coinValue = value.toFixed(18);
+  DonorData.coinSymbol = "ETH"
+  DonorData.organizationName = initiatives?.organization.name
+  DonorData.usdValue = amount.toFixed(4)
+  DonorData.coinValue = value.toFixed(18)
 
   const pageContent = (
     <div style={background}>
@@ -208,10 +254,10 @@ app.frame('/confirmation', async c => {
         style={{
           margin: 0,
           fontSize: 60,
-          fontStyle: 'normal',
-          letterSpacing: '-0.025em',
+          fontStyle: "normal",
+          letterSpacing: "-0.025em",
           lineHeight: 1.4,
-          whiteSpace: 'pre-wrap',
+          whiteSpace: "pre-wrap",
         }}
       >
         {initiatives?.title}
@@ -226,21 +272,21 @@ app.frame('/confirmation', async c => {
         As {value.toFixed(4)} Arbitrum ETH
       </p>
     </div>
-  );
+  )
 
   return c.res({
-    action: '/mintquery',
+    action: "/mintquery",
     image: pageContent,
     intents: ConfirmIntent.intents,
-  });
-});
+  })
+})
 
-app.frame('/mintquery', async c => {
-  const { transactionId } = c;
-  console.log('TX', transactionId);
+app.frame("/mintquery", async (c) => {
+  const { transactionId } = c
+  console.log("TX", transactionId)
 
   const confirmed = {
-    action: '/mint-nft',
+    action: "/mint-nft",
     image: (
       <div style={background}>
         <p style={{ fontSize: 60 }}>Thank you for your donation</p>
@@ -255,7 +301,7 @@ app.frame('/mintquery', async c => {
       </Button>,
       <Button.Reset key="done">Done</Button.Reset>,
     ],
-  };
+  }
 
   const rejected = {
     action: `/initiative/${initiatives?.id}`,
@@ -270,30 +316,30 @@ app.frame('/mintquery', async c => {
       </Button>,
       <Button.Reset key="home">Home Page</Button.Reset>,
     ],
-  };
+  }
 
   if (transactionId) {
     // Wait for confirmation
-    const secs = 1000;
-    const wait = [2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6]; // 60 secs / 15 loops
-    let count = 0;
-    let info = null;
+    const secs = 1000
+    const wait = [2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6] // 60 secs / 15 loops
+    let count = 0
+    let info = null
     while (count < wait.length) {
-      console.log('Retry', count);
-      await new Promise(res => setTimeout(res, wait[count] * secs));
-      count++;
+      console.log("Retry", count)
+      await new Promise((res) => setTimeout(res, wait[count] * secs))
+      count++
       try {
-        info = await client.getTransactionReceipt({ hash: transactionId });
+        info = await client.getTransactionReceipt({ hash: transactionId })
       } catch (ex) {
-        console.error(ex);
-        continue;
+        console.error(ex)
+        continue
       }
-      console.log('INFO', info);
-      if (info?.status === 'success') {
-        console.log('TX SUCCESS');
+      console.log("INFO", info)
+      if (info?.status === "success") {
+        console.log("TX SUCCESS")
         // TODO: create user profile from address
-        const user = await checkUser(DonorData?.address || '');
-        console.log('USER', user.id);
+        const user = await checkUser(DonorData?.address || "")
+        console.log("USER", user.id)
         if (user?.id) {
           const DonationData = {
             created: new Date(),
@@ -305,44 +351,41 @@ app.frame('/mintquery', async c => {
             asset: DonorData.coinSymbol,
             wallet: DonorData.address,
             chain: process.env.NEXT_PUBLIC_BLOCKCHAIN,
-            network: 'testnet',
-            paytype: 'crypto',
-          };
-          const DonationResponse = await newDonation(DonationData);
-          console.log('Donation saved', DonationResponse);
+            network: "testnet",
+            paytype: "crypto",
+          }
+          const DonationResponse = await newDonation(DonationData)
+          console.log("Donation saved", DonationResponse)
         }
-        if (DonorData.email !== '') {
-          console.log(DonorData.email);
-          const receiptResp = await sendEmailReceipt(
-            DonorData.email,
-            DonorData,
-          );
-          console.log('Receipt sent', receiptResp);
+        if (DonorData.email !== "") {
+          console.log(DonorData.email)
+          const receiptResp = await sendEmailReceipt(DonorData.email, DonorData)
+          console.log("Receipt sent", receiptResp)
         }
-        return c.res(confirmed);
+        return c.res(confirmed)
       }
-      console.log('TX FAILED');
-      return c.res(rejected);
+      console.log("TX FAILED")
+      return c.res(rejected)
     }
-    console.log('TX TIMED OUT');
-    return c.res(rejected);
+    console.log("TX TIMED OUT")
+    return c.res(rejected)
   }
-  return c.res(rejected);
-});
+  return c.res(rejected)
+})
 
-app.frame('/mint-nft', async c => {
-  const { buttonValue } = c;
-  console.log(recipient);
-  let mintingReceipt: Record<string, unknown> = {};
+app.frame("/mint-nft", async (c) => {
+  const { buttonValue } = c
+  console.log(recipient)
+  let mintingReceipt: Record<string, unknown> = {}
 
-  if (buttonValue === 'yes') {
+  if (buttonValue === "yes") {
     if (recipient !== undefined) {
-      mintingReceipt = await mintNft(recipient);
-      console.log('NFT', mintingReceipt);
+      mintingReceipt = await mintNft(recipient)
+      console.log("NFT", mintingReceipt)
     }
 
     return c.res({
-      action: '/',
+      action: "/",
       image: (
         <div style={background}>
           <p style={{ fontSize: 60 }}>NFT Minted</p>
@@ -354,7 +397,7 @@ app.frame('/mint-nft', async c => {
             Contract: {process.env.MINTER_CONTRACT}
           </p>
           <p style={{ fontSize: 30 }}>
-            Token ID: {mintingReceipt?.nftId || '0'}
+            Token ID: {mintingReceipt?.nftId || "0"}
           </p>
         </div>
       ),
@@ -369,11 +412,11 @@ app.frame('/mint-nft', async c => {
           More initiatives
         </Button>,
       ],
-    });
+    })
   }
 
   return c.res({
-    action: '/',
+    action: "/",
     image: (
       <div style={warning}>
         <p style={{ fontSize: 60 }}>Minting not successful</p>
@@ -385,21 +428,21 @@ app.frame('/mint-nft', async c => {
       </Button.Link>,
       <Button.Reset key="home">Home Page</Button.Reset>,
     ],
-  });
-});
+  })
+})
 
-app.transaction('/send-ether', c => {
-  const { inputText = '', frameData } = c;
-  console.log('AMT', DonorData.coinValue);
-  DonorData.email = inputText;
-  recipient = frameData?.address || '';
-  DonorData.address = recipient;
+app.transaction("/send-ether", (c) => {
+  const { inputText = "", frameData } = c
+  console.log("AMT", DonorData.coinValue)
+  DonorData.email = inputText
+  recipient = frameData?.address || ""
+  DonorData.address = recipient
   return c.send({
-    chainId: 'eip155:421614',
-    to: '0x78C267869e588823F6D1660EBE6e286deE297f0a',
+    chainId: "eip155:421614",
+    to: "0x78C267869e588823F6D1660EBE6e286deE297f0a",
     value: parseEther(DonorData.coinValue),
-  });
-});
+  })
+})
 
 /*
 const frameError = {
@@ -459,7 +502,7 @@ app.transaction('/addnft', (c) => {
 })
 */
 
-devtools(app, { serveStatic });
+devtools(app, { serveStatic })
 
-export const GET = handle(app);
-export const POST = handle(app);
+export const GET = handle(app)
+export const POST = handle(app)
