@@ -82,10 +82,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const [loading, setLoading] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const [chainState, setChainState] = useAtom(chainAtom)
-  setChainState((draft) => {
-    console.log("INIT RATE", coinRate)
-    draft.exchangeRate = coinRate
-  })
+  useEffect(() => {
+    setChainState((draft) => {
+      console.log("INIT RATE", coinRate)
+      draft.exchangeRate = coinRate
+    })
+  }, [coinRate, setChainState])
   //console.log('INIT STATE', chainState)
 
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
