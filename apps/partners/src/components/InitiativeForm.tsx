@@ -8,7 +8,6 @@ import {
   createInitiativeAction,
   editInitiativeAction,
 } from "~/app/dashboard/initiatives/action"
-//import { InitiativeStatus as Status } from "@cfce/types"
 import InitiativeStatusSelect from "~/components/InitiativeStatusSelect"
 import ButtonBlue from "~/components/buttonblue"
 import FileView from "~/components/form/fileview"
@@ -28,20 +27,7 @@ export default function InitiativeForm({
   initiative: InitiativeData
   formMode: FormMode
 }) {
-  console.log("INIT", initiative)
-  /*
-  function getFormData(form: HTMLFormElement) {
-    const data:InitiativeData = {organizationId:'', title:'', description:''}
-    const formData = new FormData(form);
-    //console.log('FORM', formData);
-    for (const [name, value] of formData) {
-      console.log(name, value);
-      data[name as keyof InitiativeData] = value as string & File;
-    }
-    return data;
-  }
-*/
-
+  //console.log("INIT", initiative)
   async function onSubmit(data: InitiativeData) {
     //event.preventDefault();
     //const data = getFormData(event.currentTarget as HTMLFormElement);
@@ -98,7 +84,7 @@ export default function InitiativeForm({
       }
       if (result?.success) {
         showMessage("Initiative saved successfully")
-        setButtonState(ButtonState.DONE)
+        setButtonState(formMode===Mode.New ? ButtonState.DONE : ButtonState.READY)
       } else {
         showMessage(`Error saving initiative: ${result?.error}`)
         setButtonState(ButtonState.READY)

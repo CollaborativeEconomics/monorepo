@@ -35,8 +35,8 @@ export default async function Page() {
       </div>
       {initiatives.length > 0 ? (
         initiatives.map((item: Initiative) => (
-          <div className={styles.mainBox} key={item.id}>
-            <Link href={`/dashboard/initiatives/${item.id}`}>
+          <div className={styles.cardBox} key={item.id}>
+            <Link href={`/dashboard/initiatives/${item.id}`} className="w-full">
               <InitiativeCard key={item.id} {...item} />
             </Link>
           </div>

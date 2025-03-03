@@ -979,7 +979,6 @@ const chainConfiguration = {
             "e8bf985b6e949ae21e618e04cdc924eda863c9226205a64afe35c9dd7f14a9ff",
           Credits: "xxx",
           CreditsHash: "xxx",
-          xlmNativeCoin: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"
         },
         rpcUrls: {
           default: "https://horizon.stellar.org",
@@ -1053,7 +1052,6 @@ const chainConfiguration = {
             "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
           ReceiptNFTHash:
             "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
-          xlmNativeCoin: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"
         },
         wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
         wssurl: "",

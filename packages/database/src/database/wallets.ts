@@ -15,11 +15,16 @@ export async function getWallets(
   const skip = 0
   const take = 100
   const orderBy = {}
-  // let include = {
-  //   organizations: true
-  // }
+  const include = {
+    //organizations: true
+    initiatives: {
+      select: {
+        title: true
+      }
+    }
+  }
 
-  const filter = { where, skip, take, orderBy }
+  const filter = { where, include, skip, take, orderBy }
   if (query?.orgId) {
     where.organizationId = query.orgId
   }
@@ -41,7 +46,6 @@ export async function getWallets(
     filter.orderBy = { name: "asc" }
   }
   const data = await prismaClient.wallet.findMany(filter)
-
   return data
 }
 

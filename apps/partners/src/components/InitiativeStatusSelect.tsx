@@ -16,6 +16,16 @@ function getStatus(val:string){
   return Status.Draft
 }
 
+function setStatus(val:InitiativeStatus){
+  switch(val){
+  case Status.Draft: return '0';
+  case Status.Active: return '1';
+  case Status.Finished: return '2';
+  case Status.Archived: return '3';
+  }
+  return '0'
+}
+
 const InitiativeStatusSelect = ({
   status,
   handler,
@@ -24,7 +34,7 @@ const InitiativeStatusSelect = ({
     <Select
       className="my-4 w-full box-border"
       label="Initiative Status"
-      selectedValue={status}
+      selectedValue={setStatus(status)}
       handler={(val: string) => {
         //const status = Status[val] // doesn't work
         //const status = Status[Number.parseInt(val)] // doesn't work

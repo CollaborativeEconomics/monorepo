@@ -15,7 +15,15 @@ interface OrganizationQuery extends ListQuery {
 
 const includePayload: Prisma.OrganizationInclude = {
   category: true,
-  wallets: true,
+  wallets: {
+    include: {
+      initiatives: {
+        select: {
+          title: true
+        }
+      }
+    }
+  },
   initiative: {
     orderBy: { created: "desc" },
     include: { credits: true },

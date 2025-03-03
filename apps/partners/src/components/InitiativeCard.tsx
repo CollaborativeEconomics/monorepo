@@ -43,7 +43,7 @@ const InitiativeCard = (initiative: InitiativeProps) => {
           alt={initiative.title ?? 'Initiative banner'}
         />
       ) : null}
-      <div>
+      <div className="w-full">
         <h1 className="text-2xl font-bold">{initiative.title}</h1>
         {initiative.start && initiative.end ? (
           <div className="text-slate-400 text-sm">

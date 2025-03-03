@@ -81,7 +81,6 @@ export type Contract =
   | "VolunteersDistributor"
   | "VolunteersFactory"
   | "VolunteersNFT"
-  | "xlmNativeCoin"
 
 export interface NetworkConfig {
   id: number

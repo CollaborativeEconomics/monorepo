@@ -69,13 +69,14 @@ export default function WalletForm({ orgId, chains, initiatives }: WalletFormPro
       if (result.success) {
         setMessage('Wallet saved');
         setButtonText('DONE');
+        //setButtonDisabled(false);
         //reset();
         // You might want to add some logic here to refresh the list of wallets
         // Pass new wallet back to server page component
         // Or refresh server page component
-        //revalidatePath('/dashboard/wallets');
-        //window.location.reload()
-        router.refresh();
+        //revalidatePath('.');
+        window.location.reload()
+        //router.refresh();
       } else {
         throw new Error(result.error);
       }
