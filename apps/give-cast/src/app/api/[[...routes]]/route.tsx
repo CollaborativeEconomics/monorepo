@@ -39,6 +39,7 @@ const app = new Frog<{
   basePath: "/api",
   title: appConfig.siteInfo.title,
   ui: { vars },
+  // server-side state
   initialState: {
     chain: "Base" as const,
   },
@@ -115,7 +116,7 @@ app.frame("/", async (c) => {
   const { deriveState, req } = c
   const chain = req.query("chain")
   const initiativeId = req.query("initiativeId")
-  if (chain && ["Base", "Arbitrum", "Optimism", "Polygon"].includes(chain)) {
+  if (chain && ["Base", "Arbitrum"].includes(chain)) {
     deriveState((prevState) => {
       prevState.chain = chain as Chain
     })

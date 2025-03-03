@@ -261,6 +261,23 @@ const chainConfiguration = {
             decimals: 18,
             icon: "icons/eth.webp",
           },
+          // seems degen is not deployed on sepolia testnet
+          // {
+          //   isNative: false,
+          //   name: "Degen",
+          //   contract: "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed",
+          //   decimals: 18,
+          //   icon: "icons/degen.webp",
+          //   symbol: "DEGEN",
+          // },
+          {
+            isNative: false,
+            name: "Moxie",
+            contract: "0x8c98F616d1Be022DE0E55bB91C5b393e2eCF78F3",
+            decimals: 18,
+            icon: "icons/moxie.webp",
+            symbol: "MOXIE",
+          },
         ],
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",
