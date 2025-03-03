@@ -94,7 +94,7 @@ const chainConfiguration = {
             contract: "0x80C2f901ABA1F95e5ddb2A5024E7Df6a366a3AB0",
             name: "USDC",
             symbol: "USDC",
-            decimals: 6,
+            decimals: 18,
             icon: "icons/usdc.webp",
           },
         ],

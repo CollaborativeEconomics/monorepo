@@ -31,6 +31,8 @@ export default function RewardClient({
   contractNFT,
   contractV2E,
 }: RewardClientProps) {
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [buttonText, setButtonText] = useState('REWARD VOLUNTEERS');
   const [message, setMessage] = useState('Start the disbursement process');
   const { data: hash, writeContractAsync } = useWriteContract({
     config: wagmiConfig,
@@ -65,6 +67,9 @@ export default function RewardClient({
 
     // console.log('ESTIMATE GAS', estimateGas);
 
+    setButtonDisabled(true);
+    setButtonText('SENDING REWARDS');
+    setMessage('Sending tokens to volunteers, please wait');
     try {
       const registered = volunteers?.map(it => it.address);
       console.log('REGISTERED', registered)
@@ -90,8 +95,12 @@ export default function RewardClient({
       });
 
       setMessage('Tokens distributed successfully');
+      setButtonDisabled(true);
+      setButtonText('REWARDS SENT');
     } catch (error) {
       console.error('Reward distribution error:', error);
+      setButtonDisabled(false);
+      setButtonText('ERROR SENDING REWARDS');
       setMessage('Error distributing tokens');
     }
   }
@@ -143,7 +152,8 @@ export default function RewardClient({
         <div className="w-full mb-2 flex flex-row justify-between">
           <ButtonBlue
             id="buttonSubmit"
-            text="REWARD VOLUNTEERS"
+            text={buttonText}
+            disabled={buttonDisabled}
             onClick={onSubmit}
           />
         </div>
