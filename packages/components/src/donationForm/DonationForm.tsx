@@ -144,7 +144,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const initiativeWallets = initiative?.wallets.map((w) =>
         nameToSlug(w.chain),
       )
-      const symbol = chain.symbol as TokenTickerSymbol
+      const symbol = selectedToken
       const rate = await getRate(symbol)
       setCoinRate(rate)
       console.log("COIN", symbol)
