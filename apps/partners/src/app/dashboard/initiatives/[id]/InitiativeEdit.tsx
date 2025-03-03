@@ -1,80 +1,84 @@
 "use client"
 
+import { DatePicker } from "@cfce/components/form"
+import type { Initiative } from "@cfce/database"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { DatePicker } from "@cfce/components/form"
+import InitiativeStatusSelect from "~/components/InitiativeStatusSelect"
 import ButtonBlue from "~/components/buttonblue"
 import FileView from "~/components/form/fileview"
 import Select from "~/components/form/select"
 import TextArea from "~/components/form/textarea"
 import TextInput from "~/components/form/textinput"
 import dateToPrisma from "~/utils/DateToPrisma"
-import { createInitiative } from "./action"
+import { editInitiative } from "../action"
 
-type InitiativeFormProps = {
-  orgId: string
+type FormProps = {
+  initiative: Initiative
 }
 
 type FormData = {
+  initiativeId: string
+  organizationId: string
   title: string
   description: string
   start?: Date
   finish?: Date
   image: FileList
+  imageUri?: string
+  defaultAsset?: string
+  status?: number
 }
 
-export default function InitiativeForm({ orgId }: InitiativeFormProps) {
-  //const [providers, setProviders] = useState([])
+// Define a mapping from string enum values to numbers
+const statusToNumber = {
+  Draft: 0,
+  Active: 1,
+  Finished: 2,
+  Archived: 3,
+}
+
+export default function InitiativeEdit({ initiative }: FormProps) {
+  //console.log('INIT', initiative)
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const [buttonText, setButtonText] = useState("SUBMIT")
-  const [message, setMessage] = useState("Enter initiative info and upload image")
-
+  const [message, setMessage] = useState(
+    "Enter initiative info and upload image",
+  )
+  const [initiativeStatus, setInitiativeStatus] = useState(
+    typeof initiative.status === "string"
+      ? statusToNumber[initiative.status as keyof typeof statusToNumber] || 0
+      : initiative.status || 0,
+  )
+  const iniDate = new Date(initiative.start || new Date().toJSON())
+  const endDate = new Date(initiative.finish || new Date().toJSON())
   const { register, handleSubmit, watch, control } = useForm<FormData>({
     defaultValues: {
-      title: "",
-      description: "",
-      start: new Date(),
-      finish: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      title: initiative.title,
+      description: initiative.description,
+      start: iniDate,
+      finish: endDate,
+      status: initiativeStatus,
     },
   })
 
   const image = watch("image")
-
-  /*
-  function listCredits() {
-    return [
-      { id: '0', name: 'No credits' },
-      { id: '1', name: 'Carbon credits' },
-      { id: '2', name: 'Plastic credits' },
-      { id: '3', name: 'Biodiversity credits' }
-    ]
-  }
-
-  function listProviders() {
-    if (!providers) {
-      return [{ id: 0, name: 'No providers' }]
-    }
-    const list = []
-    for (let i = 0; i < providers.length; i++) {
-      list.push({ id: providers[i].id, name: providers[i].name })
-    }
-    return list
-  }
-*/
+  const imageSource = initiative.defaultAsset
 
   const onSubmit = async (data: FormData) => {
+    console.log("INIT", initiative)
+    data.initiativeId = initiative.id
+    data.organizationId = initiative.organizationId
+    data.imageUri = initiative.imageUri || undefined
+    data.defaultAsset = initiative.defaultAsset || undefined
+    data.status = initiativeStatus // Now this is guaranteed to be a number
     console.log("FORM", data)
 
-    if (!data.title || !data.description || !data.image) {
-      setMessage("Error: Missing required fields")
-      return
-    }
     setButtonDisabled(true)
     setButtonText("WAIT")
     setMessage("Saving initiative...")
     try {
-      const result = await createInitiative(data, orgId)
-
+      const result = await editInitiative(data)
       if (result.success) {
         setMessage("Initiative saved successfully")
         setButtonText("DONE")
@@ -97,7 +101,7 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
       <FileView
         id="imgFile"
         {...register("image")}
-        source="/media/upload.jpg"
+        source={imageSource}
         width={250}
         height={250}
         multiple={false}
@@ -128,7 +132,19 @@ export default function InitiativeForm({ orgId }: InitiativeFormProps) {
         )}
       />
 
+      <InitiativeStatusSelect
+        status={initiativeStatus}
+        handler={(val) => {
+          const newStatus = Number.parseInt(val)
+          console.log("STATUS CHANGED", newStatus)
+          setInitiativeStatus(newStatus)
+        }}
+      />
       {/*
+
+      <DatePicker label="Start Date"  {...register('start')} onChange={(x)=>{console.log(x)}} />
+      <DatePicker label="End Date"  {...register('finish')} onChange={(y)=>{console.log(y)}} />
+
       <Select
         label="Credits"
         register={register('creditType')}

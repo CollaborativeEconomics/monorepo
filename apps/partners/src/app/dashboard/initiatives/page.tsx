@@ -1,5 +1,6 @@
 import { auth } from "@cfce/auth"
 import { type Initiative, getOrganizationById } from "@cfce/database"
+import Link from "next/link"
 import InitiativeCard from "~/components/InitiativeCard"
 import Title from "~/components/title"
 import styles from "~/styles/dashboard.module.css"
@@ -14,8 +15,16 @@ export default async function Page() {
   const initiatives =
     organization?.initiative.map((i) => ({ ...i, organization })) || []
 
+  // Define a mapping from string enum values to numbers
+  const statusToNumber = {
+    Draft: 0,
+    Active: 1,
+    Finished: 2,
+    Archived: 3,
+  }
+
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Create a Funding Initiative" />
       <p className={styles.intro}>
         Creating an initiative allows donors to contribute to a specific
@@ -29,7 +38,17 @@ export default async function Page() {
       {initiatives.length > 0 ? (
         initiatives.map((item: Initiative) => (
           <div className={styles.mainBox} key={item.id}>
-            <InitiativeCard key={item.id} {...item} />
+            <Link href={`/dashboard/initiatives/${item.id}`}>
+              <InitiativeCard
+                key={item.id}
+                {...item}
+                status={
+                  typeof item.status === "string"
+                    ? statusToNumber[item.status as keyof typeof statusToNumber]
+                    : item.status
+                }
+              />
+            </Link>
           </div>
         ))
       ) : (

@@ -42,7 +42,7 @@ export default async function Story({
   }
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Impact Story" />
       <div className={styles.mainBox}>
         <Card className="flex flex-col overflow-hidden mb-8">

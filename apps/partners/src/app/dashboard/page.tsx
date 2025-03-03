@@ -5,7 +5,7 @@ import styles from '~/styles/dashboard.module.css';
 
 export default function Page() {
   return (
-    <div className={styles.content}>
+    <div>
       <div className={styles.intro}>
         <Title text="DASHBOARD" />
         <div className={styles.dashBox}>

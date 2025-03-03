@@ -10,7 +10,7 @@ export default async function Page() {
   //console.log('CATS', list)
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="New Organization" />
       <AddOrganizationForm categories={list} />
     </div>
