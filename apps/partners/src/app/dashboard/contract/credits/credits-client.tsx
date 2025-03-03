@@ -115,16 +115,6 @@ export default function ContractCreditsClient({
       const wasm_hash = appChainConfig?.contracts?.CreditsHash || ""
       const salt = randomNumber(32)
       const init_fn = "initialize"
-      // const xlmContract = appChainConfig?.contracts?.xlmNativeCoin || '';
-      // const init_args = [
-      //   owner,
-      //   organizationId,
-      //   data.provider,
-      //   data.vendor,
-      //   data.bucket,
-      //   xlmContract,
-      // ];
-      //const res = await factory.contracts.Credits.deploy(network, address, owner, deployer, wasm_hash, salt, init_fn, init_args)
       const res = await factory.Credits.deploy({
         chain: chain.toLowerCase(),
         network,

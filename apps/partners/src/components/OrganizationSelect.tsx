@@ -1,6 +1,8 @@
 'use client';
 import type { Organization } from '@cfce/database';
 import { useSession } from 'next-auth/react';
+//import { useRouter } from 'next/navigation';
+//import { revalidatePath } from "next/cache"
 
 const OrganizationSelect = ({
   organizations,
@@ -8,6 +10,7 @@ const OrganizationSelect = ({
   organizations: Organization[];
 }) => {
   const { data: session, update } = useSession();
+  //const router = useRouter();
   return (
     <div className="w-full box-border">
       <select
@@ -16,7 +19,10 @@ const OrganizationSelect = ({
         onChange={evt => {
           const orgId = evt.target.value;
           console.log('ORG CHANGED', orgId);
-          update({ orgId: orgId });
+          update({ orgId });
+          setTimeout(()=>{location.reload()}, 500) // weird hack as it won't update session if we won't wait
+          //router.refresh();
+          //revalidatePath("/dashboard")
         }}
       >
         {organizations ? (

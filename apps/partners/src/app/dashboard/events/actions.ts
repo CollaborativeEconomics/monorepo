@@ -13,5 +13,6 @@ export const uploadToIPFS = async (fileName: string, file: File) => {
 
 export const saveEvent = async (event: EventType) => {
   const res = await newEvent(event)
-  return res
+  const data = JSON.parse(JSON.stringify(res))
+  return data
 }

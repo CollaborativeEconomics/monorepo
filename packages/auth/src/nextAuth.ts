@@ -38,10 +38,10 @@ const authOptions: NextAuthConfig = {
       }
       // Handle session updates
       if (trigger === "update" && session) {
-        //console.log('AUTH UPDATE', session)
+        console.log('AUTH UPDATE', session)
         token.name = session?.name || ""
         token.email = session?.email || ""
-        token.picture = session?.image || "/media/nopic.png"
+        token.picture = session?.image || "/nopic.png"
         if (session?.orgId) {
           token.orgId = session.orgId
         }
@@ -53,40 +53,35 @@ const authOptions: NextAuthConfig = {
         try {
           // Fetch organization data
           const { data: org } = await registryApi
-            .get<Organization>(`/organizations?email=${token.email}`) // <<<<<
+            .get<Organization>(`/organizations?email=${token.email}`)
             .catch((error) => {
               console.error("Failed to fetch organization:", error)
               return { data: null }
             })
           //console.log('SESSION-ORG', org?.name)
-
-          token.orgId = org?.id || token.orgId || ""
-          token.orgName = org?.name || ""
-
           if (!org) {
             console.log("AUTH NO-ORG")
-            try {
-              // Fetch user data
-              const { data: user, error } = await registryApi.get<User>(
-                `/users?email=${token.email}`,
-              )
-              //console.log('USER', user?.email)
-              if (user && user.type === 9) {
-                //console.log('AUTH ADMIN')
-                if (!token.orgId) {
-                  token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
-                }
-                token.orgName = "Admin"
-                token.userRole = "admin"
-              } else if (token.userRole !== "admin") {
-                token.orgName = "User"
-              }
-            } catch (error) {
-              console.error("Error in user data fetch:", error)
-              // Set default values if API call fails
-              token.orgName = "User"
+            //token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
+            throw new Error('User not authorized')
+          }
+          token.orgId = org.id
+          token.orgName = org.name
+
+          try {
+            // Fetch user data
+            const { data: user, error } = await registryApi.get<User>(
+              `/users?email=${token.email}`,
+            )
+            //console.log('USER', user?.email)
+            if (user && user.type === 9) {
+              //console.log('AUTH ADMIN')
+              token.orgName = "Admin"
+              token.userRole = "admin"
             }
-            //console.log('ORGID', token.orgId)
+          } catch (error) {
+            console.error("Error in user data fetch:", error)
+            // Set default values if API call fails
+            token.orgName = "User"
           }
         } catch (error) {
           console.error("Error in JWT callback:", error)
@@ -94,6 +89,7 @@ const authOptions: NextAuthConfig = {
           token.orgName = "User"
         }
       }
+      //console.log('AUTH TOKEN', token)
       return token
     },
     async session(args) {

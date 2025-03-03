@@ -1,3 +1,4 @@
+// Type exports
 import type { Prisma } from "@prisma/client"
 
 export type {
@@ -5,7 +6,6 @@ export type {
   Action,
   Artwork,
   Category,
-  Chain,
   Chapter,
   Collection,
   Contract,
@@ -34,6 +34,10 @@ export type {
   Volunteer,
   Wallet,
 } from "@prisma/client"
+
+// Value exports (enums)
+import { Chain, CreditType, InitiativeStatus } from "@prisma/client"
+export { Chain, CreditType, InitiativeStatus }
 
 export type StoryWithRelations = Prisma.StoryGetPayload<{
   include: {
