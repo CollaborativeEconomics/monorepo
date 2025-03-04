@@ -1,27 +1,26 @@
 /** @jsxImportSource frog/jsx */
 
 import appConfig from "@cfce/app-config"
+import { getNetworkByChainName } from "@cfce/blockchain-tools"
+import { getCoinRate } from "@cfce/blockchain-tools/server"
 import type { Chain, Prisma } from "@cfce/database"
-import { getInitiativeById } from "@cfce/database"
+import { getInitiativeById, getInitiatives, getWallets } from "@cfce/database"
 import { type ReceiptEmailBody, sendEmailReceipt } from "@cfce/utils"
-import { Button, Frog, TextInput, parseEther } from "frog"
+import {
+  Button,
+  Frog,
+  TextInput,
+  type TransactionParameters,
+  parseEther,
+} from "frog"
 import { devtools } from "frog/dev"
 import { type NeynarVariables, neynar } from "frog/middlewares"
 import { handle } from "frog/next"
 import { serveStatic } from "frog/serve-static"
 import { createSystem } from "frog/ui"
-import Image from "next/image"
 import { http, createPublicClient } from "viem"
 import { arbitrumSepolia } from "viem/chains"
-import {
-  ConfirmIntent,
-  checkUser,
-  getInitiatives,
-  getRates,
-  mintNft,
-  newDonation,
-  sendReceipt,
-} from "~/utils"
+import { ConfirmIntent, checkUser, mintNft, newDonation } from "~/utils"
 
 const client = createPublicClient({
   chain: arbitrumSepolia,
@@ -33,6 +32,9 @@ const { vars } = createSystem()
 const app = new Frog<{
   State: {
     chain: Chain
+    initiative: Prisma.InitiativeGetPayload<{
+      include: { organization: true }
+    }> | null
   }
 }>({
   assetsPath: "/",
@@ -42,15 +44,13 @@ const app = new Frog<{
   // server-side state
   initialState: {
     chain: "Base" as const,
+    initiative: null,
   },
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
 })
 
 // Uncomment to use Edge Runtime
 // export const runtime = 'edge'
-let initiatives: Prisma.InitiativeGetPayload<{
-  include: { organization: true }
-}>
 let rate: number
 let recipient: string
 
@@ -111,77 +111,81 @@ const warning = {
 //})
 //);
 
+const chainIdIsEip155 = (
+  id: string,
+): id is TransactionParameters["chainId"] => {
+  return [
+    1, 10, 100, 137, 8453, 42161, 42170, 84532, 421614, 7777777, 11155111,
+    11155420, 666666666,
+  ]
+    .map((id) => `eip155:${id}`)
+    .includes(id)
+}
+
 app.frame("/", async (c) => {
   // Set the chain for this session
   const { deriveState, req } = c
   const chain = req.query("chain")
-  const initiativeId = req.query("initiativeId")
   if (chain && ["Base", "Arbitrum"].includes(chain)) {
     deriveState((prevState) => {
       prevState.chain = chain as Chain
     })
   }
-  if (initiativeId) {
-    const initiative = await getInitiativeById(initiativeId)
-    if (!initiative || !chain) {
-      return c.res({
-        // action: "/",
-        image: <div>No chain or initiative found</div>,
-      })
-    }
-    return c.res({
-      action: "/featured",
-      image: (
-        <img
-          src={initiative?.defaultAsset || "/givecast.jpg"}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "0% 0%",
-          }}
-          alt={initiative.title}
-        />
-      ),
-      intents: [
-        <Button value={initiativeId} key={initiativeId}>
-          {initiative.title} {chain}
-        </Button>,
-      ],
-    })
-  }
+
+  const featuredInitiatives = await getInitiatives(
+    {},
+    { where: { id: { in: appConfig.siteInfo.featuredInitiatives } } },
+  )
   return c.res({
     action: "/featured",
-    image: "/givecast.jpg",
-    intents: [
-      <Button
-        value="30c0636f-b0f1-40d5-bb9c-a531dc4d69e2"
-        key="green-blockchain"
+    image: (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "10px",
+          padding: "10px",
+        }}
       >
-        Green Blockchain
-      </Button>,
-      <Button
-        value="bd87aeb5-c60c-418e-9ffa-6535044d9fbb"
-        key="hurricane-beryl"
-      >
-        Hurricane Beryl
-      </Button>,
-    ],
+        {featuredInitiatives.slice(0, 4).map((initiative) => (
+          <img
+            key={initiative.id}
+            src={initiative.defaultAsset || "/givecast.jpg"}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: "8px",
+            }}
+            alt={initiative.title}
+          />
+        ))}
+      </div>
+    ),
+    intents: featuredInitiatives.map((initiative) => (
+      <Button value={initiative.id} key={initiative.id}>
+        {initiative.title}
+      </Button>
+    )),
   })
 })
 
 app.frame("/featured", async (c) => {
-  const { buttonValue, inputText, frameData } = c
+  const { buttonValue, inputText, frameData, deriveState } = c
   const id = buttonValue || "" // It should never be empty unless accessed directly
   console.log("ID", id)
+
+  // Fetch the initiative and store the whole object in state
   const initiative = await getInitiativeById(id)
+  deriveState((prevState) => {
+    prevState.initiative = initiative
+  })
+
   console.log("INIT", initiative?.slug)
-  initiatives = initiative
-  console.log(initiatives.defaultAsset)
 
   return c.res({
     action: "/confirmation",
-    image: `${initiative.defaultAsset}`,
+    image: `${initiative?.defaultAsset}`,
     intents: [
       <TextInput placeholder="Enter amount to donate in USD" key="input" />,
       <Button value="5" key="5">
@@ -193,7 +197,7 @@ app.frame("/featured", async (c) => {
       <Button value="20" key="20">
         $20
       </Button>,
-      <Button value="Next" key="next">
+      <Button value="custom" key="next">
         Next
       </Button>,
     ],
@@ -201,17 +205,21 @@ app.frame("/featured", async (c) => {
 })
 
 app.frame("/initiative/:id?", async (c) => {
+  const { buttonValue, inputText, frameData, deriveState } = c
   const id = c.req.param("id") || ""
-  console.log("ID", id)
-  // TODO: If not ID redirect to main
+
+  // Fetch the initiative and store the whole object in state
   const initiative = await getInitiativeById(id)
+  deriveState((prevState) => {
+    prevState.initiative = initiative
+  })
+
+  console.log("ID", id)
   console.log("INIT", initiative?.slug)
-  initiatives = initiative
-  console.log(initiatives.defaultAsset)
 
   return c.res({
     action: "/confirmation",
-    image: `${initiative.defaultAsset}`,
+    image: `${initiative?.defaultAsset}`,
     intents: [
       <TextInput placeholder="Enter amount to donate in USD" key="input" />,
       <Button value="5" key="5">
@@ -223,7 +231,7 @@ app.frame("/initiative/:id?", async (c) => {
       <Button value="20" key="20">
         $20
       </Button>,
-      <Button value="Next" key="next">
+      <Button value="input" key="next">
         Next
       </Button>,
     ],
@@ -231,20 +239,24 @@ app.frame("/initiative/:id?", async (c) => {
 })
 
 app.frame("/confirmation", async (c) => {
-  const { buttonValue, inputText, frameData } = c
+  const { buttonValue, inputText, frameData, previousState } = c
+  const initiative = previousState?.initiative
+  const organization = initiative?.organization
+
   let amount = 0
   if (inputText !== undefined) {
     amount = Number.parseInt(inputText || "0") || 0
   } else {
     amount = Number.parseInt(buttonValue || "0") || 0
   }
-  rate = await getRates("eth")
+  // rate = await getRates("eth")
+  const rate = await getCoinRate({ symbol: "ETH" })
   const rates = rate.toFixed(4)
   const value = amount / rate
   console.log("RATE", rate, rates, amount, value)
 
   DonorData.coinSymbol = "ETH"
-  DonorData.organizationName = initiatives?.organization.name
+  DonorData.organizationName = organization?.name || "Unknown"
   DonorData.usdValue = amount.toFixed(4)
   DonorData.coinValue = value.toFixed(18)
 
@@ -261,11 +273,9 @@ app.frame("/confirmation", async (c) => {
           whiteSpace: "pre-wrap",
         }}
       >
-        {initiatives?.title}
+        {initiative?.title}
       </p>
-      <p style={{ margin: 0, padding: 0 }}>
-        a {initiatives?.organization?.name} initiative
-      </p>
+      <p style={{ margin: 0, padding: 0 }}>a {organization?.name} initiative</p>
       <p style={{ margin: 0, padding: 0, marginTop: 40, fontSize: 40 }}>
         You will send ${amount.toFixed(2)} USD
       </p>
@@ -283,7 +293,9 @@ app.frame("/confirmation", async (c) => {
 })
 
 app.frame("/mintquery", async (c) => {
-  const { transactionId } = c
+  const { transactionId, previousState } = c
+
+  const initiative = previousState?.initiative
   console.log("TX", transactionId)
 
   const confirmed = {
@@ -305,7 +317,7 @@ app.frame("/mintquery", async (c) => {
   }
 
   const rejected = {
-    action: `/initiative/${initiatives?.id}`,
+    action: initiative ? `/initiative/${initiative.id}` : "/",
     image: (
       <div style={warning}>
         <p style={{ fontSize: 60 }}>Transaction not successful</p>
@@ -341,12 +353,12 @@ app.frame("/mintquery", async (c) => {
         // TODO: create user profile from address
         const user = await checkUser(DonorData?.address || "")
         console.log("USER", user.id)
-        if (user?.id) {
+        if (user?.id && initiative?.organization) {
           const DonationData = {
             created: new Date(),
             userId: user.id,
-            organizationId: initiatives.organization.id,
-            initiativeId: initiatives.id,
+            organizationId: initiative.organization.id,
+            initiativeId: initiative.id,
             usdvalue: DonorData.usdValue,
             amount: DonorData.coinValue,
             asset: DonorData.coinSymbol,
@@ -432,15 +444,34 @@ app.frame("/mint-nft", async (c) => {
   })
 })
 
-app.transaction("/send-ether", (c) => {
-  const { inputText = "", frameData } = c
+app.transaction("/send-ether", async (c) => {
+  const {
+    inputText = "",
+    frameData,
+    previousState: { chain, initiative },
+  } = c
+
+  if (!initiative) {
+    throw new Error("No initiative found")
+  }
+
+  const { id } = getNetworkByChainName(chain)
+  const chainId = `eip155:${id}`
+  if (!chainIdIsEip155(chainId)) {
+    throw new Error("Invalid chain ID")
+  }
+  const wallets = await getWallets({ initiativeId: initiative.id, chain })
+  if (!wallets || !Array.isArray(wallets) || wallets.length === 0) {
+    throw new Error("No wallet address found")
+  }
+  const wallet = wallets[0]
   console.log("AMT", DonorData.coinValue)
   DonorData.email = inputText
   recipient = frameData?.address || ""
   DonorData.address = recipient
   return c.send({
-    chainId: "eip155:421614",
-    to: "0x78C267869e588823F6D1660EBE6e286deE297f0a",
+    chainId,
+    to: wallet.address as `0x${string}`,
     value: parseEther(DonorData.coinValue),
   })
 })
