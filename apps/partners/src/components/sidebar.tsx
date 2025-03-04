@@ -48,7 +48,9 @@ const SidebarContent = ({
         <span className="text-gray-300 text-sm block mb-1">
           Current Organization
         </span>
-        <strong className="text-lg">{currentOrg.name}</strong>
+        <Link href={`/dashboard/organization/${currentOrg.id}`}>
+          <strong className="text-lg">{currentOrg.name}</strong>
+        </Link>
       </div>
     )}
 
@@ -112,7 +114,6 @@ const Sidebar = async () => {
   const session = await auth();
   const organizations = await getOrganizations();
   const orgsPlain = JSON.parse(JSON.stringify(organizations))
-
   let currentOrg = null;
   if (session?.orgId) {
     currentOrg = await getOrganizationById(session.orgId);
@@ -126,7 +127,7 @@ const Sidebar = async () => {
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+        <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-gray-800 text-white">
           <SidebarContent
             session={session}
             currentOrg={currentOrg}
