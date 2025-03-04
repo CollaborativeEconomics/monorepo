@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { auth } from '@cfce/auth';
 import startCase from 'lodash/startCase';
 import React from 'react';
@@ -15,13 +16,25 @@ export default async function HomePage() {
   const isLogged = !!name;
   const isAuthed = !!orgId;
 
-  let welcomeText = 'Log in with your Google account';
-  if (isLogged) {
-    welcomeText = isAuthed
-      ? `Welcome ${startCase(name)}`
-      : 'You are not authorized, request access to the portal';
+  if(isAuthed){
+    redirect('/dashboard')
+  } else {
+    redirect('/api/auth/signin')
   }
 
+  //let welcomeText = 'Log in with your Google account';
+  //if (isLogged) {
+  //  welcomeText = isAuthed
+  //    ? `Welcome ${startCase(name)}`
+  //    : 'You are not authorized, request access to the portal';
+  //}
+
+  return (
+    <>
+      <p>Wait...</p>
+    </>
+  )
+/*
   return (
     <>
       <AuthHeader />
@@ -45,4 +58,5 @@ export default async function HomePage() {
       <Footer />
     </>
   );
+*/
 }
