@@ -153,18 +153,6 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     },
   })
 
-  private _ensureDependencies() {
-    if (!this.network) {
-      throw new Error("Error getting network")
-    }
-    if (!this.chain) {
-      throw new Error("Error getting chain")
-    }
-    if (!this.connectedWallet) {
-      throw new Error("Error getting wallet")
-    }
-  }
-
   async connect(newChainId?: number) {
     console.log("Wallet starting...", newChainId)
 
