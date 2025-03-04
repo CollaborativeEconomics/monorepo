@@ -335,7 +335,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             draft.paymentStatus = PAYMENT_STATUS.ready
             draft.date = new Date()
           })
-        }, 1800)
+          setButtonMessage("Donate Again to same Initiative!")
+        }, 10000)
       } catch (error) {
         toast({
           variant: "destructive",

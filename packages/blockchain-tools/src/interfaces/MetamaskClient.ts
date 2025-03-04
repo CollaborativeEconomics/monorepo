@@ -13,10 +13,11 @@ import {
   connect,
   createConfig,
   estimateGas,
+  getAccount,
   getBalance,
+  injected,
   sendTransaction,
 } from "@wagmi/core"
-import { injected } from "@wagmi/core"
 import {
   arbitrum,
   arbitrumSepolia,
@@ -152,25 +153,49 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     },
   })
 
+  private _ensureDependencies() {
+    if (!this.network) {
+      throw new Error("Error getting network")
+    }
+    if (!this.chain) {
+      throw new Error("Error getting chain")
+    }
+    if (!this.connectedWallet) {
+      throw new Error("Error getting wallet")
+    }
+  }
+
   async connect(newChainId?: number) {
     console.log("Wallet starting...", newChainId)
-    //console.log('window.ethereum')
+
+    const account = getAccount(this.config)
+    if (account.isConnected) {
+      console.log("Wallet is already connected (via getAccount)")
+      this.connectedWallet = account.address
+      
+      if (!this.network) {
+        throw new Error("Error getting network")
+      }
+      if (!this.chain) {
+        throw new Error("Error getting chain")
+      }
+
+      if (!this.connectedWallet) {
+        throw new Error("Error getting wallet")
+      }
+      return {
+        success: true,
+        network: this.network,
+        walletAddress: this.connectedWallet,
+        chain: this.chain.name,
+      }
+    }
+
     try {
       this.metamask = window.ethereum
       this.wallets = await this.metamask?.enable()
       const metamaskChainId = window.ethereum?.chainId
       console.log("MM Chain ID", metamaskChainId)
-
-      // TODO: Assign config based on chainId <<<<
-      //const currentId = newChainId || 0
-      //const currentChain = chains[currentId] || null
-      //this.config = createConfig({
-      //  chains: [currentChain],
-      //  transports: {
-      //    [currentId]: http(this.network?.rpcUrls?.default)
-      //  }
-      //})
-      //console.log("CONFIG", this.config)
 
       const connection = await connect(this.config, { connector: injected() })
       this.connectedWallet = connection.accounts[0]
