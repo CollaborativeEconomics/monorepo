@@ -1,15 +1,16 @@
-// import { expect, test } from "@playwright/test"
-import { testWithSynpress } from "@synthetixio/synpress"
-import {
-  MetaMask,
-  metaMaskFixtures,
-  unlockForFixture,
-} from "@synthetixio/synpress/playwright"
-import basicSetup from "../wallet-setup/basic.setup.js"
+import { expect, test } from "../fixtures";
 
-const test = testWithSynpress(metaMaskFixtures(basicSetup))
-const { expect} = test
+let id: `0x${string}` | undefined;
 
+test.beforeAll(async ({ anvil }) => {
+  id = await anvil.snapshot();
+});
+
+test.afterAll(async ({ anvil }) => {
+  if (!id) return;
+  await anvil.revert({ id });
+  id = undefined;
+});
 
 test("Should navigate to signin page", async ({ page }) => {
     await page.goto("/")
@@ -44,16 +45,10 @@ test("Should navigate to signin page", async ({ page }) => {
   })
 
   test("should sign in with metamask", async ({
-    context,
     page,
-    extensionId,
+    wallet
   }) => {
-    const metamask = new MetaMask(
-      context,
-      page,
-      basicSetup.walletPassword,
-      extensionId,
-    )
+
     // Navigate to the homepage
     await page.goto("/")
     await page.getByRole("link", { name: "Sign in" }).click()
@@ -64,10 +59,7 @@ test("Should navigate to signin page", async ({ page }) => {
     // Click the connect button
     await page.getByText("Login with Metamask Wallet").click()
 
-    await metamask.unlock()
-
-    // Connect MetaMask to the dapp
-    await metamask.connectToDapp()
+    await wallet.connect("alice")
 
     await expect(page).toHaveURL(/.*\/profile.*/)
 
@@ -79,6 +71,6 @@ test("Should navigate to signin page", async ({ page }) => {
     // Verify the connected account address
     // from seed
     await expect(
-      page.getByText("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"),
+      page.getByText(`${wallet.address}`),
     ).toBeVisible()
   })

@@ -13,5 +13,10 @@
     "@synthetixio/synpress": "^4.0.2",
     "@types/node": "^20.11.24",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@wagmi/core": "^2.16.3",
+    "viem": "^2.21.54",
+    "wagmi": "^2.14.9"
   }
 }

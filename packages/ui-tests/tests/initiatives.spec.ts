@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "../fixtures";
 
 test.describe("Initiative page", () => {
   test.beforeEach(async ({ page }) => {
@@ -113,10 +113,8 @@ test.describe("Initiative page", () => {
     // Verify initiative card content
     await expect(
       page.getByRole("link", { name: "Sustainable Development Goals" }),
-      page.getByRole("link", { name: "Sustainable Development Goals" }),
     ).toBeVisible()
     await expect(
-      page.getByRole("link", { name: "Save the whales", exact: true }),
       page.getByRole("link", { name: "Save the whales", exact: true }),
     ).toBeVisible()
     await expect(
@@ -130,7 +128,6 @@ test.describe("Initiative page", () => {
     // Verify initiative images
     await expect(
       page.getByRole("img", { name: "IMG BG" }).first(),
-      page.getByRole("link", { name: "Save the whales in need" }),
     ).toBeVisible()
 
     // Verify initiative details are displayed
