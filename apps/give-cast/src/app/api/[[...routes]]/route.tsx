@@ -5,7 +5,12 @@ import { getNetworkByChainName } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
 import type { Chain, Prisma } from "@cfce/database"
 import { getInitiativeById, getInitiatives, getWallets } from "@cfce/database"
-import { type ReceiptEmailBody, sendEmailReceipt } from "@cfce/utils"
+import {
+  type ReceiptEmailBody,
+  ipfsCIDToUrl,
+  mintAndSaveReceiptNFT,
+  sendEmailReceipt,
+} from "@cfce/utils"
 import {
   Button,
   Frog,
@@ -45,18 +50,38 @@ const app = new Frog<{
     transaction: {
       amount: string // USD amount
       value: string // Crypto value
-      symbol: string // ETH/DEGEN/MOXIE
-    } | null
+      symbol: "ETH" | "DEGEN" | "MOXIE" | "ARB"
+    }
   }
 }>({
   assetsPath: "/",
   basePath: "/api",
   title: appConfig.siteInfo.title,
   ui: { vars },
+  imageOptions: {
+    width: 1200,
+    height: 630,
+    fonts: [
+      {
+        name: "Inter",
+        weight: 400,
+        source: "google",
+      },
+      {
+        name: "Inter",
+        weight: 700,
+        source: "google",
+      },
+    ],
+  },
   initialState: {
     chain: "Base" as const,
     initiative: null,
-    transaction: null,
+    transaction: {
+      amount: "0",
+      value: "0",
+      symbol: "ETH",
+    },
   },
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
 })
@@ -85,7 +110,7 @@ const DonorData: ExtendedEmailBody = {
 const background = {
   alignItems: "center",
   color: "white",
-  background: "#334155",
+  background: "hsl(215, 25%, 27%)",
   backgroundSize: "100% 100%",
   display: "flex",
   flexDirection: "column",
@@ -239,11 +264,9 @@ app.frame("/initiative/:id?", async (c) => {
     }
   })
 
-  // Just route to the appropriate next frame
-  const nextAction = chain === "Base" ? "/choose-currency" : "/confirmation"
-
+  // Always route to choose-currency
   return c.res({
-    action: nextAction,
+    action: "/choose-currency",
     image: (
       <div
         style={{
@@ -345,38 +368,29 @@ app.frame("/choose-currency", async (c) => {
   // Handle amount first
   const amount = parseAmount(inputText, buttonValue)
   if (amount <= 0) {
-    return c.res({
-      action: `/initiative/${previousState?.initiative?.id || ""}`,
-      image: (
-        <div style={warning}>
-          <p style={{ fontSize: 60 }}>Please enter a valid amount</p>
-        </div>
-      ),
-      intents: [
-        <Button value="back" key="back">
-          Go Back
-        </Button>,
-      ],
+    return c.error({
+      message: "Please enter a valid amount",
     })
   }
 
   // Set initial transaction state
   deriveState((prevState) => {
-    prevState.transaction = {
-      amount: amount.toFixed(2),
-      value: "0",
-      symbol: "ETH", // Will be updated when currency is selected
-    }
+    prevState.transaction.amount = amount.toFixed(2)
   })
 
-  const currencies = [
-    { name: "DEGEN", icon: "/icons/degen.png" },
-    { name: "MOXIE", icon: "/icons/moxie.png" },
-    { name: "ETH", icon: "/icons/eth.png" },
-  ] as const // Make this a const array to help with type inference
+  const currencies = CHAIN_CURRENCIES[chain]
+
+  if (!currencies) {
+    return c.error({
+      message: `No currencies found for this chain: ${chain}`,
+    })
+  }
 
   return c.res({
     action: "/confirmation",
+    // imageOptions: {
+    //   debug: true,
+    // },
     image: (
       <div
         style={{
@@ -384,9 +398,9 @@ app.frame("/choose-currency", async (c) => {
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          backgroundColor: "#334155",
           color: "white",
           padding: "32px",
+          justifyContent: "space-between",
         }}
       >
         <h2
@@ -407,7 +421,6 @@ app.frame("/choose-currency", async (c) => {
             justifyContent: "space-around",
             alignItems: "center",
             width: "100%",
-            flex: 1,
           }}
         >
           {currencies.map((currency) => (
@@ -435,11 +448,19 @@ app.frame("/choose-currency", async (c) => {
 
 // Update confirmation to handle amount for non-Base chain
 app.frame("/confirmation", async (c) => {
-  const { buttonValue, inputText, frameData, previousState, deriveState } = c
+  const {
+    buttonValue,
+    inputText,
+    frameData,
+    previousState,
+    deriveState,
+    transactionId,
+  } = c
   const initiative = previousState?.initiative
   const organization = initiative?.organization
   const transaction = previousState?.transaction
-  const { chain } = previousState
+
+  console.log("TRANSACTION ID", transactionId)
 
   if (!initiative) {
     return c.error({
@@ -448,31 +469,15 @@ app.frame("/confirmation", async (c) => {
   }
 
   // If coming from initiative frame (non-Base chain), handle amount
-  if (!transaction) {
+  if (!transaction.amount) {
     const amount = parseAmount(inputText, buttonValue)
     if (amount <= 0) {
-      return c.res({
-        action: `/initiative/${initiative?.id || ""}`,
-        image: (
-          <div style={warning}>
-            <p style={{ fontSize: 60 }}>Please enter a valid amount</p>
-          </div>
-        ),
-        intents: [
-          <Button value="back" key="back">
-            Go Back
-          </Button>,
-        ],
+      return c.error({
+        message: "Please enter a valid amount",
       })
     }
-
-    // Set initial transaction state
     deriveState((prevState) => {
-      prevState.transaction = {
-        amount: amount.toFixed(2),
-        value: "0",
-        symbol: "ETH",
-      }
+      prevState.transaction.amount = amount.toFixed(2)
     })
   }
 
@@ -506,34 +511,101 @@ app.frame("/confirmation", async (c) => {
   DonorData.coinValue = value.toFixed(18)
 
   const pageContent = (
-    <div style={background}>
-      <p style={{ margin: 0, padding: 0 }}>Donate to</p>
-      <p
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        height: "100%",
+        background: "linear-gradient(to bottom, #1a1a1a, #2d2d2d)",
+        color: "white",
+        padding: "48px",
+        fontFamily: "Inter",
+      }}
+    >
+      {/* Main Content Card */}
+      <div
         style={{
-          margin: 0,
-          fontSize: 60,
-          fontStyle: "normal",
-          letterSpacing: "-0.025em",
-          lineHeight: 1.4,
-          whiteSpace: "pre-wrap",
+          display: "flex",
+          flexDirection: "column",
+          background: "rgba(255, 255, 255, 0.1)",
+          borderRadius: "16px",
+          flex: 1,
+          justifyContent: "space-between",
+          boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.25)",
         }}
       >
-        {initiative?.title}
-      </p>
-      <p style={{ margin: 0, padding: 0 }}>a {organization?.name} initiative</p>
-      <p style={{ margin: 0, padding: 0, marginTop: 40, fontSize: 40 }}>
-        You will send ${currentTransaction.amount} USD
-      </p>
-      <p style={{ margin: 0, padding: 0 }}>
-        As {value.toFixed(4)} {symbol}
-      </p>
+        <h1
+          style={{
+            fontSize: "42px",
+            margin: 0,
+            fontWeight: "bold",
+            padding: "32px",
+          }}
+        >
+          Donation Summary
+        </h1>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "16px",
+            padding: "32px",
+            paddingLeft: "64px",
+            flexGrow: 1,
+            borderBottom: "1px solid #e2e8f0",
+            borderTop: "1px solid #e2e8f0",
+            alignItems: "center",
+          }}
+        >
+          {initiative?.defaultAsset && (
+            <img
+              src={ipfsCIDToUrl(initiative?.defaultAsset)}
+              alt="Logo"
+              style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "50%",
+              }}
+            />
+          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <h2 style={{ fontSize: "32px", margin: 0, color: "#e2e8f0" }}>
+              {initiative?.title}
+            </h2>
+            <p style={{ fontSize: "24px", margin: 0, color: "#94a3b8" }}>
+              {organization?.name || "Independent Initiative"}
+            </p>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "32px",
+            gap: "16px",
+            marginTop: "16px",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <p style={{ fontSize: "36px", margin: 0, fontWeight: "bold" }}>
+              ${currentTransaction.amount} USD
+            </p>
+            <p style={{ fontSize: "24px", margin: 0, color: "#94a3b8" }}>
+              {value.toFixed(4)} {symbol}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 
   const targetEndpoint = symbol === "ETH" ? "/send-ether" : "/send-token"
 
   return c.res({
-    action: targetEndpoint,
+    // action: targetEndpoint,
     image: pageContent,
     intents: [
       <Button.Transaction
@@ -543,9 +615,7 @@ app.frame("/confirmation", async (c) => {
       >
         Confirm
       </Button.Transaction>,
-      <Button value="back" key="back">
-        Go Back
-      </Button>,
+      <Button.Reset key="reset">Start Over</Button.Reset>,
     ],
   })
 })
@@ -773,12 +843,6 @@ const erc20Abi = [
   },
 ] as const
 
-// Token addresses on Base
-const TOKEN_ADDRESSES = {
-  degen: "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed" as `0x${string}`,
-  moxie: "0x7EA4C29D3d787F2d52CB63D615E25B57E7559867" as `0x${string}`,
-} as const
-
 app.transaction("/send-token", async (c) => {
   const {
     inputText = "",
@@ -832,10 +896,10 @@ app.transaction("/send-token", async (c) => {
   }
 
   // Get token details from button value
-  const tokenSymbol = buttonValue?.toLowerCase()
-  if (!tokenSymbol || !["degen", "moxie"].includes(tokenSymbol)) {
+  const tokenSymbol = buttonValue
+  if (!tokenSymbol || !["DEGEN", "MOXIE", "ARB"].includes(tokenSymbol)) {
     return c.error({
-      message: "Invalid token selected",
+      message: "Invalid token selected (allowed: DEGEN, MOXIE, ARB)",
     })
   }
 
@@ -846,12 +910,19 @@ app.transaction("/send-token", async (c) => {
   DonorData.coinSymbol = tokenSymbol.toUpperCase()
 
   // Get token contract address
-  const tokenAddress =
-    TOKEN_ADDRESSES[tokenSymbol as keyof typeof TOKEN_ADDRESSES]
+  const tokenAddress = getNetworkByChainName(chain).tokens.find(
+    (token) => token.symbol === tokenSymbol,
+  )?.contract
+
+  if (!tokenAddress) {
+    return c.error({
+      message: "Token contract not found",
+    })
+  }
 
   return c.contract({
     chainId,
-    to: tokenAddress,
+    to: tokenAddress as `0x${string}`,
     abi: erc20Abi,
     functionName: "transfer",
     args: [wallet as `0x${string}`, parseEther(DonorData.coinValue)],
@@ -920,3 +991,17 @@ devtools(app, { serveStatic })
 
 export const GET = handle(app)
 export const POST = handle(app)
+
+const CHAIN_CURRENCIES: Partial<
+  Record<Chain, { name: string; icon: string }[]>
+> = {
+  Base: [
+    { name: "DEGEN", icon: "/icons/degen.png" },
+    { name: "MOXIE", icon: "/icons/moxie.png" },
+    { name: "ETH", icon: "/icons/eth.png" },
+  ],
+  Arbitrum: [
+    { name: "ARB", icon: "/icons/arb.png" },
+    { name: "ETH", icon: "/icons/eth.png" },
+  ],
+} as const
