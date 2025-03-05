@@ -6,16 +6,18 @@ type WalletData = {
   chain: Chain;
   network: string;
   address: string;
+  memo: string;
   initiativeId: string;
 };
 
 export async function createWallet(orgId: string, data: WalletData) {
   try {
-    const { chain, network, address, initiativeId } = data
+    const { chain, network, address, memo, initiativeId } = data
     const record = { 
       chain, 
       network,
       address,
+      memo,
       organizations: { connect: { id: orgId } } ,
       initiatives: initiativeId ? { connect: { id: initiativeId } } : undefined
     }
