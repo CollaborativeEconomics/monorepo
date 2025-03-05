@@ -28,11 +28,11 @@ jobs:
       - name: Setup pnpm config
         run: pnpm config set store-dir ~/.pnpm-store
           
-      - name: Apply patches
-        run: pnpm patch-commit .
-          
       - name: Install dependencies
         run: pnpm install
+
+      - name: Apply patches
+        run: pnpm patch-commit .
           
       - name: Build packages
         run: pnpm turbo build --filter="./packages/*"
