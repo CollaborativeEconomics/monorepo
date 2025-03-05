@@ -16,30 +16,33 @@ import { createWallet } from './actions';
 type WalletFormProps = {
   orgId: string;
   chains: { id: string; name: string }[];
+  initiatives: { id: string; name: string }[];
 };
 
 type DataForm = {
   chain: string;
+  network: string;
   address: string;
+  initiativeId: string;
 };
 
-export default function WalletForm({ orgId, chains }: WalletFormProps) {
+export default function WalletForm({ orgId, chains, initiatives }: WalletFormProps) {
   const router = useRouter();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState('NEW WALLET');
-  const [message, setMessage] = useState(
-    'Select chain and enter wallet address',
-  );
+  const [message, setMessage] = useState('Select chain and enter wallet address');
 
   const formMethods = useForm({
     defaultValues: {
       chain: 'Arbitrum',
+      network: 'testnet',
       address: '',
-      network: '',
+      initiativeId: '',
     },
   });
   const { register, handleSubmit, reset } = formMethods;
   const [selectedChain, setSelectedChain] = useState('Arbitrum');
+  const [selectedInitiative, setSelectedInitiative] = useState('');
 
   const onSubmit = async (form: DataForm) => {
     console.log('DATA', form);
@@ -53,10 +56,12 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
     }
     try {
       const data = {
-        address: form.address,
         chain: selectedChain as Chain,
         network: appConfig.chainDefaults.network || 'testnet',
+        address: form.address,
+        initiativeId: selectedInitiative,
       };
+      console.log('DATA', data)
       setMessage('Saving wallet to database...');
       setButtonDisabled(true);
       setButtonText('WAIT');
@@ -87,6 +92,11 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
     setSelectedChain(val);
   }
 
+  function handleInitiative(val: string) {
+    console.log('INIT', val);
+    setSelectedInitiative(val);
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.vbox}>
       <Select
@@ -96,6 +106,13 @@ export default function WalletForm({ orgId, chains }: WalletFormProps) {
         handler={handleChain}
       />
       <TextInput label="Address" {...register('address')} />
+      <Select
+        label="Initiative"
+        {...register('initiativeId')}
+        options={initiatives}
+        handler={handleInitiative}
+      />
+      <p className="text-center text-gray-400">If you want this wallet attached to an initiative please select it from the dropdown</p>
       <ButtonBlue
         id="buttonSubmit"
         text={buttonText}

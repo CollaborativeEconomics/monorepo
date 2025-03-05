@@ -1,5 +1,5 @@
 import { VolunteersFactoryAbi } from "./FactoryAbi";
 import { VolunteersNFTAbi } from "./NFTAbi";
-import { VolunteersDistributorAbi } from "./DistributorAbi";
+import { DistributorAbi } from "./DistributorAbi";
 
-export { VolunteersFactoryAbi, VolunteersNFTAbi, VolunteersDistributorAbi }
+export { VolunteersFactoryAbi, VolunteersNFTAbi, DistributorAbi }
