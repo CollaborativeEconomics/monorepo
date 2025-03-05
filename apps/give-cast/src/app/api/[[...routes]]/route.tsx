@@ -218,22 +218,26 @@ app.frame("/initiative/:id?", async (c) => {
 
   // Fetch and set initiative data first
   const fullInitiative = await getInitiativeById(id)
-  if (fullInitiative) {
-    deriveState((prevState) => {
-      prevState.initiative = {
-        id: fullInitiative.id,
-        title: fullInitiative.title,
-        defaultAsset: fullInitiative.defaultAsset,
-        created: fullInitiative.created,
-        organization: fullInitiative.organization
-          ? {
-              id: fullInitiative.organization.id,
-              name: fullInitiative.organization.name,
-            }
-          : null,
-      }
+  if (!fullInitiative) {
+    return c.error({
+      message: "Initiative not found",
     })
   }
+
+  deriveState((prevState) => {
+    prevState.initiative = {
+      id: fullInitiative.id,
+      title: fullInitiative.title,
+      defaultAsset: fullInitiative.defaultAsset,
+      created: fullInitiative.created,
+      organization: fullInitiative.organization
+        ? {
+            id: fullInitiative.organization.id,
+            name: fullInitiative.organization.name,
+          }
+        : null,
+    }
+  })
 
   // Just route to the appropriate next frame
   const nextAction = chain === "Base" ? "/choose-currency" : "/confirmation"
@@ -278,6 +282,7 @@ app.frame("/initiative/:id?", async (c) => {
             zIndex: 1,
             width: "100%",
             gap: "8px",
+            paddingTop: "50px",
           }}
         >
           <h2
@@ -435,6 +440,12 @@ app.frame("/confirmation", async (c) => {
   const organization = initiative?.organization
   const transaction = previousState?.transaction
   const { chain } = previousState
+
+  if (!initiative) {
+    return c.error({
+      message: "Initiative not found",
+    })
+  }
 
   // If coming from initiative frame (non-Base chain), handle amount
   if (!transaction) {
@@ -695,49 +706,56 @@ app.transaction("/send-ether", async (c) => {
   const {
     inputText = "",
     frameData,
-    buttonValue,
-    previousState: { chain, initiative },
+    previousState: { chain, initiative, transaction },
   } = c
 
-  console.log("SEND ETHER", c)
   if (!initiative) {
-    throw new Error("No initiative found")
+    return c.error({
+      message: "Initiative not found",
+    })
   }
 
   const { id } = getNetworkByChainName(chain)
   const chainId = `eip155:${id}`
   if (!chainIdIsEip155(chainId)) {
-    throw new Error("Invalid chain ID")
+    return c.error({
+      message: "Invalid chain selected",
+    })
   }
+
   let wallet = ""
   const initiativeWallets = await getWallets({
     initiativeId: initiative.id,
     chain,
   })
   if (initiativeWallets) {
-    wallet = initiativeWallets[0]?.address
+    wallet = initiativeWallets[0]?.address || ""
   }
-  if (!wallet) {
+  if (!wallet && initiative.organization) {
     const orgWallets = await getWallets({
-      orgId: initiative?.organization?.id,
+      orgId: initiative.organization.id,
       chain,
     })
     if (orgWallets) {
-      wallet = orgWallets[0]?.address
+      wallet = orgWallets[0]?.address || ""
     }
   }
   if (!wallet) {
-    throw new Error("No wallet address found")
+    return c.error({
+      message: "No wallet found for this initiative",
+    })
   }
-  console.log("AMT", buttonValue)
+
   DonorData.email = inputText
   recipient = frameData?.address || ""
   DonorData.address = recipient
 
+  console.log("SEND ETHER", transaction?.value)
+
   return c.send({
     chainId,
-    to: wallet.address as `0x${string}`,
-    value: parseEther(buttonValue || "0"),
+    to: wallet as `0x${string}`,
+    value: parseEther(transaction?.value || "0"),
   })
 })
 
@@ -770,30 +788,55 @@ app.transaction("/send-token", async (c) => {
   } = c
 
   if (!initiative) {
-    throw new Error("No initiative found")
+    return c.error({
+      message: "Initiative not found",
+    })
   }
 
   if (chain !== "Base") {
-    throw new Error("Token transfers only available on Base chain")
+    return c.error({
+      message: "Token transfers only available on Base chain",
+    })
   }
 
   const { id } = getNetworkByChainName(chain)
   const chainId = `eip155:${id}`
   if (!chainIdIsEip155(chainId)) {
-    throw new Error("Invalid chain ID")
+    return c.error({
+      message: "Invalid chain selected",
+    })
   }
 
   // Get recipient wallet
-  const wallets = await getWallets({ initiativeId: initiative.id, chain })
-  if (!wallets || !Array.isArray(wallets) || wallets.length === 0) {
-    throw new Error("No wallet address found")
+  let wallet = ""
+  const initiativeWallets = await getWallets({
+    initiativeId: initiative.id,
+    chain,
+  })
+  if (initiativeWallets) {
+    wallet = initiativeWallets[0]?.address || ""
   }
-  const wallet = wallets[0]
+  if (!wallet && initiative.organization) {
+    const orgWallets = await getWallets({
+      orgId: initiative.organization.id,
+      chain,
+    })
+    if (orgWallets) {
+      wallet = orgWallets[0]?.address || ""
+    }
+  }
+  if (!wallet) {
+    return c.error({
+      message: "No wallet found for this initiative",
+    })
+  }
 
   // Get token details from button value
   const tokenSymbol = buttonValue?.toLowerCase()
   if (!tokenSymbol || !["degen", "moxie"].includes(tokenSymbol)) {
-    throw new Error("Invalid token selected")
+    return c.error({
+      message: "Invalid token selected",
+    })
   }
 
   // Store transaction details
@@ -811,7 +854,7 @@ app.transaction("/send-token", async (c) => {
     to: tokenAddress,
     abi: erc20Abi,
     functionName: "transfer",
-    args: [wallet.address as `0x${string}`, parseEther(DonorData.coinValue)],
+    args: [wallet as `0x${string}`, parseEther(DonorData.coinValue)],
   })
 })
 
