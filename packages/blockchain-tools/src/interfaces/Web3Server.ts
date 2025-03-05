@@ -232,8 +232,7 @@ export default class Web3Server extends InterfaceBaseClass {
       //const tokenId = `${contractId}#${tokenNum}`
       const result = {
         success: true,
-        txId: Buffer.from(info?.transactionHash).toString("hex"),
-        //txId: info?.transactionHash,
+        txId: typeof info?.transactionHash === 'string' ? info.transactionHash : info?.transactionHash?.toString(),
         tokenId,
       }
       console.log("RESULT", result)
