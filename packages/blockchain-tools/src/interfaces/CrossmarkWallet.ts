@@ -38,6 +38,7 @@ export default class CrossmarkWallet extends XrplCommon {
       TransactionType: "Payment",
       Account: sender,
       Destination: address,
+      DestinationTag: memo,
       Amount: wei,
     } as Payment
     console.log("TX", transaction)
@@ -46,7 +47,7 @@ export default class CrossmarkWallet extends XrplCommon {
     console.log("RES", response)
     //console.log('TXID', response?.data?.resp?.hash)
     */
-    return { success: true }
+    return { success: false, error:'Not implemented' }
 
     //if (code === "tesSUCCESS") {
     //  console.log('Transaction succeeded')
