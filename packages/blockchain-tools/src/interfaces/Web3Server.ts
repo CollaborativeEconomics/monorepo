@@ -316,7 +316,7 @@ export default class Web3Server extends InterfaceBaseClass {
     if (info.status === 1n) {
       const result = {
         success: true,
-        txId: Buffer.from(info?.transactionHash).toString("hex"),
+        txId: typeof info?.transactionHash === 'string' ? info.transactionHash : info?.transactionHash?.toString(),
         tokenId: tokenNum,
       }
       console.log("RESULT", result)
