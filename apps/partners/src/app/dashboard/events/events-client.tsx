@@ -330,7 +330,7 @@ export default function Page({ organization, events }: PageProps) {
   }
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Start a Volunteer-to-Earn Event" />
       <p className={styles.intro}>
         Volunteer-to-Earn Events reward participants with tokens for their

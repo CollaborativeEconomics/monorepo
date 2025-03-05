@@ -28,7 +28,7 @@ export async function getOrganizationById(id:string) {
 export async function getOrganizations() {
   try {
     const result = await db.getOrganizations({}) // All orgs
-    //console.log('RESULT', result)
+    //console.log('ORGS', result)
     return result
   } catch (error) {
     console.log('ERROR', error)
