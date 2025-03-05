@@ -130,7 +130,7 @@ export default function EventClient({
           usdcAddress as `0x${string}`,
           NFTAddress as `0x${string}`,
           // parseEther(event.unitvalue?.toString() || '0'),
-          BigInt(0),
+          BigInt(1),
         ],
         chain: defaultChain,
         account: address,
