@@ -9,6 +9,10 @@ const appConfig: AppConfig = {
 // Override siteInfo
 appConfig.siteInfo = {
   ...appConfig.siteInfo,
+  logo: {
+    light: "/GiveCast.svg",
+    dark: "/GiveCastWhite.svg",
+  },
   title: "Give Cast",
   description:
     "Make tax-deductible donations with crypto in a farcaster frame.",

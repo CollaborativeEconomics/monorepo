@@ -2,24 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Remove or comment out all the custom CSS variables and styles below if you want to use Tailwind exclusively */
-/* Keep only the essential resets */
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+.parallax {
+  background-attachment: scroll;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 0 0 3.9;
+
+    --swiper-navigation-color: hsl(0, 0%, 3.9%);
+
+    --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(0, 0%, 3.9%);
+
+    --popover: hsl(0, 0%, 100%);
+    --popover-foreground: hsl(0, 0%, 3.9%);
+
+    --primary: hsl(226, 50%, 50%);
+    --primary-foreground: hsl(0, 0%, 100%);
+
+    --secondary: hsl(0, 0%, 96.1%);
+    --secondary-foreground: hsl(0, 0%, 9%);
+
+    --muted: hsl(0, 0%, 96.1%);
+    --muted-foreground: hsl(0, 0%, 45.1%);
+
+    --accent: hsl(214, 32%, 91%);
+    --accent-foreground: hsl(198, 90%, 51%);
+
+    --destructive: hsl(0, 84.2%, 60.2%);
+    --destructive-foreground: hsl(0, 0%, 98%);
+
+    --border: hsl(0, 0%, 89.8%);
+    --input: hsl(0, 0%, 89.8%);
+    --ring: hsl(0, 0%, 3.9%);
+
+    --radius: 2rem;
+  }
+
+  .dark {
+    --background: 82 103 132;
+    --foreground: 250 250 250;
+
+    --swiper-navigation-color: hsl(0, 0%, 98%);
+
+    --card: hsl(215, 25%, 27%);
+    --card-foreground: hsl(0, 0%, 98%);
+
+    --popover: hsl(225, 25%, 15%);
+    --popover-foreground: hsl(0, 0%, 98%);
+
+    --primary: hsl(0, 0%, 98%);
+    --primary-foreground: hsl(0, 0%, 9%);
+
+    --secondary: hsl(226, 44%, 8%);
+    --secondary-foreground: hsl(0, 0%, 98%);
+
+    --muted: hsl(0, 0%, 14.9%);
+    --muted-foreground: hsl(0, 0%, 63.9%);
+
+    --accent: hsl(209, 48%, 16%);
+    --accent-foreground: hsl(198, 90%, 51%);
+
+    --destructive: hsl(0, 62.8%, 30.6%);
+    --destructive-foreground: hsl(0, 0%, 98%);
+
+    --border: hsla(0, 0%, 15%, 0.33);
+    --input: hsl(215, 23%, 40%);
+    --ring: hsl(0, 0%, 83.1%);
+  }
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 @keyframes fadeInUp {

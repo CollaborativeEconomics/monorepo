@@ -13,6 +13,7 @@
   "dependencies": {
     "@cfce/app-config": "workspace:*",
     "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/components": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
     "@t3-oss/env-nextjs": "0.12.0",

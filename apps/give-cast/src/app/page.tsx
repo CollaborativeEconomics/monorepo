@@ -1,3 +1,4 @@
+import { Logo } from "@cfce/components/home"
 import { getFrameMetadata } from "frog/web"
 import type { Metadata } from "next"
 import Image from "next/image"
@@ -37,18 +38,19 @@ function getInitiativeUri(initiativeId: string, chain?: string) {
 
 export default async function Home() {
   // Fetch initiatives with organization data
-  const initiatives = await getInitiatives({})
+  let initiatives = await getInitiatives({})
+  initiatives = JSON.parse(JSON.stringify(initiatives))
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen">
       <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight">
-            GiveCast Deployment Interface
-          </h1>
-          <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
-            Share non-profit initiatives as Farcaster Frames
-          </p>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center">
+            <Logo />
+            <p className="ml-4 text-muted-foreground">
+              Share non-profit initiatives as Farcaster Frames
+            </p>
+          </div>
         </div>
 
         {/* Use the client-side filter component */}
