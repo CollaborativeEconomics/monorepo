@@ -28,6 +28,9 @@ jobs:
       - name: Setup pnpm config
         run: pnpm config set store-dir ~/.pnpm-store
           
+      - name: Apply patches
+        run: pnpm patch-commit .
+          
       - name: Install dependencies
         run: pnpm install
           
