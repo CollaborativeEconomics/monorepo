@@ -11,6 +11,7 @@ import type {
   InitiativeWithRelations,
   Prisma,
   User,
+  Wallet
 } from "@cfce/database"
 import {
   PAYMENT_STATUS,
@@ -74,6 +75,7 @@ function sleep(ms: number) {
 }
 
 export default function DonationForm({ initiative, rate }: DonationFormProps) {
+  //console.log("INITIATIVE", initiative)
   // TODO: get contract id from contracts table not initiative record
   const posthog = usePostHog()
   const contractId = initiative.contractcredit // needed for CC contract
@@ -90,8 +92,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   }, [coinRate, setChainState])
   //console.log('INIT STATE', chainState)
 
-  const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
-    chainState
+  const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState
   const [donationForm, setDonationForm] = useAtom(donationFormAtom)
   const { emailReceipt, name, email, amount } = donationForm
   const coinAmount = useAtomValue(amountCoinAtom)
@@ -99,12 +100,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   console.log("Coin amount", coinAmount, usdAmount)
   const chain = chainConfig[selectedChain]
   const network = chain.networks[appConfig.chainDefaults.network]
-
   const chainInterface = BlockchainClientInterfaces[selectedWallet]
-
-  const [buttonMessage, setButtonMessage] = useState(
-    "One wallet confirmation required",
-  )
+  const [buttonMessage, setButtonMessage] = useState("One wallet confirmation required")
   const [errorDialogState, setErrorDialogState] = useState(false)
   const { toast } = useToast()
 
@@ -143,14 +140,14 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const nameToSlug = (name: Chain): ChainSlugs =>
         getChainConfigurationByName(name).slug
       const orgWallets = organization?.wallets.map((w) => nameToSlug(w.chain))
-      const initiativeWallets = initiative?.wallets.map((w) =>
-        nameToSlug(w.chain),
-      )
+      const initiativeWallets = initiative?.wallets.map((w) => nameToSlug(w.chain))
       const symbol = selectedToken
       const rate = await getRate(symbol)
       setCoinRate(rate)
       console.log("COIN", symbol)
       console.log("RATE", rate)
+      console.log("ORGWALLETS", organization?.wallets)
+      console.log("INIWALLETS", initiative?.wallets)
       setChainState((draft) => {
         draft.enabledChains = [...orgWallets, ...initiativeWallets]
         //draft.exchangeRate = rate
@@ -161,7 +158,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   }, [initiative, organization, selectedChain]) // setChainState, chainState,
 
   //const destinationWalletAddress = 'raHkr5qJNYez8bQQDMVLwvaRvxMripVznT' // hardcoded for testing
-  const destinationWalletAddress = useMemo(() => {
+  const destinationWallet = useMemo(() => {
+    console.log("DESTINATIONWALLET")
     console.log("CHAIN", chain)
     const chainName = chain?.name
     console.log("NAME", chainName)
@@ -170,16 +168,18 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     )
     console.log("INITIATIVE WALLET", initiativeWallet)
     if (initiativeWallet) {
-      return initiativeWallet.address
+      return {address:initiativeWallet.address, memo:initiativeWallet.memo||''}
+      //return initiativeWallet.address
     }
 
     const organizationWallet = organization?.wallets.find(
       (w) => w.chain === chainName,
-    )?.address
+    )
 
     console.log("ORGANIZATION", organizationWallet)
     if (organizationWallet) {
-      return organizationWallet
+      return {address:organizationWallet.address, memo:organizationWallet.memo||''}
+      //return organizationWallet
     }
 
     // Use fallback address if both initiative and organization wallets are not found
@@ -187,9 +187,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     const fallbackAddress = appConfig.chainDefaults?.defaultAddress
     console.log("FALLBACK", fallbackAddress)
     if (fallbackAddress) {
-      return fallbackAddress
+      return {address:fallbackAddress, memo:''}
     }
-    return ""
+    return {address:'', memo:''}
   }, [organization, initiative, chain])
 
   const checkBalance = useCallback(async () => {
@@ -210,13 +210,13 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   }, [chainInterface, coinAmount])
 
   const sendPayment = useCallback(
-    async (address: string, amount: number) => {
+    async (address: string, amount: number, memo: string) => {
       //if (!chainInterface?.connect) {
       //  const error = new Error("No connect method on chain interface")
       //  throw error
       //}
       //await chainInterface?.connect(network.id)
-      console.log("SEND", address, amount)
+      console.log("SEND", address, amount, memo)
       if (!chainInterface?.sendPayment) {
         const error = new Error("No sendPayment method on chain interface")
         toast({
@@ -230,8 +230,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const data = {
         address,
         amount,
+        memo
         //amount: chainInterface.toBaseUnit(amount),
-        memo: appConfig.chains[selectedChain]?.destinationTag || "",
+        //memo: appConfig.chains[selectedChain]?.destinationTag || "",
       }
       console.log("SENDING PAYMENT", data)
       const result = await chainInterface.sendPayment(data)
@@ -251,7 +252,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   )
 
   const sendGaslessPayment = useCallback(
-    async (address: string, amount: number) => {
+    async (address: string, amount: number, memo: string) => {
       //if (!chainInterface?.connect) {
       //  const error = new Error("No connect method on chain interface")
       //  throw error
@@ -273,7 +274,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const result = await chainInterface.sendGaslessPayment({
         address,
         amount,
-        memo: appConfig.chains[selectedChain]?.destinationTag,
+        memo
+        //memo: appConfig.chains[selectedChain]?.destinationTag,
       })
       console.log("GAS PAYMENT RESULT", result)
       return result
@@ -300,7 +302,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
           transaction: {
             date: new Date().toISOString(),
             donorWalletAddress: paymentResult.walletAddress ?? "",
-            destinationWalletAddress,
+            destinationWalletAddress: destinationWallet.address,
+            memo: destinationWallet.memo,
             amount: coinAmount,
             usdValue: usdAmount,
             rate,
@@ -355,7 +358,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       email,
       organization.id,
       initiative.id,
-      destinationWalletAddress,
+      destinationWallet,
       amount,
       selectedChain,
       selectedToken,
@@ -403,20 +406,23 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       if (appConfig.siteInfo.options.enableGaslessTransactions) {
         console.log(
           "SENDING GASLESS PAYMENT TO",
-          destinationWalletAddress,
+          destinationWallet.address,
           coinAmount,
+          destinationWallet.memo
         )
         paymentResult = await sendGaslessPayment(
-          destinationWalletAddress,
+          destinationWallet.address,
           coinAmount,
+          destinationWallet.memo
         )
       } else {
         console.log(
           "SENDING GAS PAYMENT TO",
-          destinationWalletAddress,
+          destinationWallet.address,
           coinAmount,
+          destinationWallet.memo
         )
-        paymentResult = await sendPayment(destinationWalletAddress, coinAmount)
+        paymentResult = await sendPayment(destinationWallet.address, coinAmount, destinationWallet.memo)
       }
 
       if (!paymentResult.success) {
@@ -480,7 +486,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     coinAmount,
     amount,
     email,
-    destinationWalletAddress,
+    destinationWallet,
     sendPayment,
     checkBalance,
     handleMinting,
@@ -599,6 +605,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             Wallet
           </Label>
           <WalletSelect />
+          {destinationWallet.memo && 
+            <p className="text-xs">This chain requires a memo field that will be included in the transaction {destinationWallet.memo}</p>
+          }
         </div>
         <Separator />
         <div className="px-6">
@@ -694,10 +703,11 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
                   setButtonMessage("Approving payment...")
                   console.log(
                     "SENDING PAYMENT TO",
-                    destinationWalletAddress,
+                    destinationWallet.address,
                     coinAmount,
+                    destinationWallet.memo
                   )
-                  sendPayment(destinationWalletAddress, coinAmount)
+                  sendPayment(destinationWallet.address, coinAmount, destinationWallet.memo)
                     .then((gasResult) => handleMinting(gasResult))
                     .catch(handleError)
                     .finally(() => setLoading(false))

@@ -15,6 +15,7 @@ export default class XrplClient extends XrplCommon {
       TransactionType: "Payment",
       Account: sender,
       Destination: address,
+      DestinationTag: memo ? Number.parseInt(memo) : undefined,
       Amount: wei,
     } as Payment
     const url = this.network.rpcUrls.default

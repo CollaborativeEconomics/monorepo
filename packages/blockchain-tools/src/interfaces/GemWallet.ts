@@ -45,8 +45,8 @@ export default class GemWallet extends XrplCommon {
       const payload = {
         amount: wei,
         destination: address,
+        destinationTag: memo ? Number.parseInt(memo) : undefined,
         //memos: [],
-        //destinationTag: 12,
         //fee: "199",
         //flags: {
         //  tfNoDirectRipple: false,

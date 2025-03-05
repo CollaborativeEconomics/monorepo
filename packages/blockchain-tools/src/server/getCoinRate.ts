@@ -45,7 +45,7 @@ export default async function getCoinRate({
       },
     )
     const json = await response.json()
-    console.log("RESPONSE", json)
+    //console.log("RESPONSE", json)
 
     const rate = json?.data?.price
     if (!rate || typeof rate !== "number") {

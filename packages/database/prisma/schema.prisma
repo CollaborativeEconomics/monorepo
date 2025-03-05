@@ -443,9 +443,10 @@ model Wallet {
   id             String       @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
   organizationId String       @db.Uuid
   initiativeId   String?      @db.Uuid
-  address        String       @db.VarChar(255)
   chain          Chain
   network        String?      @db.VarChar(10)
+  address        String       @db.VarChar(255)
+  memo           String?      @db.VarChar(100)
   initiatives    Initiative?  @relation(fields: [initiativeId], references: [id])
   organizations  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
