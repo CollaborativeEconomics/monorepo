@@ -1,5 +1,6 @@
 "use client"
 
+import { revalidatePath } from 'next/cache'
 import appConfig, { chainConfig } from "@cfce/app-config"
 import { abiVolunteersFactory as FactoryAbi } from "@cfce/blockchain-tools"
 import type { Contract, Event } from "@cfce/database"
@@ -10,7 +11,6 @@ import { useAccount, useWriteContract } from "wagmi"
 import * as wagmiChains from "wagmi/chains"
 import { newContract } from "~/actions/database"
 import ButtonBlue from "~/components/buttonblue"
-import Dashboard from "~/components/dashboard"
 import LinkButton from "~/components/linkbutton"
 import Sidebar from "~/components/sidebar"
 import Title from "~/components/title"
@@ -50,14 +50,17 @@ export default function EventClient({
   )
 
   // Constants
-  // TODO: move to app config
-  const arbitrum =
-    chainConfig.arbitrum.networks[appConfig.chainDefaults.network]
-  // const FactoryAddress = "0xD4E47912a12f506843F522Ea58eA31Fd313eB2Ee"
+  const arbitrum = chainConfig.arbitrum.networks[appConfig.chainDefaults.network]
   const FactoryAddress = arbitrum?.contracts?.VolunteersFactory
-  const usdcAddress = arbitrum.tokens.find((t) => t.symbol === "USDC")?.contract
+  const payToken = arbitrum.tokens.find((t) => t.symbol === "USDC")
+  const usdcAddress = payToken?.contract || ''
+  const tokenDecimals = payToken?.decimals || 0
   let NFTBlockNumber: number
   let distributorBlockNumber: number
+
+  if (!FactoryAddress || !usdcAddress) {
+    throw new Error("Factory or USDC address not found")
+  }
 
   async function deployNFT() {
     try {
@@ -69,7 +72,7 @@ export default function EventClient({
       // ConnectorNotConnected error when Metamask is not active
       // Enable Metamask first then retry
       const hash = await writeContractAsync({
-        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "deployVolunteerNFT",
         args: [uri as `0x${string}`, address as `0x${string}`],
@@ -86,7 +89,7 @@ export default function EventClient({
       NFTBlockNumber = Number(nftReceipt.blockNumber)
 
       const NFTAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "getDeployedVolunteerNFT",
         args: [address as `0x${string}`],
@@ -107,6 +110,9 @@ export default function EventClient({
         throw new Error("USDC address not found")
       }
 
+      //const baseFee = parseEther(event.unitvalue?.toString() || "0.0001"),
+      const baseFee = BigInt((event.unitvalue||1) * (10**tokenDecimals)) // usdc uses only 6 decimals
+
       const args = {
         address: FactoryAddress,
         abi: FactoryAbi,
@@ -114,23 +120,22 @@ export default function EventClient({
         args: [
           usdcAddress as `0x${string}`,
           NFTAddress as `0x${string}`,
-          parseEther(event.unitvalue?.toString() || "0"),
+          baseFee
         ],
         chain: defaultChain,
         account: address,
       }
 
-      console.log("ARGS", args)
+      console.log("DeployTokenDistributor ARGS", args)
 
       const hash = await writeContractAsync({
-        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "deployTokenDistributor",
         args: [
           usdcAddress as `0x${string}`,
           NFTAddress as `0x${string}`,
-          // parseEther(event.unitvalue?.toString() || '0'),
-          BigInt(1),
+          baseFee
         ],
         chain: defaultChain,
         account: address,
@@ -145,7 +150,7 @@ export default function EventClient({
       distributorBlockNumber = Number(distributorReceipt.blockNumber)
 
       const distributorAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress as `0x${string}`, // other chains don't use 0x
+        address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
         functionName: "getDeployedTokenDistributor",
         args: [address as `0x${string}`],
@@ -195,6 +200,7 @@ export default function EventClient({
 
       setReady(true)
       setEventStarted(true)
+      revalidatePath('.')
     } catch (error) {
       console.error("Deployment process failed:", error)
       setMessage(
@@ -206,46 +212,38 @@ export default function EventClient({
   }
 
   return (
-    <Dashboard>
-      <div className={styles.content}>
-        <Title text="Volunteer To Earn Event" />
-        <div className={styles.mainBox}>
-          {event.created && (
-            <DateDisplay timestamp={event.created} className="p-4" />
-          )}
-          <div className="p-4 mt-2">
-            <Gallery images={media} />
-          </div>
-          <div className="flex flex-col pb-8 pt-3 gap-3 px-4">
-            <h1 className="mt-4 text-4xl">{event.name}</h1>
-            <p>{event.description}</p>
-          </div>
-
-          {!eventStarted && (
-            <div className="w-full flex flex-col justify-center align-center items-center mb-8">
-              <ButtonBlue text="START EVENT" onClick={deploy} />
-              <p>{message}</p>
-            </div>
-          )}
-
-          {eventStarted && (
-            <div className="w-full flex flex-row justify-between mb-8">
-              <LinkButton
-                href={`/dashboard/events/register/${id}`}
-                text="REGISTER"
-              />
-              <LinkButton
-                href={`/dashboard/events/report/${id}`}
-                text="REPORT"
-              />
-              <LinkButton
-                href={`/dashboard/events/reward/${id}`}
-                text="REWARD"
-              />
-            </div>
-          )}
+    <div>
+      <Title text="Volunteer To Earn Event" />
+      <div className={styles.mainBox}>
+        {event.created && (
+          <DateDisplay timestamp={event.created} className="p-4" />
+        )}
+        <div className="p-4 mt-2">
+          <Gallery images={media} />
         </div>
+        <div className="flex flex-col pb-8 pt-3 gap-3 px-4">
+          <h1 className="mt-4 text-4xl">{event.name}</h1>
+          <p>{event.description}</p>
+        </div>
+
+        {!eventStarted && (
+          <div className="w-full flex flex-col justify-center align-center items-center mb-8">
+            <ButtonBlue text="START EVENT" onClick={deploy} />
+            <p>{message}</p>
+          </div>
+        )}
+
+        {eventStarted && (
+          <div className="w-full flex flex-row justify-between mb-8">
+            <LinkButton
+              href={`/dashboard/events/register/${id}`}
+              text="REGISTER"
+            />
+            <LinkButton href={`/dashboard/events/report/${id}`} text="REPORT" />
+            <LinkButton href={`/dashboard/events/reward/${id}`} text="REWARD" />
+          </div>
+        )}
       </div>
-    </Dashboard>
+    </div>
   )
 }

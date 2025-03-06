@@ -15,7 +15,15 @@ interface OrganizationQuery extends ListQuery {
 
 const includePayload: Prisma.OrganizationInclude = {
   category: true,
-  wallets: true,
+  wallets: {
+    include: {
+      initiatives: {
+        select: {
+          title: true
+        }
+      }
+    }
+  },
   initiative: {
     orderBy: { created: "desc" },
     include: { credits: true },
@@ -145,11 +153,16 @@ export async function getOrganizations(
 
 export async function getOrganizationById(
   id: string,
+  includeAll=true
 ): Promise<OrganizationData | null> {
-  const organization = await prismaClient.organization.findUnique({
+  const filter = {
     where: { id },
-    include: includePayload,
-  })
+    include: {} as Prisma.OrganizationInclude
+  }
+  if(includeAll){
+    filter.include = includePayload
+  }
+  const organization = await prismaClient.organization.findUnique(filter)
   return organization
 }
 

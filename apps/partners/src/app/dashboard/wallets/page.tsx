@@ -9,10 +9,13 @@ import WalletForm from "./WalletForm"
 
 async function getWalletData(orgId: string) {
   const organization = await getOrganizationById(orgId)
-  if (!organization) throw new Error("Organization not found")
+  if (!organization) { throw new Error("Organization not found") }
+  //console.log('ORG', organization)
   const data = organization.wallets || []
   const wallets = data.sort((a, b) => a.chain.localeCompare(b.chain)) // sort by chain
-  return { organization, wallets }
+  const list = organization.initiative || []
+  const initiatives = list.map(it=>{ return {id:it.id, name:it.title ?? 'Untitled Initiative'} })
+  return { organization, initiatives, wallets }
 }
 
 export default async function WalletsPage() {
@@ -20,7 +23,7 @@ export default async function WalletsPage() {
   const orgId = session?.orgId as string
   if (!orgId) throw new Error("Not authorized")
 
-  const { organization, wallets } = await getWalletData(orgId)
+  const { organization, initiatives, wallets } = await getWalletData(orgId)
   const chainsList = (Object.keys(chainConfig) as ChainSlugs[]).map(
     (chain) => ({
       id: chainConfig[chain].name,
@@ -29,14 +32,14 @@ export default async function WalletsPage() {
   )
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Wallets" />
       <p className={styles.intro}>
         Enter crypto wallets you&apos;d like to accept donations through.
         Wallets connected to your account will be verified for approval
       </p>
       <div className={styles.mainBox}>
-        <WalletForm orgId={orgId} chains={chainsList} />
+        <WalletForm orgId={orgId} chains={chainsList} initiatives={initiatives} />
       </div>
       {wallets.length > 0 ? (
         wallets.map((item) => (

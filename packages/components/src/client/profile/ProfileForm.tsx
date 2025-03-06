@@ -11,7 +11,7 @@ type Props = {
 };
 
 export function ProfileForm({ user }: Props) {
-  const nopic = '/media/nopic.png';
+  const nopic = '/nopic.png';
 
   async function saveImage(file: File) {
     const name = uuidv7();
