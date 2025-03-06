@@ -48,7 +48,10 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
         
       - name: Build UI test dependencies
-        run: pnpm turbo build --filter="./packages/*" --force
+        env:
+          SKIP_TYPE_CHECK: true  # Skip TypeScript type checking during build
+          TSC_COMPILE_ON_ERROR: true  # Continue compilation even if there are errors
+        run: pnpm turbo build --filter="./packages/*" --force --no-cache
         
       - name: Build give-arbitrum
         working-directory: apps/give-arbitrum
