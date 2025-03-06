@@ -236,7 +236,7 @@ const chainConfiguration = {
       },
       testnet: {
         id: 84532,
-        name: "Base",
+        name: "Base Sepolia",
         slug: "base",
         network: "testnet",
         symbol: "BASE",

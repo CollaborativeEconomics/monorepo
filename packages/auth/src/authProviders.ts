@@ -18,7 +18,13 @@ interface Credentials {
   currency: string
 }
 
-async function getUserByCredentials(
+/**
+ * Get or create a user by credentials
+ * @param credentials - The credentials of the user
+ * @param createTBA - Whether to create a TBA for the user
+ * @returns The user
+ */
+export async function getUserByCredentials(
   { id: userId, address, chain, chainId, network, currency }: Credentials,
   createTBA = false,
 ) {

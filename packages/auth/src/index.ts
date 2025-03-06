@@ -6,6 +6,7 @@ import {
   googleLogin,
   signOutAction,
 } from "./actions"
+import { getUserByCredentials } from "./authProviders"
 import { AuthButton } from "./components"
 import { LogoutButton } from "./components"
 import { auth, authOptions, handlers, signIn, signOut } from "./nextAuth"
@@ -24,4 +25,5 @@ export {
   signOutAction,
   googleLogin,
   githubLogin,
+  getUserByCredentials,
 }

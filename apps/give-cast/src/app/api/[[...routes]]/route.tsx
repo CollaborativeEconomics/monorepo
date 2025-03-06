@@ -1,10 +1,16 @@
 /** @jsxImportSource frog/jsx */
 
 import appConfig from "@cfce/app-config"
+import { getUserByCredentials } from "@cfce/auth"
 import { getNetworkByChainName } from "@cfce/blockchain-tools"
 import { getCoinRate } from "@cfce/blockchain-tools/server"
-import type { Chain, Prisma } from "@cfce/database"
-import { getInitiativeById, getInitiatives, getWallets } from "@cfce/database"
+import type { Chain } from "@cfce/database"
+import {
+  getInitiativeById,
+  getInitiatives,
+  getWallets,
+  newDonation,
+} from "@cfce/database"
 import {
   type ReceiptEmailBody,
   ipfsCIDToUrl,
@@ -19,16 +25,22 @@ import {
   parseEther,
 } from "frog"
 import { devtools } from "frog/dev"
-import { type NeynarVariables, neynar } from "frog/middlewares"
+// import { type NeynarVariables, neynar } from "frog/middlewares"
 import { handle } from "frog/next"
 import { serveStatic } from "frog/serve-static"
 import { createSystem } from "frog/ui"
+import { v7 as uuidv7 } from "uuid"
 import { http, createPublicClient } from "viem"
-import { arbitrumSepolia } from "viem/chains"
-import { ConfirmIntent, checkUser, mintNft, newDonation } from "~/utils"
+import { arbitrum, arbitrumSepolia, base, baseSepolia } from "viem/chains"
 
-const client = createPublicClient({
-  chain: arbitrumSepolia,
+const arbitrumClient = createPublicClient({
+  chain:
+    appConfig.chainDefaults.network === "mainnet" ? arbitrum : arbitrumSepolia,
+  transport: http(),
+})
+
+const baseClient = createPublicClient({
+  chain: appConfig.chainDefaults.network === "mainnet" ? base : baseSepolia,
   transport: http(),
 })
 
@@ -51,6 +63,7 @@ const app = new Frog<{
       amount: string // USD amount
       value: string // Crypto value
       symbol: "ETH" | "DEGEN" | "MOXIE" | "ARB"
+      rate: number
     }
   }
 }>({
@@ -81,6 +94,7 @@ const app = new Frog<{
       amount: "0",
       value: "0",
       symbol: "ETH",
+      rate: 0,
     },
   },
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
@@ -489,8 +503,8 @@ app.frame("/confirmation", async (c) => {
 
   // Update symbol if coming from choose-currency
   const symbol = buttonValue
-    ? (buttonValue as "ETH" | "DEGEN" | "MOXIE")
-    : (currentTransaction.symbol as "ETH" | "DEGEN" | "MOXIE")
+    ? (buttonValue as "ETH" | "DEGEN" | "MOXIE" | "ARB")
+    : (currentTransaction.symbol as "ETH" | "DEGEN" | "MOXIE" | "ARB")
 
   // Calculate value based on selected currency
   const rate = await getCoinRate({ symbol })
@@ -501,11 +515,12 @@ app.frame("/confirmation", async (c) => {
     if (prevState.transaction) {
       prevState.transaction.symbol = symbol
       prevState.transaction.value = value.toFixed(18)
+      prevState.transaction.rate = rate
     }
   })
 
   // Update DonorData
-  DonorData.coinSymbol = symbol
+  DonorData.coinSymbol = symbol as "ETH" | "DEGEN" | "MOXIE" | "ARB"
   DonorData.organizationName = organization?.name || "Unknown"
   DonorData.usdValue = currentTransaction.amount
   DonorData.coinValue = value.toFixed(18)
@@ -605,12 +620,11 @@ app.frame("/confirmation", async (c) => {
   const targetEndpoint = symbol === "ETH" ? "/send-ether" : "/send-token"
 
   return c.res({
-    // action: targetEndpoint,
     image: pageContent,
     intents: [
       <Button.Transaction
         target={targetEndpoint}
-        action={symbol.toLowerCase()}
+        action="/mintquery"
         key="confirm"
       >
         Confirm
@@ -626,20 +640,21 @@ app.frame("/mintquery", async (c) => {
   const initiative = previousState?.initiative
   console.log("TX", transactionId)
 
+  const client = previousState.chain === "Base" ? baseClient : arbitrumClient
+
   const confirmed = {
-    action: "/mint-nft",
     image: (
       <div style={background}>
         <p style={{ fontSize: 60 }}>Thank you for your donation</p>
         <p style={{ fontSize: 40 }}>
-          Mint an NFT receipt representing your donation?
+          Minting an NFT receipt representing your donation...
         </p>
       </div>
     ),
     intents: [
-      <Button value="yes" key="yes">
-        Mint NFT
-      </Button>,
+      <Button.Link href="/addnft" key="addnft">
+        Add NFT to MetaMask
+      </Button.Link>,
       <Button.Reset key="done">Done</Button.Reset>,
     ],
   }
@@ -659,58 +674,105 @@ app.frame("/mintquery", async (c) => {
     ],
   }
 
-  if (transactionId) {
-    // Wait for confirmation
-    const secs = 1000
-    const wait = [2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6] // 60 secs / 15 loops
-    let count = 0
-    let info = null
-    while (count < wait.length) {
-      console.log("Retry", count)
-      await new Promise((res) => setTimeout(res, wait[count] * secs))
-      count++
-      try {
-        info = await client.getTransactionReceipt({ hash: transactionId })
-      } catch (ex) {
-        console.error(ex)
-        continue
-      }
-      console.log("INFO", info)
-      if (info?.status === "success") {
-        console.log("TX SUCCESS")
-        // TODO: create user profile from address
-        const user = await checkUser(DonorData?.address || "")
-        console.log("USER", user.id)
-        if (user?.id && initiative?.organization) {
-          const DonationData = {
-            created: new Date(),
-            userId: user.id,
-            organizationId: initiative.organization.id,
-            initiativeId: initiative.id,
-            usdvalue: DonorData.usdValue,
-            amount: DonorData.coinValue,
-            asset: DonorData.coinSymbol,
-            wallet: DonorData.address,
-            chain: process.env.NEXT_PUBLIC_BLOCKCHAIN,
-            network: "testnet",
-            paytype: "crypto",
-          }
-          const DonationResponse = await newDonation(DonationData)
-          console.log("Donation saved", DonationResponse)
-        }
-        if (DonorData.email !== "") {
-          console.log(DonorData.email)
-          const receiptResp = await sendEmailReceipt(DonorData.email, DonorData)
-          console.log("Receipt sent", receiptResp)
-        }
-        return c.res(confirmed)
-      }
-      console.log("TX FAILED")
-      return c.res(rejected)
-    }
-    console.log("TX TIMED OUT")
+  if (!transactionId) {
     return c.res(rejected)
   }
+
+  // Wait for confirmation
+  const secs = 1000
+  const wait = [2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6] // 60 secs / 15 loops
+  let count = 0
+  let info = null
+  while (count < wait.length) {
+    console.log("Retry", count)
+    await new Promise((res) => setTimeout(res, wait[count] * secs))
+    count++
+    try {
+      info = await client.getTransactionReceipt({ hash: transactionId })
+    } catch (ex) {
+      console.error(ex)
+      continue
+    }
+    const network = getNetworkByChainName(previousState.chain)
+    console.log("INFO", info)
+    if (info?.status === "success") {
+      console.log("TX SUCCESS")
+      // TODO: create user profile from address
+      // const user = await checkUser(DonorData?.address || "")
+      const user = await getUserByCredentials({
+        address: DonorData?.address || "",
+        chain: previousState.chain,
+        network: appConfig.chainDefaults.network,
+        currency: "USD",
+        chainId: `${network.id}`,
+        id: uuidv7(),
+      })
+      console.log("USER", user?.id)
+      if (user?.id && initiative?.organization) {
+        const DonationData = {
+          created: new Date(),
+          userId: user.id,
+          organization: {
+            connect: {
+              id: initiative.organization.id,
+            },
+          },
+          initiative: {
+            connect: {
+              id: initiative.id,
+            },
+          },
+          usdvalue: DonorData.usdValue,
+          amount: DonorData.coinValue,
+          asset: DonorData.coinSymbol,
+          wallet: DonorData.address,
+          chain: previousState.chain,
+          network: "testnet",
+          paytype: "crypto",
+        }
+        const DonationResponse = await newDonation(DonationData)
+        console.log("Donation saved", DonationResponse)
+        const nftResponse = await mintAndSaveReceiptNFT({
+          transaction: {
+            txId: transactionId,
+            chain: network.slug,
+            token: DonorData.coinSymbol as "ETH" | "DEGEN" | "MOXIE" | "ARB",
+            donorWalletAddress: DonorData.address,
+            destinationWalletAddress: DonorData.address,
+            amount: Number(DonorData.coinValue),
+            usdValue: Number(DonorData.usdValue),
+            rate: previousState.transaction.rate,
+            date: new Date().toISOString(),
+          },
+          initiativeId: initiative.id,
+          organizationId: initiative.organization.id,
+          donorName: user.name,
+          email: DonorData.email,
+        })
+        // Update the confirmed response with the NFT ID
+        if (nftResponse?.success && "tokenId" in nftResponse) {
+          confirmed.intents = [
+            <Button.Link
+              href={`/addnft?tokenId=${nftResponse.tokenId}&chain=${previousState.chain}`}
+              key="addnft"
+            >
+              Add NFT to MetaMask
+            </Button.Link>,
+            <Button.Reset key="done">Done</Button.Reset>,
+          ]
+        }
+      }
+      if (DonorData.email !== "") {
+        console.log(DonorData.email)
+        const receiptResp = await sendEmailReceipt(DonorData.email, DonorData)
+        console.log("Receipt sent", receiptResp)
+      }
+      return c.res(confirmed)
+    }
+    console.log("TX FAILED")
+    return c.res(rejected)
+  }
+  console.log("TX TIMED OUT")
   return c.res(rejected)
 })
 
@@ -961,31 +1023,42 @@ app.frame('/watchresult', async (c) => {
   }
   return c.res(frameSuccess)
 });
+*/
 
-
-app.transaction('/addnft', (c) => {
-  console.log('WATCH...')
-  const address = '0xeea9557589cfff5dd3d849da94201fa8cb782c12'
-  const image = 'https://give-cast.vercel.app/givecast.jpg'
-  const symbol = 'GIVE'
+app.transaction("/add-nft", (c) => {
+  const {
+    previousState: { chain },
+  } = c
+  const network = getNetworkByChainName(chain)
+  const address = network.contracts?.ReceiptNFT
+  const image = "https://give-cast.vercel.app/givecast.jpg"
+  const symbol = "GIVE"
   const decimals = 0
   const tokenId = 1
+  const chainId = `eip155:${network.id}`
+  if (!chainIdIsEip155(chainId)) {
+    return c.error({
+      message: "Invalid chain selected",
+    })
+  }
+  console.log("WATCH...", chainId, address)
   return c.res({
-    chainId: 'eip155:421614',
-    method: 'wallet_watchAsset',
+    chainId,
+    // @ts-ignore this is a valid method
+    method: "wallet_watchAsset",
     params: {
-      type: 'ERC721',
+      // @ts-ignore this is a valid parameter
+      type: "ERC721",
       options: {
         address,
+        decimals,
         image,
         symbol,
-        decimals,
-        tokenId
-      }
-    }
+        tokenId,
+      },
+    },
   })
 })
-*/
 
 devtools(app, { serveStatic })
 
