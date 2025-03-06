@@ -32,7 +32,7 @@ jobs:
         run: pnpm install
           
       - name: Build packages
-        run: pnpm turbo build --filter="./packages/*"
+        run: turbo build --filter="./packages/*" --force
         
       - name: Install Playwright browsers
         working-directory: packages/ui-tests
