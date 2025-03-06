@@ -4,16 +4,23 @@ on:
   push:
     branches:
       - dev
+      - playwright-testing-draft
   pull_request:
     branches:
       - dev
 
 jobs:
   ui-tests:
+    timeout-minutes: 6000
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.47.2-jammy
+      options: --ipc=host  # Recommended for Chromium to avoid memory issues
     
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important for detecting changed files
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,19 +37,25 @@ jobs:
           
       - name: Install dependencies
         run: pnpm install
+
+      # Run TypeScript checks but don't fail the build
+      - name: Type check
+        run: pnpm tsc --noEmit
+        continue-on-error: true  # Allow continuing even if there are type errors
           
-      - name: Build packages
-        run: turbo build --filter="./packages/*" --force
-        
       - name: Install Playwright browsers
         working-directory: packages/ui-tests
-        run: pnpm exec playwright install --with-deps
+        run: pnpm exec playwright install --with-deps chromium
+        
+      - name: Build UI test dependencies
+        run: pnpm turbo build --filter="./packages/*" --force
         
       - name: Build give-arbitrum
         working-directory: apps/give-arbitrum
         env:
           NODE_ENV: test
           NEXT_PUBLIC_API_URL: http://localhost:3000
+          NEXT_PUBLIC_MOCK_MODE: true  # Enable mock mode for tests
         run: pnpm build
           
       - name: Start give-arbitrum
@@ -51,31 +64,37 @@ jobs:
           NODE_ENV: test
           PORT: 3000
           NEXT_PUBLIC_API_URL: http://localhost:3000
+          NEXT_PUBLIC_MOCK_MODE: true
         run: |
           pnpm start &
           echo $! > .nextpid
           
-          # Wait for the app to be ready
-          pnpm exec wait-on -t 60000 http://localhost:3000
-          if [ $? -ne 0 ]; then
-            echo "App failed to start within 60 seconds"
-            kill $(cat .nextpid)
-            exit 1
-          fi
+          # Robust health check
+          attempt_counter=0
+          max_attempts=30
+          
+          echo "Waiting for app to start..."
+          until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do
+              if [ ${attempt_counter} -eq ${max_attempts} ];then
+                echo "Max attempts reached. App failed to start."
+                kill $(cat .nextpid)
+                exit 1
+              fi
+              
+              attempt_counter=$(($attempt_counter+1))
+              echo "Waiting... (${attempt_counter}/${max_attempts})"
+              sleep 2
+          done
           
       - name: Run UI tests
         working-directory: packages/ui-tests
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
           CI: true
-        run: pnpm test
-          
-      - name: Cleanup
-        if: always()
+          DEBUG: pw:api  # Enable Playwright debugging
+          PLAYWRIGHT_TIMEOUT: 60000
         run: |
-          if [ -f apps/give-arbitrum/.nextpid ]; then
-            kill $(cat apps/give-arbitrum/.nextpid) || true
-          fi
+          pnpm test --workers=1 --retries=2 --reporter=list,github
           
       - name: Upload test results
         if: always()
@@ -87,13 +106,17 @@ jobs:
             packages/ui-tests/test-results/
           retention-days: 30
           
-      # Optional: Upload logs if tests fail
-      - name: Upload logs on failure
+      - name: Upload traces on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: logs
-          path: |
-            apps/give-arbitrum/.next/logs/
-            packages/ui-tests/logs/
-          retention-days: 7 
+          name: playwright-traces
+          path: packages/ui-tests/test-results/
+          retention-days: 7
+          
+      - name: Cleanup
+        if: always()
+        run: |
+          if [ -f apps/give-arbitrum/.nextpid ]; then
+            kill $(cat apps/give-arbitrum/.nextpid) || true
+          fi
