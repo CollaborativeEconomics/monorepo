@@ -32,13 +32,14 @@ export default class CrossmarkWallet extends XrplCommon {
     console.log("PAY", address, amount, memo)
     /* TODO: FIX
     const sender = this.connectedWallet
+    const memoTag = memo ? (Number.isNaN(Number.parseInt(memo)) ? undefined : Number.parseInt(memo)) : undefined
     const wei = Math.floor(amount * 1000000).toString()  // <<<<<<< HERE
     //const wei = String(this.toBaseUnit(amount))
     const transaction = {
       TransactionType: "Payment",
       Account: sender,
       Destination: address,
-      DestinationTag: memo,
+      DestinationTag: memoTag,
       Amount: wei,
     } as Payment
     console.log("TX", transaction)

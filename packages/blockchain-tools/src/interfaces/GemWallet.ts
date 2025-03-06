@@ -41,11 +41,12 @@ export default class GemWallet extends XrplCommon {
       const wei = Math.floor(amount * 1000000).toString()
       //const wei = String(this.toBaseUnit(amount))
       console.log("SENDER", sender)
+      const memoTag = memo ? (Number.isNaN(Number.parseInt(memo)) ? undefined : Number.parseInt(memo)) : undefined
 
       const payload = {
         amount: wei,
         destination: address,
-        destinationTag: memo ? Number.parseInt(memo) : undefined,
+        destinationTag: memoTag,
         //memos: [],
         //fee: "199",
         //flags: {

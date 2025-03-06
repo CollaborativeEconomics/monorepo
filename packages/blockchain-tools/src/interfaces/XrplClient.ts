@@ -11,11 +11,12 @@ export default class XrplClient extends XrplCommon {
     const sender = "0x0" // TODO: get from wallet
     //const wei = Math.floor(amount * 1000000).toString()
     const wei = String(this.toBaseUnit(amount))
+    const memoTag = memo ? (Number.isNaN(Number.parseInt(memo)) ? undefined : Number.parseInt(memo)) : undefined
     const transaction = {
       TransactionType: "Payment",
       Account: sender,
       Destination: address,
-      DestinationTag: memo ? Number.parseInt(memo) : undefined,
+      DestinationTag: memoTag,
       Amount: wei,
     } as Payment
     const url = this.network.rpcUrls.default

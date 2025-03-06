@@ -76,6 +76,7 @@ export default class XummClient extends XrplCommon {
     walletAddress?: string
   }> {
     console.log("XRP Sending payment...", address, amount, memo)
+    const memoTag = memo ? (Number.isNaN(Number.parseInt(memo)) ? undefined : Number.parseInt(memo)) : undefined
     const wallet = this.getWallet()
     console.log('WALLET', wallet)
     try {
@@ -84,8 +85,8 @@ export default class XummClient extends XrplCommon {
         Destination: address,
         Amount: String(this.toBaseUnit(amount)), // one million drops, 1 XRP
       }
-      if (memo) {
-        request.DestinationTag = memo
+      if (memoTag) {
+        request.DestinationTag = memoTag
       }
       console.log('REQUEST', request)
       //this.sendPayload(request, callback)

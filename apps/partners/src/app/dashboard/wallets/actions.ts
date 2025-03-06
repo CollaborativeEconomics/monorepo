@@ -6,7 +6,7 @@ type WalletData = {
   chain: Chain;
   network: string;
   address: string;
-  memo: string;
+  memo?: string;
   initiativeId: string;
 };
 

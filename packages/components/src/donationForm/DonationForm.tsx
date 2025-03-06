@@ -74,13 +74,6 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-function getWalletByChain(chain:string, wallets:Wallet[]){
-  return {
-    address:'G123',
-    memo:'123'
-  }
-}
-
 export default function DonationForm({ initiative, rate }: DonationFormProps) {
   //console.log("INITIATIVE", initiative)
   // TODO: get contract id from contracts table not initiative record
@@ -91,11 +84,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const [loading, setLoading] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const [chainState, setChainState] = useAtom(chainAtom)
-  const [needsMemo, setNeedsMemo] = useState(false)
-  setChainState((draft) => {
-    console.log("INIT RATE", coinRate)
-    draft.exchangeRate = coinRate
-  })
+  useEffect(() => {
+    setChainState((draft) => {
+      console.log("INIT RATE", coinRate)
+      draft.exchangeRate = coinRate
+    })
+  }, [coinRate, setChainState])
   //console.log('INIT STATE', chainState)
 
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState
@@ -106,12 +100,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   console.log("Coin amount", coinAmount, usdAmount)
   const chain = chainConfig[selectedChain]
   const network = chain.networks[appConfig.chainDefaults.network]
-
   const chainInterface = BlockchainClientInterfaces[selectedWallet]
-
-  const [buttonMessage, setButtonMessage] = useState(
-    "One wallet confirmation required",
-  )
+  const [buttonMessage, setButtonMessage] = useState("One wallet confirmation required")
   const [errorDialogState, setErrorDialogState] = useState(false)
   const { toast } = useToast()
 
@@ -147,32 +137,16 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     async function updateView() {
       console.log("CHAIN STATE", chainState)
       console.log("SELECTED CHAIN", selectedChain)
-      const nameToSlug = (name: Chain): ChainSlugs =>
-        getChainConfigurationByName(name).slug
+      const nameToSlug = (name: Chain): ChainSlugs => getChainConfigurationByName(name).slug
       const orgWallets = organization?.wallets.map((w) => nameToSlug(w.chain))
       const initiativeWallets = initiative?.wallets.map((w) => nameToSlug(w.chain))
-      const symbol = chain.symbol as TokenTickerSymbol
+      const symbol = selectedToken
       const rate = await getRate(symbol)
       setCoinRate(rate)
       console.log("COIN", symbol)
       console.log("RATE", rate)
       console.log("ORGWALLETS", organization?.wallets)
       console.log("INIWALLETS", initiative?.wallets)
-      //if(selectedChain==='stellar' || selectedChain==='xrpl'){
-      //  let wallet = getWalletByChain(selectedChain, initiative?.wallets)
-      //  console.log('W1', wallet)
-      //  if(!wallet){
-      //    wallet = getWalletByChain(selectedChain, organization?.wallets)
-      //    console.log('W2', wallet)
-      //  }
-      //  if(wallet?.memo){
-      //    setNeedsMemo(true)
-      //    console.log('MEMO?', true)
-      //  }
-      //} else {
-      //  setNeedsMemo(false)
-      //  console.log('MEMO?', false)
-      //}
       setChainState((draft) => {
         draft.enabledChains = [...orgWallets, ...initiativeWallets]
         //draft.exchangeRate = rate
@@ -363,7 +337,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             draft.paymentStatus = PAYMENT_STATUS.ready
             draft.date = new Date()
           })
-        }, 1800)
+          setButtonMessage("Donate Again to same Initiative!")
+        }, 10000)
       } catch (error) {
         toast({
           variant: "destructive",
