@@ -1,5 +1,6 @@
 "use client"
 
+import { revalidatePath } from 'next/cache'
 import appConfig, { chainConfig } from "@cfce/app-config"
 import { abiVolunteersFactory as FactoryAbi } from "@cfce/blockchain-tools"
 import type { Contract, Event } from "@cfce/database"
@@ -199,6 +200,7 @@ export default function EventClient({
 
       setReady(true)
       setEventStarted(true)
+      revalidatePath('.')
     } catch (error) {
       console.error("Deployment process failed:", error)
       setMessage(

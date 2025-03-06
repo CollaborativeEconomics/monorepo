@@ -1,60 +1,60 @@
-'use client';
-import { useCallback, useEffect, useState } from 'react';
+"use client"
+import { useCallback, useEffect, useState } from "react"
 
 interface ScrollBackgroundProps {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactNode
+  className?: string
 }
 
 export function ScrollBackground({
   children,
   className,
 }: ScrollBackgroundProps) {
-  const [scrollY, setScrollY] = useState(0);
-  const [backgroundTransparent, setBackgroundTransparent] = useState(true);
+  const [scrollY, setScrollY] = useState(0)
+  const [backgroundTransparent, setBackgroundTransparent] = useState(true)
 
   const handleScroll = useCallback(() => {
     const frameId = requestAnimationFrame(() => {
-      setScrollY(window.scrollY);
-    });
-    return frameId;
-  }, []);
+      setScrollY(window.scrollY)
+    })
+    return frameId
+  }, [])
 
   useEffect(() => {
-    setScrollY(window.scrollY);
-    let frameId: number;
+    setScrollY(window.scrollY)
+    let frameId: number
 
     const scrollListener = () => {
-      frameId = handleScroll();
-    };
+      frameId = handleScroll()
+    }
 
-    window.addEventListener('scroll', scrollListener, { passive: true });
+    window.addEventListener("scroll", scrollListener, { passive: true })
 
     return () => {
-      window.removeEventListener('scroll', scrollListener);
+      window.removeEventListener("scroll", scrollListener)
       if (frameId) {
-        cancelAnimationFrame(frameId);
+        cancelAnimationFrame(frameId)
       }
-    };
-  }, [handleScroll]);
+    }
+  }, [handleScroll])
 
   useEffect(() => {
     if (scrollY > 0) {
-      setBackgroundTransparent(false);
+      setBackgroundTransparent(false)
     } else {
-      setBackgroundTransparent(true);
+      setBackgroundTransparent(true)
     }
-  }, [scrollY]);
+  }, [scrollY])
 
   return (
     <div
-      className={`transition-all ${
+      className={`transition-all duration-450 ${
         backgroundTransparent
-          ? 'bg-transparent'
-          : 'backdrop-blur-lg bg-white/70 dark:bg-background/70 shadow-md'
+          ? "bg-white/0 dark:bg-background/0"
+          : "backdrop-blur-lg bg-white/70 dark:bg-background/70 shadow-md"
       } ${className}`}
     >
       {children}
     </div>
-  );
+  )
 }
