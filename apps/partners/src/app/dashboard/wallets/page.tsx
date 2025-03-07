@@ -13,8 +13,8 @@ async function getWalletData(orgId: string) {
   //console.log('ORG', organization)
   const data = organization.wallets || []
   const wallets = data.sort((a, b) => a.chain.localeCompare(b.chain)) // sort by chain
-  const list = organization.initiative
-  const initiatives = list.map(it=>{ return {id:it.id, name:it.title} })
+  const list = organization.initiative || []
+  const initiatives = list.map(it=>{ return {id:it.id, name:it.title ?? 'Untitled Initiative'} })
   return { organization, initiatives, wallets }
 }
 

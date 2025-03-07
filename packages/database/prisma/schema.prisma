@@ -569,8 +569,8 @@ enum CreditType {
 }
 
 enum InitiativeStatus {
-  Archived
+  Draft
   Active
   Finished
-  Draft
+  Archived
 }

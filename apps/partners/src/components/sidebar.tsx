@@ -127,7 +127,7 @@ const Sidebar = async () => {
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+        <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-gray-800 text-white">
           <SidebarContent
             session={session}
             currentOrg={currentOrg}

@@ -1,12 +1,18 @@
 import Dashboard from '~/components/dashboard';
-import Sidebar from '~/components/sidebar';
 import styles from '~/styles/dashboard.module.css';
+import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar"
+import { AppSidebar } from "~/components/app-sidebar"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <Dashboard>
-      <Sidebar />
-      <div className={styles.content}>{children}</div>
+      <SidebarProvider>
+        <AppSidebar />
+        <div className={styles.content}>
+          <SidebarTrigger />
+          {children}
+        </div>
+      </SidebarProvider>
     </Dashboard>
-  );
+  )
 }

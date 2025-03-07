@@ -61,11 +61,11 @@ const authOptions: NextAuthConfig = {
           //console.log('SESSION-ORG', org?.name)
           if (!org) {
             console.log("AUTH NO-ORG")
-            token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
-          } else {
-            token.orgId = org.id
-            token.orgName = org.name
+            //token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
+            throw new Error('User not authorized')
           }
+          token.orgId = org.id
+          token.orgName = org.name
 
           try {
             // Fetch user data
