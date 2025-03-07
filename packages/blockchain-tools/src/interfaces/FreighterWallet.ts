@@ -72,6 +72,7 @@ class FreighterWallet extends InterfaceBaseClass {
       if (!this.connectedWallet) {
         await this.connect()
       }
+      const memoTag = memo ? (Number.isNaN(Number.parseInt(memo)) ? undefined : Number.parseInt(memo)) : undefined
       const act = await this.horizon.loadAccount(this.connectedWallet)
       //const fee = 5000
       const fee = await this.horizon.fetchBaseFee() // 100
@@ -96,8 +97,8 @@ class FreighterWallet extends InterfaceBaseClass {
         //.setNetworkPassphrase(this.network.networkPassphrase)
         .addOperation(opr)
         .setTimeout(30)
-      if (memo) {
-        txn.addMemo(StellarSDK.Memo.text(memo))
+      if (memoTag) {
+        txn.addMemo(StellarSDK.Memo.text(memo)) // here we pass string not number
       }
       const built = txn.build()
       const txid = built.hash().toString("hex")

@@ -23,6 +23,7 @@ type DataForm = {
   chain: string;
   network: string;
   address: string;
+  memo: string;
   initiativeId: string;
 };
 
@@ -37,6 +38,7 @@ export default function WalletForm({ orgId, chains, initiatives }: WalletFormPro
       chain: 'Arbitrum',
       network: 'testnet',
       address: '',
+      memo: '',
       initiativeId: '',
     },
   });
@@ -54,11 +56,17 @@ export default function WalletForm({ orgId, chains, initiatives }: WalletFormPro
       setMessage('Address is required');
       return;
     }
+    // Validate memo format based on chain
+    if ((selectedChain==='Stellar' || selectedChain==='XRPL') && form.memo && Number.isNaN(Number(form.memo))) {
+      setMessage('For Stellar or XRPL, memo must be a numeric value');
+      return;
+    }
     try {
       const data = {
         chain: selectedChain as Chain,
         network: appConfig.chainDefaults.network || 'testnet',
         address: form.address,
+        memo: form.memo,
         initiativeId: selectedInitiative,
       };
       console.log('DATA', data)
@@ -107,6 +115,9 @@ export default function WalletForm({ orgId, chains, initiatives }: WalletFormPro
         handler={handleChain}
       />
       <TextInput label="Address" {...register('address')} />
+      { (selectedChain==='Stellar' || selectedChain==='XRPL') &&
+        <TextInput label="Memo (Only if your wallet requires a memo field)" {...register('memo')} />
+      }
       <Select
         label="Initiative"
         {...register('initiativeId')}

@@ -14,7 +14,7 @@ interface WalletOption {
   icon: string
 }
 
-export function WalletSelect() {
+export function WalletSelect({ className }: { className?: string }) {
   const [chainState, setChainState] = useAtom(chainAtom)
   const { selectedChain, selectedWallet } = chainState
 
@@ -32,8 +32,8 @@ export function WalletSelect() {
 
   return (
     <DonationFormSelect<ClientInterfaces, WalletOption>
+      className={className}
       id="wallet-select"
-      className="mb-6"
       options={wallets}
       currentOption={selectedWallet}
       handleChange={(wallet) => {

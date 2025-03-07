@@ -13,7 +13,7 @@ interface ChainOption {
   icon: string
 }
 
-export function ChainSelect() {
+export function ChainSelect({ className }: { className?: string }) {
   const [chainState, setChainState] = useAtom(chainAtom)
   const { selectedChain, enabledChains } = chainState
   //console.log('CHAIN STATE', chainState)
@@ -31,7 +31,7 @@ export function ChainSelect() {
   return (
     <DonationFormSelect<ChainSlugs, ChainOption>
       id="currency-select"
-      className="mb-6"
+      className={className}
       options={chains}
       currentOption={selectedChain}
       handleChange={(chain) => {
