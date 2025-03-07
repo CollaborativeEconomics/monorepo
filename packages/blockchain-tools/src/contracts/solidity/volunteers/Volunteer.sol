@@ -14,12 +14,8 @@ import {IVolunteer} from "./interface/IVolunteer.sol";
 contract TokenDistributor is Owned, IVolunteer {
     /// @notice The list of acceptable tokens
     address public s_token;
-    /// @dev List of addresses registered for token distribution
-    address[] public s_registeredAddresses;
     /// @notice The NFT contract to check ownership
     ERC1155 private immutable i_nftContract;
-    /// @dev Mapping to check if a wallet is whitelisted
-    mapping(address => bool) public whitelisted;
     /// @dev Base fee per unit of activities defined by the organization
     uint256 public s_baseFee;
     /// @dev Token ID that qualifies volunteer for payment.
@@ -31,78 +27,56 @@ contract TokenDistributor is Owned, IVolunteer {
     /**
      * @dev Constructor to initialize the contract with tokens, NFT contract, and owner
      */
-    constructor(address _token, address _owner, ERC1155 _nftContract, uint256 _baseFee)
-        Owned(_owner)
-    {
+    constructor(address _token, address _owner, ERC1155 _nftContract, uint256 _baseFee) Owned(_owner) {
+        require(_token != address(0), "Invalid token address");
+        require(address(_nftContract) != address(0), "Invalid NFT contract");
         s_token = _token;
         i_nftContract = _nftContract; // @dev Set the NFT contract
         s_baseFee = _baseFee;
     }
 
-    function distributeTokensByUnit(address[] memory recipients) external onlyOwner {
-        require(recipients.length > 0, "No recipients provided");
-        
-        // Check contract has token balance
+    function distributeTokensByUnit(address[] memory _recipients) external onlyOwner {
+        require(_recipients.length > 0, "No recipients provided");
+
         IERC20 tokenContract = IERC20(s_token);
         uint256 tokenBalance = tokenContract.balanceOf(address(this));
         require(tokenBalance > 0, "No tokens available for distribution");
 
-        // Check at least one recipient is whitelisted and holds NFTs
         bool hasEligibleRecipients = false;
-        for (uint256 i = 0; i < recipients.length; i++) {
-            if (whitelisted[recipients[i]] && 
-                i_nftContract.balanceOf(recipients[i], NFT_TOKEN_ID_TWO) > 0) {
+        uint256 totalRequiredTokens = 0;
+        uint256 recipientsLength = _recipients.length;
+        uint256 baseFee = s_baseFee;
+
+        // First, calculate total required tokens
+        for (uint256 i = 0; i < recipientsLength; i++) {
+            address currentAddress = _recipients[i];
+            uint256 currentAddressNFTBalance = i_nftContract.balanceOf(currentAddress, NFT_TOKEN_ID_TWO);
+            if (currentAddressNFTBalance > 0) {
+                uint256 currentAddressShare = currentAddressNFTBalance * baseFee;
+                totalRequiredTokens += currentAddressShare;
                 hasEligibleRecipients = true;
-                break;
             }
         }
-        require(hasEligibleRecipients, "No eligible recipients");
 
-        // Cache values for gas optimization
-        uint256 recipientsLength = recipients.length;
-        uint256 baseFee = s_baseFee;
-        uint256 totalDistributed = 0;
+        // Ensure we have enough tokens and eligible recipients
+        require(hasEligibleRecipients, "No eligible recipients");
+        require(tokenBalance >= totalRequiredTokens, "Insufficient tokens to distribute");
 
         // Distribute tokens
+        uint256 totalDistributed = 0;
         for (uint256 i = 0; i < recipientsLength; i++) {
-            address currentAddress = recipients[i];
-            if (whitelisted[currentAddress]) {
-                uint256 currentAddressNFTBalance = i_nftContract.balanceOf(currentAddress, NFT_TOKEN_ID_TWO);
-                if (currentAddressNFTBalance > 0) {
-                    uint256 currentAddressShare = currentAddressNFTBalance * baseFee;
-                    tokenContract.transfer(currentAddress, currentAddressShare);
-                    totalDistributed += currentAddressShare;
-                    emit TokensDistributed(currentAddress, currentAddressShare);
-                }
+            address currentAddress = _recipients[i];
+            uint256 currentAddressNFTBalance = i_nftContract.balanceOf(currentAddress, NFT_TOKEN_ID_TWO);
+            if (currentAddressNFTBalance > 0) {
+                uint256 currentAddressShare = currentAddressNFTBalance * baseFee;
+                tokenContract.transfer(currentAddress, currentAddressShare);
+                totalDistributed += currentAddressShare;
+                emit TokensDistributed(currentAddress, currentAddressShare);
             }
         }
 
-        // Ensure at least some tokens were distributed
         require(totalDistributed > 0, "No tokens were distributed");
-    }
-
-    /**
-    * @dev Withdraws the remaining tokens from the contract after the campaign has ended
-    * This function is only callable by the owner
-    */
-    function withdrawToken() external onlyOwner {
-        IERC20 tokenContract = IERC20(s_token);
-        uint256 tokenBalance = tokenContract.balanceOf(address(this)); // @dev Get the token balance of the contract
-        tokenContract.transfer(owner, tokenBalance); // @dev Send the remaining tokens to the owner
-    }
-
-    /**
-     * @dev Whitelists multiple addresses for token distribution
-     * @param _addresses The list of addresses to be whitelisted
-     */
-    function whitelistAddresses(address[] memory _addresses) external onlyOwner {
-        for (uint256 i = 0; i < _addresses.length; i++) {
-            // @dev Check if the address is not already whitelisted
-            if (!whitelisted[_addresses[i]]) {
-                whitelisted[_addresses[i]] = true;
-                s_registeredAddresses.push(_addresses[i]); 
-            }
-        }
+        require(totalDistributed == totalRequiredTokens, "Distribution mismatch");
     }
 
     /**
@@ -117,20 +91,11 @@ contract TokenDistributor is Owned, IVolunteer {
 
     /**
      * @dev Adds a new token address to the list of acceptable tokens
-     * @param tokenAddress The address of the token to be added
+     * @param _tokenAddress The address of the token to be added
      */
-    function changeTokenAddress(address tokenAddress) external onlyOwner {
-        require(tokenAddress != address(0), "Invalid token address"); // @dev Ensure the token address is valid
-        s_token = tokenAddress; // @dev Add the token address to the list
-    }
-
-    /**
-     * @dev Updates the whitelist and registers a new user
-     * @param user The address to be added to the whitelist
-     */
-    function updateWhitelist(address user) external onlyOwner {
-        whitelisted[user] = true; 
-        s_registeredAddresses.push(user); 
+    function changeTokenAddress(address _tokenAddress) external onlyOwner {
+        require(_tokenAddress != address(0), "Invalid token address"); // @dev Ensure the token address is valid
+        s_token = _tokenAddress; // @dev Add the token address to the list
     }
 
     /**
@@ -145,18 +110,8 @@ contract TokenDistributor is Owned, IVolunteer {
      * @dev Returns the current donation token address
      * @return _token The current donation token address
      */
-    function getToken() external view returns (address _token) {
-        _token = s_token; 
-        return _token;
-    }
-
-    /**
-     *
-     * @dev Returns the current base fee
-     * @return _baseFee The current base fee
-     */
-    function getWhitelistedAddresses() external view returns (address[] memory whitelist) {
-        whitelist = s_registeredAddresses; // @dev Return the list of registered addresses
+    function getToken() external view returns (address) {
+        return s_token;
     }
 
     /**
@@ -174,10 +129,6 @@ contract TokenDistributor is Owned, IVolunteer {
      */
     function getNFTAddress() external view returns (address) {
         return address(i_nftContract);
-    }
-
-    function getNFTAddress() external view returns (ERC1155) {
-        return i_nftContract;
     }
 
     /**
