@@ -87,6 +87,7 @@ export default async function Initiative(props: {
               <OrganizationAvatar
                 organization={organization}
                 avatarProps={{ size: "md" }}
+                className="text-white"
               />
             </div>
             <h1 className="text-2xl md:text-3xl font-medium text-white mb-3">

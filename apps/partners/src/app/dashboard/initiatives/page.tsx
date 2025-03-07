@@ -5,6 +5,7 @@ import {
   getOrganizationById,
 } from "@cfce/database"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 import InitiativeCard from "~/components/InitiativeCard"
 import InitiativeForm from "~/components/InitiativeForm"
 import Title from "~/components/title"
@@ -13,12 +14,19 @@ import { FormMode, type InitiativeData } from "~/types/data"
 
 export default async function Page() {
   const session = await auth()
-  const orgId = session?.orgId || ""
-  const organization = await getOrganizationById(orgId)
+  if (!session?.orgId) {
+    redirect("/dashboard") // Redirect to dashboard if no organization ID
+  }
+
+  const organization = await getOrganizationById(session.orgId)
+  if (!organization) {
+    redirect("/dashboard") // Redirect if organization not found
+  }
+
   const initiatives =
-    organization?.initiative.map((it) => ({ ...it, organization })) || []
+    organization.initiative.map((it) => ({ ...it, organization })) || []
   const initiative: InitiativeData = {
-    organizationId: orgId,
+    organizationId: session.orgId,
     title: "",
     description: "",
     start: new Date(),

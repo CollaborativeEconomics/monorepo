@@ -169,7 +169,7 @@ importers:
         version: 1.1.0
       flowbite:
         specifier: 3.0.0
-        version: 3.0.0(rollup@3.29.5)
+        version: 3.0.0(rollup@4.32.1)
       form-data:
         specifier: ^4.0.1
         version: 4.0.1
@@ -959,7 +959,7 @@ importers:
         version: 1.1.0
       flowbite:
         specifier: 3.0.0
-        version: 3.0.0(rollup@4.32.1)
+        version: 3.0.0(rollup@3.29.5)
       form-data:
         specifier: ^4.0.1
         version: 4.0.1
