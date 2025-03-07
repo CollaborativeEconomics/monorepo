@@ -695,7 +695,6 @@ app.frame("/mintquery", async (c) => {
       console.log("USER", user?.id)
       if (user?.id && initiative?.organization) {
         const DonationData = {
-          created: new Date(),
           userId: user.id,
           organization: {
             connect: {
@@ -707,13 +706,14 @@ app.frame("/mintquery", async (c) => {
               id: initiative.id,
             },
           },
-          usdvalue: DonorData.usdValue,
-          amount: DonorData.coinValue,
+          usdvalue: Number(DonorData.usdValue),
+          amount: Number(DonorData.coinValue),
           asset: DonorData.coinSymbol,
           wallet: DonorData.address,
-          chain,
+          chain: chain as Chain,
           network: "testnet",
           paytype: "crypto",
+          status: 1,
         }
         const DonationResponse = await newDonation(DonationData)
         console.log("Donation saved", DonationResponse)
