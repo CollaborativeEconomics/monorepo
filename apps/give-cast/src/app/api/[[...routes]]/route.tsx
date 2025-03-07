@@ -25,7 +25,6 @@ import {
   parseEther,
 } from "frog"
 import { devtools } from "frog/dev"
-// import { type NeynarVariables, neynar } from "frog/middlewares"
 import { handle } from "frog/next"
 import { serveStatic } from "frog/serve-static"
 import { createSystem } from "frog/ui"
@@ -97,7 +96,6 @@ const app = new Frog<{
       rate: 0,
     },
   },
-  // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
 })
 
 // Uncomment to use Edge Runtime
@@ -154,13 +152,6 @@ const warning = {
   textAlign: "center",
   width: "100%",
 }
-
-//app.use(
-//neynar({
-//  apiKey: 'NEYNAR_FROG_FM',
-//  features: ['interactor', 'cast'],
-//})
-//);
 
 const chainIdIsEip155 = (
   id: string,
@@ -242,9 +233,9 @@ app.frame("/", async (c) => {
 const parseAmount = (inputText?: string, buttonValue?: string) => {
   let amount = 0
   if (inputText !== undefined) {
-    amount = Number.parseInt(inputText || "0") || 0
+    amount = Number(inputText || 0)
   } else {
-    amount = Number.parseInt(buttonValue || "0") || 0
+    amount = Number(buttonValue || 0)
   }
   return amount
 }
@@ -381,6 +372,7 @@ app.frame("/choose-currency", async (c) => {
 
   // Handle amount first
   const amount = parseAmount(inputText, buttonValue)
+  console.log("AMOUNT", amount, inputText, buttonValue)
   if (amount <= 0) {
     return c.error({
       message: "Please enter a valid amount",
@@ -776,64 +768,6 @@ app.frame("/mintquery", async (c) => {
   return c.res(rejected)
 })
 
-app.frame("/mint-nft", async (c) => {
-  const { buttonValue } = c
-  console.log(recipient)
-  let mintingReceipt: Record<string, unknown> = {}
-
-  if (buttonValue === "yes") {
-    if (recipient !== undefined) {
-      mintingReceipt = await mintNft(recipient)
-      console.log("NFT", mintingReceipt)
-    }
-
-    return c.res({
-      action: "/",
-      image: (
-        <div style={background}>
-          <p style={{ fontSize: 60 }}>NFT Minted</p>
-          <p style={{ fontSize: 30 }}>
-            Copy the contract Id and token Id below to import your NFT into your
-            wallet
-          </p>
-          <p style={{ fontSize: 20 }}>
-            Contract: {process.env.MINTER_CONTRACT}
-          </p>
-          <p style={{ fontSize: 30 }}>
-            Token ID: {mintingReceipt?.nftId || "0"}
-          </p>
-        </div>
-      ),
-      intents: [
-        <Button.Link
-          href={`/addnft?tokenId=${mintingReceipt?.nftId}`}
-          key="addnft"
-        >
-          Add NFT to MetaMask
-        </Button.Link>,
-        <Button value="Featured" key="featured">
-          More initiatives
-        </Button>,
-      ],
-    })
-  }
-
-  return c.res({
-    action: "/",
-    image: (
-      <div style={warning}>
-        <p style={{ fontSize: 60 }}>Minting not successful</p>
-      </div>
-    ),
-    intents: [
-      <Button.Link href="https://cfce.io" key="contact">
-        Contact Support
-      </Button.Link>,
-      <Button.Reset key="home">Home Page</Button.Reset>,
-    ],
-  })
-})
-
 app.transaction("/send-ether", async (c) => {
   const {
     inputText = "",
@@ -910,7 +844,11 @@ app.transaction("/send-token", async (c) => {
     inputText = "",
     frameData,
     buttonValue,
-    previousState: { chain, initiative },
+    previousState: {
+      chain,
+      initiative,
+      transaction: { symbol, value },
+    },
   } = c
 
   if (!initiative) {
@@ -925,8 +863,8 @@ app.transaction("/send-token", async (c) => {
     })
   }
 
-  const { id } = getNetworkByChainName(chain)
-  const chainId = `eip155:${id}`
+  const network = getNetworkByChainName(chain)
+  const chainId = `eip155:${network.id}`
   if (!chainIdIsEip155(chainId)) {
     return c.error({
       message: "Invalid chain selected",
@@ -958,10 +896,16 @@ app.transaction("/send-token", async (c) => {
   }
 
   // Get token details from button value
-  const tokenSymbol = buttonValue
-  if (!tokenSymbol || !["DEGEN", "MOXIE", "ARB"].includes(tokenSymbol)) {
+  if (!symbol || !["DEGEN", "MOXIE", "ARB"].includes(symbol)) {
+    console.log("INVALID TOKEN", symbol)
     return c.error({
       message: "Invalid token selected (allowed: DEGEN, MOXIE, ARB)",
+    })
+  }
+  const token = network.tokens.find((token) => token.symbol === symbol)
+  if (!token) {
+    return c.error({
+      message: "Token not found",
     })
   }
 
@@ -969,11 +913,11 @@ app.transaction("/send-token", async (c) => {
   DonorData.email = inputText
   recipient = frameData?.address || ""
   DonorData.address = recipient
-  DonorData.coinSymbol = tokenSymbol.toUpperCase()
+  DonorData.coinSymbol = symbol.toUpperCase()
 
   // Get token contract address
   const tokenAddress = getNetworkByChainName(chain).tokens.find(
-    (token) => token.symbol === tokenSymbol,
+    (token) => token.symbol === symbol,
   )?.contract
 
   if (!tokenAddress) {
@@ -982,48 +926,24 @@ app.transaction("/send-token", async (c) => {
     })
   }
 
+  console.log(
+    "SEND TOKEN",
+    value,
+    token.decimals,
+    BigInt(Number(value) * 10 ** token.decimals),
+  )
+
   return c.contract({
     chainId,
     to: tokenAddress as `0x${string}`,
     abi: erc20Abi,
     functionName: "transfer",
-    args: [wallet as `0x${string}`, parseEther(DonorData.coinValue)],
+    args: [
+      wallet as `0x${string}`,
+      BigInt(Number(value) * 10 ** token.decimals),
+    ],
   })
 })
-
-/*
-const frameError = {
-  image: (
-    <div style={warning}>
-      <p style={{fontSize: 60}}>Error in Transaction</p>
-    </div>
-  ),
-  intents: [
-    <Button.Reset key="reset">Home Page</Button.Reset>
-  ]
-}
-
-const frameSuccess = {
-  image: (
-    <div style={background}>
-      <p style={{fontSize: 60}}>Transaction successful</p>
-    </div>
-  ),
-  intents: [
-    <Button.Reset key="reset">Home Page</Button.Reset>
-  ]
-}
-
-app.frame('/watchresult', async (c) => {
-  console.log('WATCH RES', c)
-  const { transactionId } = c;
-  console.log('TX', transactionId)
-  if(!transactionId){
-    return c.res(frameError)
-  }
-  return c.res(frameSuccess)
-});
-*/
 
 app.transaction("/add-nft", (c) => {
   const {
