@@ -165,14 +165,6 @@ const chainIdIsEip155 = (
 }
 
 app.frame("/", async (c) => {
-  const { deriveState, req } = c
-  const chain = req.query("chain")
-  if (chain && ["Base", "Arbitrum"].includes(chain)) {
-    deriveState((prevState) => {
-      prevState.chain = chain as Chain
-    })
-  }
-
   const featuredInitiatives = await getInitiatives(
     {},
     { where: { id: { in: appConfig.siteInfo.featuredInitiatives } } },
@@ -241,10 +233,10 @@ const parseAmount = (inputText?: string, buttonValue?: string) => {
 }
 
 // Remove amount handling from initiative/:id frame and just route to choose-currency
-app.frame("/initiative/:id?", async (c) => {
-  const { buttonValue, inputText, frameData, deriveState, previousState } = c
-  const id = c.req.param("id") || ""
-  const chain = previousState?.chain
+app.frame("/initiative/:id/:chain?", async (c) => {
+  const { buttonValue, inputText, frameData, deriveState, previousState, req } =
+    c
+  const id = c.req.param("id")
 
   // Fetch and set initiative data first
   const fullInitiative = await getInitiativeById(id)
@@ -367,8 +359,8 @@ app.frame("/initiative/:id?", async (c) => {
 
 // Update choose-currency to handle amount for Base chain
 app.frame("/choose-currency", async (c) => {
-  const { buttonValue, inputText, previousState, deriveState } = c
-  const { chain } = previousState
+  const { buttonValue, inputText, initialPath, deriveState } = c
+  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
 
   // Handle amount first
   const amount = parseAmount(inputText, buttonValue)
@@ -627,12 +619,13 @@ app.frame("/confirmation", async (c) => {
 })
 
 app.frame("/mintquery", async (c) => {
-  const { transactionId, previousState } = c
+  const { transactionId, previousState, initialPath } = c
+  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
 
   const initiative = previousState?.initiative
   console.log("TX", transactionId)
 
-  const client = previousState.chain === "Base" ? baseClient : arbitrumClient
+  const client = chain === "Base" ? baseClient : arbitrumClient
 
   const confirmed = {
     image: (
@@ -685,7 +678,7 @@ app.frame("/mintquery", async (c) => {
       console.error(ex)
       continue
     }
-    const network = getNetworkByChainName(previousState.chain)
+    const network = getNetworkByChainName(chain)
     console.log("INFO", info)
     if (info?.status === "success") {
       console.log("TX SUCCESS")
@@ -693,7 +686,7 @@ app.frame("/mintquery", async (c) => {
       // const user = await checkUser(DonorData?.address || "")
       const user = await getUserByCredentials({
         address: DonorData?.address || "",
-        chain: previousState.chain,
+        chain,
         network: appConfig.chainDefaults.network,
         currency: "USD",
         chainId: `${network.id}`,
@@ -718,7 +711,7 @@ app.frame("/mintquery", async (c) => {
           amount: DonorData.coinValue,
           asset: DonorData.coinSymbol,
           wallet: DonorData.address,
-          chain: previousState.chain,
+          chain,
           network: "testnet",
           paytype: "crypto",
         }
@@ -745,7 +738,7 @@ app.frame("/mintquery", async (c) => {
         if (nftResponse?.success && "tokenId" in nftResponse) {
           confirmed.intents = [
             <Button.Link
-              href={`/addnft?tokenId=${nftResponse.tokenId}&chain=${previousState.chain}`}
+              href={`/addnft?tokenId=${nftResponse.tokenId}&chain=${chain}`}
               key="addnft"
             >
               Add NFT to MetaMask
@@ -772,8 +765,10 @@ app.transaction("/send-ether", async (c) => {
   const {
     inputText = "",
     frameData,
-    previousState: { chain, initiative, transaction },
+    previousState: { initiative, transaction },
+    initialPath,
   } = c
+  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
 
   if (!initiative) {
     return c.error({
@@ -845,11 +840,12 @@ app.transaction("/send-token", async (c) => {
     frameData,
     buttonValue,
     previousState: {
-      chain,
       initiative,
       transaction: { symbol, value },
     },
+    initialPath,
   } = c
+  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
 
   if (!initiative) {
     return c.error({
@@ -946,9 +942,8 @@ app.transaction("/send-token", async (c) => {
 })
 
 app.transaction("/add-nft", (c) => {
-  const {
-    previousState: { chain },
-  } = c
+  const { initialPath } = c
+  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
   const network = getNetworkByChainName(chain)
   const address = network.contracts?.ReceiptNFT
   const image = "https://give-cast.vercel.app/givecast.jpg"
