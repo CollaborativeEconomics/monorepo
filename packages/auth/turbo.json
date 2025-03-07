@@ -15,8 +15,6 @@
         "IPFS_API_KEY",
         "IPFS_API_SECRET",
         "BLOB_READ_WRITE_TOKEN",
-        "XINFIN_MINTER_SECRET",
-        "XINFIN_NETWORK",
         "TURBO_ENV"
       ],
       "dependsOn": ["^build"]

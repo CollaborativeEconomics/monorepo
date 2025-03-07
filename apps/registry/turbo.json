@@ -16,8 +16,6 @@
         "XDC_WALLET_SECRET",
         "POSTGRES_PRISMA_URL",
         "MOBULA_API_KEY",
-        "ENABLE_ANCHAIN",
-        "ENABLE_GLOBALID",
         "STELLAR_CARBON",
         "CRON_SECRET"
       ],
