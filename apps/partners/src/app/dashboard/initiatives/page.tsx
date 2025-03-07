@@ -1,21 +1,34 @@
 import { auth } from "@cfce/auth"
+import {
+  type Initiative,
+  InitiativeStatus,
+  getOrganizationById,
+} from "@cfce/database"
 import Link from "next/link"
-import { type Initiative, InitiativeStatus, getOrganizationById } from "@cfce/database"
-import styles from "~/styles/dashboard.module.css"
-import Title from "~/components/title"
-import InitiativeForm from "~/components/InitiativeForm"
+import { redirect } from "next/navigation"
 import InitiativeCard from "~/components/InitiativeCard"
-import { type InitiativeData, FormMode } from '~/types/data'
+import InitiativeForm from "~/components/InitiativeForm"
+import Title from "~/components/title"
+import styles from "~/styles/dashboard.module.css"
+import { FormMode, type InitiativeData } from "~/types/data"
 
 export default async function Page() {
   const session = await auth()
-  const orgId = session?.orgId || ""
-  const organization = await getOrganizationById(orgId)
-  const initiatives = organization?.initiative.map((it) => ({ ...it, organization })) || []
-  const initiative:InitiativeData = {
-    organizationId: orgId,
-    title: '',
-    description: '',
+  if (!session?.orgId) {
+    redirect("/dashboard") // Redirect to dashboard if no organization ID
+  }
+
+  const organization = await getOrganizationById(session.orgId)
+  if (!organization) {
+    redirect("/dashboard") // Redirect if organization not found
+  }
+
+  const initiatives =
+    organization.initiative.map((it) => ({ ...it, organization })) || []
+  const initiative: InitiativeData = {
+    organizationId: session.orgId,
+    title: "",
+    description: "",
     start: new Date(),
     finish: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     status: InitiativeStatus.Draft,
