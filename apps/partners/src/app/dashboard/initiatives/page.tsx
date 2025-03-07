@@ -1,21 +1,28 @@
 import { auth } from "@cfce/auth"
-import { type Initiative, getOrganizationById } from "@cfce/database"
-import InitiativeCard from "~/components/InitiativeCard"
-import Title from "~/components/title"
+import Link from "next/link"
+import { type Initiative, InitiativeStatus, getOrganizationById } from "@cfce/database"
 import styles from "~/styles/dashboard.module.css"
-import InitiativeForm from "./InitiativeForm"
+import Title from "~/components/title"
+import InitiativeForm from "~/components/InitiativeForm"
+import InitiativeCard from "~/components/InitiativeCard"
+import { type InitiativeData, FormMode } from '~/types/data'
 
 export default async function Page() {
   const session = await auth()
   const orgId = session?.orgId || ""
-
   const organization = await getOrganizationById(orgId)
-
-  const initiatives =
-    organization?.initiative.map((i) => ({ ...i, organization })) || []
+  const initiatives = organization?.initiative.map((it) => ({ ...it, organization })) || []
+  const initiative:InitiativeData = {
+    organizationId: orgId,
+    title: '',
+    description: '',
+    start: new Date(),
+    finish: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    status: InitiativeStatus.Draft,
+  }
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Create a Funding Initiative" />
       <p className={styles.intro}>
         Creating an initiative allows donors to contribute to a specific
@@ -24,12 +31,14 @@ export default async function Page() {
         place!
       </p>
       <div className={styles.mainBox}>
-        <InitiativeForm orgId={orgId} />
+        <InitiativeForm initiative={initiative} formMode={FormMode.New} />
       </div>
       {initiatives.length > 0 ? (
         initiatives.map((item: Initiative) => (
-          <div className={styles.mainBox} key={item.id}>
-            <InitiativeCard key={item.id} {...item} />
+          <div className={styles.cardBox} key={item.id}>
+            <Link href={`/dashboard/initiatives/${item.id}`} className="w-full">
+              <InitiativeCard key={item.id} {...item} />
+            </Link>
           </div>
         ))
       ) : (
