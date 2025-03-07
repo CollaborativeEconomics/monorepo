@@ -102,7 +102,7 @@ const chainConfiguration = {
           // ReceiptNFT: "0xd5D9defAe9b60FBD0f7E9c7Be361f462d8715eef",
           // ReceiptNFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
           ReceiptNFT: "0x5465D45A11F468DB302d72Fd337745D8fdb4727A",
-          VolunteersFactory: "0xAB925B98c1F66b6A9282927Df36Df954F089F4c9",
+          VolunteersFactory: "0x1869c194155cbE4efA99a010BA6eE7db8eB32fbB",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",
