@@ -1,0 +1,8 @@
+{
+  "extends": ["//"],
+  "globalEnv": [
+    "TURBO_ENV",
+    "NEXT_PUBLIC_APP_ID",
+    "NEXT_PUBLIC_APP_ENV"
+  ]
+}

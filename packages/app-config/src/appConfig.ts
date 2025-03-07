@@ -5,14 +5,22 @@ import base from "./config/appConfigBase"
 import giveCreditsDev from "./config/give-credits/appConfig.development"
 import giveCreditsProd from "./config/give-credits/appConfig.production"
 import giveCreditsStaging from "./config/give-credits/appConfig.staging"
+
 // give-stark
 import giveStarkDev from "./config/give-stark/appConfig.development"
 import giveStarkProd from "./config/give-stark/appConfig.production"
 import giveStarkStaging from "./config/give-stark/appConfig.staging"
+
 // Give tron
 import giveTronDev from "./config/give-tron/appConfig.development"
 import giveTronProd from "./config/give-tron/appConfig.production"
 import giveTronStaging from "./config/give-tron/appConfig.staging"
+
+// Give base
+import giveBaseDev from "./config/give-base/appConfig.development"
+import giveBaseProd from "./config/give-base/appConfig.production"
+import giveBaseStaging from "./config/give-base/appConfig.staging"
+
 // Giving universe
 import givingUniverseDev from "./config/giving-universe/appConfig.development"
 import givingUniverseProd from "./config/giving-universe/appConfig.production"
@@ -46,6 +54,7 @@ type AppId =
   | "giving-universe"
   | "give-arbitrum"
   | "give-xrp"
+  | "give-base"
   | "partners"
   | "registry"
   | "tests"
@@ -55,6 +64,11 @@ const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
     development: giveCreditsDev,
     production: giveCreditsProd,
     staging: giveCreditsStaging,
+  },
+  "give-base": {
+    development: giveBaseDev,
+    production: giveBaseProd,
+    staging: giveBaseStaging,
   },
   "give-stark": {
     development: giveStarkDev,

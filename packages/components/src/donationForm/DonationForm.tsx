@@ -82,10 +82,12 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const [loading, setLoading] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const [chainState, setChainState] = useAtom(chainAtom)
-  setChainState((draft) => {
-    console.log("INIT RATE", coinRate)
-    draft.exchangeRate = coinRate
-  })
+  useEffect(() => {
+    setChainState((draft) => {
+      console.log("INIT RATE", coinRate)
+      draft.exchangeRate = coinRate
+    })
+  }, [coinRate, setChainState])
   //console.log('INIT STATE', chainState)
 
   const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
@@ -144,7 +146,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       const initiativeWallets = initiative?.wallets.map((w) =>
         nameToSlug(w.chain),
       )
-      const symbol = chain.symbol as TokenTickerSymbol
+      const symbol = selectedToken
       const rate = await getRate(symbol)
       setCoinRate(rate)
       console.log("COIN", symbol)
@@ -333,7 +335,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
             draft.paymentStatus = PAYMENT_STATUS.ready
             draft.date = new Date()
           })
-        }, 1800)
+          setButtonMessage("Donate Again to same Initiative!")
+        }, 10000)
       } catch (error) {
         toast({
           variant: "destructive",
