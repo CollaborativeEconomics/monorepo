@@ -1,4 +1,4 @@
-export const DistributorAbi = [
+[
   {
     "type": "constructor",
     "inputs": [
@@ -800,4 +800,4 @@ export const DistributorAbi = [
       }
     ]
   }
-] as const
+]

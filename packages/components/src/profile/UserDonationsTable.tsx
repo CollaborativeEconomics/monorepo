@@ -8,7 +8,7 @@ import { ImageIcon, LayoutList, Newspaper } from "lucide-react"
 import { Suspense } from "react"
 import { DonationsTableSkeleton } from "./ProfileSkeletons"
 import { ReceiptNFTCard } from "./ReceiptNFTCard"
-
+import type { NFTDataWithRelations, DonationWithRelations } from "@cfce/database"
 type Props = {
   userId: string
 }
@@ -21,24 +21,23 @@ async function DonationsData({ userId }: Props) {
   receipts = JSON.parse(JSON.stringify(receipts))
   donations = JSON.parse(JSON.stringify(donations))
 
-  receipts = JSON.parse(JSON.stringify(receipts))
   return (
     <div className="w-full border rounded-md px-6 py-4 bg-card">
       {/* NFT card view */}
       <TabsContent className="TabsContent mt-0" value="tab1">
         <div className="grid grid-cols-1 sm:grid-cols-2 xxl:grid-cols-3 gap-6">
           {receipts.map((receipt) => {
-            return <ReceiptNFTCard key={receipt.id} {...receipt} />
+            return <ReceiptNFTCard key={receipt.id} {...receipt as NFTDataWithRelations} />
           })}
         </div>
       </TabsContent>
       {/* NFT Receipts */}
       <TabsContent className="TabsContent" value="tab2">
-        <ReceiptTableSortable receipts={receipts || []} />
+        <ReceiptTableSortable receipts={receipts as NFTDataWithRelations[]} />
       </TabsContent>
       {/* Donations */}
       <TabsContent className="TabsContent" value="tab3">
-        <DonationsTableSortable donations={donations || []} />
+        <DonationsTableSortable donations={donations as DonationWithRelations[]} />
       </TabsContent>
     </div>
   )

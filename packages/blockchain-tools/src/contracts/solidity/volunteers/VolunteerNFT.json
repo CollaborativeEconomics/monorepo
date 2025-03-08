@@ -1,4 +1,4 @@
-export const DistributorAbi = [
+[
   {
     "type": "constructor",
     "inputs": [
@@ -11,27 +11,13 @@ export const DistributorAbi = [
         "name": "owner",
         "type": "address",
         "internalType": "address"
-      },
-      {
-        "name": "_rewardToken",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_baseFee",
-        "type": "uint256",
-        "internalType": "uint256"
       }
     ],
     "stateMutability": "nonpayable"
   },
   {
-    "type": "receive",
-    "stateMutability": "payable"
-  },
-  {
     "type": "function",
-    "name": "MAX_HOLDERS",
+    "name": "POA",
     "inputs": [],
     "outputs": [
       {
@@ -44,20 +30,7 @@ export const DistributorAbi = [
   },
   {
     "type": "function",
-    "name": "PROOF_OF_ATTENDANCE",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "PROOF_OF_ENGAGEMENT",
+    "name": "POE",
     "inputs": [],
     "outputs": [
       {
@@ -118,26 +91,8 @@ export const DistributorAbi = [
   },
   {
     "type": "function",
-    "name": "baseFee",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "burn",
     "inputs": [
-      {
-        "name": "from",
-        "type": "address",
-        "internalType": "address"
-      },
       {
         "name": "tokenId",
         "type": "uint256",
@@ -151,52 +106,6 @@ export const DistributorAbi = [
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "distributeTokens",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "getBaseFee",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getHolderCount",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getRewardToken",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -248,19 +157,6 @@ export const DistributorAbi = [
   {
     "type": "function",
     "name": "owner",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "rewardToken",
     "inputs": [],
     "outputs": [
       {
@@ -357,32 +253,6 @@ export const DistributorAbi = [
   },
   {
     "type": "function",
-    "name": "setBaseFee",
-    "inputs": [
-      {
-        "name": "newBaseFee",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "setRewardToken",
-    "inputs": [
-      {
-        "name": "newToken",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
     "name": "supportsInterface",
     "inputs": [
       {
@@ -433,13 +303,6 @@ export const DistributorAbi = [
     "stateMutability": "view"
   },
   {
-    "type": "function",
-    "name": "withdrawRewardTokens",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
     "type": "event",
     "name": "ApprovalForAll",
     "inputs": [
@@ -466,58 +329,6 @@ export const DistributorAbi = [
   },
   {
     "type": "event",
-    "name": "BaseFeeUpdated",
-    "inputs": [
-      {
-        "name": "newBaseFee",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "HolderAdded",
-    "inputs": [
-      {
-        "name": "holder",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "HolderRemoved",
-    "inputs": [
-      {
-        "name": "holder",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "MaxHoldersReached",
-    "inputs": [
-      {
-        "name": "attemptedHolder",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
     "name": "OwnershipTransferred",
     "inputs": [
       {
@@ -531,38 +342,6 @@ export const DistributorAbi = [
         "type": "address",
         "indexed": true,
         "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "RewardTokenChanged",
-    "inputs": [
-      {
-        "name": "newToken",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "TokensDistributed",
-    "inputs": [
-      {
-        "name": "recipient",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -659,28 +438,6 @@ export const DistributorAbi = [
       }
     ],
     "anonymous": false
-  },
-  {
-    "type": "error",
-    "name": "AddressEmptyCode",
-    "inputs": [
-      {
-        "name": "target",
-        "type": "address",
-        "internalType": "address"
-      }
-    ]
-  },
-  {
-    "type": "error",
-    "name": "AddressInsufficientBalance",
-    "inputs": [
-      {
-        "name": "account",
-        "type": "address",
-        "internalType": "address"
-      }
-    ]
   },
   {
     "type": "error",
@@ -783,21 +540,5 @@ export const DistributorAbi = [
         "internalType": "address"
       }
     ]
-  },
-  {
-    "type": "error",
-    "name": "FailedInnerCall",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "SafeERC20FailedOperation",
-    "inputs": [
-      {
-        "name": "token",
-        "type": "address",
-        "internalType": "address"
-      }
-    ]
   }
-] as const
+]

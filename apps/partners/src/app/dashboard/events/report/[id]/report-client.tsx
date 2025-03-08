@@ -85,8 +85,17 @@ export default function ReportClient({
         if (!result) return;
 
         const address = result.getText();
-        setMessage(`Wallet ${address}`);
-        setValue('address', address);
+        const cleanedAddress =
+        address.includes(":") && address.includes("@")
+          ? address.split(":")[1].split("@")[0]
+          : address.includes(":")
+            ? address.split(":")[1]
+            : address.includes("@")
+              ? address.split("@")[0]
+              : address;
+
+        setMessage(`Wallet ${cleanedAddress}`);
+        setValue('address', cleanedAddress);
         setScanStatus('ready');
         qrReader.current?.stopContinuousDecode();
       },
