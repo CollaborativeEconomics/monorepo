@@ -1,6 +1,6 @@
 "use client"
 
-import { abiVolunteersNFT as NFTAbi } from "@cfce/blockchain-tools"
+import { abiVolunteersDistributor as DistributorAbi } from "@cfce/blockchain-tools"
 import type { Contract, Event } from "@cfce/database"
 import {
   readContract,
@@ -89,8 +89,17 @@ export default function RegisterClient({
         if (!result) return
 
         const address = result.getText()
+        const cleanedAddress =
+          address.includes(":") && address.includes("@")
+            ? address.split(":")[1].split("@")[0]
+            : address.includes(":")
+              ? address.split(":")[1]
+              : address.includes("@")
+                ? address.split("@")[0]
+                : address
+
         setMessage("Wallet Scanned!")
-        setValue("address", address)
+        setValue("address", cleanedAddress)
         setScanStatus("ready")
         qrReader.current?.stopContinuousDecode()
       },
@@ -140,7 +149,7 @@ export default function RegisterClient({
     try {
       const balance = await readContract(wagmiConfig, {
         address: nft,
-        abi: NFTAbi,
+        abi: DistributorAbi,
         functionName: "balanceOf",
         args: [cleanedAddress, tokenId],
       })
@@ -153,7 +162,7 @@ export default function RegisterClient({
 
       const tx = {
         address: nft,
-        abi: NFTAbi,
+        abi: DistributorAbi,
         functionName: "mint",
         args: [cleanedAddress, tokenId, tokenQty],
         chain: defaultChain,
@@ -162,7 +171,7 @@ export default function RegisterClient({
       console.log("TX", tx)
       const hash = await writeContractAsync({
         address: nft,
-        abi: NFTAbi,
+        abi: DistributorAbi,
         functionName: "mint",
         args: [cleanedAddress, tokenId, tokenQty],
         chain: defaultChain,

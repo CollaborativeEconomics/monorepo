@@ -34,6 +34,14 @@ export default async function Page() {
     status: InitiativeStatus.Draft,
   }
 
+  // Define a mapping from string enum values to numbers
+  const statusToNumber = {
+    Draft: 0,
+    Active: 1,
+    Finished: 2,
+    Archived: 3,
+  }
+
   return (
     <div>
       <Title text="Create a Funding Initiative" />

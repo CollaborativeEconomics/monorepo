@@ -6,8 +6,8 @@ import { abiVolunteersFactory as FactoryAbi } from "@cfce/blockchain-tools"
 import type { Contract, Event } from "@cfce/database"
 import { readContract, switchChain, waitForTransaction } from "@wagmi/core"
 import { useState } from "react"
-import { parseEther } from "viem"
-import { useAccount, useWriteContract } from "wagmi"
+import { parseUnits } from "viem"
+import { useAccount, useWriteContract, useReadContract } from "wagmi"
 import * as wagmiChains from "wagmi/chains"
 import { newContract } from "~/actions/database"
 import ButtonBlue from "~/components/buttonblue"
@@ -46,7 +46,7 @@ export default function EventClient({
   const [eventStarted, setEventStarted] = useState(started)
   const [ready, setReady] = useState(false)
   const [message, setMessage] = useState(
-    "You will sign two transactions with your wallet",
+    "You will sign one transaction with your wallet",
   )
 
   // Constants
@@ -55,6 +55,20 @@ export default function EventClient({
   const payToken = arbitrum.tokens.find((t) => t.symbol === "USDC")
   const usdcAddress = payToken?.contract || ''
   const tokenDecimals = payToken?.decimals || 0
+  const tokenAbi = [{
+    "constant": true,
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }]
   let NFTBlockNumber: number
   let distributorBlockNumber: number
 
@@ -62,64 +76,35 @@ export default function EventClient({
     throw new Error("Factory or USDC address not found")
   }
 
-  async function deployNFT() {
-    try {
-      setMessage("Initiating NFT deployment, please wait...")
-      // TODO: FIX constant uri?
-      //const uri = 'https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1.json'; // not found - empty bucket
-      const uri = "ipfs:testEvent"
 
-      // ConnectorNotConnected error when Metamask is not active
-      // Enable Metamask first then retry
-      const hash = await writeContractAsync({
-        address: FactoryAddress as `0x${string}`,
-        abi: FactoryAbi,
-        functionName: "deployVolunteerNFT",
-        args: [uri as `0x${string}`, address as `0x${string}`],
-        chain: defaultChain,
-        account: address,
-      })
-
-      const nftReceipt = await waitForTransaction(wagmiConfig, {
-        hash,
-        confirmations: 2,
-      })
-
-      setMessage("NFT deployment confirmed")
-      NFTBlockNumber = Number(nftReceipt.blockNumber)
-
-      const NFTAddress = await readContract(wagmiConfig, {
-        address: FactoryAddress as `0x${string}`,
-        abi: FactoryAbi,
-        functionName: "getDeployedVolunteerNFT",
-        args: [address as `0x${string}`],
-      })
-
-      return NFTAddress
-    } catch (error) {
-      console.error("NFT deployment error:", error)
-      throw error
-    }
-  }
-
-  async function deployTokenDistributor(NFTAddress: string) {
+  async function deployTokenDistributor() {
     try {
       setMessage("Initiating Distributor deployment, please wait...")
       if (!usdcAddress) {
         setMessage(`USDC address not found: ${usdcAddress}`)
         throw new Error("USDC address not found")
       }
+      //const uri = 'https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1.json'; // not found - empty bucket
+      const uri = "ipfs:testEvent"
 
-      //const baseFee = parseEther(event.unitvalue?.toString() || "0.0001"),
-      const baseFee = BigInt((event.unitvalue||1) * (10**tokenDecimals)) // usdc uses only 6 decimals
+      const decimals = await readContract(wagmiConfig, {
+        address: usdcAddress as `0x${string}`,
+        abi: tokenAbi,
+        functionName: 'decimals',
+      })
+      console.log("Decimals", decimals as number)
+      const unitValue = event.unitvalue||1
+      const baseFee = parseUnits(unitValue.toString(), decimals as number) // usdc uses only 6 decimals
+      console.log("Base Fee", baseFee)
 
       const args = {
         address: FactoryAddress,
         abi: FactoryAbi,
-        functionName: "deployTokenDistributor" as const,
+        functionName: "deployDistributor" as const,
         args: [
+          uri,
+          address,
           usdcAddress as `0x${string}`,
-          NFTAddress as `0x${string}`,
           baseFee
         ],
         chain: defaultChain,
@@ -131,10 +116,11 @@ export default function EventClient({
       const hash = await writeContractAsync({
         address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
-        functionName: "deployTokenDistributor",
+        functionName: "deployDistributor",
         args: [
+          uri,
+          address as `0x${string}`,
           usdcAddress as `0x${string}`,
-          NFTAddress as `0x${string}`,
           baseFee
         ],
         chain: defaultChain,
@@ -152,9 +138,11 @@ export default function EventClient({
       const distributorAddress = await readContract(wagmiConfig, {
         address: FactoryAddress as `0x${string}`,
         abi: FactoryAbi,
-        functionName: "getDeployedTokenDistributor",
+        functionName: "getDistributorByOwner",
         args: [address as `0x${string}`],
       })
+
+      console.log("Distributor address", distributorAddress)
 
       return distributorAddress
     } catch (error) {
@@ -171,17 +159,16 @@ export default function EventClient({
         await switchChain(wagmiConfig, { chainId: defaultChain.id })
       }
 
-      const NFTAddress = await deployNFT()
-      const distributorAddress = await deployTokenDistributor(NFTAddress)
+      const distributorAddress = await deployTokenDistributor()
 
       const erc1155 = {
         chain: "arbitrum",
-        contract_address: NFTAddress,
+        contract_address: distributorAddress,
         entity_id: id,
         admin_wallet_address: address,
         contract_type: "1155",
         network: "testnet",
-        start_block: NFTBlockNumber.toString(),
+        start_block: distributorBlockNumber.toString(),
       }
 
       await newContract(erc1155)
