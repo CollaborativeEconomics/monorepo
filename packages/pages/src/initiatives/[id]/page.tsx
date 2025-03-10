@@ -54,23 +54,21 @@ export default async function Initiative(props: {
   //console.log('INITIATIVE', initiative);
 
   // Load contract data if available - first try initiative contract
-  let contract = await getContracts({
+  let contracts = await getContracts({
     entity_id: initiative.id,
-    type: "NFTReceipt",
-    inactive: false,
+    contract_type: "Credits",
   })
 
   // If no initiative contract found, try organization contract
-  if (!contract) {
-    contract = await getContracts({
+  if (!contracts.length) {
+    contracts = await getContracts({
       entity_id: organization.id,
-      type: "NFTReceipt",
-      inactive: false,
+      contract_type: "Credits",
     })
   }
 
   // Get the first active contract if any found
-  const activeContract = Array.isArray(contract) ? contract[0] : null
+  const contract = Array.isArray(contracts) ? contracts[0] : null
 
   return (
     <main className="w-full">
@@ -136,7 +134,7 @@ export default async function Initiative(props: {
               <DonationForm
                 initiative={initiative}
                 rate={rate}
-                contract={activeContract}
+                contract={contract || undefined}
               />
             </div>
             <div className="lg:w-[40%]">

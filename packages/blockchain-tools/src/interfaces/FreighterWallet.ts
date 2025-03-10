@@ -49,10 +49,15 @@ class FreighterWallet extends InterfaceBaseClass {
     return { success: false }
   }
 
+  isConnected() {
+    return this.connectedWallet !== ""
+  }
+
   async connect() {
     try {
       console.log("CONNECT...")
       this.connectedWallet = await (await requestAccess()).address
+      console.log("CONNECTED WALLET", this.connectedWallet)
       this.horizonConfig.network = (
         (await getNetwork()).network || ""
       ).toLowerCase()
@@ -298,7 +303,7 @@ class FreighterWallet extends InterfaceBaseClass {
   }
 
   // Helper method for donations specifically
-  async donateToContract({
+  async sendToContract({
     contractId,
     amount,
     isFirstTime = false,
@@ -307,13 +312,41 @@ class FreighterWallet extends InterfaceBaseClass {
     amount: number
     isFirstTime?: boolean
   }) {
-    const address = new Address(this.connectedWallet).toScVal()
-    const amountScVal = StellarSDK.nativeToScVal(amount * 10000000, {
-      type: "i128",
-    })
+    try {
+      console.log(
+        "SENDING TO CONTRACT",
+        contractId,
+        amount,
+        this.connectedWallet,
+      )
+      if (!this.connectedWallet) {
+        throw new Error("Wallet not connected")
+      }
 
-    return this.invokeContract(contractId, "donate", [address, amountScVal])
+      // Create Address object first, then convert to ScVal
+      const address = new Address(this.connectedWallet)
+      const addressScVal = address.toScVal()
+
+      const amountScVal = StellarSDK.nativeToScVal(this.toBaseUnit(amount), {
+        type: "i128",
+      })
+
+      const txId = await this.invokeContract(contractId, "donate", [
+        addressScVal,
+        amountScVal,
+      ])
+      return {
+        success: true,
+        txId,
+        walletAddress: this.connectedWallet,
+      }
+    } catch (error) {
+      console.error(error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      }
+    }
   }
 }
-
 export default FreighterWallet

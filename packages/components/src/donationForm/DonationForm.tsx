@@ -8,6 +8,7 @@ import {
 } from "@cfce/blockchain-tools"
 import type {
   Chain,
+  Contract,
   InitiativeWithRelations,
   Prisma,
   User,
@@ -53,11 +54,7 @@ import { WalletSelect } from "./WalletSelect"
 interface DonationFormProps {
   initiative: InitiativeWithRelations
   rate: number
-  contract?: {
-    id: string
-    type: string
-    inactive?: boolean
-  }
+  contract?: Contract
 }
 
 interface DonationData {
@@ -147,7 +144,6 @@ export default function DonationForm({
   // Disable chains that don't have wallets
   useEffect(() => {
     async function updateView() {
-      console.log("CHAIN STATE", chainState)
       console.log("SELECTED CHAIN", selectedChain)
       const nameToSlug = (name: Chain): ChainSlugs =>
         getChainConfigurationByName(name).slug
@@ -169,14 +165,7 @@ export default function DonationForm({
       console.log("UPDATED")
     }
     updateView()
-  }, [
-    chainState,
-    initiative,
-    organization,
-    selectedChain,
-    selectedToken,
-    setChainState,
-  ])
+  }, [initiative, organization, selectedChain, selectedToken, setChainState])
 
   //const destinationWalletAddress = 'raHkr5qJNYez8bQQDMVLwvaRvxMripVznT' // hardcoded for testing
   const destinationWallet = useMemo(() => {
@@ -382,7 +371,6 @@ export default function DonationForm({
       organization.id,
       initiative.id,
       destinationWallet,
-      amount,
       selectedChain,
       selectedToken,
       setDonationForm,
@@ -392,33 +380,6 @@ export default function DonationForm({
       donationForm,
       rate,
     ],
-  )
-
-  const sendContractPayment = useCallback(
-    async (contractId: string, amount: number) => {
-      if (
-        !chainInterface ||
-        typeof chainInterface.donateToContract !== "function"
-      ) {
-        throw new Error("Contract donations not supported")
-      }
-
-      const result = await chainInterface.donateToContract({
-        contractId,
-        amount,
-      })
-
-      if (!result) {
-        throw new Error("Contract donation failed")
-      }
-
-      return {
-        success: true,
-        walletAddress: chainInterface.getAddress?.() || "",
-        txid: result,
-      }
-    },
-    [chainInterface],
   )
 
   const onSubmit = useCallback(async () => {
@@ -454,9 +415,25 @@ export default function DonationForm({
         error?: string
       }
 
-      if (contract && selectedChain.toLowerCase() === "stellar") {
-        console.log("USING CONTRACT", contract.id)
-        paymentResult = await sendContractPayment(contract.id, coinAmount)
+      if (contract && selectedChain === "stellar") {
+        console.log("USING CONTRACT", contract.contract_address)
+        if (
+          !chainInterface ||
+          typeof chainInterface.sendToContract !== "function"
+        ) {
+          throw new Error("Contract donations not supported")
+        }
+
+        const result = await chainInterface.sendToContract({
+          contractId: contract.contract_address ?? "",
+          amount: coinAmount,
+        })
+
+        if (!result.success) {
+          throw new Error(result.error || "Contract donation failed")
+        }
+
+        paymentResult = result
       } else if (appConfig.siteInfo.options.enableGaslessTransactions) {
         console.log(
           "SENDING GASLESS PAYMENT TO",
@@ -559,7 +536,6 @@ export default function DonationForm({
     posthog.capture,
     selectedChain,
     selectedToken,
-    sendContractPayment,
     sendGaslessPayment,
     sendPayment,
     usdAmount,
