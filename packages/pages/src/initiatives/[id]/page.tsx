@@ -150,7 +150,7 @@ export default async function Initiative(props: {
                   return (
                     <InitiativeCardCompact
                       key={`other-${otherInitiative.id}`}
-                      initiative={otherInitiative as unknown as InitiativeCardCompactProps}
+                      initiative={otherInitiative}
                     />
                   )
                 })
