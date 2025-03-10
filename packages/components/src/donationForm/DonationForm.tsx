@@ -8,6 +8,7 @@ import {
 } from "@cfce/blockchain-tools"
 import type {
   Chain,
+  Contract,
   InitiativeWithRelations,
   Prisma,
   User,
@@ -53,6 +54,7 @@ import { WalletSelect } from "./WalletSelect"
 interface DonationFormProps {
   initiative: InitiativeWithRelations
   rate: number
+  contract?: Contract
 }
 
 interface DonationData {
@@ -74,7 +76,11 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export default function DonationForm({ initiative, rate }: DonationFormProps) {
+export default function DonationForm({
+  initiative,
+  rate,
+  contract,
+}: DonationFormProps) {
   //console.log("INITIATIVE", initiative)
   // TODO: get contract id from contracts table not initiative record
   const posthog = usePostHog()
@@ -138,7 +144,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   // Disable chains that don't have wallets
   useEffect(() => {
     async function updateView() {
-      console.log("CHAIN STATE", chainState)
       console.log("SELECTED CHAIN", selectedChain)
       const nameToSlug = (name: Chain): ChainSlugs =>
         getChainConfigurationByName(name).slug
@@ -160,7 +165,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       console.log("UPDATED")
     }
     updateView()
-  }, [initiative, organization, selectedChain]) // setChainState, chainState,
+  }, [initiative, organization, selectedChain, selectedToken, setChainState])
 
   //const destinationWalletAddress = 'raHkr5qJNYez8bQQDMVLwvaRvxMripVznT' // hardcoded for testing
   const destinationWallet = useMemo(() => {
@@ -177,7 +182,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         address: initiativeWallet.address,
         memo: initiativeWallet.memo || "",
       }
-      //return initiativeWallet.address
     }
 
     const organizationWallet = organization?.wallets.find(
@@ -190,11 +194,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         address: organizationWallet.address,
         memo: organizationWallet.memo || "",
       }
-      //return organizationWallet
     }
 
     // Use fallback address if both initiative and organization wallets are not found
-    // There will be no fallback address for production, hence the error will be thrown
     const fallbackAddress = appConfig.chainDefaults?.defaultAddress
     console.log("FALLBACK", fallbackAddress)
     if (fallbackAddress) {
@@ -259,7 +261,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       }
       return result
     },
-    [chainInterface, selectedChain, toast],
+    [chainInterface, toast],
   )
 
   const sendGaslessPayment = useCallback(
@@ -291,7 +293,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       console.log("GAS PAYMENT RESULT", result)
       return result
     },
-    [chainInterface, toast, selectedChain],
+    [chainInterface, toast],
   )
 
   const handleMinting = useCallback(
@@ -299,7 +301,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       success: boolean
       walletAddress?: string
       txid?: string
-      error?: string
     }) => {
       try {
         // FIX: if coin switcher is selecting USD amounts are right, if set to coin, values get changed back to USD
@@ -370,13 +371,14 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       organization.id,
       initiative.id,
       destinationWallet,
-      amount,
       selectedChain,
       selectedToken,
       setDonationForm,
       toast,
       coinAmount,
       usdAmount,
+      donationForm,
+      rate,
     ],
   )
 
@@ -386,13 +388,14 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       validateForm({ email })
 
       if (!chainInterface?.connect) {
-        const error = new Error("No connect method on chain interface")
-        throw error
+        throw new Error("No connect method on chain interface")
       }
+
       if (!chainInterface?.isConnected()) {
         console.log("CONNECTING...")
-        await chainInterface.connect(network.id) // Connect once
+        await chainInterface.connect(network.id)
       }
+
       if (appConfig.siteInfo.options.enableFetchBalance) {
         console.log("CHECKING BALANCE")
         const hasBalance = await checkBalance()
@@ -412,9 +415,26 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         error?: string
       }
 
-      console.log("AMOUNTS", coinAmount, usdAmount)
+      if (contract && selectedChain === "stellar") {
+        console.log("USING CONTRACT", contract.contract_address)
+        if (
+          !chainInterface ||
+          typeof chainInterface.sendToContract !== "function"
+        ) {
+          throw new Error("Contract donations not supported")
+        }
 
-      if (appConfig.siteInfo.options.enableGaslessTransactions) {
+        const result = await chainInterface.sendToContract({
+          contractId: contract.contract_address ?? "",
+          amount: coinAmount,
+        })
+
+        if (!result.success) {
+          throw new Error(result.error || "Contract donation failed")
+        }
+
+        paymentResult = result
+      } else if (appConfig.siteInfo.options.enableGaslessTransactions) {
         console.log(
           "SENDING GASLESS PAYMENT TO",
           destinationWallet.address,
@@ -498,21 +518,27 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       setLoading(false)
     }
   }, [
-    coinAmount,
     amount,
-    email,
-    destinationWallet,
-    sendPayment,
+    chainInterface,
     checkBalance,
-    handleMinting,
+    coinAmount,
+    contract,
+    destinationWallet,
+    email,
     handleError,
-    posthog,
-    selectedToken,
+    handleMinting,
+    initiative.id,
+    initiative.slug,
+    network.id,
+    organization.id,
+    organization.slug,
+    posthog.__loaded,
+    posthog.capture,
     selectedChain,
-    organization,
-    initiative,
-    exchangeRate,
+    selectedToken,
     sendGaslessPayment,
+    sendPayment,
+    usdAmount,
     chain.name,
   ])
 

@@ -73,7 +73,7 @@ export async function mintAndSaveReceiptNFT({
 
     // #region: Input validation
     if (!txId || typeof txId !== "string") {
-      return { success: false, error: "Invalid transaction ID" }
+      return { success: false, error: `Invalid transaction ID: ${txId}` }
     }
     if (!chain || !Object.values(ChainSlugs).includes(chain)) {
       return { success: false, error: "Invalid chain" }

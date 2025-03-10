@@ -1,7 +1,6 @@
 import type {
   Chain,
   ChainConfig,
-  Network,
   NetworkConfig,
   TokenTickerSymbol,
 } from "@cfce/types"
@@ -66,7 +65,10 @@ export default abstract class InterfaceBaseClass {
         walletAddress: string
       }
   >
-  isConnected() {
+
+  public getAddress?(): Promise<string | null>
+
+  public isConnected() {
     return (
       typeof this.chain !== "undefined" && typeof this.network !== "undefined"
     )
@@ -74,6 +76,17 @@ export default abstract class InterfaceBaseClass {
 
   // server functions, only defined on server subclasses
   public web3?: Web3
+
+  public async sendToContract?(params: {
+    contractId: string
+    amount: number
+    isFirstTime?: boolean
+  }): Promise<{
+    success: boolean
+    txId?: string
+    error?: string
+    walletAddress?: string
+  }>
 
   public async mintNFT?(params: {
     address: string
