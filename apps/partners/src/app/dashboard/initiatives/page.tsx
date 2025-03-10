@@ -1,21 +1,41 @@
 import { auth } from "@cfce/auth"
-import { type Initiative, getOrganizationById } from "@cfce/database"
+import {
+  type Initiative,
+  InitiativeStatus,
+  getOrganizationById,
+} from "@cfce/database"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 import InitiativeCard from "~/components/InitiativeCard"
+import InitiativeForm from "~/components/InitiativeForm"
 import Title from "~/components/title"
 import styles from "~/styles/dashboard.module.css"
-import InitiativeForm from "./InitiativeForm"
+import { FormMode, type InitiativeData } from "~/types/data"
 
 export default async function Page() {
   const session = await auth()
-  const orgId = session?.orgId || ""
+  if (!session?.orgId) {
+    redirect("/dashboard") // Redirect to dashboard if no organization ID
+  }
 
-  const organization = await getOrganizationById(orgId)
+  const organization = await getOrganizationById(session.orgId)
+  if (!organization) {
+    redirect("/dashboard") // Redirect if organization not found
+  }
 
   const initiatives =
-    organization?.initiative.map((i) => ({ ...i, organization })) || []
+    organization.initiative.map((it) => ({ ...it, organization })) || []
+  const initiative: InitiativeData = {
+    organizationId: session.orgId,
+    title: "",
+    description: "",
+    start: new Date(),
+    finish: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    status: InitiativeStatus.Draft,
+  }
 
   return (
-    <div className={styles.content}>
+    <div>
       <Title text="Create a Funding Initiative" />
       <p className={styles.intro}>
         Creating an initiative allows donors to contribute to a specific
@@ -24,12 +44,14 @@ export default async function Page() {
         place!
       </p>
       <div className={styles.mainBox}>
-        <InitiativeForm orgId={orgId} />
+        <InitiativeForm initiative={initiative} formMode={FormMode.New} />
       </div>
       {initiatives.length > 0 ? (
         initiatives.map((item: Initiative) => (
-          <div className={styles.mainBox} key={item.id}>
-            <InitiativeCard key={item.id} {...item} />
+          <div className={styles.cardBox} key={item.id}>
+            <Link href={`/dashboard/initiatives/${item.id}`} className="w-full">
+              <InitiativeCard key={item.id} {...item} />
+            </Link>
           </div>
         ))
       ) : (
