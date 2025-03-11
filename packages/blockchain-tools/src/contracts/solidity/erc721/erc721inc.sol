@@ -7,11 +7,11 @@ import {ERC721Burnable} from "@openzeppelin/contracts@5.1.0/token/ERC721/extensi
 import {ERC721URIStorage} from "@openzeppelin/contracts@5.1.0/token/ERC721/extensions/ERC721URIStorage.sol";
 import {Ownable} from "@openzeppelin/contracts@5.1.0/access/Ownable.sol";
 
-contract Give is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
+contract NFT721 is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     uint256 private _nextTokenId;
 
     constructor(address initialOwner)
-        ERC721("Give", "Give")
+        ERC721("Give by CFCE", "GIVE")
         Ownable(initialOwner)
     {}
 

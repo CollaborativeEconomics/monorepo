@@ -47,7 +47,7 @@ export default function AuthHeader() {
                 ) : (
                   <span
                     className={styles.avatar}
-                    style={{ backgroundImage: "url(nopic.png)" }}
+                    style={{ backgroundImage: "url(/nopic.png)" }}
                   />
                 )
               }
