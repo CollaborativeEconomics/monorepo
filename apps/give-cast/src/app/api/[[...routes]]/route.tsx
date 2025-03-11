@@ -165,13 +165,19 @@ const chainIdIsEip155 = (
 }
 
 app.frame("/", async (c) => {
+  const chain = c.req.query("chain") || "Base"
+
+  // Set initial chain state
+  // Note: We're mutating previousState directly as a workaround for https://github.com/wevm/frog/issues/182
+  // This is not ideal but works until the issue is fixed
+  c.previousState.chain = chain as Chain
+
   const featuredInitiatives = await getInitiatives(
     {},
     { where: { id: { in: appConfig.siteInfo.featuredInitiatives } } },
   )
 
   return c.res({
-    // action: "/initiative",
     image: (
       <div
         style={{
@@ -213,7 +219,7 @@ app.frame("/", async (c) => {
       <Button
         value={initiative.id}
         key={initiative.id}
-        action={`/initiative/${initiative.id}`}
+        action={`/initiative/${initiative.id}?chain=${chain}`}
       >
         {initiative.title}
       </Button>
@@ -232,7 +238,6 @@ const parseAmount = (inputText?: string, buttonValue?: string) => {
   return amount
 }
 
-// Remove amount handling from initiative/:id frame and just route to choose-currency
 app.frame("/initiative/:id", async (c) => {
   const { buttonValue, inputText, frameData, deriveState, previousState, req } =
     c
@@ -364,8 +369,8 @@ app.frame("/initiative/:id", async (c) => {
 
 // Update choose-currency to handle amount for Base chain
 app.frame("/choose-currency", async (c) => {
-  const { buttonValue, inputText, deriveState, previousState } = c
-  const { chain } = previousState
+  const { buttonValue, inputText, initialPath, deriveState, previousState } = c
+  const chain = previousState.chain
 
   // Handle amount first
   const amount = parseAmount(inputText, buttonValue)
@@ -624,10 +629,9 @@ app.frame("/confirmation", async (c) => {
 })
 
 app.frame("/mintquery", async (c) => {
-  const { transactionId, previousState, initialPath } = c
+  const { transactionId, previousState } = c
+  const { chain, initiative } = previousState
 
-  const initiative = previousState?.initiative
-  const chain = previousState?.chain
   console.log("TX", transactionId)
 
   const client = chain === "Base" ? baseClient : arbitrumClient
@@ -687,8 +691,6 @@ app.frame("/mintquery", async (c) => {
     console.log("INFO", info)
     if (info?.status === "success") {
       console.log("TX SUCCESS")
-      // TODO: create user profile from address
-      // const user = await checkUser(DonorData?.address || "")
       const user = await getUserByCredentials({
         address: DonorData?.address || "",
         chain,
@@ -770,10 +772,9 @@ app.transaction("/send-ether", async (c) => {
   const {
     inputText = "",
     frameData,
-    previousState: { initiative, transaction },
+    previousState: { initiative, transaction, chain },
     initialPath,
   } = c
-  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
 
   if (!initiative) {
     return c.error({
@@ -843,7 +844,6 @@ app.transaction("/send-token", async (c) => {
   const {
     inputText = "",
     frameData,
-    buttonValue,
     previousState: {
       initiative,
       transaction: { symbol, value },
@@ -946,8 +946,9 @@ app.transaction("/send-token", async (c) => {
 })
 
 app.transaction("/add-nft", (c) => {
-  const { initialPath } = c
-  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
+  const {
+    previousState: { chain },
+  } = c
   const network = getNetworkByChainName(chain)
   const address = network.contracts?.ReceiptNFT
   const image = "https://give-cast.vercel.app/givecast.jpg"
