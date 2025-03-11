@@ -682,8 +682,6 @@ app.frame("/mintquery", async (c) => {
     console.log("INFO", info)
     if (info?.status === "success") {
       console.log("TX SUCCESS")
-      // TODO: create user profile from address
-      // const user = await checkUser(DonorData?.address || "")
       const user = await getUserByCredentials({
         address: DonorData?.address || "",
         chain,
