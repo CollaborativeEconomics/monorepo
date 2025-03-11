@@ -39,20 +39,19 @@ export function InitiativeCard({
     const baseUrl =
       process.env.NEXT_PUBLIC_VERCEL_URL || "http://localhost:3000"
 
-    // Use route-based format instead of query parameters
+    // Use query parameter format for chain
     const basePath = `${baseUrl}/api/initiative/${initiativeId}`
 
     // If chain is specified, add it as a query parameter
     if (chain) {
-      const params = new URLSearchParams({ chain })
-      return `${basePath}?${params.toString()}`
+      return `${basePath}?chain=${chain}`
     }
 
     return basePath
   }
 
   const baseLink = getInitiativeUri(initiative.id)
-  const arbitrumLink = getInitiativeUri(initiative.id, "arbitrum")
+  const arbitrumLink = getInitiativeUri(initiative.id, "Arbitrum")
 
   const copyToClipboard = (text: string, linkType: string) => {
     navigator.clipboard
