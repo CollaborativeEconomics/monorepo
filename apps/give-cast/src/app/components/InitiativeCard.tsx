@@ -1,6 +1,12 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@cfce/components/ui"
 import type { InitiativeWithRelations } from "@cfce/database"
 import { ipfsCIDToUrl } from "@cfce/utils"
-import { Calendar, Copy } from "lucide-react"
+import { AlertCircle, Calendar, Copy } from "lucide-react"
 import { useState } from "react"
 
 // Toast notification component
@@ -28,11 +34,36 @@ function formatDate(dateString: Date) {
   })
 }
 
+// Check if a compatible wallet exists for a given chain
+function hasCompatibleWallet(
+  initiative: InitiativeWithRelations,
+  chain: string,
+  network = "mainnet",
+) {
+  // Check initiative wallets
+  const hasInitiativeWallet = initiative.wallets?.some(
+    (w) =>
+      w.chain.toLowerCase() === chain.toLowerCase() && w.network === network,
+  )
+
+  // Check organization wallets
+  const hasOrgWallet = initiative.organization?.wallets?.some(
+    (w) =>
+      w.chain.toLowerCase() === chain.toLowerCase() && w.network === network,
+  )
+
+  return hasInitiativeWallet || hasOrgWallet
+}
+
 export function InitiativeCard({
   initiative,
 }: { initiative: InitiativeWithRelations }) {
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("")
+
+  // Check wallet compatibility
+  const hasBaseWallet = hasCompatibleWallet(initiative, "base")
+  const hasArbitrumWallet = hasCompatibleWallet(initiative, "arbitrum")
 
   // Helper function to generate initiative URI
   function getInitiativeUri(initiativeId: string, chain?: string) {
@@ -73,9 +104,11 @@ export function InitiativeCard({
       <div className="p-6">
         <div className="flex items-center mb-4">
           <div className="flex-1 space-y-2">
-            <h2 className="text-xl font-bold text-card-foreground">
-              {initiative.title}
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold text-card-foreground">
+                {initiative.title}
+              </h2>
+            </div>
             <p className="text-muted-foreground font-medium">
               Organization:{" "}
               {initiative.organization?.name || initiative.organizationId}
@@ -122,8 +155,20 @@ export function InitiativeCard({
         <div className="mt-4 pt-4 border-t border-secondary space-y-3">
           <div className="flex items-center">
             <div className="flex-grow">
-              <div className="text-sm font-medium text-primary mb-1">
+              <div className="text-sm font-medium text-primary mb-1 flex items-center gap-2">
                 Base Link
+                <TooltipProvider>
+                  {!hasBaseWallet && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <AlertCircle className="h-4 w-4 text-yellow-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>No Base network wallet connected</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </TooltipProvider>
               </div>
               <div className="flex items-stretch">
                 <input
@@ -146,8 +191,20 @@ export function InitiativeCard({
 
           <div className="flex items-center">
             <div className="flex-grow">
-              <div className="text-sm font-medium text-primary mb-1">
+              <div className="text-sm font-medium text-primary mb-1 flex items-center gap-2">
                 Arbitrum Link
+                <TooltipProvider>
+                  {!hasArbitrumWallet && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <AlertCircle className="h-4 w-4 text-yellow-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>No Arbitrum network wallet connected</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </TooltipProvider>
               </div>
               <div className="flex items-stretch">
                 <input
