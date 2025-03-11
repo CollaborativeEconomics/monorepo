@@ -10,8 +10,8 @@ import {Strings} from "openzeppelin-contracts/utils/Strings.sol";
  * @dev A simple ERC1155 contract for minting and managing Volunteer NFTs
  */
 contract VolunteerNFT is ERC1155, Owned {
-    uint256 public constant POA = 0;
-    uint256 public constant POE = 1;
+    uint256 public constant POA = 1;
+    uint256 public constant POE = 2;
     /**
      * @dev Constructor to initialize the NFT with a URI and owner
      */

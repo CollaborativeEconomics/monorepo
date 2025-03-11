@@ -8,9 +8,14 @@ import { OrganizationAvatar } from "@cfce/components/organization"
 import { StoryCard } from "@cfce/components/story"
 import { Separator } from "@cfce/components/ui"
 import { getInitiativeById, getInitiatives } from "@cfce/database"
+import type { Initiative as InitiativeType, Organization } from "@cfce/database"
 import Image from "next/image"
 import Link from "next/link"
 import NotFound from "../../not-found"
+
+interface InitiativeCardCompactProps extends InitiativeType {
+  organization: Organization
+}
 
 export default async function Initiative(props: {
   params: Promise<{ id: string }>
@@ -34,6 +39,12 @@ export default async function Initiative(props: {
   organization = JSON.parse(JSON.stringify(organization))
   let initiatives = await getInitiatives({ orgId: organization.id })
   initiatives = JSON.parse(JSON.stringify(initiatives))
+
+  // // Transform initiatives to match InitiativeType
+  // initiatives = initiatives.map((initiative) => ({
+  //   ...initiative,
+  //   status: initiative.status || null,
+  // })) as InitiativeType[]
 
   const stories = initiative.stories
   console.log("STORIES", stories.length)
