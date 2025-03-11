@@ -52,7 +52,7 @@ export function InitiativeCard({
   }
 
   const baseLink = getInitiativeUri(initiative.id)
-  const arbitrumLink = getInitiativeUri(initiative.id, "arbitrum")
+  const arbitrumLink = getInitiativeUri(initiative.id, "Arbitrum")
 
   const copyToClipboard = (text: string, linkType: string) => {
     navigator.clipboard

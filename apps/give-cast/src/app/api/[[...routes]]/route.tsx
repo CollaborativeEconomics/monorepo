@@ -233,10 +233,17 @@ const parseAmount = (inputText?: string, buttonValue?: string) => {
 }
 
 // Remove amount handling from initiative/:id frame and just route to choose-currency
-app.frame("/initiative/:id/:chain?", async (c) => {
+app.frame("/initiative/:id", async (c) => {
   const { buttonValue, inputText, frameData, deriveState, previousState, req } =
     c
   const id = c.req.param("id")
+  const chain = c.req.query("chain")
+
+  // Set chain state if different
+  // Note: We're mutating previousState directly as a workaround for https://github.com/wevm/frog/issues/182
+  if (previousState.chain !== chain) {
+    previousState.chain = chain as Chain
+  }
 
   // Fetch and set initiative data first
   const fullInitiative = await getInitiativeById(id)
@@ -246,22 +253,20 @@ app.frame("/initiative/:id/:chain?", async (c) => {
     })
   }
 
-  deriveState((prevState) => {
-    prevState.initiative = {
-      id: fullInitiative.id,
-      title: fullInitiative.title,
-      defaultAsset: fullInitiative.defaultAsset,
-      created: fullInitiative.created,
-      organization: fullInitiative.organization
-        ? {
-            id: fullInitiative.organization.id,
-            name: fullInitiative.organization.name,
-          }
-        : null,
-    }
-  })
+  // Set initiative state
+  previousState.initiative = {
+    id: fullInitiative.id,
+    title: fullInitiative.title,
+    defaultAsset: fullInitiative.defaultAsset,
+    created: fullInitiative.created,
+    organization: fullInitiative.organization
+      ? {
+          id: fullInitiative.organization.id,
+          name: fullInitiative.organization.name,
+        }
+      : null,
+  }
 
-  // Always route to choose-currency
   return c.res({
     action: "/choose-currency",
     image: (
@@ -359,8 +364,8 @@ app.frame("/initiative/:id/:chain?", async (c) => {
 
 // Update choose-currency to handle amount for Base chain
 app.frame("/choose-currency", async (c) => {
-  const { buttonValue, inputText, initialPath, deriveState } = c
-  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
+  const { buttonValue, inputText, deriveState, previousState } = c
+  const { chain } = previousState
 
   // Handle amount first
   const amount = parseAmount(inputText, buttonValue)
@@ -620,9 +625,9 @@ app.frame("/confirmation", async (c) => {
 
 app.frame("/mintquery", async (c) => {
   const { transactionId, previousState, initialPath } = c
-  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
 
   const initiative = previousState?.initiative
+  const chain = previousState?.chain
   console.log("TX", transactionId)
 
   const client = chain === "Base" ? baseClient : arbitrumClient
@@ -842,10 +847,9 @@ app.transaction("/send-token", async (c) => {
     previousState: {
       initiative,
       transaction: { symbol, value },
+      chain,
     },
-    initialPath,
   } = c
-  const chain = initialPath.match(/Arbitrum/) ? "Arbitrum" : "Base"
 
   if (!initiative) {
     return c.error({
@@ -979,7 +983,6 @@ devtools(app, { serveStatic })
 
 export const GET = handle(app)
 export const POST = handle(app)
-
 const CHAIN_CURRENCIES: Partial<
   Record<Chain, { name: string; icon: string }[]>
 > = {
@@ -989,7 +992,7 @@ const CHAIN_CURRENCIES: Partial<
     { name: "ETH", icon: "/icons/eth.png" },
   ],
   Arbitrum: [
-    { name: "ARB", icon: "/icons/arb.png" },
+    // { name: "ARB", icon: "/icons/arb.png" },
     { name: "ETH", icon: "/icons/eth.png" },
   ],
 } as const
