@@ -43,8 +43,8 @@ import { Input } from "~/ui/input"
 import { Label } from "~/ui/label"
 import { Separator } from "~/ui/separator"
 import createDonation from "../actions/createDonation"
-import getRate from "../actions/getRate"
 import getContractByChain from "../actions/getContractByChain"
+import getRate from "../actions/getRate"
 import { CarbonCreditDisplay } from "./CarbonCreditDisplay"
 import { ChainSelect } from "./ChainSelect"
 import { DonationAmountInput } from "./DonationAmountInput"
@@ -76,10 +76,7 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export default function DonationForm({
-  initiative,
-  rate,
-}: DonationFormProps) {
+export default function DonationForm({ initiative, rate }: DonationFormProps) {
   //console.log("INITIATIVE", initiative)
   const posthog = usePostHog()
   const organization = initiative.organization
@@ -95,7 +92,8 @@ export default function DonationForm({
   }, [coinRate, setChainState])
   //console.log('INIT STATE', chainState)
 
-  const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState
+  const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
+    chainState
   const [donationForm, setDonationForm] = useAtom(donationFormAtom)
   const { emailReceipt, name, email, amount } = donationForm
   const coinAmount = useAtomValue(amountCoinAtom)
@@ -103,7 +101,7 @@ export default function DonationForm({
   console.log("Coin amount", coinAmount, usdAmount)
   const chain = chainConfig[selectedChain]
   const network = chain.networks[appConfig.chainDefaults.network]
-  console.log('NET', network)
+  console.log("NET", network)
   const chainInterface = BlockchainClientInterfaces[selectedWallet]
   const [buttonMessage, setButtonMessage] = useState(
     "One wallet confirmation required",
@@ -325,7 +323,7 @@ export default function DonationForm({
         // TODO: increase sleep time? some chains take longer <<<<
         //await sleep(5000) // Wait for tx to confirm
         console.log("MINT>")
-        const receiptResult = await mintAndSaveReceiptNFT(data)  // <<<<<<
+        const receiptResult = await mintAndSaveReceiptNFT(data) // <<<<<<
         console.log("RESULT>", receiptResult)
 
         if ("error" in receiptResult) {
@@ -412,43 +410,48 @@ export default function DonationForm({
         error?: string
       }
 
+      let contract: Contract | null = null
+      // Check for contract
       if (selectedChain === "stellar") {
-        const network = appConfig.chains[selectedChain]?.network || 'testnet'
+        const network = appConfig.chains[selectedChain]?.network || "testnet"
         // First get contract for initiative
-        let contract = await getContractByChain(initiative.id, "Credits", selectedChain, network)
+        contract = await getContractByChain(
+          initiative.id,
+          "Credits",
+          selectedChain,
+          network,
+        )
         console.log("CTR1", contract)
-        if(!contract){
+        if (!contract) {
           // If not found, get contract for organization
-          contract = await getContractByChain(organization.id, "Credits", selectedChain, network)
+          contract = await getContractByChain(
+            organization.id,
+            "Credits",
+            selectedChain,
+            network,
+          )
           console.log("CTR2", contract)
         }
-        if(!contract){
-          throw new Error('Stellar credits contract not found for this initiative')
-        }
+      }
 
-        console.log("USING CONTRACT", contract.contract_address)
-
-        if (chainInterface?.sendToContract){
-          const result = await chainInterface.sendToContract({
-            contractId: contract.contract_address ?? "",
-            amount: coinAmount,
-          })
-          console.log("RESULT", result)
-          if(!result){
-            console.log("ERROR1")
-            throw new Error("Contract donations not supported")
-          }
-          if (!result?.success) {
-            console.log("ERROR2")
-            throw new Error(result?.error || "Contract donation failed")
-          }
-          paymentResult = result
-        } else {
-          console.log("ERROR3")
+      if (contract && chainInterface?.sendToContract) {
+        console.log("USING CONTRACT", contract?.contract_address)
+        const result = await chainInterface.sendToContract({
+          contractId: contract.contract_address ?? "",
+          amount: coinAmount,
+        })
+        console.log("RESULT", result)
+        if (!result) {
+          console.log("ERROR1")
           throw new Error("Contract donations not supported")
         }
-        console.log("END1")
+        if (!result?.success) {
+          console.log("ERROR2")
+          throw new Error(result?.error || "Contract donation failed")
+        }
+        paymentResult = result
       } else if (appConfig.siteInfo.options.enableGaslessTransactions) {
+        // currently starknet only
         console.log(
           "SENDING GASLESS PAYMENT TO",
           destinationWallet.address,
@@ -473,7 +476,6 @@ export default function DonationForm({
           destinationWallet.memo,
         )
       }
-
       console.log("PAYRES", paymentResult)
 
       if (!paymentResult?.success) {
