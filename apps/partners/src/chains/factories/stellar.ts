@@ -359,6 +359,16 @@ async function deployCredits(data: CreditsData) {
       }
     }
     const xlmContract = stellar.tokens.find((t) => t.isNative)?.contract
+    if (!xlmContract) {
+      return {
+        success: false,
+        txid: null,
+        contractId: null,
+        block: null,
+        error: "Native asset not found",
+      }
+    }
+
     //const orgwallet = walletInfo.account
     const orgwallet = walletInfo.walletAddress
     if (!orgwallet) {
