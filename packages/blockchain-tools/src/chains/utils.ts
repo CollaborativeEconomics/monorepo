@@ -72,6 +72,13 @@ export const getChainConfigurationByName = (name: Chain): ChainConfig => {
   return config
 }
 
+export const getNetworkByChainName = (name: Chain): NetworkConfig => {
+  const config = getChainConfigurationByName(name)
+  return config.networks[
+    process.env.NEXT_PUBLIC_APP_ENV === "production" ? "mainnet" : "testnet"
+  ]
+}
+
 /**
  * Get the RPC URL for the chain, network, and RPC type
  * @param chain - The chain slug
