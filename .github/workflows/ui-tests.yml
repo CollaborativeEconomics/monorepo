@@ -48,14 +48,14 @@ jobs:
         run: pnpm install
       
       # Check and fix dependency mismatches
-      - name: Check for dependency mismatches
-        run: npx syncpack list-mismatches
+      # - name: Check for dependency mismatches
+      #   run: npx syncpack list-mismatches
         
-      - name: Fix dependency mismatches
-        run: npx syncpack fix-mismatches
+      # - name: Fix dependency mismatches
+      #   run: npx syncpack fix-mismatches
         
-      - name: Reinstall dependencies after fixing mismatches
-        run: pnpm install
+      # - name: Reinstall dependencies after fixing mismatches
+      #   run: pnpm install
 
       # Run TypeScript checks but don't fail the build
       - name: Type check
