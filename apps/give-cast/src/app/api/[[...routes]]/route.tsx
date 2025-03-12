@@ -165,19 +165,22 @@ const chainIdIsEip155 = (
 }
 
 app.frame("/", async (c) => {
-  const chain = c.req.query("chain") || "Base"
+  const { previousState, req, res } = c
+  const chain = req.query("chain")
 
-  // Set initial chain state
-  // Note: We're mutating previousState directly as a workaround for https://github.com/wevm/frog/issues/182
-  // This is not ideal but works until the issue is fixed
-  c.previousState.chain = chain as Chain
+  if (chain && previousState.chain !== chain) {
+    // Set initial chain state
+    // Note: We're mutating previousState directly as a workaround for https://github.com/wevm/frog/issues/182
+    console.log("SETTING CHAIN", chain)
+    previousState.chain = chain as Chain
+  }
 
   const featuredInitiatives = await getInitiatives(
     {},
     { where: { id: { in: appConfig.siteInfo.featuredInitiatives } } },
   )
 
-  return c.res({
+  return res({
     image: (
       <div
         style={{
@@ -246,7 +249,7 @@ app.frame("/initiative/:id", async (c) => {
 
   // Set chain state if different
   // Note: We're mutating previousState directly as a workaround for https://github.com/wevm/frog/issues/182
-  if (previousState.chain !== chain) {
+  if (chain && previousState.chain !== chain) {
     previousState.chain = chain as Chain
   }
 
