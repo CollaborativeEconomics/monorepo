@@ -4,7 +4,10 @@
   "private": true,
   "exports": {
     ".": "./dist/index.js",
-    "./types": "./dist/types.d.ts"
+    "./types": {
+      "default": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    }
   },
   "scripts": {
     "db:generate": "prisma generate",

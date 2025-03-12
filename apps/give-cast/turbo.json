@@ -4,15 +4,16 @@
     "build": {
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
       "env": [
-        "MINTER_CONTRACT",
-        "MINTER_PRIVATE",
-        "TICKER_API_KEY",
         "OFFICIAL_CFCE_API_KEY",
         "CFCE_REGISTRY_API_URL",
         "CFCE_REGISTRY_API_KEY",
         "IPFS_API_KEY",
         "IPFS_API_SECRET",
-        "MAILGUN_API_KEY"
+        "MAILGUN_API_KEY",
+        "BASE_WALLET_SECRET",
+        "ARBITRUM_WALLET_SECRET",
+        "XDC_WALLET_SECRET",
+        "MOBULA_API_KEY"
       ],
       "dependsOn": ["^build"]
     }

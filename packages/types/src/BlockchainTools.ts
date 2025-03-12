@@ -67,15 +67,19 @@ type FactoryContract =
   | "VolunteersFactory"
 
 export type Contract =
-  | FactoryContract
-  | "TokenBoundRegistry"
-  | "TokenBoundImplementation"
-  | "TokenBoundNFT"
+  | "Credits"
+  | "CreditsFactory"
+  | "CreditsHash"
+  | "FactoryContract"
+  | "ReceiptFactory"
   | "ReceiptNFT"
   | "ReceiptNFTHash" // soroban only
   | "StoryNFT"
-  | "Credits"
+  | "TokenBoundRegistry"
+  | "TokenBoundImplementation"
+  | "TokenBoundNFT"
   | "VolunteersDistributor"
+  | "VolunteersFactory"
   | "VolunteersNFT"
 
 export interface NetworkConfig {
@@ -123,6 +127,8 @@ export const TokenTickerSymbol = [
   "USDT",
   "USDC",
   "DAI",
+  "DEGEN",
+  "MOXIE",
 ] as const
 export type TokenTickerSymbol = (typeof TokenTickerSymbol)[number]
 

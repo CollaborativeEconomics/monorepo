@@ -10,33 +10,42 @@ interface InitiativeQuery extends ListQuery {
   search?: string
 }
 
-export async function getInitiatives(query: InitiativeQuery) {
+const initiativeDeepInclude = {
+  category: true,
+  credits: true,
+  organization: {
+    include: {
+      wallets: true,
+    },
+  },
+  wallets: true,
+  stories: {
+    include: {
+      media: true,
+      organization: true,
+      initiative: {
+        include: {
+          category: true,
+        },
+      },
+    },
+    orderBy: {
+      created: "desc" as const,
+    },
+  },
+}
+
+export type InitiativeWithRelations = Prisma.InitiativeGetPayload<{
+  include: typeof initiativeDeepInclude
+}>
+
+export async function getInitiatives(
+  query: InitiativeQuery,
+  findArgs?: Partial<Prisma.InitiativeFindManyArgs>,
+): Promise<InitiativeWithRelations[]> {
   let where: Prisma.InitiativeWhereInput = {}
   let skip: Prisma.InitiativeFindManyArgs["skip"] = 0
   let take: Prisma.InitiativeFindManyArgs["take"] = 100
-  const include: Prisma.InitiativeInclude = {
-    category: true,
-    credits: true,
-    organization: {
-      include: {
-        wallets: true,
-      },
-    },
-    stories: {
-      include: {
-        media: true,
-        organization: true,
-        initiative: {
-          include: {
-            category: true,
-          },
-        },
-      },
-      orderBy: {
-        created: "desc",
-      },
-    },
-  }
 
   if (query?.orgId) {
     where = { organizationId: query.orgId }
@@ -94,38 +103,14 @@ export async function getInitiatives(query: InitiativeQuery) {
   }
   return prismaClient.initiative.findMany({
     where,
-    include,
     skip,
     take,
     orderBy: { title: "asc" },
+    ...findArgs,
+    // include is not overridable
+    include: initiativeDeepInclude,
   })
 }
-
-const initiativeDeepInclude = {
-  category: true,
-  credits: true,
-  organization: {
-    include: {
-      wallets: true,
-    },
-  },
-  wallets: true,
-  stories: {
-    include: {
-      media: true,
-      organization: true,
-      initiative: {
-        include: {
-          category: true,
-        },
-      },
-    },
-  },
-}
-
-export type InitiativeWithRelations = Prisma.InitiativeGetPayload<{
-  include: typeof initiativeDeepInclude
-}>
 
 export async function getInitiativeById(
   id: string,
@@ -150,10 +135,7 @@ export async function newInitiative(data: Prisma.InitiativeCreateInput) {
   return result
 }
 
-export async function updateInitiative(
-  id: string,
-  data: Prisma.InitiativeUpdateInput,
-) {
+export async function updateInitiative(id: string, data: Prisma.InitiativeUpdateInput) {
   const result = await prismaClient.initiative.update({ where: { id }, data })
   return result
 }

@@ -4,7 +4,7 @@ import { abiVolunteersDistributor as DistributorAbi } from '@cfce/blockchain-too
 import type { Contract, Event, Volunteer } from '@cfce/database';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { useState } from 'react';
-import { useAccount, useConnect, useWriteContract } from 'wagmi';
+import { useAccount, useConnect, useWriteContract, useEstimateGas } from 'wagmi';
 import { arbitrumSepolia } from 'wagmi/chains';
 import ButtonBlue from '~/components/buttonblue';
 import Dashboard from '~/components/dashboard';
@@ -31,6 +31,8 @@ export default function RewardClient({
   contractNFT,
   contractV2E,
 }: RewardClientProps) {
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [buttonText, setButtonText] = useState('REWARD VOLUNTEERS');
   const [message, setMessage] = useState('Start the disbursement process');
   const { data: hash, writeContractAsync } = useWriteContract({
     config: wagmiConfig,
@@ -55,21 +57,34 @@ export default function RewardClient({
       return;
     }
 
+    // const estimateGas = await useEstimateGas({
+    //   address: distributor,
+    //   abi: DistributorAbi,
+    //   functionName: 'distributeTokensByUnit' as const,
+    //   args: [registered as `0x${string}`[]],
+    //   chain: defaultChain,
+    // });
+
+    // console.log('ESTIMATE GAS', estimateGas);
+
+    setButtonDisabled(true);
+    setButtonText('SENDING REWARDS');
+    setMessage('Sending tokens to volunteers, please wait');
     try {
       const registered = volunteers?.map(it => it.address);
-      console.log('REGISTERED', registered, {
+      console.log('REGISTERED', registered)
+      console.log('TX', {
         address: distributor,
         abi: DistributorAbi,
-        functionName: 'distributeTokensByUnit',
-        args: [registered as `0x${string}`[]],
+        functionName: 'distributeTokens' as const,
         chain: defaultChain,
         account: account.address,
       });
+      
       const hash = await writeContractAsync({
         address: distributor,
         abi: DistributorAbi,
-        functionName: 'distributeTokensByUnit',
-        args: [registered as `0x${string}`[]],
+        functionName: 'distributeTokens' as const,
         chain: defaultChain,
         account: account.address,
       });
@@ -80,14 +95,18 @@ export default function RewardClient({
       });
 
       setMessage('Tokens distributed successfully');
+      setButtonDisabled(true);
+      setButtonText('REWARDS SENT');
     } catch (error) {
       console.error('Reward distribution error:', error);
+      setButtonDisabled(false);
+      setButtonText('ERROR SENDING REWARDS');
       setMessage('Error distributing tokens');
     }
   }
 
   return (
-    <div className={styles.content}>
+    <div>
       <div className={styles.mainBox}>
         <Title text="VOLUNTEER TO EARN" />
         <h1>{event.name}</h1>
@@ -133,7 +152,8 @@ export default function RewardClient({
         <div className="w-full mb-2 flex flex-row justify-between">
           <ButtonBlue
             id="buttonSubmit"
-            text="REWARD VOLUNTEERS"
+            text={buttonText}
+            disabled={buttonDisabled}
             onClick={onSubmit}
           />
         </div>

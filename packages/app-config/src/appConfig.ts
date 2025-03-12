@@ -1,18 +1,32 @@
 import type { AppConfig } from "@cfce/types"
 // base/default
 import base from "./config/appConfigBase"
+
 // give-credits
 import giveCreditsDev from "./config/give-credits/appConfig.development"
 import giveCreditsProd from "./config/give-credits/appConfig.production"
 import giveCreditsStaging from "./config/give-credits/appConfig.staging"
+
+// give-cast
+import giveCastDev from "./config/give-cast/appConfig.development"
+import giveCastProd from "./config/give-cast/appConfig.production"
+import giveCastStaging from "./config/give-cast/appConfig.staging"
+
 // give-stark
 import giveStarkDev from "./config/give-stark/appConfig.development"
 import giveStarkProd from "./config/give-stark/appConfig.production"
 import giveStarkStaging from "./config/give-stark/appConfig.staging"
+
 // Give tron
 import giveTronDev from "./config/give-tron/appConfig.development"
 import giveTronProd from "./config/give-tron/appConfig.production"
 import giveTronStaging from "./config/give-tron/appConfig.staging"
+
+// Give base
+import giveBaseDev from "./config/give-base/appConfig.development"
+import giveBaseProd from "./config/give-base/appConfig.production"
+import giveBaseStaging from "./config/give-base/appConfig.staging"
+
 // Giving universe
 import givingUniverseDev from "./config/giving-universe/appConfig.development"
 import givingUniverseProd from "./config/giving-universe/appConfig.production"
@@ -40,21 +54,33 @@ import testsProd from "./config/tests/appConfig.production"
 
 type Environment = "development" | "production" | "staging"
 type AppId =
+  | "give-cast"
   | "give-credits"
   | "give-stark"
   | "give-tron"
   | "giving-universe"
   | "give-arbitrum"
   | "give-xrp"
+  | "give-base"
   | "partners"
   | "registry"
   | "tests"
 
 const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
+  "give-cast": {
+    development: giveCastDev,
+    production: giveCastProd,
+    staging: giveCastStaging,
+  },
   "give-credits": {
     development: giveCreditsDev,
     production: giveCreditsProd,
     staging: giveCreditsStaging,
+  },
+  "give-base": {
+    development: giveBaseDev,
+    production: giveBaseProd,
+    staging: giveBaseStaging,
   },
   "give-stark": {
     development: giveStarkDev,

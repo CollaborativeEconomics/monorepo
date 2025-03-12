@@ -1,27 +1,38 @@
 import "server-only"
-import { prismaClient } from ".."
-import type { Prisma, Wallet } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
+import type { Chain, Prisma, Wallet } from "@prisma/client"
+import { prismaClient } from ".."
 
 interface WalletQuery extends ListQuery {
   address?: string
   orgId?: string
+  initiativeId?: string
+  chain?: Chain
 }
 
-export async function getWallets(
-  query: WalletQuery,
-): Promise<Wallet | Array<Wallet>> {
+export async function getWallets(query: WalletQuery) {
   const where: Prisma.WalletWhereInput = {}
   const skip = 0
   const take = 100
   const orderBy = {}
-  // let include = {
-  //   organizations: true
-  // }
+  const include = {
+    //organizations: true
+    initiatives: {
+      select: {
+        title: true
+      }
+    }
+  }
 
-  const filter = { where, skip, take, orderBy }
+  const filter = { where, include, skip, take, orderBy }
   if (query?.orgId) {
     where.organizationId = query.orgId
+  }
+  if (query?.initiativeId) {
+    where.initiativeId = query.initiativeId
+  }
+  if (query?.chain) {
+    where.chain = query.chain
   }
   if (query?.page || query?.size) {
     let page = Number.parseInt(query?.page || "0")
@@ -41,13 +52,14 @@ export async function getWallets(
     filter.orderBy = { name: "asc" }
   }
   const data = await prismaClient.wallet.findMany(filter)
-
   return data
 }
 
 export async function newWallet(
   data: Prisma.WalletCreateInput,
 ): Promise<Wallet> {
+  console.log('NEW DATA', data)
   const result = await prismaClient.wallet.create({ data })
+  console.log('RES DATA', result)
   return result
 }
