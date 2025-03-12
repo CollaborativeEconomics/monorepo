@@ -1,4 +1,3 @@
-//import { getNetworkForChain } from "@cfce/blockchain-tools"
 import appConfig, { getChainConfig } from "@cfce/app-config"
 
 const mintTopic =
@@ -91,7 +90,6 @@ async function getLogs(address: string, topics: string[], fromBlock: string) {
   const hexBlock = `0x${Number.parseInt(fromBlock).toString(16)}`
 
   try {
-    //const url = getNetworkForChain("arbitrum").rpcUrls.main
     const url = getChainConfig("arbitrum").rpcUrls.default
     //console.log('PROVIDER', url)
     if (!url) {

@@ -8,9 +8,14 @@ import { OrganizationAvatar } from "@cfce/components/organization"
 import { StoryCard } from "@cfce/components/story"
 import { Separator } from "@cfce/components/ui"
 import { getInitiativeById, getInitiatives } from "@cfce/database"
+import type { Initiative as InitiativeType, Organization } from "@cfce/database"
 import Image from "next/image"
 import Link from "next/link"
 import NotFound from "../../not-found"
+
+interface InitiativeCardCompactProps extends InitiativeType {
+  organization: Organization
+}
 
 export default async function Initiative(props: {
   params: Promise<{ id: string }>
@@ -35,6 +40,12 @@ export default async function Initiative(props: {
   let initiatives = await getInitiatives({ orgId: organization.id })
   initiatives = JSON.parse(JSON.stringify(initiatives))
 
+  // // Transform initiatives to match InitiativeType
+  // initiatives = initiatives.map((initiative) => ({
+  //   ...initiative,
+  //   status: initiative.status || null,
+  // })) as InitiativeType[]
+
   const stories = initiative.stories
   console.log("STORIES", stories.length)
   // TODO: use default chain
@@ -52,26 +63,6 @@ export default async function Initiative(props: {
   console.log("RATE", rate)
   console.log("CARBON", carbon)
   //console.log('INITIATIVE', initiative);
-
-
-/* MOVED TO DONATION FORM
-  // Load contract data if available - first try initiative contract
-  let contracts = await getContracts({
-    entity_id: initiative.id,
-    contract_type: "Credits",
-  })
-
-  // If no initiative contract found, try organization contract
-  if (!contracts.length) {
-    contracts = await getContracts({
-      entity_id: organization.id,
-      contract_type: "Credits",
-    })
-  }
-
-  // Get the first active contract if any found
-  const contract = Array.isArray(contracts) ? contracts[0] : null
-*/
 
   return (
     <main className="w-full">
