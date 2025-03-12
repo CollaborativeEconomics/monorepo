@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: "html",
   timeout: 100000,
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "https://give-base-git-kuyawa-partners-login-cfce.vercel.app/",
 
     trace: "on-first-retry",
   },

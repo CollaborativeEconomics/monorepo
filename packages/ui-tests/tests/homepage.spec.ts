@@ -10,7 +10,7 @@ test.describe("Homepage", () => {
 
   test("has expected title and meta content", async ({ page }) => {
     // Basic check that we're on the homepage
-    await expect(page).toHaveTitle("Give Arbitrum (Development)")
+    await expect(page).toHaveTitle("Give Base (Staging)")
 
     // Check meta description
     const metaDescription = await page.locator('meta[name="description"]')
@@ -26,7 +26,7 @@ test.describe("Homepage", () => {
     await expect(header).toBeVisible()
 
     // Check logo - make it more specific by looking within the header
-    const headerLogo = header.getByRole("link", { name: /give arbitrum/i })
+    const headerLogo = header.getByRole("link", { name: /give base/i })
     await expect(headerLogo).toBeVisible()
 
     // Check main nav links
@@ -58,7 +58,7 @@ test.describe("Homepage", () => {
 
     // Test navigation
     await findOrgButton.click()
-    await page.waitForURL(/^http:\/\/localhost:3000\/organizations$/)
+    await page.waitForURL(/^https:\/\/give-base-git-kuyawa-partners-login-cfce.vercel.app\/organizations$/)
     await expect(page).toHaveURL(/.*\/organizations/)
 
     // Go back to homepage
@@ -77,7 +77,7 @@ test.describe("Homepage", () => {
 
     // Test navigation
     await findInitiativesButton.click()
-    await page.waitForURL(/^http:\/\/localhost:3000\/initiatives$/)
+    await page.waitForURL(/^https:\/\/give-base-git-kuyawa-partners-login-cfce.vercel.app\/initiatives$/)
     await expect(page).toHaveURL(/.*\/initiatives/)
 
     // Verify we're on the initiatives page by checking for specific content
@@ -135,7 +135,7 @@ test.describe("Homepage", () => {
 
     // Check footer logo
     await expect(
-      footer.getByRole("link", { name: "Give Arbitrum (Development) logo" }),
+      footer.getByRole("link", { name: "Give Base (Staging) logo" }),
     ).toBeVisible()
   })
 

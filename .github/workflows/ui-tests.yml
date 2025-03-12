@@ -60,7 +60,7 @@ jobs:
           DEBUG: pw:api,pw:browser*  # More detailed Playwright debugging
           PLAYWRIGHT_TIMEOUT: 60000
         run: |
-          pnpm test --workers=1 --retries=2 --reporter=list,github,json
+          pnpm test
           
       # Upload test results
       - name: Upload test results
