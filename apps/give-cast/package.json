@@ -11,18 +11,23 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@cfce/app-config": "workspace:*",
+    "@cfce/auth": "workspace:*",
+    "@cfce/blockchain-tools": "workspace:*",
+    "@cfce/components": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/utils": "workspace:*",
-    "@cfce/app-config": "workspace:*",
     "@t3-oss/env-nextjs": "0.12.0",
     "ethers": "^6.13.5",
     "form-data": "^4.0.1",
     "frog": "^0.18.2",
     "hono": "^4.6.7",
     "jiti": "1.21.7",
+    "lucide-react": "0.474.0",
     "next": "^15.1.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "uuid": "11.0.5",
     "viem": "^2.21.54",
     "zod": "^3.24.1"
   },
@@ -30,6 +35,9 @@
     "@types/node": "^22.10.1",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2",
     "vercel": "39.3.0"
   }
