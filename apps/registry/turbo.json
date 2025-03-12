@@ -17,7 +17,9 @@
         "POSTGRES_PRISMA_URL",
         "MOBULA_API_KEY",
         "STELLAR_CARBON",
-        "CRON_SECRET"
+        "CRON_SECRET",
+        "AUTH_SECRET",
+        "AUTH_URL"
       ],
       "dependsOn": ["^build"]
     }
