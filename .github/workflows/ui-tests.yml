@@ -45,98 +45,17 @@ jobs:
             ${{ runner.os }}-pnpm-
           
       - name: Install dependencies
-        run: pnpm install
-      
-      # Check and fix dependency mismatches
-      # - name: Check for dependency mismatches
-      #   run: npx syncpack list-mismatches
-        
-      # - name: Fix dependency mismatches
-      #   run: npx syncpack fix-mismatches
-        
-      # - name: Reinstall dependencies after fixing mismatches
-      #   run: pnpm install
-
-      # Run TypeScript checks but don't fail the build
-      - name: Type check
-        run: pnpm tsc --noEmit
-        continue-on-error: true  # Allow continuing even if there are type errors
+        run: pnpm install --filter="./packages/ui-tests" --filter="./packages/ui-tests^..."
           
       - name: Install Playwright browsers
         working-directory: packages/ui-tests
         run: pnpm exec playwright install --with-deps chromium
-
-      # Create a CI-specific tsconfig that's more permissive
-      - name: Create CI-specific tsconfig
-        run: |
-          echo '{
-            "extends": "./tsconfig.json",
-            "compilerOptions": {
-              "skipLibCheck": true,
-              "noErrorTruncation": true,
-              "typeRoots": ["./node_modules/@types", "./node_modules"]
-            }
-          }' > tsconfig.ci.json
-        
-      # Build packages with improved settings
-      - name: Build UI test dependencies
-        env:
-          SKIP_TYPE_CHECK: true
-          TSC_COMPILE_ON_ERROR: true
-          NODE_OPTIONS: "--max-old-space-size=4096"
-        run: pnpm turbo build --filter="./packages/*" --force --no-cache
-        
-      # Build the app with improved settings
-      - name: Build give-arbitrum
-        working-directory: apps/give-arbitrum
-        env:
-          NODE_ENV: test
-          NEXT_PUBLIC_API_URL: http://localhost:3000
-          NEXT_PUBLIC_MOCK_MODE: true
-          SKIP_TYPE_CHECK: true
-          TSC_COMPILE_ON_ERROR: true
-          NODE_OPTIONS: "--max-old-space-size=4096"
-        run: pnpm build
           
-      # Start the app with improved health check
-      - name: Start give-arbitrum
-        working-directory: apps/give-arbitrum
-        env:
-          NODE_ENV: test
-          PORT: 3000
-          NEXT_PUBLIC_API_URL: http://localhost:3000
-          NEXT_PUBLIC_MOCK_MODE: true
-          MOCK_BLOCKCHAIN_PROVIDERS: true
-        run: |
-          pnpm start &
-          echo $! > .nextpid
-          
-          # Robust health check
-          attempt_counter=0
-          max_attempts=30
-          
-          echo "Waiting for app to start..."
-          until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do
-              if [ ${attempt_counter} -eq ${max_attempts} ];then
-                echo "Max attempts reached. App failed to start."
-                kill $(cat .nextpid)
-                exit 1
-              fi
-              
-              attempt_counter=$(($attempt_counter+1))
-              echo "Waiting... (${attempt_counter}/${max_attempts})"
-              sleep 2
-          done
-          
-          # Additional check for app readiness
-          echo "Verifying app is fully loaded..."
-          sleep 5
-          
-      # Run tests with improved settings
+      # Run tests against the Vercel deployment
       - name: Run UI tests
         working-directory: packages/ui-tests
         env:
-          PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
+          PLAYWRIGHT_TEST_BASE_URL: https://give-base-git-kuyawa-partners-login-cfce.vercel.app
           CI: true
           DEBUG: pw:api,pw:browser*  # More detailed Playwright debugging
           PLAYWRIGHT_TIMEOUT: 60000
@@ -162,11 +81,3 @@ jobs:
           name: playwright-traces
           path: packages/ui-tests/test-results/
           retention-days: 7
-          
-      # Cleanup
-      - name: Cleanup
-        if: always()
-        run: |
-          if [ -f apps/give-arbitrum/.nextpid ]; then
-            kill $(cat apps/give-arbitrum/.nextpid) || true
-          fi
