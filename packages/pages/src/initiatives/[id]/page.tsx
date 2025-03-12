@@ -7,7 +7,7 @@ import { InitiativeCardCompact } from "@cfce/components/initiative"
 import { OrganizationAvatar } from "@cfce/components/organization"
 import { StoryCard } from "@cfce/components/story"
 import { Separator } from "@cfce/components/ui"
-import { getContracts, getInitiativeById, getInitiatives } from "@cfce/database"
+import { getInitiativeById, getInitiatives } from "@cfce/database"
 import Image from "next/image"
 import Link from "next/link"
 import NotFound from "../../not-found"
@@ -53,6 +53,8 @@ export default async function Initiative(props: {
   console.log("CARBON", carbon)
   //console.log('INITIATIVE', initiative);
 
+
+/* MOVED TO DONATION FORM
   // Load contract data if available - first try initiative contract
   let contracts = await getContracts({
     entity_id: initiative.id,
@@ -69,6 +71,7 @@ export default async function Initiative(props: {
 
   // Get the first active contract if any found
   const contract = Array.isArray(contracts) ? contracts[0] : null
+*/
 
   return (
     <main className="w-full">
@@ -131,11 +134,7 @@ export default async function Initiative(props: {
         <div className="md:flex md:flex-col items-center">
           <div className="flex flex-col lg:flex-row flex-nowrap gap-10 items-start">
             <div className="w-full lg:w-[60%]">
-              <DonationForm
-                initiative={initiative}
-                rate={rate}
-                contract={contract || undefined}
-              />
+              <DonationForm initiative={initiative} rate={rate} />
             </div>
             <div className="lg:w-[40%]">
               <NFTReceipt initiative={initiative} />

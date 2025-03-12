@@ -45,6 +45,10 @@ interface MintAndSaveReceiptNFTParams {
   email?: string
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 export async function mintAndSaveReceiptNFT({
   transaction,
   organizationId,
@@ -143,6 +147,8 @@ export async function mintAndSaveReceiptNFT({
       chainTool = BlockchainServerInterfaces.evm
       chainTool.setChain(chain)
     }
+
+    sleep(5000) // wait 5 secs for tx to confirm
     console.log("TxId", txId)
     const txInfo = await chainTool.getTransactionInfo(txId, true) // wait for receipt
     if ("error" in txInfo) {

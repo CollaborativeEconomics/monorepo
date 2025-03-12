@@ -44,6 +44,7 @@ import { Label } from "~/ui/label"
 import { Separator } from "~/ui/separator"
 import createDonation from "../actions/createDonation"
 import getRate from "../actions/getRate"
+import getContractByChain from "../actions/getContractByChain"
 import { CarbonCreditDisplay } from "./CarbonCreditDisplay"
 import { ChainSelect } from "./ChainSelect"
 import { DonationAmountInput } from "./DonationAmountInput"
@@ -54,7 +55,6 @@ import { WalletSelect } from "./WalletSelect"
 interface DonationFormProps {
   initiative: InitiativeWithRelations
   rate: number
-  contract?: Contract
 }
 
 interface DonationData {
@@ -79,12 +79,9 @@ function sleep(ms: number) {
 export default function DonationForm({
   initiative,
   rate,
-  contract,
 }: DonationFormProps) {
   //console.log("INITIATIVE", initiative)
-  // TODO: get contract id from contracts table not initiative record
   const posthog = usePostHog()
-  const contractId = initiative.contractcredit // needed for CC contract
   const organization = initiative.organization
   const [coinRate, setCoinRate] = useState(rate)
   const [loading, setLoading] = useState(false)
@@ -98,8 +95,7 @@ export default function DonationForm({
   }, [coinRate, setChainState])
   //console.log('INIT STATE', chainState)
 
-  const { selectedToken, selectedChain, selectedWallet, exchangeRate } =
-    chainState
+  const { selectedToken, selectedChain, selectedWallet, exchangeRate } = chainState
   const [donationForm, setDonationForm] = useAtom(donationFormAtom)
   const { emailReceipt, name, email, amount } = donationForm
   const coinAmount = useAtomValue(amountCoinAtom)
@@ -107,6 +103,7 @@ export default function DonationForm({
   console.log("Coin amount", coinAmount, usdAmount)
   const chain = chainConfig[selectedChain]
   const network = chain.networks[appConfig.chainDefaults.network]
+  console.log('NET', network)
   const chainInterface = BlockchainClientInterfaces[selectedWallet]
   const [buttonMessage, setButtonMessage] = useState(
     "One wallet confirmation required",
@@ -324,12 +321,12 @@ export default function DonationForm({
             token: selectedToken,
           },
         }
-        console.log("NFT", data)
+        console.log("NFT>", data)
         // TODO: increase sleep time? some chains take longer <<<<
-        await sleep(2000) // Wait for tx to confirm
-        console.log("SLEEP")
-        const receiptResult = await mintAndSaveReceiptNFT(data)
-        console.log("RESULT", receiptResult)
+        //await sleep(5000) // Wait for tx to confirm
+        console.log("MINT>")
+        const receiptResult = await mintAndSaveReceiptNFT(data)  // <<<<<<
+        console.log("RESULT>", receiptResult)
 
         if ("error" in receiptResult) {
           throw new Error(receiptResult.error ?? "Failed to process receipt")
@@ -415,25 +412,42 @@ export default function DonationForm({
         error?: string
       }
 
-      if (contract && selectedChain === "stellar") {
+      if (selectedChain === "stellar") {
+        const network = appConfig.chains[selectedChain]?.network || 'testnet'
+        // First get contract for initiative
+        let contract = await getContractByChain(initiative.id, "Credits", selectedChain, network)
+        console.log("CTR1", contract)
+        if(!contract){
+          // If not found, get contract for organization
+          contract = await getContractByChain(organization.id, "Credits", selectedChain, network)
+          console.log("CTR2", contract)
+        }
+        if(!contract){
+          throw new Error('Stellar credits contract not found for this initiative')
+        }
+
         console.log("USING CONTRACT", contract.contract_address)
-        if (
-          !chainInterface ||
-          typeof chainInterface.sendToContract !== "function"
-        ) {
+
+        if (chainInterface?.sendToContract){
+          const result = await chainInterface.sendToContract({
+            contractId: contract.contract_address ?? "",
+            amount: coinAmount,
+          })
+          console.log("RESULT", result)
+          if(!result){
+            console.log("ERROR1")
+            throw new Error("Contract donations not supported")
+          }
+          if (!result?.success) {
+            console.log("ERROR2")
+            throw new Error(result?.error || "Contract donation failed")
+          }
+          paymentResult = result
+        } else {
+          console.log("ERROR3")
           throw new Error("Contract donations not supported")
         }
-
-        const result = await chainInterface.sendToContract({
-          contractId: contract.contract_address ?? "",
-          amount: coinAmount,
-        })
-
-        if (!result.success) {
-          throw new Error(result.error || "Contract donation failed")
-        }
-
-        paymentResult = result
+        console.log("END1")
       } else if (appConfig.siteInfo.options.enableGaslessTransactions) {
         console.log(
           "SENDING GASLESS PAYMENT TO",
@@ -460,7 +474,9 @@ export default function DonationForm({
         )
       }
 
-      if (!paymentResult.success) {
+      console.log("PAYRES", paymentResult)
+
+      if (!paymentResult?.success) {
         console.log("ERROR", paymentResult.error)
         const errorMessage = paymentResult.error ?? "Payment failed"
         const error = new Error(errorMessage)
@@ -478,7 +494,7 @@ export default function DonationForm({
         })
       }
 
-      if (!paymentResult.walletAddress) {
+      if (!paymentResult?.walletAddress) {
         handleError(new Error("No wallet address found"))
         return
       }
@@ -487,7 +503,7 @@ export default function DonationForm({
 
       if (!user) {
         user = await createAnonymousUser({
-          walletAddress: paymentResult.walletAddress ?? "",
+          walletAddress: paymentResult?.walletAddress ?? "",
           chain: chain.name,
           network: appConfig.chainDefaults.network,
         })
@@ -522,7 +538,6 @@ export default function DonationForm({
     chainInterface,
     checkBalance,
     coinAmount,
-    contract,
     destinationWallet,
     email,
     handleError,

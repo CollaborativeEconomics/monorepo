@@ -7,6 +7,7 @@ import {
   Contract,
   TransactionBuilder,
   nativeToScVal,
+  scValToNative,
   rpc,
   type xdr,
 } from "@stellar/stellar-sdk"
@@ -35,10 +36,18 @@ const stellar = chainConfig.stellar.networks[appConfig.chainDefaults.network]
 //function getContractIdFromTx(tx: rpc.Api.SendTransactionResponse) {
 function getContractIdFromTx(tx: rpc.Api.GetTransactionResponse) {
   try {
-    if ("resultXdr" in tx) {
-      const opResult = tx.resultXdr.result().results()[0]
-      const retValue = opResult.tr().invokeHostFunctionResult().success()
-      const contractId = Address.contract(retValue).toString()
+    //const retval = xdr.ScVec.fromXDR(tx.returnValue, 'base64');
+    //console.log('RETVAL', retval)
+    if ("returnValue" in tx && tx.returnValue !== undefined) {
+      //const opResult = tx.resultXdr.result().results()[0]
+      //const retValue = opResult.tr().invokeHostFunctionResult().success()
+      //const contractId = Address.contract(retValue).toString() // Not the recently deployed contract, don't know what that is
+      //console.log('CTRID', contractId)
+      //const contractId = Address.contract(tx.returnValue._value[0]._value._value).toString() // this is it, but too cumbersome
+      //console.log('CTRID', contractId)
+      const values = scValToNative(tx.returnValue) // This is the right way
+      const contractId = values?.[0] || null // Perhaps check if it's an array?
+      console.log('CTRID', contractId)
       return contractId
     }
     return null
@@ -107,7 +116,7 @@ async function deploy(
     //window.sim = sim
     if (rpc.Api.isSimulationSuccess(sim) && sim.result !== undefined) {
       console.log("RES", sim.result)
-      let xdr = ""
+      let xdrData = ""
       const firstTime = false // for now
       if (firstTime) {
         // Increment tx resources to avoid first time bug
@@ -145,19 +154,19 @@ async function deploy(
         //window.trz = trz
         const txz = await soroban.prepareTransaction(trz)
         console.log("TXZ", txz)
-        xdr = txz.toXDR()
+        xdrData = txz.toXDR()
       } else {
         const txp = await soroban.prepareTransaction(trx)
         console.log("TXP", txp)
-        xdr = txp.toXDR()
+        xdrData = txp.toXDR()
       }
-      console.log("XDR", xdr)
+      console.log("XDR", xdrData)
       // Now sign it???
       const opx = { networkPassphrase: stellar.networkPassphrase }
       //const opx = {network:network.name, networkPassphrase: network.networkPassphrase, accountToSign: from}
       console.log("OPX", opx)
-      //const res = await wallet.signAndSend(xdr, opx)
-      const sgn = await signTransaction(xdr, opx)
+      //const res = await wallet.signAndSend(xdrData, opx)
+      const sgn = await signTransaction(xdrData, opx)
       console.log("SGN", sgn)
       if (sgn?.error) {
         return {
@@ -208,6 +217,10 @@ async function deploy(
       if (res?.status.toString() === "SUCCESS") {
         console.log("TX SUCCESS")
         const transactionInfo = await soroban.getTransaction(txid)
+        console.log('TXINFO', transactionInfo)
+        //window.xdr = xdr
+        //window.transactionInfo = transactionInfo
+        //const rev = v3.soroban_meta.return_value.vec.address
         const contractId = getContractIdFromTx(transactionInfo)
         console.log("Contract ID:", contractId)
         // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
@@ -246,6 +259,8 @@ async function deploy(
         }
         if (info.status === "SUCCESS") {
           console.log("TX SUCCESS2")
+          console.log('TXINFO', info)
+          //window.transactionInfo = info
           const contractId = getContractIdFromTx(info)
           console.log("Contract ID:", contractId)
           // @ts-ignore: I hate types. Ledger is part of the response, are you blind?
@@ -343,8 +358,7 @@ async function deployCredits(data: CreditsData) {
         error: "Credits Hash not found",
       }
     }
-    const xlmContract =
-      "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC" // TODO: constant from config
+    const xlmContract = "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC" // TODO: constant from config
     //const orgwallet = walletInfo.account
     const orgwallet = walletInfo.walletAddress
     if (!orgwallet) {
@@ -365,9 +379,7 @@ async function deployCredits(data: CreditsData) {
     const initiative = nativeToScVal(1, { type: "u128" }) // Not used ???
     const provider = new Address(data.provider)
     const vendor = new Address(data.vendor).toScVal()
-    const bucket = nativeToScVal(Number(data.bucket) * 1000000, {
-      type: "i128",
-    })
+    const bucket = nativeToScVal(Number(data.bucket) * 1000000, {type: "i128"})
     const xlm = new Address(xlmContract).toScVal()
     const init_args = nativeToScVal(
       [admin, initiative, provider, vendor, bucket, xlm],
