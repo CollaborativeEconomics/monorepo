@@ -1,9 +1,9 @@
-import { getCategories, getOrganizationById } from '@cfce/database'
-import Title from '~/components/title'
-import styles from '~/styles/dashboard.module.css'
-import OrganizationForm from '~/components/OrganizationForm'
-import { FormMode, type OrganizationData } from '~/types/data'
-import { sortCategories } from '~/utils/data'
+import { getCategories, getOrganizationById } from "@cfce/database"
+import OrganizationForm from "~/components/OrganizationForm"
+import Title from "~/components/title"
+import styles from "~/styles/dashboard.module.css"
+import { FormMode, type OrganizationData } from "~/types/data"
+import { sortCategories } from "~/utils/data"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -23,11 +23,16 @@ export default async function Page({ params }: PageProps) {
     return (
       <div className={styles.mainBox}>
         <Title text="Edit Organization" />
-        <OrganizationForm id={id} organization={organization} categories={categories} formMode={FormMode.Edit} />
+        <OrganizationForm
+          id={id}
+          organization={organization}
+          categories={categories}
+          formMode={FormMode.Edit}
+        />
       </div>
-    );
+    )
   } catch (error) {
-    console.error('Failed to fetch organization:', error)
+    console.error("Failed to fetch organization:", error)
     throw error
   }
 }
