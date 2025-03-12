@@ -7,8 +7,8 @@ import {
   Contract,
   TransactionBuilder,
   nativeToScVal,
-  scValToNative,
   rpc,
+  scValToNative,
   type xdr,
 } from "@stellar/stellar-sdk"
 import { randomNumber } from "~/utils/random"
@@ -47,7 +47,7 @@ function getContractIdFromTx(tx: rpc.Api.GetTransactionResponse) {
       //console.log('CTRID', contractId)
       const values = scValToNative(tx.returnValue) // This is the right way
       const contractId = values?.[0] || null // Perhaps check if it's an array?
-      console.log('CTRID', contractId)
+      console.log("CTRID", contractId)
       return contractId
     }
     return null
@@ -217,7 +217,7 @@ async function deploy(
       if (res?.status.toString() === "SUCCESS") {
         console.log("TX SUCCESS")
         const transactionInfo = await soroban.getTransaction(txid)
-        console.log('TXINFO', transactionInfo)
+        console.log("TXINFO", transactionInfo)
         //window.xdr = xdr
         //window.transactionInfo = transactionInfo
         //const rev = v3.soroban_meta.return_value.vec.address
@@ -259,7 +259,7 @@ async function deploy(
         }
         if (info.status === "SUCCESS") {
           console.log("TX SUCCESS2")
-          console.log('TXINFO', info)
+          console.log("TXINFO", info)
           //window.transactionInfo = info
           const contractId = getContractIdFromTx(info)
           console.log("Contract ID:", contractId)
@@ -358,7 +358,7 @@ async function deployCredits(data: CreditsData) {
         error: "Credits Hash not found",
       }
     }
-    const xlmContract = "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC" // TODO: constant from config
+    const xlmContract = stellar.tokens.find((t) => t.isNative)?.contract
     //const orgwallet = walletInfo.account
     const orgwallet = walletInfo.walletAddress
     if (!orgwallet) {
@@ -379,7 +379,9 @@ async function deployCredits(data: CreditsData) {
     const initiative = nativeToScVal(1, { type: "u128" }) // Not used ???
     const provider = new Address(data.provider)
     const vendor = new Address(data.vendor).toScVal()
-    const bucket = nativeToScVal(Number(data.bucket) * 1000000, {type: "i128"})
+    const bucket = nativeToScVal(Number(data.bucket) * 1000000, {
+      type: "i128",
+    })
     const xlm = new Address(xlmContract).toScVal()
     const init_args = nativeToScVal(
       [admin, initiative, provider, vendor, bucket, xlm],
