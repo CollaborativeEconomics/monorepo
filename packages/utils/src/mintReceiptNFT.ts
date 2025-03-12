@@ -148,7 +148,21 @@ export async function mintAndSaveReceiptNFT({
       chainTool.setChain(chain)
     }
 
-    sleep(5000) // wait 5 secs for tx to confirm
+    // Poll for transaction confirmation with exponential backoff
+    let attempts = 0;
+    const maxAttempts = 5;
+    while (attempts < maxAttempts) {
+      try {
+        const txInfo = await chainTool.getTransactionInfo(txId, false);
+        if (txInfo && !("error" in txInfo)) {
+          break; // Transaction found and confirmed
+        }
+      } catch (e) {
+        console.log("Transaction not yet confirmed, retrying...");
+      }
+      attempts++;
+      await sleep(Math.min(1000 * Math.pow(2, attempts), 10000)); // Exponential backoff with max 10s
+    }
     console.log("TxId", txId)
     const txInfo = await chainTool.getTransactionInfo(txId, true) // wait for receipt
     if ("error" in txInfo) {
