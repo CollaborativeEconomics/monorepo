@@ -1,9 +1,11 @@
 import { expect, test } from "../fixtures"
 
 test.describe("Initiative page", () => {
+  const BASE_URL = "https://staging.giving-universe.org"
+
   test.beforeEach(async ({ page }) => {
     // test.setTimeout(100000)
-    await page.goto("/initiatives")
+    await page.goto(`${BASE_URL}/initiatives`)
     // Wait for the main content to be visible
     await expect(page.locator("body")).toBeVisible()
     // Wait for the page to be fully loaded
@@ -93,11 +95,11 @@ test.describe("Initiative page", () => {
       .click()
 
     await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/initiatives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^https:\/\/staging\.giving-universe\.org\/initiatives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     )
 
     await expect(page).toHaveURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/initiatives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^https:\/\/staging\.giving-universe\.org\/initiatives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     )
   })
 
@@ -200,7 +202,7 @@ test.describe("Initiative page", () => {
     await page.getByRole("button", { name: "Search" }).click()
 
     await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/initiatives\?.*$/,
+      /^https:\/\/staging\.giving-universe\.org\/initiatives\?.*$/,
     )
 
     // Verify URL contains search params
@@ -213,14 +215,14 @@ test.describe("Initiative page", () => {
     // Click Organizations tab
     await page.getByRole("link", { name: "Organizations" }).click()
     await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/organizations$/,
+      /^https:\/\/staging\.giving-universe\.org\/organizations$/,
     )
     await expect(page).toHaveURL(/.*\/organizations/)
 
     // Click Initiatives tab
     await page.getByRole("link", { name: "Initiatives" }).click()
     await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/initiatives$/,
+      /^https:\/\/staging\.giving-universe\.org\/initiatives$/,
     )
     await expect(page).toHaveURL(/.*\/initiatives/)
   })
@@ -309,12 +311,12 @@ test.describe("Initiative page", () => {
 
     // Wait for navigation to complete
     await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/initiatives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^https:\/\/staging\.giving-universe\.org\/initiatives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     )
 
     // Verify we're on the initiative detail page
     await expect(page).toHaveURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/initiatives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^https:\/\/staging\.giving-universe\.org\/initiatives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     )
 
     // Verify donation form elements are present

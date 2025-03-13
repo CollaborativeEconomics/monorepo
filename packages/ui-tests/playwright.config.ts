@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: "html",
   timeout: 100000,
   use: {
-    baseURL: "https://staging.givebase.cfce.io/",
+    baseURL: "https://staging.giving-universe.org/",
 
     trace: "on-first-retry",
   },

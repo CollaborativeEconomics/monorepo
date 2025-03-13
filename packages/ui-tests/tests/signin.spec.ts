@@ -1,28 +1,40 @@
 import { expect, test } from "@playwright/test"
 
+const BASE_URL = "https://staging.giving-universe.org"
+
 test("Should navigate to signin page", async ({ page }) => {
-  await page.goto("/")
-  await page.getByRole("link", { name: "Sign in" }).click()
-  await page.waitForURL(/^https:\/\/staging\.givebase\.cfce\.io\/signin$/)
-  await expect(page).toHaveURL(/.*\/signin/)
+  await page.goto(BASE_URL)
+  await page.getByRole("link", { name: "Sign In" }).click()
+  await page.waitForURL(`${BASE_URL}/signin`)
+  await expect(page).toHaveURL(`${BASE_URL}/signin`)
 })
 
 test("Should display wallet login options", async ({ page }) => {
-  await page.goto("/")
+  await page.goto(BASE_URL)
   // Navigate to signin page
-  await page.getByRole("link", { name: "Sign in" }).click()
-  await expect(page).toHaveURL(/.*\/signin/)
+  await page.getByRole("link", { name: "Sign In" }).click()
+  await expect(page).toHaveURL(`${BASE_URL}/signin`)
 
   // Verify heading
   await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible()
 
-  // Verify wallet login buttons
+  // Verify all wallet login buttons
+  await expect(
+    page.getByRole("button", { name: "Login with Freighter Wallet" }),
+  ).toBeVisible()
+
   await expect(
     page.getByRole("button", { name: "Login with Metamask Wallet" }),
   ).toBeVisible()
 
+  await expect(
+    page.getByRole("button", { name: "Login with Xaman Wallet" }),
+  ).toBeVisible()
+
   // Verify wallet icons are present
+  await expect(page.getByAltText("Freighter Wallet icon")).toBeVisible()
   await expect(page.getByAltText("Metamask Wallet icon")).toBeVisible()
+  await expect(page.getByAltText("Xaman Wallet icon")).toBeVisible()
 })
 
 // test("should sign in with metamask", async ({
@@ -31,8 +43,8 @@ test("Should display wallet login options", async ({ page }) => {
 // }) => {
 
 //   // Navigate to the homepage
-//   await page.goto("/")
-//   await page.getByRole("link", { name: "Sign in" }).click()
+//   await page.goto(BASE_URL)
+//   await page.getByRole("link", { name: "Sign In" }).click()
 //   const signinPage = page.getByRole("heading", { name: "Sign in" })
 //   console.log(await signinPage.textContent())
 //   await expect(signinPage).toBeVisible()

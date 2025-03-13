@@ -1,8 +1,11 @@
 import { expect, test } from "../fixtures"
 
 test.describe("Profile page", () => {
+  const BASE_URL = "https://staging.giving-universe.org"
+  const PROFILE_ID = "42584386-4671-4848-83a7-056c1123a60d"
+
   test.beforeEach(async ({ page }) => {
-    await page.goto("/profile/42584386-4671-4848-83a7-056c1123a60d")
+    await page.goto(`${BASE_URL}/profile/${PROFILE_ID}`)
     // Wait for the main content to be visible
     await expect(page.locator("body")).toBeVisible()
     // Wait for the page to be fully loaded
@@ -160,10 +163,10 @@ test.describe("Profile page", () => {
     await page.getByRole("button", { name: "Log Out" }).click()
 
     // wait for the page to be loaded
-    await page.waitForURL(/^https:\/\/staging\.givebase\.cfce\.io\/$/)
+    await page.waitForURL(/^https:\/\/staging\.giving-universe\.org\/$/)
 
     // Verify redirect to login page or home
-    await expect(page).toHaveURL(/^https:\/\/staging\.givebase\.cfce\.io\/$/)
+    await expect(page).toHaveURL(/^https:\/\/staging\.giving-universe\.org\/$/)
   })
 
   test("favorite organizations interactions", async ({ page }) => {
@@ -173,7 +176,7 @@ test.describe("Profile page", () => {
 
     // wait for the page to be loaded
     await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/organizations\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^https:\/\/staging\.giving-universe\.org\/organizations\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     )
 
     // Verify navigation to organization page
@@ -184,7 +187,7 @@ test.describe("Profile page", () => {
 
     // wait for the page to be loaded
     await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/profile\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^https:\/\/staging\.giving-universe\.org\/profile\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     )
 
     // Verify back on profile page

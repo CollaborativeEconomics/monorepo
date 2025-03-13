@@ -1,16 +1,18 @@
-import { expect, test } from "../fixtures"
+import { expect, test } from "@playwright/test"
 
 test.describe("Homepage", () => {
+  const BASE_URL = "https://staging.giving-universe.org"
+
   test.beforeEach(async ({ page }) => {
     //   test.setTimeout(100000)
-    await page.goto("/")
+    await page.goto(BASE_URL)
     //   // Wait for the main content to be visible
     await expect(page.locator("body")).toBeVisible()
   })
 
   test("has expected title and meta content", async ({ page }) => {
     // Basic check that we're on the homepage
-    await expect(page).toHaveTitle("Give Base (Staging)")
+    await expect(page).toHaveTitle("Giving Universe (Staging)")
 
     // Check meta description
     const metaDescription = await page.locator('meta[name="description"]')
@@ -26,89 +28,64 @@ test.describe("Homepage", () => {
     await expect(header).toBeVisible()
 
     // Check logo - make it more specific by looking within the header
-    const headerLogo = header.getByRole("link", { name: /give base/i })
+    const headerLogo = header.getByRole("link", { name: /giving universe/i })
     await expect(headerLogo).toBeVisible()
 
     // Check main nav links
     const navLinks = page.locator("nav").getByRole("link")
     await expect(navLinks).toHaveCount(1)
+
+    // Check Sign In link
+    await expect(page.getByRole("link", { name: "Sign In" })).toBeVisible()
   })
 
-  test("hero section content and interactions", async ({ page }) => {
-    // Check main headings
+  test("hero section content", async ({ page }) => {
+    // Check main heading
     await expect(
-      page.getByRole("heading", { name: "Blockchain-driven" }),
-    ).toBeVisible()
-    await expect(
-      page.getByRole("heading", { name: "Donate to community causes" }),
+      page.getByRole("heading", {
+        name: "Blockchain-driven philanthropy for a transparent world",
+      }),
     ).toBeVisible()
 
     // Check hero text content
-    await expect(page.getByText("Find organizations working on")).toBeVisible()
-
-    // Check Find Organizations button
-    const findOrgButton = page
-      .getByRole("link", {
-        name: "Find Organizations",
-      })
-      .filter({ hasText: /^Find Organizations$/ })
-
-    await expect(findOrgButton).toBeVisible()
-    await expect(findOrgButton).toHaveAttribute("href", "/organizations")
-
-    // Test navigation
-    await findOrgButton.click()
-    await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/organizations$/,
-    )
-    await expect(page).toHaveURL(/.*\/organizations/)
-
-    // Go back to homepage
-    await page.goto("/")
-    await expect(page).toHaveURL("/")
-
-    // Check Find Initiatives button
-    const findInitiativesButton = page
-      .getByRole("link", {
-        name: "Find Initiatives",
-      })
-      .filter({ hasText: /^Find Initiatives$/ })
-
-    await expect(findInitiativesButton).toBeVisible()
-    await expect(findInitiativesButton).toHaveAttribute("href", "/initiatives")
-
-    // Test navigation
-    await findInitiativesButton.click()
-    await page.waitForURL(
-      /^https:\/\/staging\.givebase\.cfce\.io\/initiatives$/,
-    )
-    await expect(page).toHaveURL(/.*\/initiatives/)
-
-    // Verify we're on the initiatives page by checking for specific content
-    await expect(page.getByRole("link", { name: "Initiatives" })).toBeVisible()
+    await expect(
+      page.getByText(
+        "With the increased transparency that blockchain donations provide",
+      ),
+    ).toBeVisible()
   })
 
-  test("carousel functionality", async ({ page }) => {
-    // Check carousel exists
-    const carousel = page.locator(".swiper")
-    await expect(carousel).toBeVisible()
+  test("initiative cards are displayed", async ({ page }) => {
+    // Check for specific initiative titles
+    const initiatives = [
+      "Dubuque Harm Reduction office fundraiser",
+      "Feed indigenous people",
+      "Feed the homeless",
+      "Feed the poor",
+      "Green Blockchain",
+      "Hurricane Beryl",
+    ]
 
-    // Test carousel navigation
-    const nextButton = page.locator(".swiper-button-next")
-    await expect(nextButton).toBeVisible()
-    await nextButton.click()
-
-    // Check pagination
-    const pagination = page.locator(".swiper-pagination")
-    await expect(pagination).toBeVisible()
+    for (const initiative of initiatives) {
+      await expect(
+        page.getByRole("link", { name: new RegExp(initiative, "i") }),
+      ).toBeVisible()
+    }
   })
 
-  test("navigation and authentication links", async ({ page }) => {
-    // Check auth links
-    await expect(page.getByRole("link", { name: "Sign In" })).toBeVisible()
-    await expect(page.getByRole("link", { name: "Sign Up" })).toBeVisible()
+  test("donor section content", async ({ page }) => {
+    // Check "Become a Donor" section
+    await expect(
+      page.getByRole("heading", { name: "Become a Donor" }),
+    ).toBeVisible()
 
-    // Check main navigation links
+    await expect(
+      page.getByText(
+        "Find causes you care about that are making a real difference",
+      ),
+    ).toBeVisible()
+
+    // Check action buttons
     await expect(
       page.getByRole("link", { name: "Find Organizations" }),
     ).toBeVisible()
@@ -117,30 +94,60 @@ test.describe("Homepage", () => {
     ).toBeVisible()
   })
 
-  test("footer links and content", async ({ page }) => {
-    const footer = page.getByRole("contentinfo")
-
-    // Know Us section
+  test("crypto donations section", async ({ page }) => {
     await expect(
-      footer.getByRole("heading", { name: "Know Us:" }),
+      page.getByRole("heading", { name: "Start Accepting Crypto Donations" }),
     ).toBeVisible()
 
-    // Check footer links
-    const footerLinks = [
+    await expect(
+      page.getByText("Digital currencies are the future of commerce"),
+    ).toBeVisible()
+
+    await expect(page.getByRole("link", { name: "Sign Up" })).toBeVisible()
+  })
+
+  test("how it works section", async ({ page }) => {
+    await expect(
+      page.getByRole("heading", { name: "How it works" }),
+    ).toBeVisible()
+
+    const sections = [
+      "Donate to community causes you care about",
+      "Receive personalized, tax-deductible NFT Receipts",
+      "NFTs tell the story of your impact",
+    ]
+
+    for (const section of sections) {
+      await expect(page.getByRole("heading", { name: section })).toBeVisible()
+    }
+  })
+
+  test("footer content", async ({ page }) => {
+    const footer = page.getByRole("contentinfo")
+
+    // Check organization name
+    await expect(
+      footer.getByText("by Center For Collaborative Economics"),
+    ).toBeVisible()
+
+    // Know Us section
+    const knowUsLinks = [
       "Our Mission",
       "Our Partners",
       "Privacy Policy",
       "Terms and Conditions",
     ]
 
-    for (const linkText of footerLinks) {
-      await expect(footer.getByRole("link", { name: linkText })).toBeVisible()
+    for (const link of knowUsLinks) {
+      await expect(footer.getByRole("link", { name: link })).toBeVisible()
     }
 
-    // Check footer logo
-    await expect(
-      footer.getByRole("link", { name: "Give Base (Staging) logo" }),
-    ).toBeVisible()
+    // Follow Us section
+    const socialLinks = ["Discord", "Twitter", "Facebook", "Instagram"]
+
+    for (const social of socialLinks) {
+      await expect(footer.getByRole("link", { name: social })).toBeVisible()
+    }
   })
 
   test("theme toggle functionality", async ({ page }) => {
@@ -219,46 +226,145 @@ test.describe("Homepage", () => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await expect(page.locator("header")).toBeVisible()
   })
+
+  test("initiative cards carousel functionality", async ({ page }) => {
+    // Check carousel exists
+    const carousel = page.locator(".swiper")
+    await expect(carousel).toBeVisible()
+
+    // Check initiative cards within carousel
+    const initiativeCards = page.locator(".swiper-wrapper > .swiper-slide")
+    const count = await initiativeCards.count()
+    expect(count).toBeGreaterThan(0)
+
+    // Store first visible initiative title
+    const firstSlide = page.locator(".swiper-slide-active")
+    await expect(firstSlide).toBeVisible()
+    const firstInitiativeTitle = await firstSlide.textContent()
+
+    // Test carousel navigation
+    const nextButton = page.locator(".swiper-button-next")
+    await expect(nextButton).toBeVisible()
+    await nextButton.click()
+    await page.waitForTimeout(1000) // Increase timeout for slide transition
+
+    // Verify carousel navigated by checking active slide changed
+    const newActiveSlide = page.locator(".swiper-slide-active")
+    await expect(newActiveSlide).toBeVisible()
+    const newInitiativeTitle = await newActiveSlide.textContent()
+    expect(newInitiativeTitle).not.toBe(firstInitiativeTitle)
+
+    // Check pagination exists
+    const pagination = page.locator(".swiper-pagination")
+    await expect(pagination).toBeVisible()
+
+    // Test previous navigation
+    const prevButton = page.locator(".swiper-button-prev")
+    await expect(prevButton).toBeVisible()
+    await prevButton.click()
+    await page.waitForTimeout(1000) // Wait for slide transition
+
+    // Verify we returned to the first slide
+    const returnedSlide = page.locator(".swiper-slide-active")
+    await expect(returnedSlide).toBeVisible()
+    const returnedTitle = await returnedSlide.textContent()
+    expect(returnedTitle).toBe(firstInitiativeTitle)
+  })
+
+  test("initiative cards detailed content", async ({ page }) => {
+    // Check first initiative's complete content
+    const firstInitiative = page.locator(".swiper-slide").first()
+
+    // Check image
+    await expect(firstInitiative.locator("img")).toBeVisible()
+    await expect(firstInitiative.locator("img")).toHaveAttribute(
+      "alt",
+      /initiative image/i,
+    )
+
+    // Check description
+    await expect(
+      firstInitiative.getByText(/Sustainable Development Goals/).first(),
+    ).toBeVisible()
+
+    // Test navigation to initiative page
+    const initiativeLink = firstInitiative.getByRole("link")
+    const href = await initiativeLink.getAttribute("href")
+    await initiativeLink.click()
+    await page.waitForURL(/\/initiatives\//)
+    await expect(page).toHaveURL(href ?? "")
+
+    // Go back to homepage
+    await page.goto(BASE_URL)
+  })
+
+  test("how it works section detailed content", async ({ page }) => {
+    // First verify the main heading
+    const howItWorksHeading = page.getByRole("heading", {
+      name: "How it works",
+    })
+    await expect(howItWorksHeading).toBeVisible()
+
+    // Get the how it works container
+    const howItWorksSection = page.locator("main > section", {
+      has: howItWorksHeading,
+    })
+
+    // Verify each instruction section by headings and descriptions
+    const sections = [
+      {
+        heading: "Donate to community causes you care about",
+        description:
+          "Find organizations working on the sustainable development goals that you care most about",
+      },
+      {
+        heading: "Receive personalized, tax-deductible NFT Receipts",
+        description:
+          "Whenever you donate, you receive a personalzed tax-deductible NFT receipt",
+      },
+      {
+        heading: "NFTs tell the story of your impact",
+        description:
+          "Non-profits publish and distribute their progress as Story NFTs",
+      },
+    ]
+
+    for (const section of sections) {
+      // Check heading
+      await expect(
+        page.getByRole("heading", { name: section.heading }),
+      ).toBeVisible()
+
+      // Check description text
+      await expect(page.getByText(section.description)).toBeVisible()
+    }
+  })
+
+  test("crypto donations section detailed content", async ({ page }) => {
+    // First find the section by its heading
+    const heading = page.getByRole("heading", {
+      name: "Start Accepting Crypto Donations",
+    })
+    await expect(heading).toBeVisible()
+
+    // Get the section containing the heading
+    const section = heading.locator("../..")
+
+    // Check main content text - without relying on specific region role
+    await expect(
+      page.getByText("Digital currencies are the future of commerce"),
+    ).toBeVisible()
+    await expect(page.getByText("Future-proof your non-profit")).toBeVisible()
+    await expect(
+      page.getByText("free of the tedium of grant-writing"),
+    ).toBeVisible()
+
+    // Check sign up button exists
+    const signUpLink = page.getByRole("link", { name: "Sign Up" })
+    await expect(signUpLink).toBeVisible()
+
+    // Check the URL pattern
+    const href = await signUpLink.getAttribute("href")
+    expect(href).toMatch("https://cfce.io/contact/")
+  })
 })
-
-// test("displays featured causes section", async ({ page }) => {
-//   const featuredSection = page.getByRole("region", {
-//     name: /featured causes/i,
-//   })
-//   await expect(featuredSection).toBeVisible()
-
-//   // Check for cause cards
-//   const causeCards = page.locator('[data-testid="cause-card"]')
-//   await expect(causeCards).toHaveCount(3) // Adjust count based on actual number of featured causes
-// })
-
-// test("has working donation flow initiation", async ({ page }) => {
-//   // Click donate button
-//   const donateButton = page.getByRole("button", { name: /donate/i })
-//   await donateButton.click()
-
-//   // Check if donation form appears
-//   const donationForm = page.locator('[data-testid="donation-form"]')
-//   await expect(donationForm).toBeVisible()
-// })
-
-// test("has working navigation links", async ({ page }) => {
-//   // Test each nav link
-//   const navLinks = page.locator("nav").getByRole("link")
-
-//   // Get all hrefs
-//   const hrefs = await navLinks.evaluateAll((links) =>
-//     links.map((link) => link.getAttribute("href")),
-//   )
-
-//   // Check each link navigates correctly
-//   for (const href of hrefs) {
-//     if (href && !href.startsWith("http")) {
-//       // Only test internal links
-//       await page.click(`nav a[href="${href}"]`)
-//       await expect(page).toHaveURL(new RegExp(href))
-//       await page.goto("/") // Go back to homepage
-//     }
-//   }
-// })
-// })
