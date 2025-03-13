@@ -3,13 +3,16 @@ import { setDateToReturnMockDate } from "../../mocks/date"
 import formatDate from "../formatDate"
 
 describe("formatDate action", () => {
-  test("formats date timestamp", async () => {
+  beforeEach(() => {
     setDateToReturnMockDate("2023-03-02")
+  })
+
+  test("formats date timestamp", async () => {
     const result = await formatDate(
       {},
       { inputDate: Date.now(), format: "yyyy-MM-dd" },
     )
-    expect(result).toEqual(new Date().toISOString().split("T")[0])
+    expect(result).toEqual("2023-03-02")
   })
   test("formats date string", async () => {
     const result = await formatDate(

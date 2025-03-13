@@ -6,6 +6,7 @@ import {
   expect,
   test,
 } from "@jest/globals"
+import server from "../../mocks/serverMock"
 import createStory, {
   type CreateStoryParameters,
   createStories,
@@ -32,6 +33,10 @@ const storyResponseProperties = {
 }
 
 describe("createStory", () => {
+  beforeAll(() => {
+    process.env.CFCE_REGISTRY_API_KEY = "test-api-key"
+  })
+
   test("creates a story", async () => {
     const result = await createStory({}, story)
     expect(result).toMatchObject({

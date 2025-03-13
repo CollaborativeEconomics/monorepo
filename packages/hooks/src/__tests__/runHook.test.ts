@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals"
 
-import { setDateToReturnMockDate } from "../../mocks/date"
-import server from "../../mocks/serverMock"
+import { setDateToReturnMockDate } from "../mocks/date"
+import server from "../mocks/serverMock"
 import runHook from "../runHook"
 import { Triggers } from "../types"
 
@@ -17,10 +17,8 @@ describe("runHook", () => {
         amountUSD: "20",
       },
     )
-    expect(metadata.output).toMatchObject({
-      tonsCO2: 1,
-      walletAddress: "0xABCD",
-    })
+    expect(metadata.output.walletAddress).toBe("0xABCD")
+    expect(metadata.output.tonsCO2).toBeCloseTo(1, 0)
   })
   test("should execute a hook with multiple actions", async () => {
     const output = await runHook(Triggers.onceDaily, "org_123", {

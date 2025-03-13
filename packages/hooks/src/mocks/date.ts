@@ -1,10 +1,10 @@
 // default mock date, if you want one
-export const setDateToReturnMockDate = (date) => {
+export const setDateToReturnMockDate = (date: string | number | Date) => {
   const mockDate = new Date(date)
   const _Date = Date
   class MockDate extends _Date {
     // can accept an array, e.g. new Date(2023, 3, 2);
-    constructor(...date) {
+    constructor(...date: (string | number | Date)[]) {
       // @ts-expect-error typescript doesn't like separate arg inputs
       super(date)
       // @ts-expect-error typescript doesn't like separate arg inputs

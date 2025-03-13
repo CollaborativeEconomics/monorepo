@@ -4,6 +4,7 @@ import type { Story } from "../actions/createStory"
 import { ActionTypes, Triggers } from "../types"
 
 const handlers = [
+  // Test handler should be first to take precedence
   http.get("https://registry.cfce.io/api/test", () => {
     return HttpResponse.json({ message: "Hello test!" })
   }),
@@ -20,7 +21,6 @@ const handlers = [
   }),
   http.post("https://registry.cfce.io/api/stories", async ({ request }) => {
     const data = await request.formData()
-    // console.log({ data });
     const parameters = {} as Story
     parameters.organizationId = data.get("organizationId") as string
     parameters.initiativeId = data.get("initiativeId") as string
@@ -28,29 +28,35 @@ const handlers = [
     parameters.description = data.get("description") as string
     parameters.image = data.get("image") as string
     parameters.amount = Number(data.get("amount"))
-    parameters.metadata = JSON.parse(data.get("metadata") as string)
-    // parameters.files = data.getAll("files").map((file: any) => file as File);
+    parameters.metadata = data.get("metadata")
+      ? JSON.parse(data.get("metadata") as string)
+      : {}
 
     const story = {
       ...parameters,
       tokenId: "1234",
-      image: "QmNvTh8ZRjcYZM5TtY41HXmdfXcB5vZpctBFLeTJugTJHV",
+      image:
+        parameters.image || "QmNvTh8ZRjcYZM5TtY41HXmdfXcB5vZpctBFLeTJugTJHV",
       created: "2024-04-02T20:46:36.986Z",
       id: "366d09a1-a1af-4f38-9938-5a25bf4ea031",
     }
 
-    return HttpResponse.json(story)
+    return HttpResponse.json(story, { status: 200 })
   }),
-  http.get(
-    "https://api-beta.stellarcarbon.io/carbon-quote?carbon_amount=1",
-    () => {
+  http.get("https://api-beta.stellarcarbon.io/carbon-quote", ({ request }) => {
+    const url = new URL(request.url)
+    const carbonAmount = url.searchParams.get("carbon_amount")
+    if (carbonAmount === "1") {
       return HttpResponse.json({
         carbon_amount: "1",
         total_cost: "20",
         average_price: "20",
       })
-    },
-  ),
+    }
+    return HttpResponse.json({
+      error: "Invalid carbon amount",
+    })
+  }),
   http.get(
     "https://api-beta.stellarcarbon.io/registry/retirements",
     ({ request }) => {
@@ -71,7 +77,7 @@ const handlers = [
 
 const server = setupServer(...handlers)
 
-const addMetadataToNFTReceiptHook = {
+export const addMetadataToNFTReceiptHook = {
   trigger: Triggers.addMetadataToNFTReceipt,
   actions: [
     {
@@ -114,7 +120,7 @@ const addMetadataToNFTReceiptHook = {
   ],
 }
 
-const onceDailyHook = {
+export const onceDailyHook = {
   trigger: Triggers.onceDaily,
   actions: [
     {
@@ -162,7 +168,7 @@ const onceDailyHook = {
   ],
 }
 
-const stellarRetirementHook = {
+export const stellarRetirementHook = {
   trigger: Triggers.onceDaily,
   actions: [
     {
