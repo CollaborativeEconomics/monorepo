@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals"
 import inputValues from "../inputValues"
 
-describe("inputValues action", async () => {
+describe("inputValues action", () => {
   test("returns the input values", async () => {
     const values = { a: 1, b: "string", c: true }
     const result = await inputValues({}, values)

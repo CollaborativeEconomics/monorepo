@@ -31,7 +31,7 @@ const storyResponseProperties = {
   id: "366d09a1-a1af-4f38-9938-5a25bf4ea031",
 }
 
-describe("createStory", async () => {
+describe("createStory", () => {
   test("creates a story", async () => {
     const result = await createStory({}, story)
     expect(result).toMatchObject({
@@ -86,7 +86,7 @@ describe("createStory", async () => {
   })
 })
 
-describe("createStories", async () => {
+describe("createStories", () => {
   test("creates multiple stories", async () => {
     const stories = [story, story]
     const result = await createStories(

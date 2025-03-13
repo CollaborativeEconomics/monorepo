@@ -21,7 +21,7 @@ const inputContext = {
   ],
 }
 
-describe("find action", async () => {
+describe("find action", () => {
   // test each operator
   test("finds using ===", async () => {
     const result = await find(inputContext, {

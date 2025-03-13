@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals"
 import math from "../math"
 
-describe("math action", async () => {
+describe("math action", () => {
   test("adds two numbers", async () => {
     const result = await math(
       { numberInput: { a: 1 } },

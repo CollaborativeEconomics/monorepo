@@ -1,8 +1,8 @@
 import { describe, expect, test } from "@jest/globals"
-import { retirementData } from "../../../mocks/serverMock"
+import { retirementData } from "../../mocks/serverMock"
 import transform, { transformEach } from "../transform"
 
-describe("transform action", async () => {
+describe("transform action", () => {
   test("transforms an object", async () => {
     const result = await transform(
       {
@@ -22,7 +22,7 @@ describe("transform action", async () => {
   })
 })
 
-describe("transformEach action", async () => {
+describe("transformEach action", () => {
   test("transforms an array of objects", async () => {
     const context = {
       input: [

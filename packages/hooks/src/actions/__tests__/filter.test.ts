@@ -21,7 +21,7 @@ const inputContext = {
   ],
 }
 
-describe("filter action", async () => {
+describe("filter action", () => {
   test("filters using ===", async () => {
     const result = await filter(inputContext, {
       collectionPath: "b",

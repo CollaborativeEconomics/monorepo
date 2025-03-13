@@ -1,8 +1,8 @@
 import { describe, expect, test } from "@jest/globals"
-import { setDateToReturnMockDate } from "../../../mocks/date"
+import { setDateToReturnMockDate } from "../../mocks/date"
 import formatDate from "../formatDate"
 
-describe("formatDate action", async () => {
+describe("formatDate action", () => {
   test("formats date timestamp", async () => {
     setDateToReturnMockDate("2023-03-02")
     const result = await formatDate(
