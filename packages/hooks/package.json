@@ -6,13 +6,18 @@
   "repository": "https://github.com/CollaborativeEconomics/registry-hooks",
   "author": "Julian Kingman",
   "scripts": {
-    "test": "bun test",
+    "test": "jest",
     "build": "tsc"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.13",
     "@types/luxon": "^3.4.2",
+    "@types/node": "^20.11.30",
+    "jest": "^29.7.0",
     "msw": "^2.6.8",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.7.2"
   },
   "dependencies": {
