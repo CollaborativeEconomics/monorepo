@@ -138,7 +138,7 @@ export default function AddStoryForm({
       setButtonText("DONE")
     } catch (error) {
       console.error("Error saving story:", error)
-      setMessage("An error occurred while saving the story")
+      setMessage(`An error occurred while saving the story: ${(error as Error)?.message||'Unknown'}`)
       setButtonText("ERROR")
       setButtonDisabled(true)
     }
