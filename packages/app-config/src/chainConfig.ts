@@ -403,7 +403,7 @@ const chainConfiguration = {
         gasprice: "27500000000",
         icon: "/icons/celo.webp",
         contracts: {
-          ReceiptNFT: "0x1AC546d21473062F3c3B16B6392A2EC26F4539f0",
+          ReceiptNFT: "0xAf6A672e87388DD876bBc763630AA39931A1599F",
         },
         explorer: {
           url: "https://celo-alfajores.blockscout.com",
