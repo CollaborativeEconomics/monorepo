@@ -13,7 +13,7 @@ import { InitiativeFilter } from "./components/InitiativeFilter"
 
 export async function generateMetadata(): Promise<Metadata> {
   const frameTags = await getFrameMetadata(
-    `${process.env.VERCEL_URL || "http://localhost:3000/api"}`,
+    `${process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:3000/api"}`,
   )
   return {
     other: frameTags,
@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // Helper function at the top of the file, before the Home component
 function getInitiativeUri(initiativeId: string, chain?: string) {
-  const baseUrl = process.env.VERCEL_URL || "http://localhost:3000"
+  const baseUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:3000"
 
   // Use route-based format instead of query parameters
   const basePath = `${baseUrl}/api/initiative/${initiativeId}`

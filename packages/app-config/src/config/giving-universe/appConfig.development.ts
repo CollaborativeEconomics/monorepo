@@ -9,20 +9,6 @@ const siteInfo: AppConfig["siteInfo"] = {
 
 const apis: AppConfig["apis"] = {
   ...appConfig.apis,
-  registry: {
-    apiUrl: "https://registry.staging.cfce.io/api",
-  },
-  ipfs: {
-    endpoint: "https://s3.filebase.com/",
-    region: "us-east-1",
-    gateway: "https://ipfs.filebase.io/ipfs/",
-    pinning: "https://api.filebase.io/v1/ipfs",
-    buckets: {
-      nfts: "kuyawa-public",
-      avatars: "kuyawa-avatars",
-      media: "kuyawa-media",
-    },
-  },
 }
 
 const chains = appConfig.chains

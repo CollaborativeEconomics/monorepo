@@ -249,13 +249,17 @@ export default class Contract721 {
       const resp = await this.submitOrRestoreAndRetry(source, tx)
       console.log("RESP", resp)
       if (resp?.success) {
-        // const meta = resp.meta
+        //const metaXdr = resp.meta || ''
+        //const meta = xdr.TransactionMeta.fromXDR(metaXdr, 'base64');
+        //const meta  = metaXdr.v3().sorobanMeta();
+        //console.log("META", meta)
         //console.log('META', JSON.stringify(meta,null,2))
-        const tokenId = resp.value ? scValToNative(resp.value) : null
+        const tokenId = resp.value ? BigInt(scValToNative(resp.value)).toString() : undefined
+        const txId = resp.txid
         console.log("TOKENID", tokenId)
-        return { success: true, tokenId }
+        return { success: true, tokenId, txId }
       }
-      return { success: false, error: "Error minting NFT" }
+      return { success: false, error: "Error calling contract" }
     } catch (err) {
       // Catch and report any errors we've thrown
       console.log("Error sending transaction", err)
@@ -267,7 +271,7 @@ export default class Contract721 {
       }
       return {
         success: false,
-        error: "Error minting NFT",
+        error: "Error calling contract",
       }
     }
   }

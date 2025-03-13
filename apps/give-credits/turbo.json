@@ -18,8 +18,6 @@
         "AUTH_SECRET",
         "POSTGRES_PRISMA_URL",
         "MOBULA_API_KEY",
-        "ENABLE_ANCHAIN",
-        "ENABLE_GLOBALID",
         "STELLAR_WALLET_SECRET"
       ],
       "dependsOn": ["^build"]

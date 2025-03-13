@@ -65,7 +65,7 @@ export default function Page({
       id: chainConfig[chain].slug,
       name: chainConfig[chain].name,
     }))
-    console.log("CHAINS", list)
+    //console.log("CHAINS", list)
     //setChains(list)
     return list
   }
@@ -108,8 +108,8 @@ export default function Page({
   const [selectedWallet, setSelectedWallet] = useState(initialWallet)
   const [selectedContract, setSelectedContract] = useState(initialContract)
 
-  console.log("REFRESH")
-  console.log("wallets", organization?.wallets)
+  //console.log("REFRESH")
+  //console.log("wallets", organization?.wallets)
   console.log("chain", initialChain)
   console.log("wallet", initialWallet)
   console.log("contract", initialContract)

@@ -11,7 +11,6 @@ export const env = createEnv({
     ...sharedEnvSchema.storage,
     ...sharedEnvSchema.mail,
     ...sharedEnvSchema.blockchain,
-    ...sharedEnvSchema.features,
     ARBITRUM_WALLET_SECRET: z.string(),
   },
   client: sharedEnvSchema.client,
