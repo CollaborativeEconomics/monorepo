@@ -1,4 +1,4 @@
-import { expect, test } from "../fixtures";
+import { expect, test } from "../fixtures"
 
 test.describe("Homepage", () => {
   test.beforeEach(async ({ page }) => {
@@ -58,7 +58,9 @@ test.describe("Homepage", () => {
 
     // Test navigation
     await findOrgButton.click()
-    await page.waitForURL(/^https:\/\/give-base-git-kuyawa-partners-login-cfce.vercel.app\/organizations$/)
+    await page.waitForURL(
+      /^https:\/\/staging\.givebase\.cfce\.io\/organizations$/,
+    )
     await expect(page).toHaveURL(/.*\/organizations/)
 
     // Go back to homepage
@@ -77,7 +79,9 @@ test.describe("Homepage", () => {
 
     // Test navigation
     await findInitiativesButton.click()
-    await page.waitForURL(/^https:\/\/give-base-git-kuyawa-partners-login-cfce.vercel.app\/initiatives$/)
+    await page.waitForURL(
+      /^https:\/\/staging\.givebase\.cfce\.io\/initiatives$/,
+    )
     await expect(page).toHaveURL(/.*\/initiatives/)
 
     // Verify we're on the initiatives page by checking for specific content

@@ -1,4 +1,4 @@
-import { expect, test } from "../fixtures";
+import { expect, test } from "../fixtures"
 
 test.describe("Profile page", () => {
   test.beforeEach(async ({ page }) => {
@@ -20,7 +20,9 @@ test.describe("Profile page", () => {
 
     // Verify form inputs
     await expect(page.locator('input[name="name"]')).toHaveValue("Lawal")
-    await expect(page.locator('input[name="email"]')).toHaveValue("rdgx@rdgx.io")
+    await expect(page.locator('input[name="email"]')).toHaveValue(
+      "rdgx@rdgx.io",
+    )
     await expect(page.locator('input[name="file"]')).toHaveAttribute(
       "type",
       "file",
@@ -158,10 +160,10 @@ test.describe("Profile page", () => {
     await page.getByRole("button", { name: "Log Out" }).click()
 
     // wait for the page to be loaded
-    await page.waitForURL("/")
+    await page.waitForURL(/^https:\/\/staging\.givebase\.cfce\.io\/$/)
 
     // Verify redirect to login page or home
-    await expect(page).toHaveURL("/")
+    await expect(page).toHaveURL(/^https:\/\/staging\.givebase\.cfce\.io\/$/)
   })
 
   test("favorite organizations interactions", async ({ page }) => {
@@ -171,7 +173,7 @@ test.describe("Profile page", () => {
 
     // wait for the page to be loaded
     await page.waitForURL(
-      /^http:\/\/localhost:3000\/organizations\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^https:\/\/staging\.givebase\.cfce\.io\/organizations\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     )
 
     // Verify navigation to organization page
@@ -182,7 +184,7 @@ test.describe("Profile page", () => {
 
     // wait for the page to be loaded
     await page.waitForURL(
-      /^http:\/\/localhost:3000\/profile\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^https:\/\/staging\.givebase\.cfce\.io\/profile\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     )
 
     // Verify back on profile page

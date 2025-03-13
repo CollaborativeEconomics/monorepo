@@ -55,7 +55,7 @@ jobs:
       - name: Run UI tests
         working-directory: packages/ui-tests
         env:
-          PLAYWRIGHT_TEST_BASE_URL: https://give-base-git-kuyawa-partners-login-cfce.vercel.app
+          PLAYWRIGHT_TEST_BASE_URL: https://staging.givebase.cfce.io
           CI: true
           DEBUG: pw:api,pw:browser*  # More detailed Playwright debugging
           PLAYWRIGHT_TIMEOUT: 60000
