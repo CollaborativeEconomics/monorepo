@@ -173,3 +173,24 @@ async function getLogs(address: string, topics: string[], fromBlock: string) {
   }
 }
 */
+
+
+/*
+// SOROBAN
+async function getEventLogs()
+  // Example JavaScript code using the Soroban RPC client
+  const response = await rpcClient.getEvents({
+    startLedger: ledgerNumber, // Starting ledger to search from
+    filters: [
+      {
+        contractIds: [contractId], // Optional: Filter by contract ID
+        topics: [['mint']]     // Optional: Filter by event topics
+      }
+    ],
+    pagination: {
+      limit: 10
+    }
+  });
+
+}
+*/

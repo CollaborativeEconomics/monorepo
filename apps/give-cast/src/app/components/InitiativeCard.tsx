@@ -67,8 +67,7 @@ export function InitiativeCard({
 
   // Helper function to generate initiative URI
   function getInitiativeUri(initiativeId: string, chain?: string) {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_VERCEL_URL || "http://localhost:3000"
+    const baseUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:3000"
 
     // Use query parameter format for chain
     const basePath = `${baseUrl}/api/initiative/${initiativeId}`

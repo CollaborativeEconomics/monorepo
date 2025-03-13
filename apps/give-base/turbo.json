@@ -21,7 +21,7 @@
         "MOBULA_API_KEY",
         "ENABLE_ANCHAIN",
         "ENABLE_GLOBALID",
-        "ARBITRUM_WALLET_SECRET"
+        "BASE_WALLET_SECRET"
       ],
       "dependsOn": ["^build"]
     }
