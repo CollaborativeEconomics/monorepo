@@ -1,0 +1,92 @@
+name: UI Tests
+
+on:
+  push:
+    branches:
+      - dev
+      - playwright-testing-draft
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  ui-tests:
+    timeout-minutes: 60  # More reasonable timeout (1 hour)
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.42.1-jammy  # Match version with package.json
+      options: --ipc=host --memory=4g --cpus=2  # Add resource limits
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important for detecting changed files
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - name: Setup pnpm config
+        run: pnpm config set store-dir ~/.pnpm-store
+      
+      # Add caching for faster builds
+      - name: Cache pnpm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+          
+      - name: Install dependencies
+        run: pnpm install --filter="./packages/ui-tests" --filter="./packages/ui-tests^..."
+          
+      - name: Install Playwright browsers
+        working-directory: packages/ui-tests
+        run: pnpm exec playwright install --with-deps chromium
+        
+      # Get Vercel Preview URL
+      - name: Wait for Vercel Preview Deployment
+        uses: zentered/vercel-preview-url@v1.4.0
+        id: vercel_preview_url
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        with:
+          vercel_project_id: 'prj_e57i9ZAztpyd5Rtss5G2dUg0jS8f' # Wait up to 3 minutes for the preview to be available
+          
+      # Run tests against the Vercel deployment
+      - name: Run UI tests
+        working-directory: packages/ui-tests
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ steps.vercel_preview_url.outputs.preview_url }}
+          CI: true
+          DEBUG: pw:api,pw:browser*  # More detailed Playwright debugging
+          PLAYWRIGHT_TIMEOUT: 60000
+        run: |
+          pnpm test
+          
+      # Upload test results
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            packages/ui-tests/playwright-report/
+            packages/ui-tests/test-results/
+          retention-days: 30
+          
+      # Upload traces on failure
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: packages/ui-tests/test-results/
+          retention-days: 7

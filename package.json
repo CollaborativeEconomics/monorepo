@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build-packages": "turbo build '--filter=./packages/*'",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "pnpm biome format --write /**/*.{ts,tsx,md}",
@@ -10,7 +11,8 @@
     "update-dependencies": "syncpack update",
     "delete-node-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
     "delete-builds": "find packages/* -type d -name \"dist\" -exec rm -rf {} +",
-    "delete-cache": "find .turbo/cache  -mtime +14  -exec rm {} +"
+    "delete-cache": "find .turbo/cache  -mtime +14  -exec rm {} +",
+    "delete-turbo": "find . -name .turbo -type d -exec rm -rf {} +"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -29,9 +31,6 @@
     "overrides": {
       "hono": "^4.6.7",
       "tough-cookie": "^4.1.3"
-    },
-    "patchedDependencies": {
-      "frog": "patches/frog.patch"
     }
   }
 }
