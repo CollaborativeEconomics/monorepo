@@ -50,12 +50,21 @@ jobs:
       - name: Install Playwright browsers
         working-directory: packages/ui-tests
         run: pnpm exec playwright install --with-deps chromium
+        
+      # Get Vercel Preview URL
+      - name: Wait for Vercel Preview Deployment
+        uses: zentered/vercel-preview-url@v1.4.0
+        id: vercel_preview_url
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        with:
+          vercel_project_id: 'prj_e57i9ZAztpyd5Rtss5G2dUg0jS8f' # Wait up to 3 minutes for the preview to be available
           
       # Run tests against the Vercel deployment
       - name: Run UI tests
         working-directory: packages/ui-tests
         env:
-          PLAYWRIGHT_TEST_BASE_URL: https://staging.givebase.cfce.io
+          PLAYWRIGHT_TEST_BASE_URL: ${{ steps.vercel_preview_url.outputs.preview_url }}
           CI: true
           DEBUG: pw:api,pw:browser*  # More detailed Playwright debugging
           PLAYWRIGHT_TIMEOUT: 60000
