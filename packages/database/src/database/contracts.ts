@@ -1,78 +1,78 @@
 import "server-only"
-import { prismaClient } from ".."
-import type { Prisma, Contract } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
+import type { Contract, Prisma } from "@prisma/client"
+import { prismaClient } from ".."
 
 interface ContractQuery extends ListQuery {
-  id?: string
   entity_id?: string
   chain?: string
   network?: string
   contract_type?: string
 }
 
-export async function getContracts(query:ContractQuery) {
-  const where = {}
-  const skip = 0
-  const take = 100
-  const orderBy = {}
-  //let include = {}
+const DEFAULT_PAGE_SIZE = 100
+const MAX_PAGE_SIZE = 200
 
-  // contract by id
-  if (query?.id) {
-    const result = await prismaClient.contract.findUnique({ where: { id: query.id } })
-    return result
+export async function getContracts(query: ContractQuery) {
+  // Build where clause from query parameters
+  const where: Prisma.ContractWhereInput = {
+    ...(query?.entity_id && { entity_id: query.entity_id }),
+    ...(query?.chain && { chain: query.chain }),
+    ...(query?.network && { network: query.network }),
+    ...(query?.contract_type && { contract_type: query.contract_type }),
   }
 
-  // all contracts by entity
-  if (query?.entity_id && query?.chain && query?.network && query?.contract_type) {
-    const result = await getContract(query.entity_id, query.chain, query.network, query.contract_type)
-    return result
+  // Handle pagination
+  const page = Math.max(0, Number(query?.page) || 0)
+  const size = Math.min(
+    MAX_PAGE_SIZE,
+    Math.max(1, Number(query?.size) || DEFAULT_PAGE_SIZE),
+  )
+
+  const filter: Prisma.ContractFindManyArgs = {
+    where,
+    skip: page * size,
+    take: size,
   }
 
-  // all contracts by chain and network
-  if (query?.chain && query?.network) {
-    const result = await getContractsByChain(query.chain, query.network)
-    return result
-  }
+  console.log("getContracts FILTER", filter)
 
-  const filter = { where, skip, take, orderBy }
-  if (query?.page || query?.size) {
-    let page = Number.parseInt(query?.page || '0', 10)
-    let size = Number.parseInt(query?.size || '100', 10)
-    if (page < 0) { page = 0 }
-    if (size < 0) { size = 100 }
-    if (size > 200) { size = 200 }
-    const start = page * size
-    filter.skip = start
-    filter.take = size
-    //filter.orderBy = { name: 'asc' }
-  }
-  const  result = await prismaClient.contract.findMany(filter)
+  return prismaClient.contract.findMany(filter)
+}
+
+export async function getContractById(id: string) {
+  const result = await prismaClient.contract.findUnique({ where: { id } })
   return result
 }
 
-export async function getContractById(id:string) {
-  const  result = await prismaClient.contract.findUnique({ where: { id } })
+export async function getContract(
+  entity_id: string,
+  chain: string,
+  network: string,
+  contract_type: string,
+) {
+  const result = await prismaClient.contract.findMany({
+    where: { entity_id, chain, network, contract_type },
+  })
   return result
 }
 
-export async function getContract(entity_id:string, chain:string, network:string, contract_type:string) {
-  const  result = await prismaClient.contract.findMany({ where: { entity_id, chain, network, contract_type } })
+export async function getContractsByChain(chain: string, network: string) {
+  const result = await prismaClient.contract.findMany({
+    where: { chain, network },
+  })
   return result
 }
 
-export async function getContractsByChain(chain:string, network:string) {
-  const  result = await prismaClient.contract.findMany({ where: { chain, network } })
-  return result
+export async function newContract(
+  data: Prisma.ContractCreateInput,
+): Promise<Contract> {
+  return prismaClient.contract.create({ data })
 }
 
-export async function newContract(data:Prisma.ContractCreateInput) {
-  const  result = await prismaClient.contract.create({ data })
-  return result
-}
-
-export async function updateContract(id:string, data:Prisma.ContractUpdateInput) {
-  const  result = await prismaClient.contract.update({ where: { id }, data })
-  return result
+export async function updateContract(
+  id: string,
+  data: Prisma.ContractUpdateInput,
+): Promise<Contract> {
+  return prismaClient.contract.update({ where: { id }, data })
 }

@@ -53,13 +53,14 @@ impl NonFungibleToken {
   }
 
   // Mint autoincrement
-  pub fn mint(e: Env, to: Address) {
+  pub fn mint(e: Env, to: Address) -> i128 {
     check_admin(&e);
     //instance_bump(&e);
     let id = increment_supply(&e);
     receive_balance(&e, to.clone(), 1);
     write_owner(&e, id, to.clone());
     events::mint(&e, to, id);
+    id
   }
 
   // Transfer ownership of token id
