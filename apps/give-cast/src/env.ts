@@ -17,6 +17,7 @@ export const env = createEnv({
   server: {
     ...appSchema,
     ...sharedEnvSchema.cfce,
+    ...sharedEnvSchema.blockchain,
     ...sharedEnvSchema.storage,
     ...sharedEnvSchema.mail,
     ...sharedEnvSchema.api,
@@ -25,6 +26,7 @@ export const env = createEnv({
   client: sharedEnvSchema.client,
   runtimeEnv: {
     ...runtimeEnv.cfce,
+    ...runtimeEnv.blockchain,
     ...runtimeEnv.storage,
     ...runtimeEnv.mail,
     ...runtimeEnv.api,
