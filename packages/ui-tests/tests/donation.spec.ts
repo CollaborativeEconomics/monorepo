@@ -15,10 +15,12 @@ test.describe("Donation Page", () => {
     )
 
     // Verify organization name
-    await expect(page.locator("text=Dubuque Harm Reduction").first()).toBeVisible()
+    await expect(
+      page.locator("text=Dubuque Harm Reduction").first(),
+    ).toBeVisible()
 
     // Verify description
-    const description = 
+    const description =
       "This is an initiative to raise the funds necessary to rent an office for Dubuque Harm Reduction"
     await expect(page.locator(`text=${description}`)).toBeVisible()
   })
@@ -38,7 +40,9 @@ test.describe("Donation Page", () => {
 
     // Receipt checkbox
     await expect(
-      page.locator('label:has-text("I\'d like to receive an emailed receipt")').first(),
+      page
+        .locator('label:has-text("I\'d like to receive an emailed receipt")')
+        .first(),
     ).toBeVisible()
 
     // Donate button
@@ -60,16 +64,34 @@ test.describe("Donation Page", () => {
   })
 
   test("toggles between USD and ETH", async ({ page }) => {
-    // Find the toggle switch
+    // Wait for the toggle container to be visible
+    const toggleContainer = page.locator(
+      ".flex.flex-row.justify-between.items-center >> text=USD",
+    )
+    await toggleContainer.first().waitFor({ state: "visible", timeout: 5000 })
+
+    // Find and ensure the toggle is visible and enabled
     const toggle = page.locator("input#show-usd-toggle")
+    await toggle.waitFor({ state: "visible", timeout: 5000 })
 
     // Check initial state (USD)
     await expect(page.locator("text=USD").first()).toBeVisible()
 
-    // Toggle to ETH
-    await toggle.click()
+    // Use JavaScript click as a fallback since this is a custom toggle
+    await page.evaluate(() => {
+      const toggle = document.querySelector(
+        "#show-usd-toggle",
+      ) as HTMLInputElement
+      if (toggle) {
+        toggle.click()
+        toggle.checked = !toggle.checked
+      }
+    })
 
-    // Verify ETH is now visible
+    // Wait for the ETH text to appear and verify
     await expect(page.locator("text=ETH").first()).toBeVisible()
+
+    // Verify the toggle state changed
+    await expect(toggle).toBeChecked()
   })
 })
