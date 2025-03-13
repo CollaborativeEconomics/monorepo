@@ -1028,6 +1028,8 @@ const chainConfiguration = {
             symbol: "XLM",
             decimals: 7,
             icon: "icons/xlm.webp",
+            contract:
+              "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA",
           },
           {
             isNative: false,
@@ -1067,6 +1069,8 @@ const chainConfiguration = {
             symbol: "XLM",
             decimals: 7,
             icon: "icons/xlm.webp",
+            contract:
+              "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
           },
           {
             isNative: false,
@@ -1083,9 +1087,9 @@ const chainConfiguration = {
           CreditsHash:
             "8c850c8ad832e8fcba395dc89009dad9b68c78902b275a5da565c55fe0091c7f",
           ReceiptNFT:
-            "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
+            "CAA5FW2X5XSORHPTDEYXVI7ZT3T7UAF5FX7CMTWHEGV2IHNKCEZEQ2IG",
           ReceiptNFTHash:
-            "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
+            "b8265f21a64a5edb08dfde3e442b6c1f93f8a6518adc08a6bb47c9b061a90d28",
         },
         wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
         wssurl: "",

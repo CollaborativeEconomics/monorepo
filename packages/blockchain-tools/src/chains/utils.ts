@@ -142,13 +142,7 @@ export const getNftPath = (nftData: {
   const contractId = providedContractId || contractFromType
 
   const explorer = networkConfig.explorer
-  console.log(
-    "EXPLORER",
-    explorer,
-    contractId,
-    tokenIdNumber,
-    nftData.transactionId,
-  )
+
   const path = explorer.nftPath
     .replace("{{contractId}}", contractId)
     .replace("{{tokenId}}", tokenIdNumber.toString())

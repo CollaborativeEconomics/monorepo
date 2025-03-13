@@ -14,10 +14,7 @@ const apis: AppConfig["apis"] = {
     apiUrl: "https://registry.staging.cfce.io/api",
   },
   ipfs: {
-    endpoint: "https://s3.filebase.com/",
-    region: "us-east-1",
-    gateway: "https://ipfs.filebase.io/ipfs/",
-    pinning: "https://api.filebase.io/v1/ipfs",
+    ...appConfig.apis.ipfs,
     buckets: {
       nfts: "kuyawa-public",
       avatars: "kuyawa-avatars",
