@@ -1,4 +1,3 @@
-//import { getNetworkForChain } from "@cfce/blockchain-tools"
 import appConfig, { getChainConfig } from "@cfce/app-config"
 
 const mintTopic =
@@ -91,7 +90,6 @@ async function getLogs(address: string, topics: string[], fromBlock: string) {
   const hexBlock = `0x${Number.parseInt(fromBlock).toString(16)}`
 
   try {
-    //const url = getNetworkForChain("arbitrum").rpcUrls.main
     const url = getChainConfig("arbitrum").rpcUrls.default
     //console.log('PROVIDER', url)
     if (!url) {
@@ -173,5 +171,26 @@ async function getLogs(address: string, topics: string[], fromBlock: string) {
     code: -32000,
     message: 'One of the blocks specified in filter (fromBlock, toBlock or blockHash) cannot be found.'
   }
+}
+*/
+
+
+/*
+// SOROBAN
+async function getEventLogs()
+  // Example JavaScript code using the Soroban RPC client
+  const response = await rpcClient.getEvents({
+    startLedger: ledgerNumber, // Starting ledger to search from
+    filters: [
+      {
+        contractIds: [contractId], // Optional: Filter by contract ID
+        topics: [['mint']]     // Optional: Filter by event topics
+      }
+    ],
+    pagination: {
+      limit: 10
+    }
+  });
+
 }
 */

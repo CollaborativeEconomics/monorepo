@@ -244,10 +244,11 @@ export default async function createStory(
     return result
   } catch (error) {
     // If it failed, delete the DB entry and throw the error
-    if (storyId)
+    if (storyId) {
       await prismaClient.story
         .delete({ where: { id: storyId } })
         .catch((e) => console.error("Error deleting rogue story", e))
+    }
     console.error("createStory ERROR", error)
     throw error
   }

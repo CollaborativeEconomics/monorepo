@@ -6,7 +6,7 @@ import type {
   Network,
   NetworkConfig,
 } from "@cfce/types"
-import { BASE_FEE, rpc } from "@stellar/stellar-sdk"
+import { Address, BASE_FEE, rpc } from "@stellar/stellar-sdk"
 import type {
   Transaction as StellarTransaction,
   // Address,
@@ -45,30 +45,38 @@ export default class StellarServer extends InterfaceBaseClass {
     walletSeed: string
   }) {
     console.log(
-      this.chain.name,
-      "minting NFT to",
+      "Minting NFT to",
       address,
       uri,
       "in",
       this.network.slug,
+      this.network.rpcUrls.default
     )
-    console.log("CTR", contractId, this.network.rpcUrls.default)
-    const contract = new Contract721({
-      contractId,
-      rpcUrl: this.network.rpcUrls.default,
-      secret: walletSeed,
-    })
-    //console.log('CTR', contract.spec)
-    // const info = await contract.mint({ to: address })
-    const response = await contract.submit({
-      network: this.network,
-      secret: walletSeed,
-      contractId,
-      method: "mint",
-      args: [address],
-    })
-    console.log("MINT result", response)
-    return response
+    console.log("CTR", contractId, this.network.rpcUrls.soroban)
+    try {
+      const pkAddress = new Address(address)
+      const scAddress = pkAddress.toScVal()
+      const contract = new Contract721({
+        contractId,
+        rpcUrl: this.network.rpcUrls.soroban,
+        secret: walletSeed,
+      })
+      console.log('CTR', contract)
+      // const info = await contract.mint({ to: address })
+      const response = await contract.submit({
+        network: this.network,
+        secret: walletSeed,
+        contractId,
+        method: "mint",
+        args: [scAddress],
+      })
+      console.log("MINT result", response) // { success, result, txId }
+      return response
+    } catch(error) {
+      console.log("Error minting NFT receipt")
+      console.log(JSON.stringify(error))
+      throw error
+    }
   }
 
   async submitTx(tx: StellarTransaction) {

@@ -37,18 +37,23 @@ export async function saveStory(
   }: StoryData,
   tba = false,
 ) {
-  const response = await createStory(
-    {
-      userId,
-      story,
-      organizationId,
-      initiativeId,
-      categoryId,
-      images,
-      media,
-    },
-    tba,
-  )
-  revalidatePath("/dashboard/stories")
-  return response
+  try {
+    const response = await createStory(
+      {
+        userId,
+        story,
+        organizationId,
+        initiativeId,
+        categoryId,
+        images,
+        media,
+      },
+      tba,
+    )
+    revalidatePath("/dashboard/stories")
+    return response
+  } catch(error) {
+    console.error(error)
+    return {success:false, error:(error as Error)?.message||'Unknown'}
+  }
 }

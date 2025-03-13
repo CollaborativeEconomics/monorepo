@@ -1,10 +1,16 @@
 import type { AppConfig } from "@cfce/types"
 // base/default
 import base from "./config/appConfigBase"
+
 // give-credits
 import giveCreditsDev from "./config/give-credits/appConfig.development"
 import giveCreditsProd from "./config/give-credits/appConfig.production"
 import giveCreditsStaging from "./config/give-credits/appConfig.staging"
+
+// give-cast
+import giveCastDev from "./config/give-cast/appConfig.development"
+import giveCastProd from "./config/give-cast/appConfig.production"
+import giveCastStaging from "./config/give-cast/appConfig.staging"
 
 // give-stark
 import giveStarkDev from "./config/give-stark/appConfig.development"
@@ -48,6 +54,7 @@ import testsProd from "./config/tests/appConfig.production"
 
 type Environment = "development" | "production" | "staging"
 type AppId =
+  | "give-cast"
   | "give-credits"
   | "give-stark"
   | "give-tron"
@@ -60,6 +67,11 @@ type AppId =
   | "tests"
 
 const appConfigs: Record<AppId, Record<Environment, AppConfig>> = {
+  "give-cast": {
+    development: giveCastDev,
+    production: giveCastProd,
+    staging: giveCastStaging,
+  },
   "give-credits": {
     development: giveCreditsDev,
     production: giveCreditsProd,

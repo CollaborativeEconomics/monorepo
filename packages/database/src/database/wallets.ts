@@ -1,16 +1,16 @@
 import "server-only"
-import { prismaClient } from ".."
-import type { Prisma, Wallet } from "@prisma/client"
 import type { ListQuery } from "@cfce/types"
+import type { Chain, Prisma, Wallet } from "@prisma/client"
+import { prismaClient } from ".."
 
 interface WalletQuery extends ListQuery {
   address?: string
   orgId?: string
+  initiativeId?: string
+  chain?: Chain
 }
 
-export async function getWallets(
-  query: WalletQuery,
-): Promise<Wallet | Array<Wallet>> {
+export async function getWallets(query: WalletQuery) {
   const where: Prisma.WalletWhereInput = {}
   const skip = 0
   const take = 100
@@ -27,6 +27,12 @@ export async function getWallets(
   const filter = { where, include, skip, take, orderBy }
   if (query?.orgId) {
     where.organizationId = query.orgId
+  }
+  if (query?.initiativeId) {
+    where.initiativeId = query.initiativeId
+  }
+  if (query?.chain) {
+    where.chain = query.chain
   }
   if (query?.page || query?.size) {
     let page = Number.parseInt(query?.page || "0")

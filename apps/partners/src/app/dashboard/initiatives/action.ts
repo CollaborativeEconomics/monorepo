@@ -1,13 +1,19 @@
 "use server"
-import { type Prisma, type InitiativeStatus, InitiativeStatus as Status, newInitiative, updateInitiative } from "@cfce/database"
+import {
+  type InitiativeStatus,
+  type Prisma,
+  InitiativeStatus as Status,
+  newInitiative,
+  updateInitiative,
+} from "@cfce/database"
 import { uploadFileToIPFS } from "@cfce/ipfs"
 import { newTBAccount } from "@cfce/tbas"
 import { EntityType } from "@cfce/types"
 import { uploadFile } from "@cfce/utils"
 import { snakeCase } from "lodash"
 import { revalidatePath } from "next/cache"
+import type { InitiativeData } from "~/types/data"
 import { randomNumber, randomString } from "~/utils/random"
-import type { InitiativeData } from '~/types/data'
 
 export async function createInitiativeAction(
   data: InitiativeData,
@@ -61,7 +67,7 @@ export async function createInitiativeAction(
           id: orgId,
         },
       },
-      status: data.status || Status.Draft // Status.Draft
+      status: data.status || Status.Draft, // Status.Draft
     }
 
     const result = await newInitiative(record)
@@ -112,7 +118,7 @@ export async function editInitiativeAction(id: string, data: InitiativeData) {
     let imageUri = data.imageUri
     let defaultAsset = data.defaultAsset
     if (file) {
-      console.log('Saving file...')
+      console.log("Saving file...")
       const ext = file.type.split("/")[1]
       if (!["jpg", "jpeg", "png", "webp"].includes(ext)) {
         return { success: false, error: "Invalid image format" }
@@ -141,7 +147,7 @@ export async function editInitiativeAction(id: string, data: InitiativeData) {
       finish: data.finish,
       defaultAsset,
       imageUri,
-      status: data.status || Status.Draft  //Status.Draft
+      status: data.status || Status.Draft, //Status.Draft
       //organization: {
       //  connect: {
       //    id: data.organizationId,

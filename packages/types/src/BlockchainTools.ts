@@ -127,6 +127,8 @@ export const TokenTickerSymbol = [
   "USDT",
   "USDC",
   "DAI",
+  "DEGEN",
+  "MOXIE",
 ] as const
 export type TokenTickerSymbol = (typeof TokenTickerSymbol)[number]
 

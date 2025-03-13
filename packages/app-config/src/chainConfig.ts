@@ -51,7 +51,7 @@ const chainConfiguration = {
         ],
         contracts: {
           ReceiptNFT: "0x42919FaFA756e2bd36A94fED5f19aab79D5221F4",
-          VolunteersFactory: "0x24265D9042d8602Ba26607750894CFC5718d7FC0",
+          VolunteersFactory: "0x4d624D65040A69021522318FF7b879571c52Eb61",
         },
         wallet: "0x1540026E002b09bc1720D130d90CB674b06121e2",
         wssurl: "",
@@ -94,7 +94,7 @@ const chainConfiguration = {
             contract: "0x80C2f901ABA1F95e5ddb2A5024E7Df6a366a3AB0",
             name: "USDC",
             symbol: "USDC",
-            decimals: 6,
+            decimals: 18,
             icon: "icons/usdc.webp",
           },
         ],
@@ -102,7 +102,7 @@ const chainConfiguration = {
           // ReceiptNFT: "0xd5D9defAe9b60FBD0f7E9c7Be361f462d8715eef",
           // ReceiptNFT: "0xeea9557589cFff5Dd3D849dA94201FA8Cb782C12",
           ReceiptNFT: "0x5465D45A11F468DB302d72Fd337745D8fdb4727A",
-          VolunteersFactory: "0xd96E5542C1fb269b959C36f6F331EbBd6C1EDB61",
+          VolunteersFactory: "0x1869c194155cbE4efA99a010BA6eE7db8eB32fbB",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",
@@ -214,6 +214,22 @@ const chainConfiguration = {
             decimals: 18,
             icon: "icons/eth.webp",
           },
+          {
+            isNative: false,
+            name: "Degen",
+            contract: "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed",
+            decimals: 18,
+            icon: "icons/degen.webp",
+            symbol: "DEGEN",
+          },
+          {
+            isNative: false,
+            name: "Moxie",
+            contract: "0x8C9037D1Ef5c6D1f6816278C7AAF5491d24CD527",
+            decimals: 18,
+            icon: "icons/moxie.webp",
+            symbol: "MOXIE",
+          },
         ],
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",
@@ -244,6 +260,24 @@ const chainConfiguration = {
             symbol: "ETH",
             decimals: 18,
             icon: "icons/eth.webp",
+          },
+          {
+            isNative: false,
+            name: "Degen",
+            // CFCE-controlled contract
+            contract: "0x36cC61EFb1426F0D4b89144dde16085e537e2568",
+            decimals: 18,
+            icon: "icons/degen.webp",
+            symbol: "DEGEN",
+          },
+          {
+            isNative: false,
+            name: "Moxie",
+            // CFCE-controlled contract
+            contract: "0x8563168D164802448667b61B8b73F25fE208d520",
+            decimals: 18,
+            icon: "icons/moxie.webp",
+            symbol: "MOXIE",
           },
         ],
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
@@ -369,7 +403,7 @@ const chainConfiguration = {
         gasprice: "27500000000",
         icon: "/icons/celo.webp",
         contracts: {
-          ReceiptNFT: "0x1AC546d21473062F3c3B16B6392A2EC26F4539f0",
+          ReceiptNFT: "0xAf6A672e87388DD876bBc763630AA39931A1599F",
         },
         explorer: {
           url: "https://celo-alfajores.blockscout.com",
@@ -994,6 +1028,8 @@ const chainConfiguration = {
             symbol: "XLM",
             decimals: 7,
             icon: "icons/xlm.webp",
+            contract:
+              "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA",
           },
           {
             isNative: false,
@@ -1033,6 +1069,8 @@ const chainConfiguration = {
             symbol: "XLM",
             decimals: 7,
             icon: "icons/xlm.webp",
+            contract:
+              "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
           },
           {
             isNative: false,
@@ -1049,9 +1087,9 @@ const chainConfiguration = {
           CreditsHash:
             "8c850c8ad832e8fcba395dc89009dad9b68c78902b275a5da565c55fe0091c7f",
           ReceiptNFT:
-            "CA7PQJ3N4GZL3GBAZNSDDQQGJ4ROW35FCX646JVVBU42K2DSMIFTA7QE",
+            "CAA5FW2X5XSORHPTDEYXVI7ZT3T7UAF5FX7CMTWHEGV2IHNKCEZEQ2IG",
           ReceiptNFTHash:
-            "7accc502baa0b8c5356b79babefc1a1ff502b5ff2ca5b1230476497f475e474c",
+            "b8265f21a64a5edb08dfde3e442b6c1f93f8a6518adc08a6bb47c9b061a90d28",
         },
         wallet: "GDDMYQEROCEBL75ZHJYLSEQMRTVT6BSXQHPEBITCXXQ5GGW65ETQAU5C",
         wssurl: "",
@@ -1198,6 +1236,7 @@ const chainConfiguration = {
           TokenBoundNFT: "0x88Bb2D04f180631BdC4Cd6129106665A0B6790D8", // 0xcbbb500f1cf1d6c44b0d7c9ff40292f8a0e756d7
           ReceiptNFT: "0xfd92E8Ae8FC075C15375f2F57BE54ADd717c1085",
           StoryNFT: "0xcA942Ca2817A2688788e88958918D3f93A9E85F5",
+          VolunteersFactory: "0x05AD83eD27a45c8c2b9D01217370690B17987641",
         },
         wallet: "0x1ac546d21473062f3c3b16b6392a2ec26f4539f0",
         wssurl: "",

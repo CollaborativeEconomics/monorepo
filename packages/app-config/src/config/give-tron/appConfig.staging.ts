@@ -13,6 +13,14 @@ const apis = {
   registry: {
     apiUrl: "https://registry.staging.cfce.io/api",
   },
+  ipfs: {
+    ...appConfig.apis.ipfs,
+    buckets: {
+      nfts: "kuyawa-public",
+      avatars: "kuyawa-avatars",
+      media: "kuyawa-media",
+    },
+  },
 }
 
 // use testnet
