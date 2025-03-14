@@ -6,7 +6,7 @@ import {
   walletConfig,
 } from "@cfce/blockchain-tools"
 import { chainAtom } from "@cfce/state"
-import type { ClientInterfaces } from "@cfce/types"
+import type { ChainSlugs, ClientInterfaces } from "@cfce/types"
 import { useAtom } from "jotai"
 import { useRouter } from "next/navigation"
 import React from "react"
@@ -44,7 +44,8 @@ export function WalletLoginButton({
         throw new Error(`No connect method found for wallet: ${method}`)
       }
 
-      const connection = await walletInterface.connect(chainNetwork.id)
+      // type is already narrowed in the AuthButton
+      const connection = await walletInterface.connect()
 
       if ("error" in connection) {
         throw new Error(`Failed to connect to wallet: ${connection.error}`)

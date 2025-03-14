@@ -98,10 +98,8 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const { emailReceipt, name, email, amount } = donationForm
   const coinAmount = useAtomValue(amountCoinAtom)
   const usdAmount = useAtomValue(amountUSDAtom)
-  console.log("Coin amount", coinAmount, usdAmount)
   const chain = chainConfig[selectedChain]
   const network = chain.networks[appConfig.chainDefaults.network]
-  console.log("NET", network)
   const chainInterface = BlockchainClientInterfaces[selectedWallet]
   const [buttonMessage, setButtonMessage] = useState(
     "One wallet confirmation required",
@@ -205,7 +203,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     //  const error = new Error("No connect method on chain interface")
     //  throw error
     //}
-    //await chainInterface?.connect(network.id)
+    //await chainInterface?.connect(selectedChain)
     console.log("BALANCE")
     const balanceCheck = await chainInterface?.getBalance?.()
     console.log("BALANCED", balanceCheck)
@@ -223,7 +221,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //  const error = new Error("No connect method on chain interface")
       //  throw error
       //}
-      //await chainInterface?.connect(network.id)
+      //await chainInterface?.connect(selectedChain)
       console.log("SEND", address, amount, memo)
       if (!chainInterface?.sendPayment) {
         const error = new Error("No sendPayment method on chain interface")
@@ -265,7 +263,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //  const error = new Error("No connect method on chain interface")
       //  throw error
       //}
-      //await chainInterface.connect(network.id)
+      //await chainInterface.connect(selectedChain)
       if (!chainInterface?.sendGaslessPayment) {
         const error = new Error("Gas payments not supported")
         toast({
@@ -388,7 +386,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
 
       if (!chainInterface?.isConnected()) {
         console.log("CONNECTING...")
-        await chainInterface.connect(network.id)
+        await chainInterface.connect(selectedChain)
       }
 
       if (appConfig.siteInfo.options.enableFetchBalance) {

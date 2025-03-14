@@ -1,6 +1,7 @@
 import type {
   Chain,
   ChainConfig,
+  ChainSlugs,
   NetworkConfig,
   TokenTickerSymbol,
 } from "@cfce/types"
@@ -56,7 +57,7 @@ export default abstract class InterfaceBaseClass {
   >
 
   // client functions, only defined on client subclasses
-  public connect?(chainId?: number): Promise<
+  public connect?(chainSlug?: ChainSlugs): Promise<
     | { success: boolean; error: string }
     | {
         success: boolean

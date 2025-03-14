@@ -1,6 +1,7 @@
 /// <reference path="./metamask.d.ts" />
 
 import { chainConfig } from "@cfce/app-config"
+import { chainAtom } from "@cfce/state"
 import type {
   ChainSlugs,
   Network,
@@ -45,6 +46,7 @@ import {
   xdc,
   xdcTestnet,
 } from "@wagmi/core/chains"
+import { getDefaultStore } from "jotai"
 import { erc20Abi } from "viem"
 import { formatUnits, parseEther } from "viem"
 import Web3 from "web3"
@@ -54,7 +56,11 @@ import type {
   ProviderRpcError,
 } from "web3"
 import InterfaceBaseClass from "../chains/InterfaceBaseClass"
-import { getChainByChainId, getNetworkForChain } from "../chains/utils"
+import {
+  getChainByChainId,
+  getChainConfigBySlug,
+  getNetworkForChain,
+} from "../chains/utils"
 import type { Transaction } from "../types/transaction"
 
 function stringToHex(str?: string) {
@@ -64,6 +70,7 @@ function stringToHex(str?: string) {
 }
 
 export default class MetaMaskWallet extends InterfaceBaseClass {
+  listenersSet = false
   setChain(slug: ChainSlugs) {
     this.chain = chainConfig[slug]
     this.network = getNetworkForChain(slug)
@@ -153,74 +160,25 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     },
   })
 
-  async connect(newChainId?: number) {
-    console.log("Wallet starting...", newChainId)
-
-    const account = getAccount(this.config)
-    if (account.isConnected) {
-      console.log("Wallet is already connected (via getAccount)")
-      this.connectedWallet = account.address
-
-      if (!this.network) {
-        throw new Error("Error getting network")
-      }
-      if (!this.chain) {
-        throw new Error("Error getting chain")
-      }
-
-      if (!this.connectedWallet) {
-        throw new Error("Error getting wallet")
-      }
-      return {
-        success: true,
-        network: this.network,
-        walletAddress: this.connectedWallet,
-        chain: this.chain.name,
-      }
-    }
-
+  async connect(chainSlug?: ChainSlugs) {
+    console.log("Wallet starting...", chainSlug)
+    let chain = chainSlug
+    this.metamask = window.ethereum
+    this.wallets = await this.metamask?.enable()
     try {
-      this.metamask = window.ethereum
-      this.wallets = await this.metamask?.enable()
-      const metamaskChainId = window.ethereum?.chainId
-      console.log("MM Chain ID", metamaskChainId)
+      if (!chain) {
+        const metamaskChainId = window.ethereum?.chainId
+        if (!metamaskChainId) {
+          throw new Error("No chain ID provided or inferred")
+        }
+        chain = getChainByChainId(Number(metamaskChainId)).slug
+      }
 
       const connection = await connect(this.config, { connector: injected() })
       this.connectedWallet = connection.accounts[0]
       console.log("MM Wallet", this.connectedWallet)
-      const newChainIsSameAsConnectedChain =
-        Number(newChainId) === Number(this.network?.id)
-      const metamaskChainIsSameAsConnectedChain =
-        Number(metamaskChainId) === Number(this.network?.id)
-      // early return if chainId and wallet are already set correctly
-      console.log(
-        "newChainIsSameAsConnectedChain",
-        newChainIsSameAsConnectedChain,
-        newChainId,
-        this.network?.id,
-      )
-      console.log(
-        "metamaskChainIsSameAsConnectedChain",
-        metamaskChainIsSameAsConnectedChain,
-        metamaskChainId,
-        this.network?.id,
-      )
-      console.log("this.network", this.network)
 
-      if (
-        typeof newChainId === "undefined" &&
-        typeof metamaskChainId === "undefined"
-      ) {
-        throw new Error("No chain ID provided or inferred")
-      }
-      const chainId = newChainId ?? Number(metamaskChainId)
-      console.log("MM Chain ID", chainId)
-
-      if (typeof chainId !== "number") {
-        throw new Error(`Invalid chain ID type: ${typeof chainId}`)
-      }
-
-      this.setNetwork(chainId)
+      this.setNetwork(chain)
 
       if (!this.network) {
         throw new Error("Error getting network")
@@ -259,19 +217,23 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   }
 
   setListeners() {
-    console.log("LISTENERS", this)
+    if (this.listenersSet) {
+      return
+    }
+    this.listenersSet = true
+
+    console.log("LISTENERS")
     if (!this.metamask) {
-      console.error("Metamask not available")
+      console.error("listeners: Metamask not available")
       return
     }
     if (!this.network) {
-      console.error("Network not set, connect or setChain first")
+      console.error("listeners: Network not set, connect or setChain first")
       return
     }
     // @ts-expect-error returns chain ID string
     this.metamask.on("connect", (info: ProviderConnectInfo) => {
       console.log("> onConnect", Number.parseInt(info.chainId), info.chainId)
-      this.setNetwork(Number(info.chainId))
       //if(restore){
       //  restore(this.network, this.connectedWallet)
       //}
@@ -301,7 +263,9 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         console.log("Already on chain", chainId)
         return
       }
-      this.setNetwork(Number(chainId))
+      const chain = getChainByChainId(Number(chainId))
+      // this won't loop because we check for listenersSet
+      this.setNetwork(chain.slug)
       //if(restore){
       //  restore(this.network, this.connectedWallet)
       //}
@@ -316,14 +280,14 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     console.log("Listeners set")
   }
 
-  setNetwork(chainId: number) {
-    console.log("SetNetwork", chainId)
-    this.chain = getChainByChainId(chainId)
-    this.network = getNetworkForChain(this.chain.slug)
+  setNetwork(chainSlug: ChainSlugs) {
+    console.log("SetNetwork", chainSlug)
+    this.chain = getChainConfigBySlug(chainSlug)
+    this.network = getNetworkForChain(chainSlug)
     this.changeNetwork(this.network)
     this.setListeners()
     if (!this.chain || !this.network) {
-      console.error("Couldn't set network or chain for", chainId)
+      console.error("Couldn't set network or chain for", chainSlug)
       return
     }
   }
@@ -370,142 +334,67 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     }
   }
 
-  async loadWallet(window: Window) {
-    console.log("Loading wallet...", this.network)
-    //web3.eth.getChainId().then(id => { console.log('ChainId', id) })
-    //console.log('WEB3', web3);
-    console.log("VER", Web3.version)
+  // async getAccounts() {
+  //   console.log("Get accounts...")
+  //   if (!this.metamask) {
+  //     console.error("Error getting accounts, Metamask not available")
+  //     return
+  //   }
+  //   try {
+  //     let [accounts, chainId] = await Promise.allSettled([
+  //       this.metamask.request<string[]>({
+  //         method: "eth_requestAccounts",
+  //       }),
+  //       this.metamask.request<string>({
+  //         method: "eth_chainId",
+  //       }),
+  //     ])
+  //     if (accounts?.status !== "fulfilled") {
+  //       throw new Error("Error getting accounts")
+  //     }
+  //     if (chainId?.status !== "fulfilled") {
+  //       throw new Error("Error getting chainId")
+  //     }
+  //     this.setNetwork(Number(chainId.value))
+  //     if (accounts?.value?.length) {
+  //       this.wallets = (accounts.value ?? []) as string[]
+  //       this.connectedWallet = accounts.value[0] ?? ""
+  //       console.log("Accounts:", accounts.value)
+  //       console.log("MyAccount:", this.connectedWallet)
+  //       //onReady(this.connectedWallet, this.network)
+  //     }
+  //   } catch (err) {
+  //     console.log("Error: User rejected")
+  //     console.error(err)
+  //     //onReady(null, 'User rejected connection'
+  //   }
+  // }
 
-    if (window.ethereum && this.metamask) {
-      //console.log('window.ethereum')
-      if (this.metamask.isConnected()) {
-        console.log("Already connected to", this.metamask.chainId)
-        this.getAccounts()
-        // const address = await this.getAddress();
-        // this.getBalance(address);
-      } else {
-        console.log("Connecting...")
-        const accounts = await this.metamask.enable()
-        console.log("Enabled:", accounts)
-        this.getAccounts()
-        //const adr = await this.getAddress()
-        //  this.getBalance(adr);
-      }
-    } else {
-      console.log("Metamask not available")
-    }
-  }
-  /*
-    // Metamask Events
-    async onConnect(info) {
-      console.log('onConnect', info);
-      // info.chainId
-      //this.setNetwork(info.chainId);
-      //this.loadWallet();
-    }
-
-    async onDisconnect(info) {
-      console.log('onDisconnect', info)
-      //
-      console.log('Disconnected')
-    }
-
-    async onAccounts(info) {
-      console.log('onAccounts', info)
-      this.wallets = info;
-      this.connectedWallet = info[0];
-      console.log('My account', this.connectedWallet);
-      this.getBalance(this.connectedWallet);
-    }
-
-    async onChain(chainId) {
-      console.log('onChain', chainId)
-      if(chainId==this.chainId) { console.log('Already on chain', chainId); return; }
-      this.setNetwork(chainId);
-      //this.loadWallet();
-      //this.requestAccount();
-      //this.getAccounts();
-    }
-
-    async onMessage(info) {
-      console.log('onMessage', info)
-    }
-  */
-  /*
-  function requestAccount() {
-      this.metamask.request({ method: 'eth_requestAccounts' }).then(onAccounts)
-      .catch(err => {
-        if (err.code === 4001) {
-          console.log('User rejected');
-          console.log('Please connect to Metamask wallet');
-        } else {
-          console.error('Connection error', err);
-        }
-      });
-  }
-  */
-
-  async getAccounts() {
-    console.log("Get accounts...")
-    if (!this.metamask) {
-      console.error("Error getting accounts, Metamask not available")
-      return
-    }
-    try {
-      let [accounts, chainId] = await Promise.allSettled([
-        this.metamask.request<string[]>({
-          method: "eth_requestAccounts",
-        }),
-        this.metamask.request<string>({
-          method: "eth_chainId",
-        }),
-      ])
-      if (accounts?.status !== "fulfilled") {
-        throw new Error("Error getting accounts")
-      }
-      if (chainId?.status !== "fulfilled") {
-        throw new Error("Error getting chainId")
-      }
-      this.setNetwork(Number(chainId.value))
-      if (accounts?.value?.length) {
-        this.wallets = (accounts.value ?? []) as string[]
-        this.connectedWallet = accounts.value[0] ?? ""
-        console.log("Accounts:", accounts.value)
-        console.log("MyAccount:", this.connectedWallet)
-        //onReady(this.connectedWallet, this.network)
-      }
-    } catch (err) {
-      console.log("Error: User rejected")
-      console.error(err)
-      //onReady(null, 'User rejected connection'
-    }
-  }
-
-  async getAddress(): Promise<string | null> {
-    console.log("Get address...")
-    if (!this.metamask) {
-      console.error("Error getting address, Metamask not available")
-      return null
-    }
-    try {
-      const accounts = await this.metamask.request<string[]>({
-        method: "eth_requestAccounts",
-      })
-      console.log("Account", accounts)
-      if (!accounts) {
-        console.error("Error getting address, Metamask not available")
-        return null
-      }
-      this.connectedWallet = accounts[0] ?? ""
-      //$('user-address').innerHTML = this.connectedWallet.substr(0,10)
-      return this.connectedWallet
-    } catch (err) {
-      console.log("Error: Wallet not connected", err)
-      //$('user-address').innerHTML = 'Not connected'
-      //$('user-balance').innerHTML = '0.0000 BNB'
-      return null
-    }
-  }
+  // async getAddress(): Promise<string | null> {
+  //   console.log("Get address...")
+  //   if (!this.metamask) {
+  //     console.error("Error getting address, Metamask not available")
+  //     return null
+  //   }
+  //   try {
+  //     const accounts = await this.metamask.request<string[]>({
+  //       method: "eth_requestAccounts",
+  //     })
+  //     console.log("Account", accounts)
+  //     if (!accounts) {
+  //       console.error("Error getting address, Metamask not available")
+  //       return null
+  //     }
+  //     this.connectedWallet = accounts[0] ?? ""
+  //     //$('user-address').innerHTML = this.connectedWallet.substr(0,10)
+  //     return this.connectedWallet
+  //   } catch (err) {
+  //     console.log("Error: Wallet not connected", err)
+  //     //$('user-address').innerHTML = 'Not connected'
+  //     //$('user-balance').innerHTML = '0.0000 BNB'
+  //     return null
+  //   }
+  // }
 
   async getBalance() {
     console.log("Get balance...")
@@ -576,11 +465,14 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     amount,
     memo,
   }: { address: string; amount: number; memo?: string }) {
+    const { selectedChain } = getDefaultStore().get(chainAtom)
+    console.log("CHAIN", selectedChain)
+    this.setNetwork(selectedChain)
     console.log("METAMASK PAYMENT", address, amount, memo)
-    if (!this.network) {
-      console.error("Network not set, connect or setChain first")
-      return { success: false, error: "Network not set" }
-    }
+    // if (!this.network) {
+    //   console.error("Network not set, connect or setChain first")
+    //   return { success: false, error: "Network not set" }
+    // }
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
@@ -612,8 +504,16 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       console.log("GAS", gas)
       const transaction = { account, to, value, data, gas }
       console.log("TX", transaction)
-      const result = await sendTransaction(this.config, transaction)
+      const result = await sendTransaction(this.config, transaction).catch(
+        (error) => {
+          console.error("Error sending payment", error)
+          return { success: false, error: error.message }
+        },
+      )
       console.log("TXID:", result)
+      if (typeof result === "object" && "error" in result) {
+        return { success: false, error: result.error }
+      }
 
       return {
         success: true,
@@ -728,30 +628,5 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     }
   }
 }
-
-/*
-function onWallet() {
-  console.log('On wallet');
-  if(this.metamask.isConnected()) {
-    console.log('Logout');
-    this.metamask.enable(); // ???
-  } else {
-    console.log('Enable');
-    this.metamask.enable();
-  }
-}
-
-async function calcGas(numx, web) {
-  let gas = { gasPrice: 20000000000, gasLimit: 25000 };
-  let prc = 20000000000;
-  if(web){ prc = await web.eth.getGasPrice(); console.log('Gas Price', prc); }
-  let est = parseInt(numx, 16);
-  let lmt = parseInt(est * 1.15);
-  gas.gasPrice = parseInt(prc);
-  gas.gasLimit = lmt;
-  console.log(gas);
-  return gas;
-}
-*/
 
 // END
