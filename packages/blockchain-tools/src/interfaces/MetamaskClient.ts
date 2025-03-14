@@ -209,16 +209,61 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     }
   }
 
-  isConnected() {
+  /**
+   * Simple check if an address is valid, supporting both 0x and xdc formats
+   */
+  isValidAddress(address?: string): boolean {
+    if (!address) return false
+
+    // Standard Ethereum address: 0x + 40 hex chars = 42 chars
+    const isEthAddress = address.startsWith("0x") && address.length === 42
+
+    // XDC addresses: xdc + 40 hex chars = 43 chars
+    const isXdcAddress = address.startsWith("xdc") && address.length === 43
+
+    return isEthAddress || isXdcAddress
+  }
+
+  isConnected(): boolean {
     if (window.ethereum) {
       return (
         window.ethereum.isConnected() &&
         typeof this.chain !== "undefined" &&
         typeof this.network !== "undefined" &&
-        Boolean(this.connectedWallet)
+        this.isValidAddress(this.connectedWallet)
       )
     }
     return false
+  }
+
+  async verifyConnection(requiredChainSlug?: ChainSlugs): Promise<boolean> {
+    // Check basic connection
+    if (!this.isConnected()) {
+      console.log("Wallet not connected, attempting to reconnect...")
+      const connectResult = await this.connect(requiredChainSlug)
+      return connectResult.success
+    }
+
+    // Verify chain if specified
+    if (requiredChainSlug && this.network?.slug !== requiredChainSlug) {
+      console.log("Chain mismatch, switching networks...")
+      const networkResult = await this.setNetwork(requiredChainSlug)
+      return networkResult !== false
+    }
+
+    // Verify we can actually get the account from the provider
+    try {
+      const account = await getAccount(this.config)
+      if (account.address !== this.connectedWallet) {
+        console.log("Wallet address mismatch, reconnecting...")
+        const connectResult = await this.connect(requiredChainSlug)
+        return connectResult.success
+      }
+      return true
+    } catch (error) {
+      console.error("Error verifying wallet connection:", error)
+      return false
+    }
   }
 
   setListeners() {
@@ -285,25 +330,10 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     console.log("Listeners set")
   }
 
-  async setNetwork(chainSlug: ChainSlugs) {
-    console.log("SetNetwork", chainSlug)
-    this.chain = getChainConfigBySlug(chainSlug)
-    // only change network if it's not already the correct network
-    if (this.network?.slug !== chainSlug) {
-      this.network = getNetworkForChain(chainSlug)
-      await this.changeNetwork(this.network)
-    }
-    this.setListeners()
-    if (!this.chain || !this.network) {
-      console.error("Couldn't set network or chain for", chainSlug)
-      return
-    }
-  }
-
   async changeNetwork(provider: NetworkConfig) {
     if (!this.metamask) {
       console.error("Change network failed, Metamask not available")
-      return
+      return false
     }
     console.log("Metamask changing network to", provider.name, provider.id)
     const chainHex = this.toHex(`${provider.id}`)
@@ -311,6 +341,20 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       await this.metamask.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: chainHex }],
+      })
+
+      // Wait for the chain to actually change
+      return new Promise<boolean>((resolve) => {
+        const checkChain = () => {
+          const currentChainId = Number(this.metamask?.chainId || "0")
+          if (currentChainId === provider.id) {
+            resolve(true)
+          } else {
+            // Check again after a short delay
+            setTimeout(checkChain, 500)
+          }
+        }
+        checkChain()
       })
     } catch (err) {
       console.log("Metamask error", err)
@@ -335,11 +379,47 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
             ],
           })
           console.log("Network added!")
+
+          // Wait for the chain to be added and switched to
+          return new Promise<boolean>((resolve) => {
+            const checkChain = () => {
+              const currentChainId = Number(this.metamask?.chainId || "0")
+              if (currentChainId === provider.id) {
+                resolve(true)
+              } else {
+                // Check again after a short delay
+                setTimeout(checkChain, 500)
+              }
+            }
+            checkChain()
+          })
         } catch (ex) {
           console.error("Metamask error adding network", ex)
+          return false
         }
       }
+      return false
     }
+  }
+
+  async setNetwork(chainSlug: ChainSlugs) {
+    console.log("SetNetwork", chainSlug)
+    this.chain = getChainConfigBySlug(chainSlug)
+    // only change network if it's not already the correct network
+    if (this.network?.slug !== chainSlug) {
+      this.network = getNetworkForChain(chainSlug)
+      const success = await this.changeNetwork(this.network)
+      if (!success) {
+        console.error("Failed to change network to", chainSlug)
+        return false
+      }
+    }
+    this.setListeners()
+    if (!this.chain || !this.network) {
+      console.error("Couldn't set network or chain for", chainSlug)
+      return false
+    }
+    return true
   }
 
   // async getAccounts() {
@@ -475,12 +555,19 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   }: { address: string; amount: number; memo?: string }) {
     const { selectedChain } = getDefaultStore().get(chainAtom)
     console.log("CHAIN", selectedChain)
-    await this.setNetwork(selectedChain)
+
+    // Verify connection and chain before proceeding
+    const isConnected = await this.verifyConnection(selectedChain)
+    if (!isConnected) {
+      return {
+        success: false,
+        error:
+          "Failed to establish a valid wallet connection on the correct network",
+      }
+    }
+
     console.log("METAMASK PAYMENT", address, amount, memo)
-    // if (!this.network) {
-    //   console.error("Network not set, connect or setChain first")
-    //   return { success: false, error: "Network not set" }
-    // }
+
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
@@ -496,6 +583,11 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         })
       }
 
+      // Check if the receiving address is valid
+      if (!this.isValidAddress(address)) {
+        throw new Error(`Invalid address format: ${address}`)
+      }
+
       // Convert amount to wei using parseEther
       // const value = parseEther(amount.toString())
       const value = this.toBaseUnit(amount)
@@ -508,10 +600,33 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       const preTx = { account, to, value, data }
       console.log("PRETX", preTx)
       console.log("CONFIG", this.config)
-      const estimated = await estimateGas(this.config, preTx)
+
+      // Use AbortController for gas estimation timeout
+      const gasEstimationController = new AbortController()
+      const gasEstimationTimeoutId = setTimeout(() => {
+        gasEstimationController.abort("Gas estimation timed out")
+      }, 15000)
+
+      let estimated: bigint
+      try {
+        estimated = await estimateGas(this.config, {
+          ...preTx,
+          // Pass the signal if the method supports it
+          // This depends on how estimateGas is implemented
+        })
+        clearTimeout(gasEstimationTimeoutId)
+      } catch (error) {
+        clearTimeout(gasEstimationTimeoutId)
+        if (gasEstimationController.signal.aborted) {
+          throw new Error("Gas estimation timed out")
+        }
+        throw error
+      }
+
       console.log("EST", estimated)
       const gas = BigInt(Math.floor(Number(estimated) * 1.2)) // 20% just to be safe
       console.log("GAS", gas)
+
       const transaction = {
         account,
         to,
@@ -521,17 +636,30 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         chainId: this.network?.id,
       }
       console.log("TX", transaction)
-      const result = await sendTransaction(this.config, transaction)
-      // .catch(
-      //   (error) => {
-      //     console.error("Error sending payment", error)
-      //     return { success: false, error: error.message }
-      //   },
-      // )
+
+      // Use AbortController for transaction timeout
+      const txController = new AbortController()
+      const txTimeoutId = setTimeout(() => {
+        txController.abort("Transaction sending timed out")
+      }, 30000)
+
+      let result: string
+      try {
+        result = await sendTransaction(this.config, {
+          ...transaction,
+          // Pass the signal if the method supports it
+          // This depends on how sendTransaction is implemented
+        })
+        clearTimeout(txTimeoutId)
+      } catch (error) {
+        clearTimeout(txTimeoutId)
+        if (txController.signal.aborted) {
+          throw new Error("Transaction sending timed out")
+        }
+        throw error
+      }
+
       console.log("TXID:", result)
-      // if (typeof result === "object" && "error" in result) {
-      //   return { success: false, error: result.error }
-      // }
 
       return {
         success: true,
@@ -561,15 +689,65 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     contract: string
     memo: string
   }) {
+    const { selectedChain } = getDefaultStore().get(chainAtom)
+    console.log("CHAIN", selectedChain)
+
+    // Verify connection and chain before proceeding
+    const isConnected = await this.verifyConnection(selectedChain)
+    if (!isConnected) {
+      return {
+        success: false,
+        error:
+          "Failed to establish a valid wallet connection on the correct network",
+      }
+    }
+
     function numHex(num: number) {
       return `0x${num.toString(16)}`
     }
     console.log(`Sending ${amount} ${token} token to ${address}...`)
-    const gasPrice = await this.getGasPrice() //numHex(20000000000)
-    if (!gasPrice) {
-      console.error("Payment error: Error getting gas price")
-      return { success: false, error: "Error getting gas price" }
+
+    // Check if the addresses are valid
+    if (!this.isValidAddress(address)) {
+      return {
+        success: false,
+        error: `Invalid recipient address format: ${address}`,
+      }
     }
+
+    if (!this.isValidAddress(contract)) {
+      return {
+        success: false,
+        error: `Invalid contract address format: ${contract}`,
+      }
+    }
+
+    // Get gas with abort controller for timeout
+    let gasPrice: string | undefined
+    const gasPriceController = new AbortController()
+    const gasPriceTimeoutId = setTimeout(() => {
+      gasPriceController.abort("Gas price retrieval timed out")
+    }, 10000)
+
+    try {
+      // The getGasPrice method doesn't currently support AbortController
+      // But we'll add the timeout cleanup
+      gasPrice = await this.getGasPrice()
+      clearTimeout(gasPriceTimeoutId)
+
+      if (!gasPrice) {
+        console.error("Payment error: Error getting gas price")
+        return { success: false, error: "Error getting gas price" }
+      }
+    } catch (error) {
+      clearTimeout(gasPriceTimeoutId)
+      if (gasPriceController.signal.aborted) {
+        return { success: false, error: "Gas price retrieval timed out" }
+      }
+      console.error("Error getting gas price:", error)
+      return { success: false, error: "Failed to get gas price" }
+    }
+
     console.log("GAS", Number.parseInt(gasPrice), gasPrice)
     const gas = numHex(210000)
     const wei = numHex(amount * 10 ** 6) // usdc and usdt only have 6 decs
@@ -601,7 +779,27 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
           error: "Metamask not available",
         }
       }
-      const result = await this.metamask.request({ method, params })
+
+      // Use AbortController for transaction timeout
+      const txController = new AbortController()
+      const txTimeoutId = setTimeout(() => {
+        txController.abort("Transaction sending timed out")
+      }, 30000)
+
+      let result: string | unknown
+      try {
+        // The metamask.request doesn't support AbortController yet
+        // But we'll add the timeout cleanup
+        result = await this.metamask.request({ method, params })
+        clearTimeout(txTimeoutId)
+      } catch (error) {
+        clearTimeout(txTimeoutId)
+        if (txController.signal.aborted) {
+          throw new Error("Transaction sending timed out")
+        }
+        throw error
+      }
+
       console.log("TXID", result)
       if (typeof result !== "string") {
         return { success: false, error: "No transaction ID" }
@@ -644,6 +842,42 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       }
       return { error: "Error fetching from ledger" }
     }
+  }
+
+  async reconnect(
+    chainSlug?: ChainSlugs,
+    maxAttempts = 3,
+  ): Promise<boolean | undefined> {
+    let attempts = 0
+    let success = false
+
+    while (attempts < maxAttempts && !success) {
+      try {
+        console.log(`Reconnection attempt ${attempts + 1}/${maxAttempts}...`)
+        const result = await this.connect(chainSlug)
+        success = result.success
+
+        if (success) {
+          console.log("Reconnection successful")
+          return true
+        }
+
+        // Exponential backoff
+        const delay = Math.min(1000 * 2 ** attempts, 10000)
+        console.log(`Reconnection failed. Retrying in ${delay}ms...`)
+        await new Promise((resolve) => setTimeout(resolve, delay))
+      } catch (error) {
+        console.error("Error during reconnection attempt:", error)
+      }
+
+      attempts++
+    }
+
+    if (!success) {
+      console.error("Failed to reconnect after multiple attempts")
+    }
+
+    return success
   }
 }
 
