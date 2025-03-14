@@ -174,11 +174,15 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         chain = getChainByChainId(Number(metamaskChainId)).slug
       }
 
-      const connection = await connect(this.config, { connector: injected() })
+      this.setNetwork(chain)
+
+      console.log("Connecting to chain", this.network?.id)
+      const connection = await connect(this.config, {
+        connector: injected(),
+        chainId: this.network?.id,
+      })
       this.connectedWallet = connection.accounts[0]
       console.log("MM Wallet", this.connectedWallet)
-
-      this.setNetwork(chain)
 
       if (!this.network) {
         throw new Error("Error getting network")
@@ -210,7 +214,8 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       return (
         window.ethereum.isConnected() &&
         typeof this.chain !== "undefined" &&
-        typeof this.network !== "undefined"
+        typeof this.network !== "undefined" &&
+        typeof this.connectedWallet !== "undefined"
       )
     }
     return false
@@ -483,7 +488,9 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
 
     try {
       if (!this.connectedWallet) {
-        throw new Error("Wallet not connected")
+        throw new Error("Wallet not connected", {
+          cause: this.connectedWallet,
+        })
       }
 
       // Convert amount to wei using parseEther
@@ -500,20 +507,28 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       console.log("CONFIG", this.config)
       const estimated = await estimateGas(this.config, preTx)
       console.log("EST", estimated)
-      const gas = BigInt(Number(estimated) * 1.2) // 20% just to be safe
+      const gas = BigInt(Math.floor(Number(estimated) * 1.2)) // 20% just to be safe
       console.log("GAS", gas)
-      const transaction = { account, to, value, data, gas }
-      console.log("TX", transaction)
-      const result = await sendTransaction(this.config, transaction).catch(
-        (error) => {
-          console.error("Error sending payment", error)
-          return { success: false, error: error.message }
-        },
-      )
-      console.log("TXID:", result)
-      if (typeof result === "object" && "error" in result) {
-        return { success: false, error: result.error }
+      const transaction = {
+        account,
+        to,
+        value,
+        data,
+        gas,
+        chainId: this.network?.id,
       }
+      console.log("TX", transaction)
+      const result = await sendTransaction(this.config, transaction)
+      // .catch(
+      //   (error) => {
+      //     console.error("Error sending payment", error)
+      //     return { success: false, error: error.message }
+      //   },
+      // )
+      console.log("TXID:", result)
+      // if (typeof result === "object" && "error" in result) {
+      //   return { success: false, error: result.error }
+      // }
 
       return {
         success: true,
