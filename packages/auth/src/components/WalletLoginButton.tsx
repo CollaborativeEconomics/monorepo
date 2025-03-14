@@ -29,6 +29,7 @@ export function WalletLoginButton({
   const chainNetwork = chain.networks[appConfig.chainDefaults.network]
   const walletInterface = BlockchainClientInterfaces[method]
   const wallet = walletConfig[method]
+  const [isLoading, setIsLoading] = React.useState(false)
 
   if (!walletInterface) {
     throw new Error(`No wallet interface found for wallet: ${method}`)
@@ -37,33 +38,42 @@ export function WalletLoginButton({
   const router = useRouter()
 
   const handleLogin = useCallback(async () => {
-    if (!walletInterface.connect) {
-      throw new Error(`No connect method found for wallet: ${method}`)
-    }
+    try {
+      setIsLoading(true)
+      if (!walletInterface.connect) {
+        throw new Error(`No connect method found for wallet: ${method}`)
+      }
 
-    const connection = await walletInterface.connect(chainNetwork.id)
+      const connection = await walletInterface.connect(chainNetwork.id)
 
-    if ("error" in connection) {
-      throw new Error(`Failed to connect to wallet: ${connection.error}`)
-    }
+      if ("error" in connection) {
+        throw new Error(`Failed to connect to wallet: ${connection.error}`)
+      }
 
-    const { walletAddress, network, chain } = connection
+      const { walletAddress, network, chain } = connection
 
-    if (!walletAddress) {
-      throw new Error(`No wallet address found: ${walletAddress}`)
-    }
-    //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
-    if (!network.slug) {
-      throw new Error("Slug not found")
-    }
+      if (!walletAddress) {
+        throw new Error(`No wallet address found: ${walletAddress}`)
+      }
+      //console.log('WALLET LOGIN', walletAddress, chainConfig, network)
+      if (!network.slug) {
+        throw new Error("Slug not found")
+      }
 
-    const redirectUrl = await walletLogin(method, {
-      walletAddress,
-      network: network.network,
-      chain,
-    })
-    if (redirectUrl) {
-      router.push(redirectUrl)
+      const redirectUrl = await walletLogin(method, {
+        walletAddress,
+        network: network.network,
+        chain,
+      })
+      if (redirectUrl) {
+        router.push(redirectUrl)
+        window.location.reload()
+      }
+    } catch (error) {
+      console.error("Wallet login failed:", error)
+      throw error
+    } finally {
+      setIsLoading(false)
     }
   }, [method, walletInterface, router, chainNetwork])
 
@@ -73,6 +83,7 @@ export function WalletLoginButton({
       icon={wallet.icon}
       name={`${wallet.name} Wallet`}
       className={className}
+      loading={isLoading}
     />
   )
 }

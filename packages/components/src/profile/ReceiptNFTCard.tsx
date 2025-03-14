@@ -50,13 +50,13 @@ export const ReceiptNFTCard: React.FC<NFTDataWithRelations> = (nftData) => {
     transactionId,
   })
 
-  console.log("NFT PATH", {
-    chain: chainDetails.slug,
-    network: network as Network,
-    contractType: "ReceiptNFT",
-    tokenId,
-    transactionId,
-  })
+  // console.log("NFT PATH", {
+  //   chain: chainDetails.slug,
+  //   network: network as Network,
+  //   contractType: "ReceiptNFT",
+  //   tokenId,
+  //   transactionId,
+  // })
 
   const CardFront: React.FC<CardSideProps> = ({ onFlip }) => (
     <Card className="w-full border-1 bg-background shadow-xl">

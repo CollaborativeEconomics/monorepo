@@ -160,7 +160,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     if (account.isConnected) {
       console.log("Wallet is already connected (via getAccount)")
       this.connectedWallet = account.address
-      
+
       if (!this.network) {
         throw new Error("Error getting network")
       }
@@ -452,17 +452,25 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
       return
     }
     try {
-      let accounts = await this.metamask.request<string[]>({
-        method: "eth_requestAccounts",
-      })
-      if (accounts?.length) {
-        accounts = accounts.filter(Boolean)
-        // metamask.request returns <T> => Partial<T>,
-        // which for an array adds undefined ((string | undefined)[])
-        // hence the type-forcing below
-        this.wallets = (accounts ?? []) as string[]
-        this.connectedWallet = accounts[0] ?? ""
-        console.log("Accounts:", accounts)
+      let [accounts, chainId] = await Promise.allSettled([
+        this.metamask.request<string[]>({
+          method: "eth_requestAccounts",
+        }),
+        this.metamask.request<string>({
+          method: "eth_chainId",
+        }),
+      ])
+      if (accounts?.status !== "fulfilled") {
+        throw new Error("Error getting accounts")
+      }
+      if (chainId?.status !== "fulfilled") {
+        throw new Error("Error getting chainId")
+      }
+      this.setNetwork(Number(chainId.value))
+      if (accounts?.value?.length) {
+        this.wallets = (accounts.value ?? []) as string[]
+        this.connectedWallet = accounts.value[0] ?? ""
+        console.log("Accounts:", accounts.value)
         console.log("MyAccount:", this.connectedWallet)
         //onReady(this.connectedWallet, this.network)
       }
