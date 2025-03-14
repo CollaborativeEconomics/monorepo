@@ -215,7 +215,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
         window.ethereum.isConnected() &&
         typeof this.chain !== "undefined" &&
         typeof this.network !== "undefined" &&
-        typeof this.connectedWallet !== "undefined"
+        Boolean(this.connectedWallet)
       )
     }
     return false
@@ -285,11 +285,14 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
     console.log("Listeners set")
   }
 
-  setNetwork(chainSlug: ChainSlugs) {
+  async setNetwork(chainSlug: ChainSlugs) {
     console.log("SetNetwork", chainSlug)
     this.chain = getChainConfigBySlug(chainSlug)
-    this.network = getNetworkForChain(chainSlug)
-    this.changeNetwork(this.network)
+    // only change network if it's not already the correct network
+    if (this.network?.slug !== chainSlug) {
+      this.network = getNetworkForChain(chainSlug)
+      await this.changeNetwork(this.network)
+    }
     this.setListeners()
     if (!this.chain || !this.network) {
       console.error("Couldn't set network or chain for", chainSlug)
@@ -472,7 +475,7 @@ export default class MetaMaskWallet extends InterfaceBaseClass {
   }: { address: string; amount: number; memo?: string }) {
     const { selectedChain } = getDefaultStore().get(chainAtom)
     console.log("CHAIN", selectedChain)
-    this.setNetwork(selectedChain)
+    await this.setNetwork(selectedChain)
     console.log("METAMASK PAYMENT", address, amount, memo)
     // if (!this.network) {
     //   console.error("Network not set, connect or setChain first")

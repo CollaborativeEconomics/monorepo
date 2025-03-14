@@ -25,7 +25,7 @@ import type { ChainSlugs, TokenTickerSymbol } from "@cfce/types"
 import { mintAndSaveReceiptNFT } from "@cfce/utils"
 import { registryApi } from "@cfce/utils"
 import { useAtom, useAtomValue } from "jotai"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useToast } from "~/hooks/use-toast"
 import { Button } from "~/ui/button"
 import { Card } from "~/ui/card"
@@ -100,7 +100,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
   const usdAmount = useAtomValue(amountUSDAtom)
   const chain = chainConfig[selectedChain]
   const network = chain.networks[appConfig.chainDefaults.network]
-  const chainInterface = BlockchainClientInterfaces[selectedWallet]
+  const chainInterface = useRef(BlockchainClientInterfaces[selectedWallet])
   const [buttonMessage, setButtonMessage] = useState(
     "One wallet confirmation required",
   )
@@ -133,6 +133,10 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     },
     [toast],
   )
+
+  useEffect(() => {
+    chainInterface.current = BlockchainClientInterfaces[selectedWallet]
+  }, [selectedWallet])
 
   // Disable chains that don't have wallets
   useEffect(() => {
@@ -205,7 +209,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     //}
     //await chainInterface?.connect(selectedChain)
     console.log("BALANCE")
-    const balanceCheck = await chainInterface?.getBalance?.()
+    const balanceCheck = await chainInterface.current.getBalance?.()
     console.log("BALANCED", balanceCheck)
     if (!balanceCheck || "error" in balanceCheck) {
       const error = new Error(balanceCheck?.error ?? "Failed to check balance")
@@ -213,7 +217,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     }
     console.log("BALANCE CHECK", { balanceCheck, coinAmount })
     return balanceCheck.balance >= coinAmount
-  }, [chainInterface, coinAmount])
+  }, [coinAmount])
 
   const sendPayment = useCallback(
     async (address: string, amount: number, memo: string) => {
@@ -223,7 +227,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //}
       //await chainInterface?.connect(selectedChain)
       console.log("SEND", address, amount, memo)
-      if (!chainInterface?.sendPayment) {
+      if (!chainInterface.current.sendPayment) {
         const error = new Error("No sendPayment method on chain interface")
         toast({
           variant: "destructive",
@@ -241,7 +245,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         //memo: appConfig.chains[selectedChain]?.destinationTag || "",
       }
       console.log("SENDING PAYMENT", data)
-      const result = await chainInterface.sendPayment(data)
+      const result = await chainInterface.current.sendPayment(data)
       console.log("PAYMENT RESULT", result)
       if (!result.success) {
         const error = new Error(result.error || "Payment failed")
@@ -254,7 +258,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       }
       return result
     },
-    [chainInterface, toast],
+    [toast],
   )
 
   const sendGaslessPayment = useCallback(
@@ -264,7 +268,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //  throw error
       //}
       //await chainInterface.connect(selectedChain)
-      if (!chainInterface?.sendGaslessPayment) {
+      if (!chainInterface.current.sendGaslessPayment) {
         const error = new Error("Gas payments not supported")
         toast({
           variant: "destructive",
@@ -277,7 +281,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       //  await chainInterface?.connect?.()
       //}
 
-      const result = await chainInterface.sendGaslessPayment({
+      const result = await chainInterface.current.sendGaslessPayment({
         address,
         amount,
         memo,
@@ -286,7 +290,7 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       console.log("GAS PAYMENT RESULT", result)
       return result
     },
-    [chainInterface, toast],
+    [toast],
   )
 
   const handleMinting = useCallback(
@@ -380,13 +384,13 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
       console.log("SUBMITTING...")
       validateForm({ email })
 
-      if (!chainInterface?.connect) {
+      if (!chainInterface.current.connect) {
         throw new Error("No connect method on chain interface")
       }
 
-      if (!chainInterface?.isConnected()) {
+      if (!chainInterface.current.isConnected()) {
         console.log("CONNECTING...")
-        await chainInterface.connect(selectedChain)
+        await chainInterface.current.connect(selectedChain)
       }
 
       if (appConfig.siteInfo.options.enableFetchBalance) {
@@ -432,9 +436,9 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
         }
       }
 
-      if (contract && chainInterface?.sendToContract) {
+      if (contract && chainInterface.current.sendToContract) {
         console.log("USING CONTRACT", contract?.contract_address)
-        const result = await chainInterface.sendToContract({
+        const result = await chainInterface.current.sendToContract({
           contractId: contract.contract_address ?? "",
           amount: coinAmount,
         })
@@ -535,7 +539,6 @@ export default function DonationForm({ initiative, rate }: DonationFormProps) {
     }
   }, [
     amount,
-    chainInterface,
     checkBalance,
     coinAmount,
     destinationWallet,
