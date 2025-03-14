@@ -1,4 +1,5 @@
 import { PostHogProvider } from "@cfce/analytics"
+import { auth } from "@cfce/auth"
 import { Footer, Header } from "@cfce/components/navigation"
 import { SessionProvider } from "next-auth/react"
 import { ThemeProvider } from "next-themes"
@@ -11,7 +12,9 @@ export interface BaseLayoutProps {
   children: React.ReactNode
 }
 
-export function BaseLayout({ children }: BaseLayoutProps) {
+export async function BaseLayout({ children }: BaseLayoutProps) {
+  const session = await auth()
+  console.log("BL SESSION", session)
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -19,11 +22,11 @@ export function BaseLayout({ children }: BaseLayoutProps) {
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <SessionProvider>
+          <SessionProvider session={session}>
             <PostHogProvider>{children}</PostHogProvider>
             <Toaster />
           </SessionProvider>

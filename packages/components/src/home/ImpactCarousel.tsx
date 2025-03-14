@@ -28,7 +28,6 @@ export default function ImpactCarousel(props: { initiatives: Initiative[] }) {
       <Swiper
         slidesPerView={2}
         spaceBetween={30}
-        pagination={{ clickable: true }}
         className="impactCarousel"
         centeredSlides={true}
         navigation={true}

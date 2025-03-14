@@ -17,6 +17,7 @@ import {
   navigationMenuTriggerStyle,
 } from "~/ui/navigation-menu"
 
+import { useSession } from "next-auth/react"
 import {
   Sheet,
   SheetContent,
@@ -29,6 +30,7 @@ import {
 
 export default async function NavMenu() {
   const session = await auth()
+  console.log("NAV SESSION", session)
   const status = session?.user ? "authenticated" : "unauthenticated"
   const avatar = session?.user?.image || "/nopic.png"
   // @ts-ignore - module augmentation is hard

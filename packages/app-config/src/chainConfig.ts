@@ -70,7 +70,7 @@ const chainConfiguration = {
           nftPath: "/token/{{contractId}}?a={{tokenId}}",
         },
         rpcUrls: {
-          default: "https://sepolia-rollup.arbitrum.io/rpc",
+          default: "https://arbitrum-sepolia-rpc.publicnode.com",
         },
         tokens: [
           {
