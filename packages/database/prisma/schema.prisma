@@ -26,13 +26,32 @@ model Account {
   @@map("accounts")
 }
 
-model Action {
-  id               String @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  hookId           String @db.Uuid
-  actionDefinition Json
-  index            Int    @default(0)
-  hook             Hook   @relation(fields: [hookId], references: [id], onDelete: Cascade)
+enum ActionType {
+  FetchDataFromApi
+  Transform
+  TransformEach
+  Math
+  CreateStory
+  CreateStories
+  Find
+  Filter
+  InputValues
+  FormatDate
+}
 
+model Action {
+  id               String     @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  hookId           String     @db.Uuid
+  actionDefinition Json // deprecated
+  action           ActionType
+  key              String     @db.VarChar(255)
+  parameters       Json
+  description      String?    @db.VarChar(255)
+  index            Int        @default(0)
+  hook             Hook       @relation(fields: [hookId], references: [id], onDelete: Cascade)
+
+  @@unique([hookId, key])
+  @@unique([hookId, index])
   @@map("actions")
 }
 
@@ -167,9 +186,15 @@ model Donation {
   @@map("donations")
 }
 
+enum TriggerName {
+  AddMetadataToNFTReceipt
+  OnceDaily
+}
+
 model Hook {
   id            String       @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  triggerName   String       @db.VarChar(255)
+  triggerName   TriggerName
+  description   String?      @db.VarChar(255)
   createdAt     DateTime     @default(now()) @db.Timestamptz(6)
   orgId         String       @db.Uuid
   actions       Action[]

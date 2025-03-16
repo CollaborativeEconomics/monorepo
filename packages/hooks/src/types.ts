@@ -15,21 +15,21 @@ import type {
 
 // Action types and trigger types
 export const ActionTypes = {
-  fetchDataFromApi: "fetchDataFromApi",
-  transform: "transform",
-  transformEach: "transformEach",
-  math: "math",
-  createStory: "createStory",
-  createStories: "createStories",
-  find: "find",
-  filter: "filter",
-  inputValues: "inputValues",
-  formatDate: "formatDate",
+  FetchDataFromApi: "FetchDataFromApi",
+  Transform: "Transform",
+  TransformEach: "TransformEach",
+  Math: "Math",
+  CreateStory: "CreateStory",
+  CreateStories: "CreateStories",
+  Find: "Find",
+  Filter: "Filter",
+  InputValues: "InputValues",
+  FormatDate: "FormatDate",
 } as const
 
 export const Triggers = {
-  addMetadataToNFTReceipt: "addMetadataToNFTReceipt",
-  onceDaily: "onceDaily",
+  AddMetadataToNFTReceipt: "AddMetadataToNFTReceipt",
+  OnceDaily: "OnceDaily",
 } as const
 
 export type ActionName = (typeof ActionTypes)[keyof typeof ActionTypes]
@@ -65,7 +65,7 @@ export interface ActionDefinition {
 }
 
 // Action context stores data as it passes through the hook
-export type ActionContext = Record<string, any> // TODO: enumerate output types
+export type ActionContext = Record<string, unknown> // TODO: enumerate output types
 
 export type ActionFunction<T extends ContextParams> = (
   context: ActionContext,
