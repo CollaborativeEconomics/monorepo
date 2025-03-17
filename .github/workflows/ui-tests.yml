@@ -1,10 +1,10 @@
 name: UI Tests
 
 on:
-  push:
-    branches:
-      - dev
-      - playwright-testing-draft
+  # push:
+  #   branches:
+  #     - dev
+  #     - playwright-testing-draft
   pull_request:
     branches:
       - dev
@@ -52,13 +52,17 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
         
       # Get Vercel Preview URL
+      - run: sleep 30
       - name: Wait for Vercel Preview Deployment
         uses: zentered/vercel-preview-url@v1.4.0
         id: vercel_preview_url
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         with:
-          vercel_project_id: 'prj_e57i9ZAztpyd5Rtss5G2dUg0jS8f' # Wait up to 3 minutes for the preview to be available
+          vercel_project_id: 'prj_e57i9ZAztpyd5Rtss5G2dUg0jS8f'
+          vercel_team_id: 'team_2xanXBQ4LPJbnXZJxd6Tsqdb' # Wait up to 3 minutes for the preview to be available
+      - name: Get URL
+        run: echo "https://${{ steps.vercel_preview_url.outputs.preview_url }}"
           
       # Run tests against the Vercel deployment
       - name: Run UI tests
