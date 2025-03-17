@@ -1,6 +1,22 @@
-import { describe, expect, test } from "@jest/globals"
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  test,
+} from "@jest/globals"
 import { http, HttpResponse } from "msw"
 import server from "../../mocks/serverMock"
+
+// Start server before all tests
+beforeAll(() => server.listen())
+
+// Reset handlers after each test
+afterEach(() => server.resetHandlers())
+
+// Close server after all tests
+afterAll(() => server.close())
 
 describe("fetchDataFromApi", () => {
   test("fetches data from the API", async () => {

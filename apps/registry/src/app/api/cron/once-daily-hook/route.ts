@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   try {
     // Run hook
     const { organizationId, walletAddress } = await prepareDailyHook()
-    const result = await runHook(Triggers.onceDaily, organizationId, {
+    const result = await runHook(Triggers.OnceDaily, organizationId, {
       walletAddress,
     })
     console.log("RES", result)

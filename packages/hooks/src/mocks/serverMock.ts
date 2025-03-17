@@ -1,7 +1,7 @@
+import { ActionTypes, Triggers } from "@cfce/types"
 import { http, HttpResponse } from "msw"
 import { setupServer } from "msw/node"
 import type { Story } from "../actions/createStory"
-import { ActionTypes, Triggers } from "../types"
 
 const handlers = [
   // Test handler should be first to take precedence
@@ -12,10 +12,10 @@ const handlers = [
     const url = new URL(request.url)
     const trigger = url.searchParams.get("triggerName")
     const orgId = url.searchParams.get("orgId")
-    if (orgId === "stellar" && trigger === Triggers.onceDaily) {
+    if (orgId === "stellar" && trigger === Triggers.OnceDaily) {
       return HttpResponse.json(stellarRetirementHook)
     }
-    return trigger === Triggers.addMetadataToNFTReceipt
+    return trigger === Triggers.AddMetadataToNFTReceipt
       ? HttpResponse.json(addMetadataToNFTReceiptHook)
       : HttpResponse.json(onceDailyHook)
   }),
@@ -78,12 +78,12 @@ const handlers = [
 const server = setupServer(...handlers)
 
 export const addMetadataToNFTReceiptHook = {
-  trigger: Triggers.addMetadataToNFTReceipt,
+  trigger: Triggers.AddMetadataToNFTReceipt,
   actions: [
     {
       actionDefinition: {
         key: "carbonCreditQuote",
-        action: ActionTypes.fetchDataFromApi,
+        action: ActionTypes.FetchDataFromApi,
         parameters: {
           body: null,
           method: "GET",
@@ -97,7 +97,7 @@ export const addMetadataToNFTReceiptHook = {
     {
       actionDefinition: {
         key: "tonsCO2",
-        action: ActionTypes.math,
+        action: ActionTypes.Math,
         parameters: {
           inputA: "input.amountUSD",
           inputB: "carbonCreditQuote.total_cost",
@@ -109,7 +109,7 @@ export const addMetadataToNFTReceiptHook = {
     {
       actionDefinition: {
         key: "output",
-        action: ActionTypes.transform,
+        action: ActionTypes.Transform,
         parameters: {
           tonsCO2: "tonsCO2",
           "input.walletAddress": "walletAddress",
@@ -121,12 +121,12 @@ export const addMetadataToNFTReceiptHook = {
 }
 
 export const onceDailyHook = {
-  trigger: Triggers.onceDaily,
+  trigger: Triggers.OnceDaily,
   actions: [
     {
       actionDefinition: {
         key: "inputValues",
-        action: ActionTypes.inputValues,
+        action: ActionTypes.InputValues,
         parameters: {
           array: [
             { key: "userId", value: "1234" },
@@ -143,7 +143,7 @@ export const onceDailyHook = {
     {
       actionDefinition: {
         key: "transformEach",
-        action: ActionTypes.transformEach,
+        action: ActionTypes.TransformEach,
         parameters: {
           collectionPath: "inputValues.array",
           transformParameter: {
@@ -156,7 +156,7 @@ export const onceDailyHook = {
     {
       actionDefinition: {
         key: "createStories",
-        action: ActionTypes.createStories,
+        action: ActionTypes.CreateStories,
         parameters: {
           organizationId: "org_123",
           initiativeId: "init_123",
@@ -169,12 +169,12 @@ export const onceDailyHook = {
 }
 
 export const stellarRetirementHook = {
-  trigger: Triggers.onceDaily,
+  trigger: Triggers.OnceDaily,
   actions: [
     {
       actionDefinition: {
         key: "yesterday",
-        action: ActionTypes.math,
+        action: ActionTypes.Math,
         parameters: {
           inputA: "input.date",
           inputB: 24 * 60 * 60 * 1000,
@@ -185,7 +185,7 @@ export const stellarRetirementHook = {
     {
       actionDefinition: {
         key: "retirements",
-        action: ActionTypes.fetchDataFromApi,
+        action: ActionTypes.FetchDataFromApi,
         parameters: {
           body: null,
           method: "GET",
@@ -198,7 +198,7 @@ export const stellarRetirementHook = {
     {
       actionDefinition: {
         key: "transformedStories",
-        action: ActionTypes.transformEach,
+        action: ActionTypes.TransformEach,
         parameters: {
           collectionPath: "retirements.retirements",
           transformParameter: {
@@ -215,7 +215,7 @@ export const stellarRetirementHook = {
     {
       actionDefinition: {
         key: "createStories",
-        action: ActionTypes.createStories,
+        action: ActionTypes.CreateStories,
         parameters: {
           organizationId: "org_123",
           initiativeId: "init_123",

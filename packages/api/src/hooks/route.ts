@@ -1,4 +1,5 @@
 import { getHookByTriggerAndOrg } from "@cfce/database"
+import type { TriggerName } from "@cfce/types"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(req: NextRequest) {
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const hook = await getHookByTriggerAndOrg(
-      String(triggerName),
+      String(triggerName) as TriggerName,
       String(orgId),
     )
     if (hook) {

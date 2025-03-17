@@ -38,7 +38,7 @@ const authOptions: NextAuthConfig = {
       }
       // Handle session updates
       if (trigger === "update" && session) {
-        console.log('AUTH UPDATE', session)
+        console.log("AUTH UPDATE", session)
         token.name = session?.name || ""
         token.email = session?.email || ""
         token.picture = session?.image || "/nopic.png"
@@ -62,10 +62,10 @@ const authOptions: NextAuthConfig = {
           if (!org) {
             console.log("AUTH NO-ORG")
             //token.orgId = "dcf20b3e-3bf6-4f24-a3f5-71c2dfd0f46c" // Test environmental
-            throw new Error('User not authorized')
+            // throw new Error('User not authorized')
           }
-          token.orgId = org.id
-          token.orgName = org.name
+          token.orgId = org?.id ?? ""
+          token.orgName = org?.name ?? ""
 
           try {
             // Fetch user data

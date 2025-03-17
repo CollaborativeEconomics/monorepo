@@ -32,7 +32,6 @@ function ThumbnailGrid({ images }: { images: string[] }) {
   } else {
     gridClass = "grid grid-cols-4 gap-2"
   }
-  console.log({ images })
   return (
     <div className={gridClass}>
       {images.map((image) => (

@@ -1,48 +1,28 @@
-import type { ActionFunction, ActionName } from "../types"
 import createStory, {
   createStories,
   type CreateStoriesParameters,
   type CreateStoryParameters,
 } from "./createStory"
-import fetchDataFromApi, {
-  type FetchDataFromApiParameters,
-} from "./fetchDataFromApi"
-import filter, { type FilterParameters } from "./filter"
-import find, { type FindParameters } from "./find"
-import formatDate, { type FormatDateParameters } from "./formatDate"
-import type { InputValuesParameters } from "./inputValues"
+import fetchDataFromApi from "./fetchDataFromApi"
+import filter from "./filter"
+import find from "./find"
+import formatDate from "./formatDate"
 import inputValues from "./inputValues"
-import math, { type MathParameters } from "./math"
-import transform, {
-  type TransformEachParameters,
-  type TransformParameters,
-  transformEach,
-} from "./transform"
+import math from "./math"
+import transform, { transformEach } from "./transform"
 
-type Actions = {
-  fetchDataFromApi: ActionFunction<FetchDataFromApiParameters>
-  math: ActionFunction<MathParameters>
-  transform: ActionFunction<TransformParameters>
-  transformEach: ActionFunction<TransformEachParameters>
-  createStory: ActionFunction<CreateStoryParameters>
-  createStories: ActionFunction<CreateStoriesParameters>
-  inputValues: ActionFunction<InputValuesParameters>
-  find: ActionFunction<FindParameters>
-  filter: ActionFunction<FilterParameters>
-  formatDate: ActionFunction<FormatDateParameters>
-}
-
-const actions: Record<ActionName, ActionFunction<any>> = {
-  fetchDataFromApi,
-  math,
-  transform: transform,
-  transformEach,
-  createStory,
-  createStories,
-  inputValues,
-  find,
-  filter,
-  formatDate,
-}
+// Define the actions record with proper types
+const actions = {
+  FetchDataFromApi: fetchDataFromApi,
+  Math: math,
+  Transform: transform,
+  TransformEach: transformEach,
+  CreateStory: createStory,
+  CreateStories: createStories,
+  InputValues: inputValues,
+  Find: find,
+  Filter: filter,
+  FormatDate: formatDate,
+} as const
 
 export default actions

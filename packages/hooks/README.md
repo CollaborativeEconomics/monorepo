@@ -23,7 +23,7 @@ mintNFT() {
 
   const initialMetadata = {a: 1};
   // runHook takes 3 params. 1. The Trigger name 2. The organizations to check and 3. Additional data that can be used by the the hook (currently just the below)
-  const extraMetadata = runHook(Triggers.addMetadataToNFTReceiptReceipt, organizationId, {userId, walletId, organizationId}); // include metadata that might be used by the hooks.
+  const extraMetadata = runHook(Triggers.AddMetadataToNFTReceiptReceipt, organizationId, {userId, walletId, organizationId}); // include metadata that might be used by the hooks.
 }
 ```
 

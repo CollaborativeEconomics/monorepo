@@ -44,7 +44,6 @@ export function ConnectWalletOverlay({
       setOpen(false)
       const { selectedChain } = chainState
       const chain = chainConfig[selectedChain]
-      const chainNetwork = chain.networks[appConfig.chainDefaults.network]
 
       try {
         const walletInterface = BlockchainClientInterfaces[wallet]
@@ -52,7 +51,7 @@ export function ConnectWalletOverlay({
           throw new Error("Wallet interface not found")
         }
 
-        const walletResponse = await walletInterface.connect(chainNetwork.id)
+        const walletResponse = await walletInterface.connect(selectedChain)
         if ("error" in walletResponse) {
           throw new Error(walletResponse.error)
         }

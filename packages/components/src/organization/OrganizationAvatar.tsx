@@ -18,7 +18,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 
 const OrganizationAvatar = React.forwardRef<HTMLDivElement, Props>(
   ({ className, organization, avatarProps, ...props }, ref) => {
-    console.log({ props })
     return (
       <Link href={`/organizations/${organization.id}`}>
         <div

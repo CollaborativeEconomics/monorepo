@@ -1,5 +1,5 @@
+import type { ActionContext } from "@cfce/types"
 import { get, reduce, set } from "lodash"
-import type { ActionContext } from "../types"
 
 export interface TransformParameters {
   [key: string]: string
