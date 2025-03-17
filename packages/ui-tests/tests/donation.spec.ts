@@ -104,7 +104,7 @@ test.describe("Donation Page", () => {
 
     // Check that we're now showing the alternative currency
     const currencyText = await page
-      .locator(".flex.flex-row.justify-between.items-center")
+      .locator(".flex.flex-row.justify-between.items-center").nth(2)
       .textContent()
     expect(currencyText).not.toContain("USD")
 

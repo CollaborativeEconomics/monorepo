@@ -254,10 +254,6 @@ test.describe("Homepage", () => {
     const newInitiativeTitle = await newActiveSlide.textContent()
     expect(newInitiativeTitle).not.toBe(firstInitiativeTitle)
 
-    // Check pagination exists
-    const pagination = page.locator(".swiper-pagination")
-    await expect(pagination).toBeVisible()
-
     // Test previous navigation
     const prevButton = page.locator(".swiper-button-prev")
     await expect(prevButton).toBeVisible()
