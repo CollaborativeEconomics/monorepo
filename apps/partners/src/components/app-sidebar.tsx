@@ -1,12 +1,17 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { auth } from '@cfce/auth';
-import { getOrganizationById, getOrganizations } from '~/actions/database'
-import type { Session } from 'next-auth';
-import OrganizationSelect from './OrganizationSelect';
-import SignInButton from './SignInButton';
-import SignOutButton from './SignOutButton';
-import { HandCoins, ScrollText, Shovel, TreePine, Users, Wallet } from "lucide-react"
+import { auth } from "@cfce/auth"
+import {
+  HandCoins,
+  ScrollText,
+  Shovel,
+  TreePine,
+  Users,
+  Wallet,
+  Webhook,
+} from "lucide-react"
+import type { Session } from "next-auth"
+import Image from "next/image"
+import Link from "next/link"
+import { getOrganizationById, getOrganizations } from "~/actions/database"
 import {
   Sidebar,
   SidebarContent,
@@ -19,7 +24,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
-
+import OrganizationSelect from "./OrganizationSelect"
+import SignInButton from "./SignInButton"
+import SignOutButton from "./SignOutButton"
 
 const items = [
   {
@@ -52,17 +59,22 @@ const items = [
     url: "/dashboard/contracts",
     icon: ScrollText,
   },
+  {
+    title: "Hooks",
+    url: "/dashboard/hooks",
+    icon: Webhook,
+  },
 ]
 
 export async function AppSidebar() {
-  const session = await auth();
-  const list = await getOrganizations();
+  const session = await auth()
+  const list = await getOrganizations()
   const organizations = JSON.parse(JSON.stringify(list))
-  let data = null;
+  let data = null
   if (session?.orgId) {
-    data = await getOrganizationById(session.orgId);
+    data = await getOrganizationById(session.orgId)
   }
-  const currentOrg = JSON.parse(JSON.stringify(data)) 
+  const currentOrg = JSON.parse(JSON.stringify(data))
 
   return (
     <Sidebar>
@@ -135,7 +147,7 @@ export async function AppSidebar() {
                 )}
                 <div>
                   <p className="text-sm mb-1">
-                    <strong>{session.orgName ?? ''}</strong>
+                    <strong>{session.orgName ?? ""}</strong>
                   </p>
                   <p className="text-xs text-gray-300 mb-2">
                     {session.user?.email ?? session.user?.name}
