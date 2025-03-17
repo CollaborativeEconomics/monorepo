@@ -349,7 +349,7 @@ export function HooksManagementClient({
                         key={field.id}
                         className="border rounded-md overflow-hidden"
                       >
-                        <div className="px-4 py-2 bg-gray-50 flex items-center justify-between">
+                        <div className="px-4 py-2 bg-gray-800 flex items-center justify-between">
                           <span>
                             {index + 1}. {watch(`actions.${index}.action`)} -{" "}
                             {watch(`actions.${index}.key`)}

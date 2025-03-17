@@ -22,7 +22,7 @@
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-/*    --border: 0 0% 89.8%;*/
+    /*    --border: 0 0% 89.8%;*/
     --border: 0 0% 30%;
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
@@ -32,8 +32,8 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-/*    --sidebar-background: 240 0% 98%;*/
-/*    --sidebar-foreground: 240 5.3% 26.1%;*/
+    /*    --sidebar-background: 240 0% 98%;*/
+    /*    --sidebar-foreground: 240 5.3% 26.1%;*/
     --sidebar-background: 0 0% 10%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 240 5.9% 10%;
@@ -79,10 +79,11 @@
   }
 }
 
-body {
+/* Remove these conflicting styles that override Tailwind's dark mode */
+/* body {
   color: var(--text-primary);
   background: var(--back-primary);
-}
+} */
 
 h1 {
   font-size: 1.4em;
@@ -120,7 +121,13 @@ select {
   border: none;
   padding: 5px 10px;
   font-size: 17px;
-  background: #60688538;
+}
+
+/* Fix the linter error by removing the duplicate background property */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #60688538;
 }
 
 textarea {

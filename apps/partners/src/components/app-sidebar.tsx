@@ -27,6 +27,7 @@ import {
 import OrganizationSelect from "./OrganizationSelect"
 import SignInButton from "./SignInButton"
 import SignOutButton from "./SignOutButton"
+import { ThemeToggleWrapper } from "./ThemeToggleWrapper"
 
 const items = [
   {
@@ -128,6 +129,9 @@ export async function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <div className="p-4 border-t border-gray-700">
+          <div className="flex justify-end mb-2">
+            <ThemeToggleWrapper />
+          </div>
           {!session ? (
             <div>
               <p className="text-gray-300 mb-2">You are not signed in</p>
