@@ -33,7 +33,7 @@
       "tough-cookie": "^4.1.3"
     },
     "patchedDependencies": {
-      "frog@0.18.2": "patches/frog.patch"
+      "frog@0.18.3": "patches/frog.patch"
     }
   }
 }
