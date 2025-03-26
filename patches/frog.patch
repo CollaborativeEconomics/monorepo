@@ -32,7 +32,3 @@ index bfb44b105c431c7c2291a19c46b0a83f980551f2..13957f3454a545ae3f2ee7fd341af49b
      "typescript": ">=5.0.4"
    },
    "peerDependenciesMeta": {
-     "hono": {
-       "optional": true
-     }
-   }
