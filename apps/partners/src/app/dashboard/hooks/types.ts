@@ -24,13 +24,13 @@ export type HookFormValues = z.infer<typeof hookSchema>
 export interface Hook {
   id: string
   triggerName: TriggerName
-  description?: string
+  description: string | null
   actions: Array<{
     id: string
     index: number
     key: string
     action: ActionName
-    description?: string
-    parameters: Record<string, unknown>
+    description: string | null
+    parameters: Record<string, unknown> | null
   }>
 }
