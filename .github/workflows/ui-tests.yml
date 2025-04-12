@@ -5,12 +5,14 @@ on:
   #   branches:
   #     - dev
   #     - playwright-testing-draft
-  pull_request:
-    branches:
-      - dev
+  # pull_request:
+  #   branches:
+  #     - dev
+  deployment_status:
 
 jobs:
   ui-tests:
+    if: github.event.deployment_status.state == 'success'
     timeout-minutes: 60  # More reasonable timeout (1 hour)
     runs-on: ubuntu-latest
     container:
