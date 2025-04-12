@@ -45,7 +45,7 @@ jobs:
             ${{ runner.os }}-pnpm-
           
       - name: Install dependencies
-        run: pnpm install --filter="./packages/ui-tests" --filter="./packages/ui-tests^..."
+        run: pnpm install"
           
       - name: Install Playwright browsers
         working-directory: packages/ui-tests
