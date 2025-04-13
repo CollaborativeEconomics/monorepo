@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client"
+import './json-types' // Add types that are available to Prisma JSON types
 
 export const prismaClient = new PrismaClient()
 export * from "./types"

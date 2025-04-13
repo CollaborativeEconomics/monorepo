@@ -8,22 +8,68 @@ import {
   SelectValue,
   Textarea,
 } from "@cfce/components/ui"
-import { type ActionName, type TriggerName } from "@cfce/types"
 import type { Control } from "react-hook-form"
 import { Controller } from "react-hook-form"
+import type { HookFormValues } from "../types"
 
-// Define the type for the form values
-interface HookFormValues {
-  id?: string
-  trigger: TriggerName
+type FetchDataFromApiParams = {
+  endpoint: string
+  method: string
+  body: Record<string, unknown>
+  headers: Record<string, string>
+}
+
+type FormField = {
+  id: keyof FetchDataFromApiParams
+  label: string
+  type: "text" | "select" | "json"
   description?: string
-  actions: Array<{
-    index: number
-    key: string
-    action: ActionName
-    description?: string
-    parameters: Record<string, unknown>
-  }>
+  options?: string[]
+}
+
+const HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+
+const FORM_FIELDS: FormField[] = [
+  {
+    id: "endpoint",
+    label: "Endpoint URL",
+    type: "text",
+    description: "Supports context variables using {context.path.to.value} syntax"
+  },
+  {
+    id: "method",
+    label: "HTTP Method",
+    type: "select",
+    options: HTTP_METHODS
+  },
+  {
+    id: "body",
+    label: "Request Body",
+    type: "json",
+    description: "JSON object to send with the request"
+  },
+  {
+    id: "headers",
+    label: "Request Headers",
+    type: "json",
+    description: "Additional headers to include in the request"
+  }
+]
+
+const parseJsonField = (value: string): Record<string, unknown> => {
+  try {
+    return JSON.parse(value)
+  } catch {
+    return {}
+  }
+}
+
+const stringifyJsonField = (value: Record<string, unknown>): string => {
+  try {
+    return JSON.stringify(value, null, 2)
+  } catch {
+    return "{}"
+  }
 }
 
 export function FetchDataFromApiForm({
@@ -33,108 +79,73 @@ export function FetchDataFromApiForm({
   control: Control<HookFormValues>
   index: number
 }) {
+  const renderField = (field: FormField) => {
+    const basePath = `actions.${index}.parameters` as const
+
+    return (
+      <div key={field.id} className="space-y-2">
+        <Label htmlFor={`${basePath}.${field.id}`}>{field.label}</Label>
+        <Controller
+          control={control}
+          name={`${basePath}.${field.id}` as const}
+          render={({ field: { value, onChange, ...fieldProps } }) => {
+            switch (field.type) {
+              case "select":
+                return (
+                  <Select
+                    value={value as string}
+                    onValueChange={onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={`Select ${field.label}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {field.options?.map(option => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )
+              case "json":
+                return (
+                  <Input
+                    {...fieldProps}
+                    value={stringifyJsonField(value as Record<string, unknown>)}
+                    onChange={e => {
+                      try {
+                        const parsed = parseJsonField(e.target.value)
+                        onChange(parsed)
+                      } catch {
+                        onChange({})
+                      }
+                    }}
+                    placeholder={`Enter ${field.label.toLowerCase()}`}
+                  />
+                )
+              default:
+                return (
+                  <Input
+                    {...fieldProps}
+                    value={value as string}
+                    onChange={e => onChange(e.target.value)}
+                    placeholder={`Enter ${field.label.toLowerCase()}`}
+                  />
+                )
+            }
+          }}
+        />
+        {field.description && (
+          <p className="text-xs text-gray-500">{field.description}</p>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.endpoint`}>
-          Endpoint URL
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.endpoint` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Full URL of the API endpoint
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.method`}>Method</Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.method` as const}
-          render={({ field }) => (
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={(field.value as string) || "GET"}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select method" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="GET">GET</SelectItem>
-                <SelectItem value="POST">POST</SelectItem>
-                <SelectItem value="PUT">PUT</SelectItem>
-                <SelectItem value="PATCH">PATCH</SelectItem>
-                <SelectItem value="DELETE">DELETE</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.body`}>
-          Body (for POST, PUT, PATCH)
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.body` as const}
-          render={({ field }) => (
-            <Textarea
-              {...field}
-              value={
-                typeof field.value === "object"
-                  ? JSON.stringify(field.value, null, 2)
-                  : (field.value as string) || ""
-              }
-              rows={5}
-              placeholder="{}"
-            />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          JSON body to send with the request
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.headers`}>Headers</Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.headers` as const}
-          render={({ field }) => (
-            <Textarea
-              {...field}
-              value={
-                typeof field.value === "object"
-                  ? JSON.stringify(field.value, null, 2)
-                  : (field.value as string) || ""
-              }
-              rows={3}
-              placeholder='{"Content-Type": "application/json"}'
-            />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          JSON object with request headers
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.resultPath`}>
-          Result Path (Optional)
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.resultPath` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Path to store the result in the context (e.g., "data.apiResult")
-        </p>
-      </div>
+      {FORM_FIELDS.map(renderField)}
     </div>
   )
 }

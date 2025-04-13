@@ -1,159 +1,88 @@
 import { Button, Input, Label } from "@cfce/components/ui"
-import { type ActionName, type TriggerName } from "@cfce/types"
-import { useState } from "react"
 import type { Control } from "react-hook-form"
-import { Controller } from "react-hook-form"
+import { Controller, useFormContext } from "react-hook-form"
+import type { HookFormValues } from "../types"
+import { useEffect, useState } from "react"
 
-// Define the type for the form values
-interface HookFormValues {
-  id?: string
-  trigger: TriggerName
-  description?: string
-  actions: Array<{
-    index: number
-    key: string
-    action: ActionName
-    description?: string
-    parameters: Record<string, unknown>
-  }>
+type TransformEachParams = {
+  collectionPath: string
+  transformParameter: Record<string, string>
 }
 
-export function TransformEachForm({
-  control,
-  index,
-}: {
-  control: Control<HookFormValues>
-  index: number
-}) {
-  const [transformKeys, setTransformKeys] = useState<string[]>([])
-  const [newKey, setNewKey] = useState("")
-  const [newValue, setNewValue] = useState("")
+interface TransformParam {
+  key: string
+  value: string
+}
+
+const DEFAULT_PARAMS: TransformEachParams = {
+  collectionPath: "",
+  transformParameter: {}
+}
+
+export function TransformEachForm({ control, index }: { control: Control<HookFormValues>; index: number }) {
+  const { setValue, getValues } = useFormContext<HookFormValues>()
+  const [params, setParams] = useState<TransformParam[]>([])
+  const [newParam, setNewParam] = useState<TransformParam>({ key: "", value: "" })
   const [collectionPath, setCollectionPath] = useState("")
 
   // Initialize from existing parameters
-  useState(() => {
-    const actions = control._formValues.actions
-    if (actions?.[index]?.parameters) {
-      const params = actions[index].parameters as Record<string, unknown>
-      if (params.collectionPath) {
-        setCollectionPath(params.collectionPath as string)
-      }
-      if (
-        params.transformParameter &&
-        typeof params.transformParameter === "object"
-      ) {
-        const transformParams = params.transformParameter as Record<
-          string,
-          string
-        >
-        setTransformKeys(Object.keys(transformParams))
-      }
-    }
-  })
+  useEffect(() => {
+    const existingParams = getValues(`actions.${index}.parameters`) as TransformEachParams || DEFAULT_PARAMS
+    setCollectionPath(existingParams.collectionPath || "")
+    setParams(
+      Object.entries(existingParams.transformParameter || {}).map(([key, value]) => ({
+        key,
+        value: String(value)
+      }))
+    )
+  }, [getValues, index])
 
-  // Get the current parameters
-  const getParameters = () => {
-    const transformParameter: Record<string, string> = {}
-    for (const key of transformKeys) {
-      const actions = control._formValues.actions
-      if (actions?.[index]?.parameters) {
-        const params = actions[index].parameters as Record<string, unknown>
-        if (
-          params.transformParameter &&
-          typeof params.transformParameter === "object"
-        ) {
-          const transformParams = params.transformParameter as Record<
-            string,
-            string
-          >
-          if (transformParams[key]) {
-            transformParameter[key] = transformParams[key]
-          }
-        }
-      }
+  const updateFormValues = (
+    newCollectionPath: string,
+    newParams: TransformParam[]
+  ) => {
+    const parameters: TransformEachParams = {
+      collectionPath: newCollectionPath,
+      transformParameter: Object.fromEntries(
+        newParams.map(({ key, value }) => [key, value])
+      )
     }
-
-    return {
-      collectionPath,
-      transformParameter,
-    }
+    setValue(`actions.${index}.parameters`, parameters)
   }
 
-  // Update collection path
-  const updateCollectionPath = (path: string) => {
+  const handleCollectionPathChange = (path: string) => {
     setCollectionPath(path)
-
-    // Update the form field
-    const actions = control._formValues.actions
-    if (actions?.[index]) {
-      const parameters = {
-        ...actions[index].parameters,
-        collectionPath: path,
-      } as Record<string, unknown>
-      actions[index].parameters = parameters
-    }
+    updateFormValues(path, params)
   }
 
-  // Add a new transform key-value pair
-  const addTransform = () => {
-    if (!newKey.trim()) return
+  const handleAddParam = () => {
+    if (!newParam.key.trim()) return
 
-    // Add the new key to the list
-    if (!transformKeys.includes(newKey)) {
-      setTransformKeys([...transformKeys, newKey])
-    }
-
-    // Update the form field
-    const actions = control._formValues.actions
-    if (actions?.[index]) {
-      const parameters = { ...actions[index].parameters } as Record<
-        string,
-        unknown
-      >
-      const transformParameter =
-        (parameters.transformParameter as Record<string, string>) || {}
-      transformParameter[newKey] = newValue
-      parameters.transformParameter = transformParameter
-      actions[index].parameters = parameters
-    }
-
-    // Reset the input fields
-    setNewKey("")
-    setNewValue("")
+    const updatedParams = [
+      ...params.filter(p => p.key !== newParam.key),
+      { ...newParam }
+    ]
+    setParams(updatedParams)
+    updateFormValues(collectionPath, updatedParams)
+    setNewParam({ key: "", value: "" })
   }
 
-  // Remove a transform key-value pair
-  const removeTransform = (keyToRemove: string) => {
-    setTransformKeys(transformKeys.filter((key) => key !== keyToRemove))
-
-    // Update the form field
-    const actions = control._formValues.actions
-    if (actions?.[index]) {
-      const parameters = { ...actions[index].parameters } as Record<
-        string,
-        unknown
-      >
-      const transformParameter =
-        (parameters.transformParameter as Record<string, string>) || {}
-      delete transformParameter[keyToRemove]
-      parameters.transformParameter = transformParameter
-      actions[index].parameters = parameters
-    }
+  const handleRemoveParam = (keyToRemove: string) => {
+    const updatedParams = params.filter(p => p.key !== keyToRemove)
+    setParams(updatedParams)
+    updateFormValues(collectionPath, updatedParams)
   }
 
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor={`actions.${index}.parameters.collectionPath`}>
-          Collection Path
-        </Label>
+        <Label>Collection Path</Label>
         <Input
-          id={`actions.${index}.parameters.collectionPath`}
           value={collectionPath}
-          onChange={(e) => updateCollectionPath(e.target.value)}
+          onChange={e => handleCollectionPathChange(e.target.value)}
           placeholder="Path to the collection in the context"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-gray-500">
           Path to the collection in the context object that will be transformed
         </p>
       </div>
@@ -164,16 +93,16 @@ export function TransformEachForm({
           <div>
             <Label>Key</Label>
             <Input
-              value={newKey}
-              onChange={(e) => setNewKey(e.target.value)}
+              value={newParam.key}
+              onChange={e => setNewParam({ ...newParam, key: e.target.value })}
               placeholder="Enter key"
             />
           </div>
           <div>
             <Label>Value</Label>
             <Input
-              value={newValue}
-              onChange={(e) => setNewValue(e.target.value)}
+              value={newParam.value}
+              onChange={e => setNewParam({ ...newParam, value: e.target.value })}
               placeholder="Enter value"
             />
           </div>
@@ -182,51 +111,40 @@ export function TransformEachForm({
         <Button
           type="button"
           variant="outline"
-          onClick={addTransform}
+          onClick={handleAddParam}
           className="mt-2"
         >
           Add Transform Parameter
         </Button>
       </div>
 
-      {transformKeys.length > 0 && (
+      {params.length > 0 && (
         <div className="mt-4">
           <h4 className="font-medium mb-2">Current Transform Parameters</h4>
           <div className="space-y-2">
-            {transformKeys.map((key) => {
-              const actions = control._formValues.actions
-              const params =
-                (actions?.[index]?.parameters as Record<string, unknown>) || {}
-              const transformParams =
-                (params.transformParameter as Record<string, string>) || {}
-
-              return (
-                <div
-                  key={`transform-${key}`}
-                  className="flex items-center justify-between p-2 border rounded-md"
-                >
-                  <div>
-                    <span className="font-medium">{key}</span>:{" "}
-                    <span className="text-gray-600">
-                      {transformParams[key] || ""}
-                    </span>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeTransform(key)}
-                  >
-                    ×
-                  </Button>
+            {params.map(param => (
+              <div
+                key={param.key}
+                className="flex items-center justify-between p-2 border rounded-md"
+              >
+                <div>
+                  <span className="font-medium">{param.key}</span>:{" "}
+                  <span className="text-gray-600">{param.value}</span>
                 </div>
-              )
-            })}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleRemoveParam(param.key)}
+                >
+                  ×
+                </Button>
+              </div>
+            ))}
           </div>
         </div>
       )}
 
-      {/* Hidden field to store the parameters */}
       <Controller
         control={control}
         name={`actions.${index}.parameters`}
@@ -234,7 +152,12 @@ export function TransformEachForm({
           <input
             type="hidden"
             {...field}
-            value={JSON.stringify(getParameters())}
+            value={JSON.stringify({
+              collectionPath,
+              transformParameter: Object.fromEntries(
+                params.map(({ key, value }) => [key, value])
+              )
+            })}
           />
         )}
       />

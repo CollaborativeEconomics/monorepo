@@ -4,7 +4,7 @@ import type {
   ActionContext,
   ActionName,
   ActionToParamsMap,
-  ContextParams,
+  ActionParams,
   TriggerName,
 } from "@cfce/types"
 import actions from "./actions"
@@ -147,7 +147,7 @@ async function executeHookActions(
 const runHook = async (
   triggerName: TriggerName,
   orgId: string,
-  inputContext: ContextParams,
+  inputContext: ActionParams,
 ): Promise<ActionContext> => {
   const hook = await getHookByTriggerAndOrg(triggerName, orgId)
   const baseContext = createBaseContext()

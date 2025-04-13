@@ -7,103 +7,118 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@cfce/components/ui"
-import { type ActionName, type TriggerName } from "@cfce/types"
 import type { Control } from "react-hook-form"
 import { Controller } from "react-hook-form"
+import type { HookFormValues } from "../types"
 
-// Define the type for the form values
-interface HookFormValues {
-  id?: string
-  trigger: TriggerName
-  description?: string
-  actions: Array<{
-    index: number
-    key: string
-    action: ActionName
-    description?: string
-    parameters: Record<string, unknown>
-  }>
+type Operator = "===" | "!==" | ">" | "<" | ">=" | "<=" | "&&" | "||"
+
+type FilterParams = {
+  collectionPath: string
+  key: string
+  value: string
+  operator: Operator
 }
 
-export function FilterForm({
-  control,
-  index,
-}: {
-  control: Control<HookFormValues>
-  index: number
-}) {
+type FormField = {
+  id: keyof FilterParams
+  label: string
+  type: "text" | "select"
+  description?: string
+  options?: Array<{ value: Operator | string; label: string }>
+}
+
+const OPERATORS = [
+  { value: "===" as const, label: "Equals (===)" },
+  { value: "!==" as const, label: "Not Equals (!==)" },
+  { value: ">" as const, label: "Greater Than (>)" },
+  { value: "<" as const, label: "Less Than (<)" },
+  { value: ">=" as const, label: "Greater Than or Equal (>=)" },
+  { value: "<=" as const, label: "Less Than or Equal (<=)" },
+  { value: "&&" as const, label: "AND (&&)" },
+  { value: "||" as const, label: "OR (||)" }
+]
+
+const FORM_FIELDS: FormField[] = [
+  {
+    id: "collectionPath",
+    label: "Collection Path",
+    type: "text",
+    description: "Path to the collection in the context object"
+  },
+  {
+    id: "key",
+    label: "Key",
+    type: "text",
+    description: "The property key to compare against"
+  },
+  {
+    id: "value",
+    label: "Value",
+    type: "text",
+    description: "The value to compare against"
+  },
+  {
+    id: "operator",
+    label: "Operator",
+    type: "select",
+    options: OPERATORS
+  }
+]
+
+export function FilterForm({ control, index }: { control: Control<HookFormValues>; index: number }) {
+  const renderField = (field: FormField) => {
+    const basePath = `actions.${index}.parameters` as const
+
+    return (
+      <div key={field.id} className="space-y-2">
+        <Label htmlFor={`${basePath}.${field.id}`}>{field.label}</Label>
+        <Controller
+          control={control}
+          name={`${basePath}.${field.id}` as const}
+          render={({ field: { value, onChange, ...fieldProps } }) => {
+            switch (field.type) {
+              case "select":
+                return (
+                  <Select
+                    value={value as string}
+                    onValueChange={onChange}
+                    defaultValue="==="
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {field.options?.map(op => (
+                        <SelectItem key={op.value} value={op.value}>
+                          {op.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )
+              default:
+                return (
+                  <Input
+                    {...fieldProps}
+                    value={String(value || "")}
+                    onChange={e => onChange(e.target.value)}
+                    placeholder={`Enter ${field.label.toLowerCase()}`}
+                  />
+                )
+            }
+          }}
+        />
+        {field.description && (
+          <p className="text-xs text-gray-500">{field.description}</p>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.collectionPath`}>
-          Collection Path
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.collectionPath` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Path to the collection in the context object
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.key`}>Key</Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.key` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          The property key to compare against
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.value`}>Value</Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.value` as const}
-          render={({ field }) => (
-            <Input {...field} value={String(field.value) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          The value to compare against
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.operator`}>Operator</Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.operator` as const}
-          render={({ field }) => (
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={(field.value as string) || "==="}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select operator" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="===">Equals (===)</SelectItem>
-                <SelectItem value="!==">Not Equals (!==)</SelectItem>
-                <SelectItem value=">">Greater Than (&gt;)</SelectItem>
-                <SelectItem value="<">Less Than (&lt;)</SelectItem>
-                <SelectItem value=">=">
-                  Greater Than or Equal (&gt;=)
-                </SelectItem>
-                <SelectItem value="<=">Less Than or Equal (&lt;=)</SelectItem>
-                <SelectItem value="&&">AND (&&)</SelectItem>
-                <SelectItem value="||">OR (||)</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </div>
+      {FORM_FIELDS.map(renderField)}
     </div>
   )
 }

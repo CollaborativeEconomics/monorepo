@@ -1,21 +1,14 @@
 import { Button, Input, Label } from "@cfce/components/ui"
 import { type ActionName, type TriggerName } from "@cfce/types"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { Control } from "react-hook-form"
-import { Controller } from "react-hook-form"
+import { Controller, useFormContext } from "react-hook-form"
+import type { HookFormValues } from "../types"
 
 // Define the type for the form values
-interface HookFormValues {
-  id?: string
-  trigger: TriggerName
-  description?: string
-  actions: Array<{
-    index: number
-    key: string
-    action: ActionName
-    description?: string
-    parameters: Record<string, unknown>
-  }>
+interface TransformParam {
+  key: string
+  value: string
 }
 
 export function TransformForm({
@@ -25,61 +18,44 @@ export function TransformForm({
   control: Control<HookFormValues>
   index: number
 }) {
-  const [transformKeys, setTransformKeys] = useState<string[]>([])
-  const [newKey, setNewKey] = useState("")
-  const [newValue, setNewValue] = useState("")
+  const { setValue, getValues } = useFormContext<HookFormValues>()
+  const [params, setParams] = useState<TransformParam[]>([])
+  const [newParam, setNewParam] = useState<TransformParam>({ key: "", value: "" })
 
-  // Get the current parameters
-  const getParameters = () => {
-    const parameters: Record<string, string> = {}
-    for (const key of transformKeys) {
-      const value = control._formValues.actions?.[index]?.parameters?.[key]
-      if (value) {
-        parameters[key] = value as string
-      }
-    }
-    return parameters
+  // Initialize from existing parameters
+  useEffect(() => {
+    const existingParams = getValues(`actions.${index}.parameters`) as Record<string, string> || {}
+    setParams(
+      Object.entries(existingParams).map(([key, value]) => ({
+        key,
+        value: String(value)
+      }))
+    )
+  }, [getValues, index])
+
+  const updateFormValues = (newParams: TransformParam[]) => {
+    const parameters = Object.fromEntries(
+      newParams.map(({ key, value }) => [key, value])
+    )
+    setValue(`actions.${index}.parameters`, parameters)
   }
 
-  // Add a new transform key-value pair
-  const addTransform = () => {
-    if (!newKey.trim()) return
+  const handleAddParam = () => {
+    if (!newParam.key.trim()) return
 
-    // Add the new key to the list
-    if (!transformKeys.includes(newKey)) {
-      setTransformKeys([...transformKeys, newKey])
-    }
-
-    // Update the form field
-    const actions = control._formValues.actions
-    if (actions?.[index]) {
-      const parameters = { ...actions[index].parameters } as Record<
-        string,
-        string
-      >
-      parameters[newKey] = newValue
-      actions[index].parameters = parameters
-    }
-
-    // Reset the input fields
-    setNewKey("")
-    setNewValue("")
+    const updatedParams = [
+      ...params.filter(p => p.key !== newParam.key),
+      { ...newParam }
+    ]
+    setParams(updatedParams)
+    updateFormValues(updatedParams)
+    setNewParam({ key: "", value: "" })
   }
 
-  // Remove a transform key-value pair
-  const removeTransform = (keyToRemove: string) => {
-    setTransformKeys(transformKeys.filter((key) => key !== keyToRemove))
-
-    // Update the form field
-    const actions = control._formValues.actions
-    if (actions?.[index]) {
-      const parameters = { ...actions[index].parameters } as Record<
-        string,
-        string
-      >
-      delete parameters[keyToRemove]
-      actions[index].parameters = parameters
-    }
+  const handleRemoveParam = (keyToRemove: string) => {
+    const updatedParams = params.filter(p => p.key !== keyToRemove)
+    setParams(updatedParams)
+    updateFormValues(updatedParams)
   }
 
   return (
@@ -88,47 +64,47 @@ export function TransformForm({
         <div>
           <Label>Key</Label>
           <Input
-            value={newKey}
-            onChange={(e) => setNewKey(e.target.value)}
+            value={newParam.key}
+            onChange={e => setNewParam({ ...newParam, key: e.target.value })}
             placeholder="Enter key"
           />
         </div>
         <div>
           <Label>Value</Label>
           <Input
-            value={newValue}
-            onChange={(e) => setNewValue(e.target.value)}
+            value={newParam.value}
+            onChange={e => setNewParam({ ...newParam, value: e.target.value })}
             placeholder="Enter value"
           />
         </div>
       </div>
 
-      <Button type="button" variant="outline" onClick={addTransform}>
+      <Button 
+        type="button" 
+        variant="outline" 
+        onClick={handleAddParam}
+      >
         Add Transform
       </Button>
 
-      {transformKeys.length > 0 && (
+      {params.length > 0 && (
         <div className="mt-4">
           <h4 className="font-medium mb-2">Current Transforms</h4>
           <div className="space-y-2">
-            {transformKeys.map((key) => (
+            {params.map(param => (
               <div
-                key={`transform-${key}`}
+                key={param.key}
                 className="flex items-center justify-between p-2 border rounded-md"
               >
                 <div>
-                  <span className="font-medium">{key}</span>:{" "}
-                  <span className="text-gray-600">
-                    {(control._formValues.actions?.[index]?.parameters?.[
-                      key
-                    ] as string) || ""}
-                  </span>
+                  <span className="font-medium">{param.key}</span>:{" "}
+                  <span className="text-gray-600">{param.value}</span>
                 </div>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => removeTransform(key)}
+                  onClick={() => handleRemoveParam(param.key)}
                 >
                   ×
                 </Button>
@@ -138,7 +114,6 @@ export function TransformForm({
         </div>
       )}
 
-      {/* Hidden field to store the parameters */}
       <Controller
         control={control}
         name={`actions.${index}.parameters`}
@@ -146,7 +121,9 @@ export function TransformForm({
           <input
             type="hidden"
             {...field}
-            value={JSON.stringify(getParameters())}
+            value={JSON.stringify(Object.fromEntries(
+              params.map(({ key, value }) => [key, value])
+            ))}
           />
         )}
       />

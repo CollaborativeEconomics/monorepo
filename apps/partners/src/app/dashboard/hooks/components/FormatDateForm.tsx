@@ -1,59 +1,53 @@
 import { Input, Label } from "@cfce/components/ui"
-import { type ActionName, type TriggerName } from "@cfce/types"
 import type { Control } from "react-hook-form"
 import { Controller } from "react-hook-form"
+import type { HookFormValues } from "../types"
+import type { ActionToParamsMap } from "@cfce/types"
 
-// Define the type for the form values
-interface HookFormValues {
-  id?: string
-  trigger: TriggerName
-  description?: string
-  actions: Array<{
-    index: number
-    key: string
-    action: ActionName
-    description?: string
-    parameters: Record<string, unknown>
-  }>
-}
-
-export function FormatDateForm({
-  control,
-  index,
-}: {
+type FormatDateFormProps = {
   control: Control<HookFormValues>
   index: number
-}) {
+}
+
+type DateField = {
+  id: string
+  label: string
+  description: string
+}
+
+const DATE_FIELDS: DateField[] = [
+  {
+    id: "inputDate",
+    label: "Input Date",
+    description: "Date string, timestamp, or path to a date value in the context",
+  },
+  {
+    id: "format",
+    label: "Format",
+    description: 'Format string (e.g., "YYYY-MM-DD", "MM/DD/YYYY", etc.)',
+  },
+]
+
+export function FormatDateForm({ control, index }: FormatDateFormProps) {
   return (
     <div className="space-y-4">
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.inputDate`}>
-          Input Date
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.inputDate` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Date string, timestamp, or path to a date value in the context
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.format`}>Format</Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.format` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Format string (e.g., "YYYY-MM-DD", "MM/DD/YYYY", etc.)
-        </p>
-      </div>
+      {DATE_FIELDS.map(({ id, label, description }) => (
+        <div key={id}>
+          <Label htmlFor={`actions.${index}.parameters.${id}`}>{label}</Label>
+          <Controller
+            control={control}
+            name={`actions.${index}.parameters.${id}`}
+            render={({ field: { value, onChange, ...field } }) => (
+              <Input
+                {...field}
+                value={String(value || "")}
+                onChange={(e) => onChange(e.target.value)}
+              />
+            )}
+          />
+          <p className="text-xs text-gray-500 mt-1">{description}</p>
+        </div>
+      ))}
     </div>
   )
 }

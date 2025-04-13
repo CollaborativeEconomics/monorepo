@@ -2,6 +2,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("POSTGRES_PRISMA_URL")
@@ -45,6 +49,7 @@ model Action {
   actionDefinition Json // deprecated
   action           ActionType @default(InputValues)
   key              String     @default("InputValues") @db.VarChar(255)
+  /// [ActionParams]
   parameters       Json       @default("{}")
   description      String?    @db.VarChar(255)
   index            Int        @default(0)

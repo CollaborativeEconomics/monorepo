@@ -2,7 +2,7 @@
 
 import { prismaClient } from "@cfce/database"
 import type { Prisma } from "@cfce/database"
-import type { ActionName, TriggerName } from "@cfce/types"
+import type { ActionName, ActionParams, TriggerName } from "@cfce/types"
 import { revalidatePath } from "next/cache"
 
 interface ActionResult<T = unknown> {
@@ -79,7 +79,7 @@ export async function createHookAction(
     key: string
     action: ActionName
     description?: string
-    parameters: Record<string, unknown>
+    parameters: ActionParams
   },
 ): Promise<ActionResult<{ id: string }>> {
   try {
@@ -90,7 +90,7 @@ export async function createHookAction(
         key: action.key,
         action: action.action,
         description: action.description,
-        parameters: action.parameters as Prisma.InputJsonValue, // Prisma expects a JSON object
+        parameters: action.parameters, // Prisma expects a JSON object
         actionDefinition: {},
       },
     })
@@ -117,7 +117,7 @@ export async function getHookActions(hookId: string): Promise<
       key: string
       action: ActionName
       description?: string
-      parameters: Record<string, unknown>
+      parameters: ActionParams
     }>
   >
 > {
@@ -135,7 +135,7 @@ export async function getHookActions(hookId: string): Promise<
         key: action.key,
         action: action.action as ActionName,
         description: action.description || undefined,
-        parameters: action.parameters as Record<string, unknown>,
+        parameters: action.parameters,
       })),
     }
   } catch (error) {

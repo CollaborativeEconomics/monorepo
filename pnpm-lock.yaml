@@ -2733,6 +2733,9 @@ importers:
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.12.0)(ts-node@10.9.2(@types/node@22.12.0)(typescript@5.7.3))
+      prisma-json-types-generator:
+        specifier: ^3.2.3
+        version: 3.2.3(prisma@6.3.0(typescript@5.7.3))(typescript@5.7.3)
       ts-jest:
         specifier: ^29.2.5
         version: 29.2.5(@babel/core@7.26.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.7))(jest@29.7.0(@types/node@22.12.0)(ts-node@10.9.2(@types/node@22.12.0)(typescript@5.7.3)))(typescript@5.7.3)
@@ -5099,6 +5102,9 @@ packages:
   '@prisma/debug@6.3.0':
     resolution: {integrity: sha512-m1lQv//0Rc5RG8TBpNUuLCxC35Ghi5XfpPmL83Gh04/GICHD2J5H2ndMlaljrUNaQDF9dOxIuFAYP1rE9wkXkg==}
 
+  '@prisma/debug@6.5.0':
+    resolution: {integrity: sha512-fc/nusYBlJMzDmDepdUtH9aBsJrda2JNErP9AzuHbgUEQY0/9zQYZdNlXmKoIWENtio+qarPNe/+DQtrX5kMcQ==}
+
   '@prisma/engines-version@6.3.0-17.acc0b9dd43eb689cbd20c9470515d719db10d0b0':
     resolution: {integrity: sha512-R/ZcMuaWZT2UBmgX3Ko6PAV3f8//ZzsjRIG1eKqp3f2rqEqVtCv+mtzuH2rBPUC9ujJ5kCb9wwpxeyCkLcHVyA==}
 
@@ -5107,6 +5113,9 @@ packages:
 
   '@prisma/fetch-engine@6.3.0':
     resolution: {integrity: sha512-GBy0iT4f1mH31ePzfcpVSUa7JLRTeq4914FG2vR3LqDwRweSm4ja1o5flGDz+eVIa/BNYfkBvRRxv4D6ve6Eew==}
+
+  '@prisma/generator-helper@6.5.0':
+    resolution: {integrity: sha512-71ELYxnSE4soeV0BlWJEMgO4KkCowuzHsPY3o7quFOtlcmds5ZX190VZK/k9HMJWdPQ893HooBv3BkKvieR7vA==}
 
   '@prisma/get-platform@6.3.0':
     resolution: {integrity: sha512-V8zZ1d0xfyi6FjpNP4AcYuwSpGcdmu35OXWnTPm8IW594PYALzKXHwIa9+o0f+Lo9AecFWrwrwaoYe56UNfTtQ==}
@@ -11153,6 +11162,14 @@ packages:
     resolution: {integrity: sha512-973driJZvxiGOQ5ONsFhOF/DtzPMOMtgC11kCpUrPGMTgqp2q/1gwzCquocrN33is0VZ5GFHXZYMM9l6h67v2Q==}
     engines: {node: '>=10'}
 
+  prisma-json-types-generator@3.2.3:
+    resolution: {integrity: sha512-YxdrYMyj5xPnQfDrQtl6kVQcdHZMZW99hWWbvsAjkJ1QZdn7ZB0q87UcjoMR1DUFyW45i0rH3Ffums+qNVuolg==}
+    engines: {node: '>=14.0'}
+    hasBin: true
+    peerDependencies:
+      prisma: ^5 || ^6
+      typescript: ^5.6.2
+
   prisma@6.3.0:
     resolution: {integrity: sha512-y+Zh3Qg+xGCWyyrNUUNaFW/OltaV/yXYuTa0WRgYkz5LGyifmAsgpv94I47+qGRocZrMGcbF2A/78/oO2zgifA==}
     engines: {node: '>=18.18'}
@@ -15927,6 +15944,8 @@ snapshots:
 
   '@prisma/debug@6.3.0': {}
 
+  '@prisma/debug@6.5.0': {}
+
   '@prisma/engines-version@6.3.0-17.acc0b9dd43eb689cbd20c9470515d719db10d0b0': {}
 
   '@prisma/engines@6.3.0':
@@ -15941,6 +15960,10 @@ snapshots:
       '@prisma/debug': 6.3.0
       '@prisma/engines-version': 6.3.0-17.acc0b9dd43eb689cbd20c9470515d719db10d0b0
       '@prisma/get-platform': 6.3.0
+
+  '@prisma/generator-helper@6.5.0':
+    dependencies:
+      '@prisma/debug': 6.5.0
 
   '@prisma/get-platform@6.3.0':
     dependencies:
@@ -23927,6 +23950,13 @@ snapshots:
   pretty-ms@7.0.1:
     dependencies:
       parse-ms: 2.1.0
+
+  prisma-json-types-generator@3.2.3(prisma@6.3.0(typescript@5.7.3))(typescript@5.7.3):
+    dependencies:
+      '@prisma/generator-helper': 6.5.0
+      prisma: 6.3.0(typescript@5.7.3)
+      tslib: 2.8.1
+      typescript: 5.7.3
 
   prisma@6.3.0(typescript@5.7.3):
     dependencies:

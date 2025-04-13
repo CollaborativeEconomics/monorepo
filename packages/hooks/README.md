@@ -148,5 +148,5 @@ transformEach(context, {
 # Adding actions
 1. Create a new action script in the `/src/actions` folder
 2. In `src/actions/index.ts`, add your action to the `Actions` type and to the exported `actions`
-3. In `src/types.ts`, add the action to the `ActionTypes` const and add the params to `ContextParams`
+3. In `src/types.ts`, add the action to the `ActionTypes` const and add the params to `ActionParams`
 4. Add tests in `src/actions/__tests__`

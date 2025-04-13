@@ -1,119 +1,89 @@
 import { Button, Input, Label } from "@cfce/components/ui"
-import type { ActionName, TriggerName } from "@cfce/types"
+import type { InputValuesParameters } from "@cfce/types"
 import { useState } from "react"
 import type { Control } from "react-hook-form"
-import { Controller } from "react-hook-form"
-
-// Define the type for the form values
-interface HookFormValues {
-  id?: string
-  trigger: TriggerName
-  description?: string
-  actions: Array<{
-    index: number
-    key: string
-    action: ActionName
-    description?: string
-    parameters: Record<string, unknown>
-  }>
-}
+import { Controller, useFormContext } from "react-hook-form"
+import type { HookFormValues } from "../types"
 
 type InputValueType = "string" | "number" | "boolean" | "object" | "array"
 
 interface InputValue {
   key: string
   type: InputValueType
-  value: string | number | boolean | Record<string, unknown> | unknown[]
+  value: InputValuesParameters[keyof InputValuesParameters]
 }
 
-export function InputValuesForm({
-  control,
-  index,
-}: {
-  control: Control<HookFormValues>
-  index: number
-}) {
-  const [inputValues, setInputValues] = useState<InputValue[]>([])
-  const [newKey, setNewKey] = useState("")
-  const [newType, setNewType] = useState<InputValueType>("string")
-  const [newValue, setNewValue] = useState("")
+const INPUT_TYPES: { value: InputValueType; label: string; placeholder: string }[] = [
+  { value: "string", label: "String", placeholder: "Enter value" },
+  { value: "number", label: "Number", placeholder: "Enter number" },
+  { value: "boolean", label: "Boolean", placeholder: "true or false" },
+  { value: "object", label: "Object", placeholder: '{"key": "value"}' },
+  { value: "array", label: "Array", placeholder: "[1, 2, 3]" }
+]
 
-  // Get the current parameters
-  const getParameters = () => {
-    const parameters: Record<string, unknown> = {}
-    for (const input of inputValues) {
-      parameters[input.key] = input.value
+const parseInputValue = (value: string, type: InputValueType): InputValuesParameters[keyof InputValuesParameters] | null => {
+  try {
+    switch (type) {
+      case "number":
+        return Number(value)
+      case "boolean":
+        return value.toLowerCase() === "true"
+      case "object":
+        return JSON.parse(value)
+      case "array":
+        const parsed = JSON.parse(value)
+        if (!Array.isArray(parsed)) throw new Error("Value must be an array")
+        return parsed.filter(
+          (item): item is string | number | boolean =>
+            typeof item === "string" ||
+            typeof item === "number" ||
+            typeof item === "boolean"
+        )
+      default:
+        return value
     }
+  } catch (error) {
+    console.error("Error parsing value:", error)
+    return null
+  }
+}
+
+export function InputValuesForm({ control, index }: { control: Control<HookFormValues>; index: number }) {
+  const { setValue } = useFormContext<HookFormValues>()
+  const [inputValues, setInputValues] = useState<InputValue[]>([])
+  const [newInput, setNewInput] = useState({
+    key: "",
+    type: "string" as InputValueType,
+    value: ""
+  })
+
+  const updateParameters = (values: InputValue[]) => {
+    const parameters = Object.fromEntries(
+      values.map(({ key, value }) => [key, value])
+    ) as InputValuesParameters
+    setValue(`actions.${index}.parameters`, parameters)
     return parameters
   }
 
-  // Add a new input value
-  const addInputValue = () => {
-    if (!newKey.trim()) return
+  const handleAddInput = () => {
+    if (!newInput.key.trim()) return
 
-    let parsedValue:
-      | string
-      | number
-      | boolean
-      | Record<string, unknown>
-      | unknown[] = newValue
+    const parsedValue = parseInputValue(newInput.value, newInput.type)
+    if (parsedValue === null) return
 
-    // Parse the value based on the selected type
-    try {
-      if (newType === "number") {
-        parsedValue = Number(newValue)
-      } else if (newType === "boolean") {
-        parsedValue = newValue.toLowerCase() === "true"
-      } else if (newType === "object") {
-        parsedValue = JSON.parse(newValue)
-      } else if (newType === "array") {
-        parsedValue = JSON.parse(newValue)
-      }
-    } catch (error) {
-      console.error("Error parsing value:", error)
-      return
-    }
-
-    // Add the new input value
-    const newInputValues = [
+    const updatedValues = [
       ...inputValues,
-      { key: newKey, type: newType, value: parsedValue },
+      { key: newInput.key, type: newInput.type, value: parsedValue }
     ]
-    setInputValues(newInputValues)
-
-    // Update the form field
-    const parameters: Record<string, unknown> = {}
-    for (const input of newInputValues) {
-      parameters[input.key] = input.value
-    }
-
-    // Update the form values - safely access nested properties
-    const actions = control._formValues.actions
-    if (actions?.[index]) {
-      actions[index].parameters = parameters
-    }
-
-    // Reset the input fields
-    setNewKey("")
-    setNewValue("")
+    setInputValues(updatedValues)
+    updateParameters(updatedValues)
+    setNewInput({ key: "", type: "string", value: "" })
   }
 
-  // Remove an input value
-  const removeInputValue = (indexToRemove: number) => {
-    const newInputValues = inputValues.filter((_, i) => i !== indexToRemove)
-    setInputValues(newInputValues)
-
-    // Update the form field
-    const parameters: Record<string, unknown> = {}
-    for (const input of newInputValues) {
-      parameters[input.key] = input.value
-    }
-
-    // Update the form values - safely access nested properties
-    const actions = control._formValues.actions
-    if (actions?.[index]) {
-      actions[index].parameters = parameters
-    }
+  const handleRemoveInput = (key: string) => {
+    const updatedValues = inputValues.filter(input => input.key !== key)
+    setInputValues(updatedValues)
+    updateParameters(updatedValues)
   }
 
   return (
@@ -122,8 +92,8 @@ export function InputValuesForm({
         <div>
           <Label>Key</Label>
           <Input
-            value={newKey}
-            onChange={(e) => setNewKey(e.target.value)}
+            value={newInput.key}
+            onChange={e => setNewInput({ ...newInput, key: e.target.value })}
             placeholder="Enter key"
           />
         </div>
@@ -131,35 +101,27 @@ export function InputValuesForm({
           <Label>Type</Label>
           <select
             className="w-full px-3 py-2 border rounded-md"
-            value={newType}
-            onChange={(e) => setNewType(e.target.value as InputValueType)}
+            value={newInput.type}
+            onChange={e => setNewInput({ ...newInput, type: e.target.value as InputValueType })}
           >
-            <option value="string">String</option>
-            <option value="number">Number</option>
-            <option value="boolean">Boolean</option>
-            <option value="object">Object</option>
-            <option value="array">Array</option>
+            {INPUT_TYPES.map(type => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
+            ))}
           </select>
         </div>
         <div>
           <Label>Value</Label>
           <Input
-            value={newValue}
-            onChange={(e) => setNewValue(e.target.value)}
-            placeholder={
-              newType === "object"
-                ? '{"key": "value"}'
-                : newType === "array"
-                  ? "[1, 2, 3]"
-                  : newType === "boolean"
-                    ? "true or false"
-                    : "Enter value"
-            }
+            value={newInput.value}
+            onChange={e => setNewInput({ ...newInput, value: e.target.value })}
+            placeholder={INPUT_TYPES.find(t => t.value === newInput.type)?.placeholder}
           />
         </div>
       </div>
 
-      <Button type="button" variant="outline" onClick={addInputValue}>
+      <Button type="button" variant="outline" onClick={handleAddInput}>
         Add Input
       </Button>
 
@@ -167,9 +129,9 @@ export function InputValuesForm({
         <div className="mt-4">
           <h4 className="font-medium mb-2">Current Inputs</h4>
           <div className="space-y-2">
-            {inputValues.map((input) => (
+            {inputValues.map(input => (
               <div
-                key={`input-${input.key}-${input.type}`}
+                key={input.key}
                 className="flex items-center justify-between p-2 border rounded-md"
               >
                 <div>
@@ -185,13 +147,7 @@ export function InputValuesForm({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() =>
-                    removeInputValue(
-                      inputValues.findIndex(
-                        (i) => i.key === input.key && i.type === input.type,
-                      ),
-                    )
-                  }
+                  onClick={() => handleRemoveInput(input.key)}
                 >
                   ×
                 </Button>
@@ -201,7 +157,6 @@ export function InputValuesForm({
         </div>
       )}
 
-      {/* Hidden field to store the parameters */}
       <Controller
         control={control}
         name={`actions.${index}.parameters`}
@@ -209,7 +164,9 @@ export function InputValuesForm({
           <input
             type="hidden"
             {...field}
-            value={JSON.stringify(getParameters())}
+            value={JSON.stringify(Object.fromEntries(
+              inputValues.map(({ key, value }) => [key, value])
+            ))}
           />
         )}
       />

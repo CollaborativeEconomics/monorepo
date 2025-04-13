@@ -98,7 +98,7 @@ export const Triggers: Record<TriggerName, TriggerName> = {
 }
 
 // Parameter and action definitions
-export type ContextParams =
+export type ActionParams =
   | FetchDataFromApiParameters
   | MathParameters
   | TransformParameters
@@ -141,7 +141,7 @@ export type ActionContext = Record<string, unknown> // TODO: enumerate output ty
 export type ActionFunction<T extends keyof ActionToParamsMap> = (
   context: ActionContext,
   params: ActionToParamsMap[T],
-  // finalAction?: (arg: ContextParams) => void
+  // finalAction?: (arg: ActionParams) => void
 ) => Promise<unknown>
 
 // Hook definition

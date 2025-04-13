@@ -7,84 +7,105 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@cfce/components/ui"
-import { type ActionName, type TriggerName } from "@cfce/types"
 import type { Control } from "react-hook-form"
 import { Controller } from "react-hook-form"
+import type { HookFormValues } from "../types"
 
-// Define the type for the form values
-interface HookFormValues {
-  id?: string
-  trigger: TriggerName
-  description?: string
-  actions: Array<{
-    index: number
-    key: string
-    action: ActionName
-    description?: string
-    parameters: Record<string, unknown>
-  }>
+type MathParams = {
+  inputA: string
+  inputB: string
+  operation: "add" | "subtract" | "multiply" | "divide"
 }
 
-export function MathForm({
-  control,
-  index,
-}: {
-  control: Control<HookFormValues>
-  index: number
-}) {
+type FormField = {
+  id: keyof MathParams
+  label: string
+  type: "text" | "select"
+  description?: string
+  options?: string[]
+}
+
+const OPERATIONS = [
+  { value: "add", label: "Add" },
+  { value: "subtract", label: "Subtract" },
+  { value: "multiply", label: "Multiply" },
+  { value: "divide", label: "Divide" }
+] as const
+
+const FORM_FIELDS: FormField[] = [
+  {
+    id: "inputA",
+    label: "Input A",
+    type: "text",
+    description: "Can be a number or a path to a value in the context"
+  },
+  {
+    id: "inputB",
+    label: "Input B",
+    type: "text",
+    description: "Can be a number or a path to a value in the context"
+  },
+  {
+    id: "operation",
+    label: "Operation",
+    type: "select",
+    options: OPERATIONS.map(op => op.value)
+  }
+]
+
+export function MathForm({ control, index }: { control: Control<HookFormValues>; index: number }) {
+  const renderField = (field: FormField) => {
+    const basePath = `actions.${index}.parameters` as const
+
+    return (
+      <div key={field.id} className="space-y-2">
+        <Label htmlFor={`${basePath}.${field.id}`}>{field.label}</Label>
+        <Controller
+          control={control}
+          name={`${basePath}.${field.id}` as const}
+          render={({ field: { value, onChange, ...fieldProps } }) => {
+            switch (field.type) {
+              case "select":
+                return (
+                  <Select
+                    value={value as string}
+                    onValueChange={onChange}
+                    defaultValue="add"
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {OPERATIONS.map(op => (
+                        <SelectItem key={op.value} value={op.value}>
+                          {op.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )
+              default:
+                return (
+                  <Input
+                    {...fieldProps}
+                    value={value as string || ""}
+                    onChange={e => onChange(e.target.value)}
+                    placeholder={`Enter ${field.label.toLowerCase()}`}
+                  />
+                )
+            }
+          }}
+        />
+        {field.description && (
+          <p className="text-xs text-gray-500">{field.description}</p>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.inputA`}>Input A</Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.inputA` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Can be a number or a path to a value in the context
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.inputB`}>Input B</Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.inputB` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Can be a number or a path to a value in the context
-        </p>
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.operation`}>
-          Operation
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.operation` as const}
-          render={({ field }) => (
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={(field.value as string) || "add"}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select operation" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="add">Add</SelectItem>
-                <SelectItem value="subtract">Subtract</SelectItem>
-                <SelectItem value="multiply">Multiply</SelectItem>
-                <SelectItem value="divide">Divide</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </div>
+      {FORM_FIELDS.map(renderField)}
     </div>
   )
 }

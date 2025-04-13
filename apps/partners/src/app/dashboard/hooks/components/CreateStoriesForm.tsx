@@ -1,20 +1,35 @@
 import { Input, Label } from "@cfce/components/ui"
 import type { Control } from "react-hook-form"
 import { Controller } from "react-hook-form"
+import type { HookFormValues } from "../types"
 
-// Define the type for the form values
-interface HookFormValues {
-  id?: string
-  trigger: string
+type FormField = {
+  id: keyof CreateStoriesParams
+  label: string
   description?: string
-  actions: Array<{
-    index: number
-    key: string
-    action: string
-    description?: string
-    parameters: Record<string, unknown>
-  }>
 }
+
+type CreateStoriesParams = {
+  organizationId: string
+  initiativeId: string
+  storyPath: string
+}
+
+const FORM_FIELDS: FormField[] = [
+  {
+    id: "organizationId",
+    label: "Organization ID"
+  },
+  {
+    id: "initiativeId",
+    label: "Initiative ID"
+  },
+  {
+    id: "storyPath",
+    label: "Story Path",
+    description: "Path to the stories data in the context object"
+  }
+]
 
 export function CreateStoriesForm({
   control,
@@ -23,47 +38,28 @@ export function CreateStoriesForm({
   control: Control<HookFormValues>
   index: number
 }) {
+  const renderField = ({ id, label, description }: FormField) => (
+    <div key={id}>
+      <Label htmlFor={`actions.${index}.parameters.${id}`}>{label}</Label>
+      <Controller
+        control={control}
+        name={`actions.${index}.parameters.${id}`}
+        render={({ field }) => (
+          <Input
+            {...field}
+            value={(field.value as string) || ""}
+          />
+        )}
+      />
+      {description && (
+        <p className="text-xs text-gray-500 mt-1">{description}</p>
+      )}
+    </div>
+  )
+
   return (
     <div className="space-y-4">
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.organizationId`}>
-          Organization ID
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.organizationId` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.initiativeId`}>
-          Initiative ID
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.initiativeId` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-      </div>
-      <div>
-        <Label htmlFor={`actions.${index}.parameters.storyPath`}>
-          Story Path
-        </Label>
-        <Controller
-          control={control}
-          name={`actions.${index}.parameters.storyPath` as const}
-          render={({ field }) => (
-            <Input {...field} value={(field.value as string) || ""} />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Path to the stories data in the context object
-        </p>
-      </div>
+      {FORM_FIELDS.map(renderField)}
     </div>
   )
 }

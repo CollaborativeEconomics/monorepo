@@ -15,13 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
   Tabs,
-  TabsContent,
   TabsList,
   TabsTrigger,
-  Textarea,
 } from "@cfce/components/ui"
 import {
   type ActionName,
+  ActionParams,
   ActionTypes,
   type TriggerName,
   Triggers,
@@ -35,23 +34,20 @@ import {
   useForm,
 } from "react-hook-form"
 import { createHook, createHookAction, deleteHook } from "./actions"
-import { CreateRecordForm } from "./components/CreateRecordForm"
 import { CreateStoriesForm } from "./components/CreateStoriesForm"
 import { CreateStoryForm } from "./components/CreateStoryForm"
-import { DeleteRecordForm } from "./components/DeleteRecordForm"
 import { FetchDataFromApiForm } from "./components/FetchDataFromApiForm"
 import { FilterForm } from "./components/FilterForm"
 import { FormatDateForm } from "./components/FormatDateForm"
 import { InputValuesForm } from "./components/InputValuesForm"
 import { MathForm } from "./components/MathForm"
-import { SendEmailForm } from "./components/SendEmailForm"
 import { TransformEachForm } from "./components/TransformEachForm"
 import { TransformForm } from "./components/TransformForm"
-import { UpdateRecordForm } from "./components/UpdateRecordForm"
-import { type Hook, type HookFormValues } from "./types"
+import { type HookFormValues } from "./types"
+import { Prisma, type Hook } from "@cfce/database"
 
 // Default empty parameters for each action type
-const getDefaultParameters = (actionType: ActionName) => {
+const getDefaultParameters = (actionType: ActionName): ActionParams => {
   switch (actionType) {
     case "FetchDataFromApi":
       return { endpoint: "", method: "GET", body: {}, headers: {} }
@@ -90,7 +86,7 @@ export function HooksManagementClient({
   initialHooks,
 }: {
   organizationId: string
-  initialHooks: Hook[]
+  initialHooks: Prisma.HookGetPayload<{include: {actions: true}}>[]
 }) {
   const [activeTab, setActiveTab] = useState<string>(Object.values(Triggers)[0])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -105,6 +101,7 @@ export function HooksManagementClient({
       id: currentHook?.id || undefined,
       trigger: activeTab as TriggerName,
       description: currentHook?.description || "",
+      // @ts-expect-error prisma type is not as detailed as the hook type
       actions: currentHook?.actions || [],
     },
   })
@@ -229,14 +226,6 @@ export function HooksManagementClient({
         return <FilterForm control={control} index={index} />
       case "formatdate":
         return <FormatDateForm control={control} index={index} />
-      case "sendemail":
-        return <SendEmailForm control={control} index={index} />
-      case "createrecord":
-        return <CreateRecordForm control={control} index={index} />
-      case "updaterecord":
-        return <UpdateRecordForm control={control} index={index} />
-      case "deleterecord":
-        return <DeleteRecordForm control={control} index={index} />
       case "transformeach":
         return <TransformEachForm control={control} index={index} />
       case "transform":
