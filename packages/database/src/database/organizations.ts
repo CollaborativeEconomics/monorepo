@@ -166,6 +166,17 @@ export async function getOrganizationById(
   return organization
 }
 
+// Return related organizations for a user
+export async function getOwnedOrganizations(
+  userId: string,
+) {
+  const user = await prismaClient.user.findUnique({
+    where: { id: userId },
+    include: { organizations: true },
+  })
+  return user?.organizations ?? []
+}
+
 export async function getOrganizationByEmail(
   email: string,
 ): Promise<OrganizationData | null> {

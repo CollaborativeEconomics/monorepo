@@ -1,5 +1,4 @@
-import type { Action, ActionName, ActionToParamsMap } from "@cfce/types"
-import type { Prisma } from "@prisma/client"
+import type { Action, ActionName } from "@cfce/types"
 import { prismaClient } from ".."
 
 export async function createHookAction<T extends ActionName>(
@@ -12,7 +11,7 @@ export async function createHookAction<T extends ActionName>(
       actionDefinition: {},
       action,
       key,
-      parameters: parameters as Prisma.InputJsonValue,
+      parameters,
       description,
       index,
     },

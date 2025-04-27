@@ -3,9 +3,8 @@ import { auth } from '@cfce/auth';
 
 export default async function HomePage() {
   const session = await auth();
-  //console.log('SESSION', session)
-  const orgId = session?.orgId ?? '';
-  const isAuthed = !!orgId;
+  console.log('SESSION', session)
+  const isAuthed = !!session?.user;
 
   if(isAuthed){
     redirect('/dashboard')

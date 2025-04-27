@@ -2366,6 +2366,9 @@ importers:
 
   packages/auth:
     dependencies:
+      '@auth/prisma-adapter':
+        specifier: ^2.7.2
+        version: 2.7.4(@prisma/client@6.3.0(prisma@6.3.0(typescript@5.7.3))(typescript@5.7.3))
       '@cfce/blockchain-tools':
         specifier: workspace:*
         version: link:../blockchain-tools
