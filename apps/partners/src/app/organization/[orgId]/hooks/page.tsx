@@ -1,24 +1,30 @@
 import { auth } from "@cfce/auth"
 import { prismaClient } from "@cfce/database"
 import { redirect } from "next/navigation"
+import { verifyOrgAccess } from "~/utils/verifyOrgAccess"
 import { HooksManagementClient } from "./client"
-import { verifyOrgAccess } from '~/utils/verifyOrgAccess';
 
 interface PageProps {
-  params: { orgId: string };
+  params: { orgId: string }
 }
 
 export default async function HooksPage({ params }: PageProps) {
-  const session = await auth();
-  if (!session || !session.user || !params?.orgId || typeof session.user.id !== 'string') {
-    return null;
+  const orgId = await params.orgId
+  const session = await auth()
+  if (
+    !session ||
+    !session.user ||
+    !orgId ||
+    typeof session.user.id !== "string"
+  ) {
+    return null
   }
-  await verifyOrgAccess(session.user.id as string, params.orgId, !!session.isAdmin);
+  await verifyOrgAccess(session.user.id as string, orgId, !!session.isAdmin)
 
   // Fetch all hooks for the organization
   const hooks = await prismaClient.hook.findMany({
     where: {
-      orgId: params.orgId,
+      orgId,
     },
     include: {
       actions: {
@@ -37,10 +43,7 @@ export default async function HooksPage({ params }: PageProps) {
         organization.
       </p>
 
-      <HooksManagementClient
-        organizationId={params.orgId}
-        initialHooks={hooks}
-      />
+      <HooksManagementClient organizationId={orgId} initialHooks={hooks} />
     </div>
   )
 }

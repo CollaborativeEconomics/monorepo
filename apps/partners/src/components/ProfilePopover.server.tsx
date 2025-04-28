@@ -1,26 +1,28 @@
 import { auth } from "@cfce/auth"
-import { getOrganizationById } from "~/actions/database"
-import { getOrganizationsByUserId, getOrganizations } from "@cfce/database"
-import ProfilePopoverClient, { Organization, UserInfo } from "./ProfilePopover.client"
+import { getOrganizations, getOrganizationsByUserId } from "@cfce/database"
 import { Session } from "next-auth"
 import React from "react"
+import { getOrganizationById } from "~/actions/database"
+import ProfilePopoverClient, {
+  Organization,
+  UserInfo,
+} from "./ProfilePopover.client"
 
 export default async function ProfilePopover() {
   const session: Session | null = await auth()
   if (!session || !session.user) return null
-  console.log('SESSION', session)
+  console.log("SESSION", session)
 
   if (!session.user.id) return null
 
   let orgList: Organization[] = []
   if (session.isAdmin) {
-    orgList = await getOrganizations({}) || []
+    orgList = (await getOrganizations({})) || []
   } else if (session.user.id) {
-    orgList = await getOrganizationsByUserId(session.user.id) || []
+    orgList = (await getOrganizationsByUserId(session.user.id)) || []
   }
-  console.log('ORG LIST', orgList)
   const organizations: Organization[] = Array.isArray(orgList)
-    ? orgList.map((org: any) => ({ id: String(org.id), name: String(org.name) }))
+    ? orgList.map((org) => ({ id: String(org.id), name: String(org.name) }))
     : []
 
   let currentOrg: Organization | null = null
@@ -36,5 +38,11 @@ export default async function ProfilePopover() {
     image: session.user.image ?? undefined,
   }
 
-  return <ProfilePopoverClient user={user} organizations={organizations} currentOrg={currentOrg} />
-} 
+  return (
+    <ProfilePopoverClient
+      user={user}
+      organizations={organizations}
+      currentOrg={currentOrg}
+    />
+  )
+}

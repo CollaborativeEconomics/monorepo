@@ -410,7 +410,7 @@ export default function Page({ organization, events }: PageProps) {
         {events?.length > 0 ? (
           events.map((item) => (
             <div className={styles.itemBox} key={item.id}>
-              <Link href={`/events/${item.id}`}>
+              <Link href={`events/${item.id}`}>
                 <EventView key={item.id} {...item} />
               </Link>
             </div>

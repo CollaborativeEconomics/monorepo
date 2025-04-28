@@ -1,9 +1,11 @@
 "use client"
-import { useRouter } from "next/navigation"
+import { Button } from "@cfce/components/ui"
 import Image from "next/image"
-import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover"
-import { useAppState } from "../state/appState"
+import { useRouter } from "next/navigation"
 import * as React from "react"
+import { useAppState } from "../state/appState"
+import SignOutButton from "./SignOutButton"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 export interface Organization {
   id: string
@@ -30,7 +32,11 @@ function getInitials(name?: string) {
   return (parts[0][0] + parts[1][0]).toUpperCase()
 }
 
-export default function ProfilePopoverClient({ user, organizations, currentOrg }: ProfilePopoverClientProps) {
+export default function ProfilePopoverClient({
+  user,
+  organizations,
+  currentOrg,
+}: ProfilePopoverClientProps) {
   const router = useRouter()
   const { setCurrentOrg } = useAppState()
   const [open, setOpen] = React.useState(false)
@@ -56,7 +62,10 @@ export default function ProfilePopoverClient({ user, organizations, currentOrg }
           </div>
         )}
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-72 p-0 bg-popover text-popover-foreground border-border">
+      <PopoverContent
+        align="start"
+        className="w-72 p-0 bg-popover text-popover-foreground border-border"
+      >
         <div className="p-4 border-b border-border flex items-center gap-3">
           {avatar ? (
             <Image
@@ -76,11 +85,12 @@ export default function ProfilePopoverClient({ user, organizations, currentOrg }
             <div className="text-xs text-gray-500">{email}</div>
           </div>
         </div>
-        <div className="max-h-60 overflow-y-auto">
+        <div className="max-h-60 overflow-y-auto py-2">
           {organizations.map((org) => (
             <button
               key={org.id}
-              className={`w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-gray-100 ${currentOrg?.id === org.id ? "bg-gray-100 font-bold" : ""}`}
+              type="button"
+              className={`w-full text-left px-4 flex items-center gap-2 hover:bg-secondary ${currentOrg?.id === org.id ? "font-bold" : ""}`}
               onClick={() => {
                 setCurrentOrg(org)
                 setOpen(false)
@@ -95,17 +105,19 @@ export default function ProfilePopoverClient({ user, organizations, currentOrg }
           ))}
         </div>
         <div className="border-t border-border p-2">
-          <button
-            className="w-full px-4 py-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+          <Button
+            className="w-full px-4 py-2 rounded-md text-white font-semibold"
+            variant="outline"
             onClick={() => {
               setOpen(false)
               router.push("/organization")
             }}
           >
             + Create Organization
-          </button>
+          </Button>
+          <SignOutButton className="w-full mt-2 px-4 py-2 rounded-md bg-red-500 hover:bg-red-600 text-white font-semibold" />
         </div>
       </PopoverContent>
     </Popover>
   )
-} 
+}

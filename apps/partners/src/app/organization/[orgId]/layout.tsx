@@ -1,5 +1,4 @@
 import type { ReactNode } from "react"
-import "~/styles/globals.css"
 import { AppSidebar } from "~/components/app-sidebar"
 import Dashboard from "~/components/dashboard"
 import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar"
