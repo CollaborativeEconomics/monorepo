@@ -34,7 +34,7 @@ export default async function NavMenu() {
   const status = session?.user ? "authenticated" : "unauthenticated"
   const avatar = session?.user?.image || "/nopic.png"
   // @ts-ignore - module augmentation is hard
-  const userurl = session?.user.id ? `/profile/${session?.user.id}` : ""
+  const userurl = session?.user?.id ? `/profile/${session?.user?.id}` : ""
 
   return (
     <>
