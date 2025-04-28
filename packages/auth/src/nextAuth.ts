@@ -17,13 +17,9 @@ const authOptions: NextAuthConfig = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
     updateAge: 24 * 60 * 60, // 24 hours
   },
-  // pages: {
-  //   signIn: "/signin",
-  // },
   callbacks: {
     async session({ session, user }) {
       // session.user is populated from the DB
-      console.log("AUTH SESSION", session)
       const customSession = session as typeof session & {
         orgId?: string;
         orgName?: string;

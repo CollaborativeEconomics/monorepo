@@ -29,6 +29,7 @@ export type OrganizationData = {
   twitter?: string;
   facebook?: string;
   categoryId?: string;
+  ownerId?: string;
 };
 
 export type InitiativeData = {

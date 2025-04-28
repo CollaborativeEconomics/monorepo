@@ -7,10 +7,8 @@ interface OrganizationQuery extends ListQuery {
   category?: string
   chain?: Chain
   wallet?: string
-  email?: string
   search?: string
   location?: string
-  featured?: boolean
 }
 
 const includePayload: Prisma.OrganizationInclude = {
@@ -47,27 +45,12 @@ export type OrganizationData = Prisma.OrganizationGetPayload<{
 
 export async function getOrganizations(
   query: OrganizationQuery,
-): Promise<OrganizationData | Array<OrganizationData> | null> {
+) {
   let where = {} as Prisma.OrganizationWhereInput
   const skip = 0
   const take = 100
   const orderBy = { name: "asc" } as Prisma.OrganizationOrderByWithRelationInput
   const include = includePayload
-
-  if (query?.featured) {
-    const record = await getFeaturedOrganization()
-    //console.log("Featured", record?.name)
-    return record // return one record, not array
-    //return record ? [record] : null
-  }
-
-  if (query?.email) {
-    //console.log("Email", query.email)
-    const record = await getOrganizationByEmail(query.email)
-    //console.log("OrgByMail", record?.email, record?.name)
-    return record // return one record, not array
-    //return record ? [record] : null
-  }
 
   if (query?.chain) {
     where = {
@@ -167,14 +150,15 @@ export async function getOrganizationById(
 }
 
 // Return related organizations for a user
-export async function getOwnedOrganizations(
+export async function getOrganizationsByUserId(
   userId: string,
+  options: { includeAll?: boolean } = {}
 ) {
-  const user = await prismaClient.user.findUnique({
-    where: { id: userId },
-    include: { organizations: true },
+  const organizations = await prismaClient.organization.findMany({
+    where: { ownerId: userId },
+    include: options.includeAll ? includePayload : undefined,
   })
-  return user?.organizations ?? []
+  return organizations
 }
 
 export async function getOrganizationByEmail(

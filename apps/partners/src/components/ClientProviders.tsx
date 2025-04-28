@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { metaMask } from "@wagmi/connectors"
 import { SessionProvider } from "next-auth/react"
-import { ThemeProvider } from "next-themes"
+import { ThemeProvider } from "./ThemeProvider"
 import { http, type WagmiConfig, WagmiProvider, createConfig } from "wagmi"
 import { arbitrumSepolia } from "wagmi/chains"
 

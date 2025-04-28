@@ -331,7 +331,7 @@ model Organization {
   mailingAddress String?      @db.VarChar(255)
   name           String       @db.VarChar(255)
   phone          String?      @db.VarChar(40)
-  email          String       @unique @db.VarChar(100)
+  email          String       @db.VarChar(100)
   url            String?      @db.VarChar(255)
   categoryId     String?      @db.Uuid
   featured       Boolean      @default(false)
