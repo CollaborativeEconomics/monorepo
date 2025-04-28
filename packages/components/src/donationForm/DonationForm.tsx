@@ -1,7 +1,7 @@
 "use client"
 import { usePostHog } from "@cfce/analytics"
 import appConfig, { chainConfig } from "@cfce/app-config"
-import { createAnonymousUser, fetchUserByWallet } from "@cfce/auth"
+import { createAnonymousUser, fetchUserByWallet } from "@cfce/auth/actions"
 import {
   BlockchainClientInterfaces,
   getChainConfigurationByName,

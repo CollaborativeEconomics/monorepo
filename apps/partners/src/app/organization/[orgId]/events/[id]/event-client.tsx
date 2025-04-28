@@ -1,13 +1,13 @@
 "use client"
 
-import { revalidatePath } from 'next/cache'
 import appConfig, { chainConfig } from "@cfce/app-config"
 import { abiVolunteersFactory as FactoryAbi } from "@cfce/blockchain-tools"
 import type { Contract, Event } from "@cfce/database"
 import { readContract, switchChain, waitForTransaction } from "@wagmi/core"
-import { useState } from "react"
+import { revalidatePath } from "next/cache"
+import { useEffect, useState } from "react"
 import { parseUnits } from "viem"
-import { useAccount, useWriteContract, useReadContract } from "wagmi"
+import { useAccount, useReadContract, useWriteContract } from "wagmi"
 import * as wagmiChains from "wagmi/chains"
 import { newContract } from "~/actions/database"
 import ButtonBlue from "~/components/buttonblue"
@@ -48,34 +48,49 @@ export default function EventClient({
   const [message, setMessage] = useState(
     "You will sign one transaction with your wallet",
   )
+  const [showBrowserNote, setShowBrowserNote] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const ua = window.navigator.userAgent.toLowerCase()
+      const isChrome =
+        ua.includes("chrome") && !ua.includes("edge") && !ua.includes("opr")
+      const isFirefox = ua.includes("firefox")
+      if (!isChrome && !isFirefox) {
+        setShowBrowserNote(true)
+      }
+    }
+  }, [])
 
   // Constants
-  const arbitrum = chainConfig.arbitrum.networks[appConfig.chainDefaults.network]
+  const arbitrum =
+    chainConfig.arbitrum.networks[appConfig.chainDefaults.network]
   const FactoryAddress = arbitrum?.contracts?.VolunteersFactory
   const payToken = arbitrum.tokens.find((t) => t.symbol === "USDC")
-  const usdcAddress = payToken?.contract || ''
+  const usdcAddress = payToken?.contract || ""
   const tokenDecimals = payToken?.decimals || 0
-  const tokenAbi = [{
-    "constant": true,
-    "inputs": [],
-    "name": "decimals",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  }]
+  const tokenAbi = [
+    {
+      constant: true,
+      inputs: [],
+      name: "decimals",
+      outputs: [
+        {
+          name: "",
+          type: "uint8",
+        },
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+  ]
   let NFTBlockNumber: number
   let distributorBlockNumber: number
 
   if (!FactoryAddress || !usdcAddress) {
     throw new Error("Factory or USDC address not found")
   }
-
 
   async function deployTokenDistributor() {
     try {
@@ -90,10 +105,10 @@ export default function EventClient({
       const decimals = await readContract(wagmiConfig, {
         address: usdcAddress as `0x${string}`,
         abi: tokenAbi,
-        functionName: 'decimals',
+        functionName: "decimals",
       })
       console.log("Decimals", decimals as number)
-      const unitValue = event.unitvalue||1
+      const unitValue = event.unitvalue || 1
       const baseFee = parseUnits(unitValue.toString(), decimals as number) // usdc uses only 6 decimals
       console.log("Base Fee", baseFee)
 
@@ -101,12 +116,7 @@ export default function EventClient({
         address: FactoryAddress,
         abi: FactoryAbi,
         functionName: "deployDistributor" as const,
-        args: [
-          uri,
-          address,
-          usdcAddress as `0x${string}`,
-          baseFee
-        ],
+        args: [uri, address, usdcAddress as `0x${string}`, baseFee],
         chain: defaultChain,
         account: address,
       }
@@ -121,7 +131,7 @@ export default function EventClient({
           uri,
           address as `0x${string}`,
           usdcAddress as `0x${string}`,
-          baseFee
+          baseFee,
         ],
         chain: defaultChain,
         account: address,
@@ -187,7 +197,7 @@ export default function EventClient({
 
       setReady(true)
       setEventStarted(true)
-      revalidatePath('.')
+      revalidatePath(".")
     } catch (error) {
       console.error("Deployment process failed:", error)
       setMessage(
@@ -200,6 +210,21 @@ export default function EventClient({
 
   return (
     <div>
+      {showBrowserNote && (
+        <div
+          style={{
+            background: "#fff3cd",
+            color: "#856404",
+            padding: "12px",
+            borderRadius: "6px",
+            marginBottom: "16px",
+            border: "1px solid #ffeeba",
+          }}
+        >
+          For the best experience, please use this page in <b>Firefox</b> or{" "}
+          <b>Chrome</b>.
+        </div>
+      )}
       <Title text="Volunteer To Earn Event" />
       <div className={styles.mainBox}>
         {event.created && (
@@ -222,10 +247,7 @@ export default function EventClient({
 
         {eventStarted && (
           <div className="w-full flex flex-row justify-between mb-8">
-            <LinkButton
-              href={`/events/register/${id}`}
-              text="REGISTER"
-            />
+            <LinkButton href={`/events/register/${id}`} text="REGISTER" />
             <LinkButton href={`/events/report/${id}`} text="REPORT" />
             <LinkButton href={`/events/reward/${id}`} text="REWARD" />
           </div>

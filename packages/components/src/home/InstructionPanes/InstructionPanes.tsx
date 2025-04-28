@@ -1,51 +1,51 @@
-'use client';
+"use client"
 
-import Link from 'next/link';
-import React from 'react';
-import { Parallax } from '../../navigation';
-import RiveAnimation from '../RiveAnimation';
-import { InstructionPaneSectionImageBlend } from './InstructionPaneSectionImageBlend';
+import Link from "next/link"
+import React from "react"
+import Parallax from "../../navigation/Parallax"
+import RiveAnimation from "../RiveAnimation"
+import { InstructionPaneSectionImageBlend } from "./InstructionPaneSectionImageBlend"
 
 const instructionPanesData = [
   {
-    slug: 'donate',
-    image: '/home/DonateV2.jpg',
+    slug: "donate",
+    image: "/home/DonateV2.jpg",
     riveNumber: 1 as const,
-    title: 'Donate to community causes you care about',
+    title: "Donate to community causes you care about",
     content: (
       <>
-        Find organizations working on the{' '}
+        Find organizations working on the{" "}
         <Link className="hover:underline" href="https://www.cfce.io/un2030/">
           sustainable development goals
-        </Link>{' '}
+        </Link>{" "}
         that you care most about. Invest in those working in your community or
         for a community you care about.
       </>
     ),
   },
   {
-    slug: 'nft-receipt',
-    image: '/home/NFTReceiptV2.jpg',
+    slug: "nft-receipt",
+    image: "/home/NFTReceiptV2.jpg",
     riveNumber: 2 as const,
-    title: 'Receive personalized, tax-deductible NFT Receipts',
+    title: "Receive personalized, tax-deductible NFT Receipts",
     content:
-      'Whenever you donate, you receive a personalzed tax-deductible NFT receipt.',
+      "Whenever you donate, you receive a personalzed tax-deductible NFT receipt.",
   },
   {
-    slug: 'nft-story',
-    image: '/home/ReceiveNFTV2.jpg',
+    slug: "nft-story",
+    image: "/home/ReceiveNFTV2.jpg",
     riveNumber: 3 as const,
-    title: 'NFTs tell the story of your impact',
+    title: "NFTs tell the story of your impact",
     content:
-      'Non-profits publish and distribute their progress as Story NFTs. Watch the impact from your donation unfold!',
+      "Non-profits publish and distribute their progress as Story NFTs. Watch the impact from your donation unfold!",
   },
-];
+]
 
 export default function InstructionPanes() {
   return (
     <div className="container flex flex-col pt-8 md:pt-20 w-full gap-16">
       <h2 className="text-5xl font-bold">How it works</h2>
-      {instructionPanesData.map(pane => (
+      {instructionPanesData.map((pane) => (
         <div
           key={`${pane.slug}-pane`}
           className="flex flex-col relative gap-4 md:gap-0"
@@ -66,5 +66,5 @@ export default function InstructionPanes() {
         </div>
       ))}
     </div>
-  );
+  )
 }
