@@ -1,5 +1,5 @@
 import "server-only"
-import type { TriggerName } from "@cfce/types"
+import type { TriggerName } from "@prisma/client"
 import { prismaClient } from "../index"
 
 export async function createHook({

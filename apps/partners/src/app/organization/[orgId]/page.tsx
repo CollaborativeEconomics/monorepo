@@ -14,12 +14,12 @@ import {
 } from "~/components/ui/card"
 
 interface PageProps {
-  params: { orgId: string }
+  params: Promise<{ orgId: string }>
 }
 
 export default async function Page({ params }: PageProps) {
   const session = await auth()
-  const orgId = params.orgId
+  const { orgId } = await params
   let organization = null
   if (orgId) {
     organization = await getOrganizationById(orgId)

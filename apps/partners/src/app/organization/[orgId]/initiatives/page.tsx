@@ -14,16 +14,17 @@ import { FormMode, type InitiativeData } from "~/types/data"
 import { verifyOrgAccess } from '~/utils/verifyOrgAccess';
 
 interface PageProps {
-  params: { orgId: string };
+  params: Promise<{ orgId: string }>;
 }
 
 export default async function Page({ params }: PageProps) {
+  const { orgId } = await params;
   const session = await auth();
-  if (!session || !session.user || !params?.orgId || typeof session.user.id !== 'string') {
+  if (!session || !session.user || !orgId || typeof session.user.id !== 'string') {
     return null;
   }
-  await verifyOrgAccess(session.user.id as string, params.orgId, !!session.isAdmin);
-  const organization = await getOrganizationById(params.orgId);
+  await verifyOrgAccess(session.user.id as string, orgId, !!session.isAdmin);
+  const organization = await getOrganizationById(orgId);
   if (!organization) {
     redirect("/dashboard");
   }
@@ -31,7 +32,7 @@ export default async function Page({ params }: PageProps) {
   const initiatives =
     organization.initiative.map((it) => ({ ...it, organization })) || []
   const initiative: InitiativeData = {
-    organizationId: params.orgId,
+    organizationId: orgId,
     title: "",
     description: "",
     start: new Date(),

@@ -6,12 +6,12 @@ import { FormMode } from "~/types/data"
 import { sortCategories } from "~/utils/data"
 
 interface PageProps {
-  params: { orgId: string }
+  params: Promise<{ orgId: string }>
 }
 
 export default async function EditOrganizationPage({ params }: PageProps) {
   const session = await auth()
-  const orgId = params.orgId
+  const { orgId } = await params
   if (!session || !orgId) return null
   const organization = await getOrganizationById(orgId)
   if (!organization) return null

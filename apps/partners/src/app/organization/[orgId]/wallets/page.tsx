@@ -24,8 +24,8 @@ async function getWalletData(orgId: string) {
 
 export default async function WalletsPage({
   params,
-}: { params: { orgId: string } }) {
-  const orgId = await params.orgId
+}: { params: Promise<{ orgId: string }> }) {
+  const { orgId } = await params
   if (!orgId) throw new Error("Not authorized")
 
   const { initiatives, wallets } = await getWalletData(orgId)

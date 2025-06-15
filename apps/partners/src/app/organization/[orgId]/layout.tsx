@@ -7,8 +7,8 @@ import styles from "~/styles/dashboard.module.css"
 export default async function Layout({
   children,
   params,
-}: { children: ReactNode; params: { orgId: string } }) {
-  const orgId = await params.orgId
+}: { children: ReactNode; params: Promise<{ orgId: string }> }) {
+  const { orgId } = await params
   console.log("ORG ID", orgId)
   return (
     <Dashboard>

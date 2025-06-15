@@ -1,5 +1,6 @@
 import { newCronjob } from "@cfce/database"
-import { Triggers, runHook } from "@cfce/registry-hooks"
+import { runHook } from "@cfce/registry-hooks"
+import { Triggers } from "@cfce/types"
 import { type NextRequest, NextResponse } from "next/server"
 import { prepareDailyHook } from "~/lib/hooks/prepare"
 

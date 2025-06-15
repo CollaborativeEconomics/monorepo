@@ -5,11 +5,11 @@ import { verifyOrgAccess } from "~/utils/verifyOrgAccess"
 import { HooksManagementClient } from "./client"
 
 interface PageProps {
-  params: { orgId: string }
+  params: Promise<{ orgId: string }>
 }
 
 export default async function HooksPage({ params }: PageProps) {
-  const orgId = await params.orgId
+  const { orgId } = await params
   const session = await auth()
   if (
     !session ||

@@ -8,9 +8,9 @@ import AddStoryForm from "./AddStoryForm"
 
 export default async function DashboardPage({
   params,
-}: { params: { orgId: string } }) {
+}: { params: Promise<{ orgId: string }> }) {
   const session = await auth() // Fetch session
-  const orgId = await params.orgId
+  const { orgId } = await params
   const organization = await getOrganizationById(orgId)
   const initiatives = organization?.initiative || []
   const initiativesPlain = JSON.parse(JSON.stringify(initiatives))

@@ -4,10 +4,12 @@ import { prismaClient } from "@cfce/database"
 import type { Organization, User } from "@cfce/database/types"
 import { registryApi } from "@cfce/utils"
 import NextAuth, { type NextAuthResult, type NextAuthConfig } from "next-auth"
+import { decode, encode } from "next-auth/jwt"
 import { cookies } from "next/headers"
 // --- Workaround imports ---
 import { v4 as uuidV4 } from "uuid"
 import { getAuthProviders } from "./authConfig"
+import { NextRequest } from "next/server"
 
 const generateSessionToken = () => uuidV4()
 const fromDate = (time: number, date = Date.now()) =>
@@ -16,7 +18,9 @@ const fromDate = (time: number, date = Date.now()) =>
 const providers = getAuthProviders(appConfig.auth)
 //console.log("AUTH PROVIDERS", providers, appConfig.auth)
 
-const authOptions: NextAuthConfig = {
+const authOptions = (
+  req: NextRequest | undefined,
+): NextAuthConfig => ({
   adapter: PrismaAdapter(prismaClient),
   providers,
   session: {
@@ -30,7 +34,7 @@ const authOptions: NextAuthConfig = {
       if (account?.provider === "credentials") {
         if (!user?.id) return false
         const sessionToken = generateSessionToken()
-        const maxAge = authOptions.session?.maxAge ?? 30 * 24 * 60 * 60
+        const maxAge = 30 * 24 * 60 * 60 // Same value as defined in the session config
         const sessionExpiry = fromDate(maxAge)
         await prismaClient.session.create({
           data: {
@@ -92,17 +96,34 @@ const authOptions: NextAuthConfig = {
     },
   },
   jwt: {
-    async encode({ token, secret, maxAge }) {
-      const cookieStore = await cookies()
-      const cookie = cookieStore.get("next-auth.session-token")
-      if (cookie) return cookie.value
-      return ""
+    async encode(params) {
+      if (
+        req?.url?.includes("callback") &&
+        req?.url?.includes("credentials") &&
+        req?.method === "POST"
+      ) {
+        const cookieStore = await cookies()
+        const cookie = cookieStore.get("next-auth.session-token")
+
+        if (cookie) return cookie.value
+        return ""
+      }
+      // Revert to default behaviour when not in the credentials provider callback flow
+      return encode(params)
     },
-    async decode({ token, secret }) {
-      return null
+    async decode(params) {
+      if (
+        req?.url?.includes("callback") &&
+        req?.url?.includes("credentials") &&
+        req?.method === "POST"
+      ) {
+        return null
+      }
+      // Revert to default behaviour when not in the credentials provider callback flow
+      return decode(params)
     },
   },
-} // satisfies NextAuthOptions
+}) // satisfies NextAuthOptions
 // REF: https://next-auth.js.org/configuration/nextjs
 
 const nextAuth = NextAuth(authOptions)

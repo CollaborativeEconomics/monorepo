@@ -9,12 +9,12 @@ import { verifyOrgAccess } from "~/utils/verifyOrgAccess"
 import EventsClient from "./events-client"
 
 interface PageProps {
-  params: { orgId: string }
+  params: Promise<{ orgId: string }>
 }
 
 export default async function Page({ params }: PageProps) {
   const session = await auth()
-  const orgId = await params.orgId
+  const { orgId } = await params
   if (
     !session ||
     !session.user ||

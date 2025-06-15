@@ -1,9 +1,9 @@
-import type { Action, ActionName } from "@cfce/types"
+import type { Action } from "@prisma/client"
 import { prismaClient } from ".."
 
-export async function createHookAction<T extends ActionName>(
+export async function createHookAction(
   hookId: string,
-  { parameters, action, key, description, index }: Action<T>,
+  { parameters, action, key, description, index }: Omit<Action, 'id' | 'hookId'>,
 ) {
   const hookAction = await prismaClient.action.create({
     data: {

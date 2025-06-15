@@ -11,13 +11,13 @@ import { verifyOrgAccess } from "~/utils/verifyOrgAccess"
 import ContractsClient from "./contracts-client"
 
 interface PageProps {
-  params: { orgId: string }
+  params: Promise<{ orgId: string }>
 }
 
 export default async function Page({ params }: PageProps) {
   const chain = "Stellar" // TODO: Get from config but for now start with Stellar
   const network = appConfig.chainDefaults.network
-  const orgId = await params.orgId
+  const { orgId } = await params
   const session = await auth()
   if (
     !session ||

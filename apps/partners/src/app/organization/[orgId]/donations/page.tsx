@@ -5,17 +5,18 @@ import styles from '~/styles/dashboard.module.css';
 import DonationsTable from './DonationsTable';
 
 interface PageProps {
-  params: { orgId: string };
+  params: Promise<{ orgId: string }>;
 }
 
 export default async function Page({ params }: PageProps) {
+  const { orgId } = await params;
   const session = await auth();
-  if (!session || !session.user || !params?.orgId || typeof session.user.id !== 'string') {
+  if (!session || !session.user || !orgId || typeof session.user.id !== 'string') {
     // Defensive: redirect or throw if missing
     return null;
   }
-  await verifyOrgAccess(session.user.id as string, params.orgId, !!session.isAdmin);
-  const donations = await getDonations({ orgId: params.orgId });
+  await verifyOrgAccess(session.user.id as string, orgId, !!session.isAdmin);
+  const donations = await getDonations({ orgId });
   const donationsPlain = JSON.parse(JSON.stringify(donations));
 
   return (
