@@ -20,12 +20,14 @@ export interface CreateStoryParameters {
   files?: {
     files: File[]
   }
+  [key: string]: string | number | File[] | { files: File[] } | undefined
 }
 
 export interface CreateStoriesParameters {
   organizationId: string
   initiativeId: string
   storyPath: string
+  [key: string]: string
 }
 
 export interface FetchDataFromApiParameters {
@@ -33,6 +35,7 @@ export interface FetchDataFromApiParameters {
   method: string
   body: Record<string, unknown>
   headers: Record<string, string>
+  [key: string]: string | Record<string, unknown> | Record<string, string>
 }
 
 export type Operator = "===" | "!==" | ">" | "<" | ">=" | "<=" | "&&" | "||"
@@ -48,6 +51,7 @@ export interface FindParameters {
   collectionPath: string // where is the collection stored in the context
   key?: string // the key to compare against
   value: string | number | boolean // the value to compare against
+  [key: string]: Operator | string | number | boolean | undefined
 }
 
 export interface FilterParameters {
@@ -55,17 +59,20 @@ export interface FilterParameters {
   collectionPath: string // where is the collection stored in the context
   key?: string // the key to compare against
   value: string | number | boolean // the value to compare against
+  [key: string]: Operator | string | number | boolean | undefined
 }
 
 export interface FormatDateParameters {
   inputDate: string | number | Date
   format: string
+  [key: string]: string | number | Date
 }
 
 export interface MathParameters {
   inputA: string | number
   inputB: string | number
   operation: "multiply" | "divide" | "add" | "subtract"
+  [key: string]: string | number
 }
 
 export interface TransformParameters {

@@ -183,7 +183,7 @@ export default function Page({ organization, events }: PageProps) {
 
     const imgName = randomString()
     const image = { name: imgName + ext, file }
-    const payrate = Number.parseFloat(data.payrate || "0")
+    const payrate = Decimal(Number.parseFloat(data.payrate || "0"))
     //const event: Omit<Prisma.EventCreateInput, "id" | "created" | "status" | "inactive"> = {
     //const event: Prisma.EventCreateInput = {
     //const event: Event = {
@@ -200,7 +200,7 @@ export default function Page({ organization, events }: PageProps) {
       quantity: Number.parseInt(data.quantity || "0", 10),
       payrate: payrate,
       volunteers: Number.parseInt(data.volunteers || "0", 10),
-      voltoearn: payrate > 0,
+      voltoearn: payrate.gt(0),
       image: "",
     }
 
