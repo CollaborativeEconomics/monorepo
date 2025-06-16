@@ -17,12 +17,13 @@ import {
   newUser,
 } from "@cfce/database"
 import { uploadDataToIPFS } from "@cfce/ipfs"
-import { Triggers, runHook } from "@cfce/registry-hooks"
+import { runHook } from "@cfce/registry-hooks"
 import {
   ChainSlugs,
   DonationStatus,
   EntityType,
   TokenTickerSymbol,
+  Triggers,
 } from "@cfce/types"
 import { DateTime } from "luxon"
 import { sendEmailReceipt } from "./mailgun"
@@ -149,19 +150,19 @@ export async function mintAndSaveReceiptNFT({
     }
 
     // Poll for transaction confirmation with exponential backoff
-    let attempts = 0;
-    const maxAttempts = 5;
+    let attempts = 0
+    const maxAttempts = 5
     while (attempts < maxAttempts) {
       try {
-        const txInfo = await chainTool.getTransactionInfo(txId, false);
+        const txInfo = await chainTool.getTransactionInfo(txId, false)
         if (txInfo && !("error" in txInfo)) {
-          break; // Transaction found and confirmed
+          break // Transaction found and confirmed
         }
       } catch (e) {
-        console.log("Transaction not yet confirmed, retrying...");
+        console.log("Transaction not yet confirmed, retrying...")
       }
-      attempts++;
-      await sleep(Math.min(1000 * Math.pow(2, attempts), 10000)); // Exponential backoff with max 10s
+      attempts++
+      await sleep(Math.min(1000 * Math.pow(2, attempts), 10000)) // Exponential backoff with max 10s
     }
     console.log("TxId", txId)
     const txInfo = await chainTool.getTransactionInfo(txId, true) // wait for receipt
@@ -225,7 +226,7 @@ export async function mintAndSaveReceiptNFT({
       : "ipfs:QmZWgvsGUGykGyDqjL6zjbKjtqNntYZqNzQrFa6UnyZF1n"
 
     const extraMetadata = await runHook(
-      Triggers.addMetadataToNFTReceipt,
+      Triggers.AddMetadataToNFTReceipt,
       `${organizationId}`,
       {
         userId: `${userId}`,

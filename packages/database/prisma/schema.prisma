@@ -2,37 +2,61 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("POSTGRES_PRISMA_URL")
 }
 
 model Account {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  access_token      String    @db.VarChar(255)
-  provider          String    @db.VarChar(255)
-  providerAccountId String    @db.VarChar(255)
-  scope             String    @db.VarChar(255)
-  refresh_token     String?
-  expires_at        DateTime? @db.Timestamptz(6)
-  token_type        String?   @db.VarChar(255)
-  type              String    @db.VarChar(255)
-  userId            String    @db.Uuid
-  id_token          String?   @db.VarChar(255)
-  session_state     String?   @db.VarChar(255)
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  access_token      String  @db.Text
+  provider          String  @db.VarChar(255)
+  providerAccountId String  @db.VarChar(255)
+  scope             String  @db.VarChar(255)
+  refresh_token     String? @db.Text
+  expires_at        Int?
+  token_type        String? @db.VarChar(255)
+  type              String  @db.VarChar(255)
+  userId            String  @db.Uuid
+  id_token          String? @db.Text
+  session_state     String? @db.VarChar(255)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
 }
 
-model Action {
-  id               String @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  hookId           String @db.Uuid
-  actionDefinition Json
-  index            Int    @default(0)
-  hook             Hook   @relation(fields: [hookId], references: [id], onDelete: Cascade)
+enum ActionType {
+  FetchDataFromApi
+  Transform
+  TransformEach
+  Math
+  CreateStory
+  CreateStories
+  Find
+  Filter
+  InputValues
+  FormatDate
+}
 
+model Action {
+  id               String     @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  hookId           String     @db.Uuid
+  actionDefinition Json // deprecated
+  action           ActionType @default(InputValues)
+  key              String     @default("InputValues") @db.VarChar(255)
+  /// [ActionParams]
+  parameters       Json       @default("{}")
+  description      String?    @db.VarChar(255)
+  index            Int        @default(0)
+  hook             Hook       @relation(fields: [hookId], references: [id], onDelete: Cascade)
+
+  @@unique([hookId, key])
+  @@unique([hookId, index])
   @@map("actions")
 }
 
@@ -167,9 +191,15 @@ model Donation {
   @@map("donations")
 }
 
+enum TriggerName {
+  AddMetadataToNFTReceipt
+  OnceDaily
+}
+
 model Hook {
   id            String       @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  triggerName   String       @db.VarChar(255)
+  triggerName   TriggerName
+  description   String?      @db.VarChar(255)
   createdAt     DateTime     @default(now()) @db.Timestamptz(6)
   orgId         String       @db.Uuid
   actions       Action[]
@@ -289,6 +319,8 @@ model Offer {
 
 model Organization {
   id             String       @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  ownerId        String?      @db.Uuid
+  owner          User?        @relation("UserOwnedOrganizations", fields: [ownerId], references: [id])
   created        DateTime     @default(now()) @db.Timestamptz(6)
   inactive       Boolean      @default(false)
   slug           String       @db.VarChar(255)
@@ -299,7 +331,7 @@ model Organization {
   mailingAddress String?      @db.VarChar(255)
   name           String       @db.VarChar(255)
   phone          String?      @db.VarChar(40)
-  email          String       @unique @db.VarChar(100)
+  email          String       @db.VarChar(100)
   url            String?      @db.VarChar(255)
   categoryId     String?      @db.Uuid
   featured       Boolean      @default(false)
@@ -394,24 +426,25 @@ model StoryMedia {
 }
 
 model User {
-  id              String       @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
-  created         DateTime     @default(now()) @db.Timestamptz(6)
-  inactive        Boolean      @default(false)
-  api_key         String?      @unique @db.VarChar(255)
-  api_key_enabled Boolean?     @default(false)
-  email           String?      @unique @db.VarChar(100)
-  emailVerified   Boolean?     @default(false)
-  image           String?      @db.VarChar(255)
-  name            String       @db.VarChar(255)
-  description     String?      @db.VarChar(255)
-  wallet          String?      @db.VarChar(255)
-  type            Int          @default(0)
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @map("_id") @db.Uuid
+  organizations   Organization[] @relation("UserOwnedOrganizations")
+  created         DateTime       @default(now()) @db.Timestamptz(6)
+  inactive        Boolean        @default(false)
+  api_key         String?        @unique @db.VarChar(255)
+  api_key_enabled Boolean?       @default(false)
+  email           String?        @unique @db.VarChar(100)
+  emailVerified   Boolean?       @default(false)
+  image           String?        @db.VarChar(255)
+  name            String         @db.VarChar(255)
+  description     String?        @db.VarChar(255)
+  wallet          String?        @db.VarChar(255)
+  type            Int            @default(0)
   Account         Account[]
   artworks        Artwork[]
   collections     Collection[]
   nfts            NFTData[]
-  buyers          Offer[]      @relation("buyer")
-  offers          Offer[]      @relation("seller")
+  buyers          Offer[]        @relation("buyer")
+  offers          Offer[]        @relation("seller")
   Session         Session[]
   wallets         UserWallet[]
 

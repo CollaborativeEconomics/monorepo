@@ -1,6 +1,5 @@
+import type { ActionContext } from "@cfce/types"
 import { get } from "lodash"
-
-import type { ActionContext } from "../types"
 
 export interface FetchDataFromApiParameters {
   endpoint: string

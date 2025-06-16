@@ -48,7 +48,7 @@ const SidebarContent = ({
         <span className="text-gray-300 text-sm block mb-1">
           Current Organization
         </span>
-        <Link href={`/dashboard/organization/${currentOrg.id}`}>
+        <Link href={`/organization/${currentOrg.id}`}>
           <strong className="text-lg">{currentOrg.name}</strong>
         </Link>
       </div>
@@ -57,19 +57,19 @@ const SidebarContent = ({
     <nav className="flex-grow">
       <ul>
         {session?.isAdmin && (
-          <li key={'/dashboard/organization'} className="hover:bg-gray-700">
-            <Link href={'/dashboard/organization'} className="block px-4 py-2">
+          <li key={'/organization'} className="hover:bg-gray-700">
+            <Link href={'/organization'} className="block px-4 py-2">
               New Organization
             </Link>
           </li>
         )}
         {[
-          { href: '/dashboard/donations', label: 'Donations' },
-          { href: '/dashboard/initiatives', label: 'Initiatives' },
-          { href: '/dashboard/stories', label: 'Stories' },
-          { href: '/dashboard/events', label: 'Events' },
-          { href: '/dashboard/wallets', label: 'Wallets' },
-          { href: '/dashboard/contracts', label: 'Contracts' },
+          { href: '/donations', label: 'Donations' },
+          { href: '/initiatives', label: 'Initiatives' },
+          { href: '/stories', label: 'Stories' },
+          { href: '/events', label: 'Events' },
+          { href: '/wallets', label: 'Wallets' },
+          { href: '/contracts', label: 'Contracts' },
         ].map(item => (
           <li key={item.href} className="hover:bg-gray-700">
             <Link href={item.href} className="block px-4 py-2">

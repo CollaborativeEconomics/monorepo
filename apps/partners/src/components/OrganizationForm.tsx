@@ -9,19 +9,22 @@ import TextInput from '~/components/form/textinput';
 import styles from '~/styles/dashboard.module.css';
 import type { CategoryItem, OrganizationData, FormMode } from '~/types/data'
 import { FormMode as Mode } from '~/types/data'
-import { createOrganizationAction, updateOrganizationAction } from '~/app/dashboard/organization/actions';
+import { createOrganizationAction, updateOrganizationAction } from '~/app/organization/actions';
+import { useSession } from "next-auth/react"
 
 
 export default function OrganizationForm({
   id,
   organization,
   categories,
-  formMode
+  formMode,
+  session
 }: {
   id?: string;
   organization: OrganizationData;
   categories: CategoryItem[];
-  formMode: FormMode
+  formMode: FormMode;
+  session?: any;
 }) {
 
   async function onSubmit(data:OrganizationData) {
@@ -44,6 +47,9 @@ export default function OrganizationForm({
       switch(formMode){
         case Mode.New: {
           const useTBA = true;
+          if (session?.user?.id) {
+            data.ownerId = session.user.id
+          }
           result = await createOrganizationAction(data, useTBA);
           break;
         }

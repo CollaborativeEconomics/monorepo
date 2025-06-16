@@ -1,7 +1,7 @@
 import { get } from "lodash"
 
 import appConfig from "@cfce/app-config"
-import type { ActionContext } from "../types"
+import type { ActionContext } from "@cfce/types"
 
 export interface Story {
   id?: string
@@ -61,10 +61,10 @@ const createStory = async (
         break
       case "object":
         contextValueOrValue = JSON.stringify(contextValueOrValue)
-        formData.set(key, contextValueOrValue)
+        formData.set(key, contextValueOrValue as string)
         break
       default:
-        formData.set(key, contextValueOrValue)
+        formData.set(key, contextValueOrValue as string)
     }
   }
 
@@ -85,6 +85,8 @@ const createStory = async (
   }
 
   console.log(`fetching ${url} with ${formData}`)
+
+  // Let MSW handle the API call in tests
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -112,7 +114,12 @@ const createStories = async (
 ) => {
   const { organizationId, initiativeId, storyPath } = params
 
-  const stories: CreateStoryParameters[] = get(context, storyPath)
+  const storiesData = get(context, storyPath)
+
+  // Ensure stories is an array and has the correct type
+  const stories = Array.isArray(storiesData)
+    ? (storiesData as CreateStoryParameters[])
+    : ([] as CreateStoryParameters[])
 
   const results = await Promise.all(
     stories.map((story) =>

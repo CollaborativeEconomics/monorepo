@@ -1,9 +1,20 @@
 import "server-only"
-import type { Hook } from "@prisma/client"
+import type { TriggerName } from "@prisma/client"
 import { prismaClient } from "../index"
 
+export async function createHook({
+  triggerName,
+  orgId,
+  description,
+}: { triggerName: TriggerName; orgId: string; description: string }) {
+  const hook = await prismaClient.hook.create({
+    data: { triggerName, orgId, description },
+  })
+  return hook
+}
+
 export async function getHookByTriggerAndOrg(
-  triggerName: string,
+  triggerName: TriggerName,
   orgId: string,
 ) {
   // Fetch the first hook that matches the given trigger name and organization ID
@@ -16,11 +27,19 @@ export async function getHookByTriggerAndOrg(
     include: {
       actions: {
         orderBy: {
-          id: "desc",
+          index: "asc",
         },
       },
     },
   })
 
   return hook
+}
+
+export async function deleteHook(hookId: string) {
+  await prismaClient.hook.delete({
+    where: {
+      id: hookId,
+    },
+  })
 }

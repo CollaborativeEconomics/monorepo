@@ -2,8 +2,9 @@
   "extends": "@cfce/typescript-config/base.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "types": ["jest"]
   },
   "include": ["src"],
-  "exclude": ["**/*.test.ts", "**/mocks/**"]
+  "exclude": ["**/mocks/**"]
 }

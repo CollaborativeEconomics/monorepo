@@ -1,22 +1,19 @@
 "use client"
 import { DatePicker } from "@cfce/components/form"
-import type { Initiative } from "@cfce/database/types"
 import { InitiativeStatus } from "@cfce/database/types"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import {
   createInitiativeAction,
   editInitiativeAction,
-} from "~/app/dashboard/initiatives/action"
+} from "~/app/organization/[orgId]/initiatives/action"
 import InitiativeStatusSelect from "~/components/InitiativeStatusSelect"
 import ButtonBlue from "~/components/buttonblue"
 import FileView from "~/components/form/fileview"
-import Select from "~/components/form/select"
 import TextArea from "~/components/form/textarea"
 import TextInput from "~/components/form/textinput"
 import type { FormMode, InitiativeData } from "~/types/data"
 import { FormMode as Mode } from "~/types/data"
-import dateToPrisma from "~/utils/DateToPrisma"
 
 export default function InitiativeForm({
   id,
@@ -84,7 +81,9 @@ export default function InitiativeForm({
       }
       if (result?.success) {
         showMessage("Initiative saved successfully")
-        setButtonState(formMode===Mode.New ? ButtonState.DONE : ButtonState.READY)
+        setButtonState(
+          formMode === Mode.New ? ButtonState.DONE : ButtonState.READY,
+        )
       } else {
         showMessage(`Error saving initiative: ${result?.error}`)
         setButtonState(ButtonState.READY)

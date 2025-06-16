@@ -6,6 +6,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./actions": {
+      "import": "./dist/actions/index.js",
+      "types": "./dist/actions/index.d.ts"
     }
   },
   "scripts": {
@@ -13,6 +17,7 @@
     "build": "rm -rf dist && tsc && cp -r ./src/assets ./dist/assets"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.7.2",
     "@cfce/blockchain-tools": "workspace:*",
     "@cfce/database": "workspace:*",
     "@cfce/state": "workspace:*",

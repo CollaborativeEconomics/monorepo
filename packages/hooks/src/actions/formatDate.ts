@@ -12,7 +12,7 @@ export default async function inputValues(
 ): Promise<string> {
   switch (typeof inputDate) {
     case "number": {
-      return DateTime.fromMillis(inputDate).toFormat(format)
+      return DateTime.fromMillis(inputDate).setZone("UTC").toFormat(format)
     }
     case "string": {
       // if it's a context path, get the value
@@ -20,10 +20,10 @@ export default async function inputValues(
       if (dateFromPath) {
         return inputValues(context, { inputDate: dateFromPath, format })
       }
-      return DateTime.fromISO(inputDate).toFormat(format)
+      return DateTime.fromISO(inputDate).setZone("UTC").toFormat(format)
     }
     case "object": {
-      return DateTime.fromJSDate(inputDate).toFormat(format)
+      return DateTime.fromJSDate(inputDate).setZone("UTC").toFormat(format)
     }
     default: {
       throw new Error("Invalid input date")
