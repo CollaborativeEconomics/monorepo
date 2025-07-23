@@ -46,27 +46,6 @@ impl Credits {
 
     Ok(())
   }
-  // pub fn initialize(
-  //   e: Env,
-  //   admin: Address,
-  //   initiative: String,
-  //   provider: Address,
-  //   vendor: Address,
-  //   bucket: i128,
-  //   xlm: Address
-  // ) {
-  //   if has_administrator(&e) { panic!("already initialized") }
-  //   write_administrator(&e, &admin);
-  //   write_balance(&e, 0);
-  //   write_bucket(&e, bucket);
-  //   write_initiative(&e, initiative);
-  //   write_minimum(&e, 1000000);
-  //   write_provider(&e, &provider);
-  //   write_provider_fees(&e, 90);
-  //   write_vendor(&e, &vendor);
-  //   write_vendor_fees(&e, 10);
-  //   write_xlm(&e, &xlm);
-  // }
 
   //---- METHODS
 
