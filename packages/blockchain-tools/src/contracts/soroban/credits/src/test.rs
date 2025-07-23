@@ -8,12 +8,31 @@ use soroban_sdk::{
   Address, Env, String
 };
 
-fn create_contract<'a>(e: &Env, admin: &Address, initiative: &String, provider: &Address, vendor: &Address, bucket: i128, xlm: &Address) -> CreditsClient<'a> {
+fn create_contract<'a>(
+  e: &Env,
+  admin: &Address,
+  initiative: &String,
+  provider: &Address,
+  vendor: &Address,
+  bucket: i128,
+  xlm: &Address
+) -> CreditsClient<'a> {
   info!("Creating contract...");
-  let ctr = CreditsClient::new(e, &e.register_contract(None, Credits {}));
-  ctr.initialize(admin, &initiative, provider, vendor, &bucket, xlm);
+
+  let contract_id = e.register(
+    Credits,
+    (
+      admin.clone(),
+      initiative.clone(),
+      provider.clone(),
+      vendor.clone(),
+      bucket,
+      xlm.clone()
+    )
+  );
+  let contract_client = CreditsClient::new(e, &contract_id);
   warn!("Contract created!");
-  ctr
+  contract_client
 }
 
 #[test]
