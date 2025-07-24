@@ -12,7 +12,7 @@ use crate::storage::{
   read_vendor_fees, write_vendor_fees,
   read_xlm, write_xlm,
 };
-use soroban_sdk::{contract, contractimpl, token, Address, Env, String, Error};
+use soroban_sdk::{contract, contractimpl, token, Address, Env, String, Error, log};
 
 //const xlmNative: &str = "CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT";  // futurenet
 //const xlmNative: &str = "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC";  // testnet
@@ -69,20 +69,22 @@ impl Credits {
     //instance_bump(&e);
     let ctr = &read_xlm(&e);
     let xlm = token::Client::new(&e, &ctr);
+    log!(&e, "=====>9");
     xlm.transfer(&from, &thisctr, &amount); // From donor to contract
-    if vfees > 0 {
-      let vendor = read_vendor(&e);
-      xlm.transfer(&thisctr, &vendor, &vfees); // Vendor fees from contract to vendor
-    }
-    let newbalance = balance + pfees; // Accumulate carbon credits
-    if newbalance >= bucket {
-      let reminder = newbalance % bucket;
-      let credits  = newbalance - reminder;
-      xlm.transfer(&thisctr, &provider, &credits); // Credits from contract to provider
-      write_balance(&e, reminder);
-    } else {
-      write_balance(&e, newbalance);
-    }
+    log!(&e, "=====>10");
+    // if vfees > 0 {
+    //   let vendor = read_vendor(&e);
+    //   xlm.transfer(&thisctr, &vendor, &vfees); // Vendor fees from contract to vendor
+    // }
+    // let newbalance = balance + pfees; // Accumulate carbon credits
+    // if newbalance >= bucket {
+    //   let reminder = newbalance % bucket;
+    //   let credits  = newbalance - reminder;
+    //   xlm.transfer(&thisctr, &provider, &credits); // Credits from contract to provider
+    //   write_balance(&e, reminder);
+    // } else {
+    //   write_balance(&e, newbalance);
+    // }
     events::donation(&e, from, provider, amount);
   }
 
