@@ -69,22 +69,20 @@ impl Credits {
     //instance_bump(&e);
     let ctr = &read_xlm(&e);
     let xlm = token::Client::new(&e, &ctr);
-    log!(&e, "=====>9");
     xlm.transfer(&from, &thisctr, &amount); // From donor to contract
-    log!(&e, "=====>10");
-    // if vfees > 0 {
-    //   let vendor = read_vendor(&e);
-    //   xlm.transfer(&thisctr, &vendor, &vfees); // Vendor fees from contract to vendor
-    // }
-    // let newbalance = balance + pfees; // Accumulate carbon credits
-    // if newbalance >= bucket {
-    //   let reminder = newbalance % bucket;
-    //   let credits  = newbalance - reminder;
-    //   xlm.transfer(&thisctr, &provider, &credits); // Credits from contract to provider
-    //   write_balance(&e, reminder);
-    // } else {
-    //   write_balance(&e, newbalance);
-    // }
+    if vfees > 0 {
+      let vendor = read_vendor(&e);
+      xlm.transfer(&thisctr, &vendor, &vfees); // Vendor fees from contract to vendor
+    }
+    let newbalance = balance + pfees; // Accumulate carbon credits
+    if newbalance >= bucket {
+      let reminder = newbalance % bucket;
+      let credits  = newbalance - reminder;
+      xlm.transfer(&thisctr, &provider, &credits); // Credits from contract to provider
+      write_balance(&e, reminder);
+    } else {
+      write_balance(&e, newbalance);
+    }
     events::donation(&e, from, provider, amount);
   }
 

@@ -1,12 +1,15 @@
+#![cfg(test)]
+
 extern crate std;
 use std::rc::Rc;
 
 use soroban_env_host::{budget::AsBudget, Env as _, EnvBase};
 use soroban_sdk::xdr;
 use soroban_sdk::{
-  xdr::{Asset, Limits, WriteXdr}, 
-  Address, Env, FromVal
+    xdr::{Asset, Limits, WriteXdr}, 
+    Address, Env, FromVal
 };
+use stellar_strkey;
 
 pub fn deploy_native_sac(env: &Env) -> Address {
   let xdr_bytes = Asset::Native.to_xdr(Limits::none()).unwrap();

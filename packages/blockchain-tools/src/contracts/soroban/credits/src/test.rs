@@ -55,11 +55,6 @@ fn test_views() {
   let vendor     = Address::generate(&e);
   let xlm = deploy_native_sac(&e);
 
-  // let xlmID      = "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"; // testnet
-  // //let xlmID    = "CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT"; // futurenet
-  // //let xlm      = Address::generate(&e);
-  // let xlm        = Address::from_string(&String::from_str(&e, &xlmID));
-
   let credit     = create_contract(
     &e,
     &admin,
@@ -92,7 +87,9 @@ fn test_donate() {
 
   let admin      = Address::generate(&e);
   let bucket        = 200000000i128;
-  let donor      = Address::generate(&e);
+  let donor_pubkey = "GA2H3SJYGIUG2DXXUZ7IN3LNO2AIMVWCDCL25PKQHKMC76OWW3HYQHY4";
+  let donor = Address::from_str(&e, &donor_pubkey);
+
   let initiative = String::from_str(&e, "30c0636f-b0f1-40d5-bb9c-a531dc4d69e2");
   let provider   = Address::generate(&e);
   let vendor     = Address::generate(&e);
@@ -110,16 +107,9 @@ fn test_donate() {
     &xlm
   );
 
-  // xlm_client.
-  // .mint(&donor, &100000000);
-
-  let xlm_balance = xlm_client.balance(&donor);
-  info!("=============>check balance start");
-  info!("{}", xlm_balance);
-  info!("=============>check balance end");
-  assert_eq!(xlm_balance, 10_000_000_000);
+  create_account_entry(&e, &donor_pubkey);
 
   // Donate
   credit.donate(&donor, &100000000);
-  assert_eq!(credit.getBalance(), 80000000); // amount - fees
+  assert_eq!(credit.getBalance(), 90000000); // amount - fees
 }
