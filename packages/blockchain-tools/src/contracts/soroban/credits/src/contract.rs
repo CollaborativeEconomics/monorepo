@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-use crate::admin::{check_admin, has_administrator, read_administrator, write_administrator};
+use crate::admin::{check_admin, read_administrator, write_administrator};
 use crate::events;
 use crate::storage::{
   read_balance, write_balance,
@@ -13,10 +13,6 @@ use crate::storage::{
   read_xlm, write_xlm,
 };
 use soroban_sdk::{contract, contractimpl, token, Address, Env, String, Error};
-
-//const xlmNative: &str = "CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT";  // futurenet
-//const xlmNative: &str = "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC";  // testnet
-
 
 #[contract]
 pub struct Credits;
@@ -32,7 +28,6 @@ impl Credits {
     bucket: i128,
     xlm: Address
   ) -> Result<(), Error> {
-    if has_administrator(&e) { panic!("already initialized") }
     write_administrator(&e, &admin);
     write_balance(&e, 0);
     write_bucket(&e, bucket);
@@ -66,6 +61,7 @@ impl Credits {
     let bucket = read_bucket(&e);
     let pfees = (amount * providerFees / 100) as i128;
     let vfees = (amount * vendorFees / 100) as i128;
+
     //instance_bump(&e);
     let ctr = &read_xlm(&e);
     let xlm = token::Client::new(&e, &ctr);
@@ -83,6 +79,7 @@ impl Credits {
     } else {
       write_balance(&e, newbalance);
     }
+
     events::donation(&e, from, provider, amount);
   }
 

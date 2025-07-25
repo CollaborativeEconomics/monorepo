@@ -10,8 +10,10 @@ crate-type = ["cdylib"]
 [dependencies]
 soroban-sdk = { version = "22" }
 
-[dev_dependencies]
+[dev-dependencies]
 soroban-sdk = { version = "22", features = ["testutils"] }
+soroban-env-host = { version = "*" }
+stellar-strkey = { version = "*" }
 
 [profile.release]
 opt-level = "z"
