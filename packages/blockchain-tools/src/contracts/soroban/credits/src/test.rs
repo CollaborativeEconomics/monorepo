@@ -43,7 +43,7 @@ fn test_views() {
 
   let admin = Address::generate(&e);
   let bucket = 200_000_000_i128;
-  let initiative: String = String::from_str(&e, "30c0636f-b0f1-40d5-bb9c-a531dc4d69e2");
+  let initiative = String::from_str(&e, "30c0636f-b0f1-40d5-bb9c-a531dc4d69e2");
   let provider = Address::generate(&e);
   let vendor = Address::generate(&e);
   let xlm = deploy_native_sac(&e);
@@ -79,7 +79,7 @@ fn test_donate() {
   e.mock_all_auths();
 
   let admin = Address::generate(&e);
-  let bucket = 200000000i128;
+  let bucket = 200_000_000;
   let donor_pubkey = "GA2H3SJYGIUG2DXXUZ7IN3LNO2AIMVWCDCL25PKQHKMC76OWW3HYQHY4";
   let donor = Address::from_str(&e, donor_pubkey);
 
