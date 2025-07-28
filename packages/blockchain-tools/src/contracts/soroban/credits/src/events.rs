@@ -55,3 +55,13 @@ pub(crate) fn xlm(e: &Env, oldValue: Address, newValue: Address) {
   let topics = (symbol_short!("xlm"), symbol_short!("change"));
   e.events().publish(topics, (oldValue, newValue));
 }
+
+pub(crate) fn sink(e: &Env, oldValue: Address, newValue: Address) {
+  let topics = (symbol_short!("sink"), symbol_short!("change"));
+  e.events().publish(topics, (oldValue, newValue));
+}
+
+pub(crate) fn soroswapRouter(e: &Env, oldValue: Address, newValue: Address) {
+  let topics = (symbol_short!("router"), symbol_short!("change"));
+  e.events().publish(topics, (oldValue, newValue));
+}

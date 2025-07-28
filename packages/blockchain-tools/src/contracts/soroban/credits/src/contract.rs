@@ -11,6 +11,9 @@ use crate::storage::{
   read_vendor, write_vendor,
   read_vendor_fees, write_vendor_fees,
   read_xlm, write_xlm,
+  read_carbon_sac, write_carbon_sac,
+  read_sink_contract, write_sink_contract,
+  read_soroswap_router, write_soroswap_router
 };
 use soroban_sdk::{contract, contractimpl, token, Address, Env, String, Error};
 
@@ -26,7 +29,10 @@ impl Credits {
     provider: Address,
     vendor: Address,
     bucket: i128,
-    xlm: Address
+    xlm: Address,
+    carbonSac: Address,
+    sink: Address,
+    soroswapRouter: Address
   ) -> Result<(), Error> {
     write_administrator(&e, &admin);
     write_balance(&e, 0);
@@ -38,6 +44,9 @@ impl Credits {
     write_vendor(&e, &vendor);
     write_vendor_fees(&e, 10);
     write_xlm(&e, &xlm);
+    write_carbon_sac(&e, &carbonSac);
+    write_sink_contract(&e, &sink);
+    write_soroswap_router(&e, &soroswapRouter);
 
     Ok(())
   }
@@ -132,6 +141,18 @@ impl Credits {
     read_xlm(&e)
   }
 
+  pub fn getCarbonSac(e: Env) -> Address {
+    read_carbon_sac(&e)
+  }
+
+  pub fn getSink(e: Env) -> Address {
+    read_sink_contract(&e)
+  }
+
+  pub fn getSoroswapRouter(e: Env) -> Address {
+    read_soroswap_router(&e)
+  }
+
   //---- UPDATES
 
   pub fn setAdmin(e: Env, newval: Address) {
@@ -196,5 +217,21 @@ impl Credits {
     let oldval = read_xlm(&e);
     write_xlm(&e, &newval);
     events::xlm(&e, oldval, newval);
+  }
+
+  pub fn setSink(e: Env, newval: Address) {
+    check_admin(&e);
+    //instance_bump(&e);
+    let oldval = read_sink_contract(&e);
+    write_sink_contract(&e, &newval);
+    events::sink(&e, oldval, newval);
+  }
+
+  pub fn setSoroswapRouter(e: Env, newval: Address) {
+    check_admin(&e);
+    //instance_bump(&e);
+    let oldval = read_soroswap_router(&e);
+    write_soroswap_router(&e, &newval);
+    events::soroswapRouter(&e, oldval, newval);
   }
 }

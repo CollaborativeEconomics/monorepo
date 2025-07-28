@@ -16,7 +16,10 @@ fn create_contract<'a>(
   provider: &Address,
   vendor: &Address,
   bucket: i128,
-  xlm: &Address
+  xlm: &Address,
+  carbonSac: &Address,
+  sink: &Address,
+  soroswapRouter: &Address
 ) -> CreditsClient<'a> {
   info!("Creating contract...");
 
@@ -28,7 +31,10 @@ fn create_contract<'a>(
       provider.clone(),
       vendor.clone(),
       bucket,
-      xlm.clone()
+      xlm.clone(),
+      carbonSac.clone(),
+      sink.clone(),
+      soroswapRouter.clone()
     )
   );
   let contract_client = CreditsClient::new(e, &contract_id);
@@ -48,6 +54,10 @@ fn test_views() {
   let vendor = Address::generate(&e);
   let xlm = deploy_native_sac(&e);
 
+  let carbonSac = Address::generate(&e);
+  let sink = Address::generate(&e);
+  let soroswapRouter = Address::generate(&e);
+
   let credit = create_contract(
     &e,
     &admin,
@@ -55,7 +65,10 @@ fn test_views() {
     &provider,
     &vendor,
     bucket,
-    &xlm
+    &xlm,
+    &carbonSac,
+    &sink,
+    &soroswapRouter
   );
 
   // Views should all pass
@@ -90,6 +103,10 @@ fn test_donate() {
   let xlm = deploy_native_sac(&e);
   let xlm_client = token::Client::new(&e, &xlm);
 
+  let carbonSac = Address::generate(&e);
+  let sink = Address::generate(&e);
+  let soroswapRouter = Address::generate(&e);
+
   let credit = create_contract(
     &e,
     &admin,
@@ -97,7 +114,10 @@ fn test_donate() {
     &provider,
     &vendor,
     bucket,
-    &xlm
+    &xlm,
+    &carbonSac,
+    &sink,
+    &soroswapRouter
   );
 
   create_account_entry(&e, &donor_pubkey);
