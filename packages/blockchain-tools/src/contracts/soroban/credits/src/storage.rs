@@ -20,9 +20,9 @@ pub enum DataKey {
     ProviderFees,
     Vendor,
     VendorFees,
-    XLM,
+    XLMContract,
     CarbonSac,
-    Sink,
+    SinkContract,
     SoroswapRouter
 }
 
@@ -157,8 +157,8 @@ pub fn write_vendor_fees(e: &Env, value: i128) {
   e.storage().instance().set(&key, &value);
 }
 
-pub fn read_xlm(e: &Env) -> Address {
-  let key = DataKey::XLM;
+pub fn read_xlm_contract(e: &Env) -> Address {
+  let key = DataKey::XLMContract;
   let val = e.storage().persistent().get(&key);
   match val {
     Some(addr) => addr,
@@ -166,8 +166,8 @@ pub fn read_xlm(e: &Env) -> Address {
   }
 }
 
-pub fn write_xlm(e: &Env, value: &Address) {
-  let key = DataKey::XLM;
+pub fn write_xlm_contract(e: &Env, value: &Address) {
+  let key = DataKey::XLMContract;
   e.storage().persistent().set(&key, &value);
 }
 
@@ -186,7 +186,7 @@ pub fn write_carbon_sac(e: &Env, value: &Address) {
 }
 
 pub fn read_sink_contract(e: &Env) -> Address {
-  let key: DataKey = DataKey::Sink;
+  let key: DataKey = DataKey::SinkContract;
   let val: Option<Address> = e.storage().persistent().get(&key);
   match val {
     Some(addr) => addr,
@@ -195,7 +195,7 @@ pub fn read_sink_contract(e: &Env) -> Address {
 }
 
 pub fn write_sink_contract(e: &Env, value: &Address) {
-  let key = DataKey::Sink;
+  let key = DataKey::SinkContract;
   e.storage().persistent().set(&key, &value);
 }
 

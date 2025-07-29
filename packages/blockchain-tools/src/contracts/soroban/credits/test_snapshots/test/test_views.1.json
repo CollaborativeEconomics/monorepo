@@ -116,7 +116,7 @@
             "key": {
               "vec": [
                 {
-                  "symbol": "Sink"
+                  "symbol": "SinkContract"
                 }
               ]
             },
@@ -133,7 +133,7 @@
                 "key": {
                   "vec": [
                     {
-                      "symbol": "Sink"
+                      "symbol": "SinkContract"
                     }
                   ]
                 },
@@ -194,7 +194,7 @@
             "key": {
               "vec": [
                 {
-                  "symbol": "XLM"
+                  "symbol": "XLMContract"
                 }
               ]
             },
@@ -211,7 +211,7 @@
                 "key": {
                   "vec": [
                     {
-                      "symbol": "XLM"
+                      "symbol": "XLMContract"
                     }
                   ]
                 },

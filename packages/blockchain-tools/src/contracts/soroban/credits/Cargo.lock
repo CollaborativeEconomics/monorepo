@@ -277,6 +277,7 @@ dependencies = [
 name = "credits"
 version = "0.0.1"
 dependencies = [
+ "sink-carbon",
  "soroban-env-host",
  "soroban-sdk",
  "stellar-strkey 0.0.13",
@@ -444,9 +445,9 @@ checksum = "75b325c5dbd37f80359721ad39aca5a29fb04c89279657cffdda8736d0c0b9d2"
 
 [[package]]
 name = "dyn-clone"
-version = "1.0.19"
+version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c7a8fb8a9fbf66c1f703fe16184d10ca0ee9d23be5b4436400408ba54a95005"
+checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
 
 [[package]]
 name = "ecdsa"
@@ -1112,6 +1113,14 @@ checksum = "77549399552de45a898a580c1b41d445bf730df867cc44e6c0233bbc4b8329de"
 dependencies = [
  "digest",
  "rand_core",
+]
+
+[[package]]
+name = "sink-carbon"
+version = "0.3.0"
+source = "git+https://github.com/stellarcarbon/sorocarbon#34398cf467f1efb86f896ea9155ab9fbdbc27499"
+dependencies = [
+ "soroban-sdk",
 ]
 
 [[package]]
