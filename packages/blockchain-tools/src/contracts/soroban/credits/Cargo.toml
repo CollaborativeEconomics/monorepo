@@ -9,7 +9,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 soroban-sdk = { version = "22" }
-sink-carbon = { git = "https://github.com/stellarcarbon/sorocarbon", package = "sink-carbon" }
 
 [dev-dependencies]
 soroban-sdk = { version = "22", features = ["testutils"] }

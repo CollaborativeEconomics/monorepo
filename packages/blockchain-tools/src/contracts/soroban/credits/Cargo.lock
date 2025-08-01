@@ -277,7 +277,6 @@ dependencies = [
 name = "credits"
 version = "0.0.1"
 dependencies = [
- "sink-carbon",
  "soroban-env-host",
  "soroban-sdk",
  "stellar-strkey 0.0.13",
@@ -1113,14 +1112,6 @@ checksum = "77549399552de45a898a580c1b41d445bf730df867cc44e6c0233bbc4b8329de"
 dependencies = [
  "digest",
  "rand_core",
-]
-
-[[package]]
-name = "sink-carbon"
-version = "0.3.0"
-source = "git+https://github.com/stellarcarbon/sorocarbon#34398cf467f1efb86f896ea9155ab9fbdbc27499"
-dependencies = [
- "soroban-sdk",
 ]
 
 [[package]]

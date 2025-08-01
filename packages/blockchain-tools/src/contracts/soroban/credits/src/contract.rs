@@ -16,7 +16,7 @@ use crate::storage::{
   read_soroswap_router, write_soroswap_router
 };
 use soroban_sdk::{contract, contractimpl, token, Address, Env, String, Error};
-use sink_carbon::SinkContractClient;
+use crate::sink_contract;
 
 #[contract]
 pub struct Credits;
@@ -231,21 +231,21 @@ impl Credits {
   pub fn setSinkToSuccessor(e: Env) {
     check_admin(&e);
     //instance_bump(&e);
-    let oldval = read_sink_contract(&e);
-    let sink_contract = oldval;
+    let oldAddr = read_sink_contract(&e);
+    let mut sinkContractAddr = oldAddr.clone();
 
     loop {
-      let sink_client = SinkContractClient::new(&e, sink_contract);
+      let sink_client = sink_contract::Client::new(&e, &sinkContractAddr);
       let successor = sink_client.get_contract_successor();
 
-      if sink_contract == successor {
+      if sinkContractAddr == successor {
         break;
       }
-      sink_contract = successor;
+      sinkContractAddr = successor;
     }
 
-    write_sink_contract(&e, &sink_contract);
-    events::sinkChange(&e, oldval, sink_contract);
+    write_sink_contract(&e, &sinkContractAddr);
+    events::sinkChange(&e, oldAddr, sinkContractAddr);
   }
 
   pub fn setSoroswapRouter(e: Env, newval: Address) {
