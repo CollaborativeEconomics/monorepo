@@ -20,7 +20,10 @@ pub enum DataKey {
     ProviderFees,
     Vendor,
     VendorFees,
-    XLM
+    XLMContract,
+    CarbonSac,
+    SinkContract,
+    SoroswapRouter
 }
 
 //pub fn instance_bump(e: &Env){
@@ -154,8 +157,8 @@ pub fn write_vendor_fees(e: &Env, value: i128) {
   e.storage().instance().set(&key, &value);
 }
 
-pub fn read_xlm(e: &Env) -> Address {
-  let key = DataKey::XLM;
+pub fn read_xlm_contract(e: &Env) -> Address {
+  let key = DataKey::XLMContract;
   let val = e.storage().persistent().get(&key);
   match val {
     Some(addr) => addr,
@@ -163,7 +166,49 @@ pub fn read_xlm(e: &Env) -> Address {
   }
 }
 
-pub fn write_xlm(e: &Env, value: &Address) {
-  let key = DataKey::XLM;
+pub fn write_xlm_contract(e: &Env, value: &Address) {
+  let key = DataKey::XLMContract;
+  e.storage().persistent().set(&key, &value);
+}
+
+pub fn read_carbon_sac(e: &Env) -> Address {
+  let key: DataKey = DataKey::CarbonSac;
+  let val: Option<Address> = e.storage().persistent().get(&key);
+  match val {
+    Some(addr) => addr,
+    None => zero_address(&e)
+  }
+}
+
+pub fn write_carbon_sac(e: &Env, value: &Address) {
+  let key = DataKey::CarbonSac;
+  e.storage().persistent().set(&key, &value);
+}
+
+pub fn read_sink_contract(e: &Env) -> Address {
+  let key: DataKey = DataKey::SinkContract;
+  let val: Option<Address> = e.storage().persistent().get(&key);
+  match val {
+    Some(addr) => addr,
+    None => zero_address(&e)
+  }
+}
+
+pub fn write_sink_contract(e: &Env, value: &Address) {
+  let key = DataKey::SinkContract;
+  e.storage().persistent().set(&key, &value);
+}
+
+pub fn read_soroswap_router(e: &Env) -> Address {
+  let key: DataKey = DataKey::SoroswapRouter;
+  let val: Option<Address> = e.storage().persistent().get(&key);
+  match val {
+    Some(addr) => addr,
+    None => zero_address(&e)
+  }
+}
+
+pub fn write_soroswap_router(e: &Env, value: &Address) {
+  let key = DataKey::SoroswapRouter;
   e.storage().persistent().set(&key, &value);
 }
