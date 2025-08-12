@@ -7,7 +7,7 @@ use soroban_sdk::{
   testutils::Address as _, token, Address, Env, String
 };
 
-use crate::test_utils::{deploy_native_sac, create_account_entry};
+use crate::tests::utils::{deploy_native_sac, create_account_entry};
 
 fn create_contract<'a>(
   e: &Env,

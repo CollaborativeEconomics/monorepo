@@ -4,10 +4,10 @@ extern crate std;
 use std::rc::Rc;
 
 use soroban_env_host::{budget::AsBudget, Env as _, EnvBase};
-use soroban_sdk::xdr;
 use soroban_sdk::{
-    xdr::{Asset, Limits, WriteXdr}, 
-    Address, Env, FromVal
+xdr,
+xdr::{Asset, Limits, WriteXdr},
+Address, Env, FromVal,
 };
 use stellar_strkey;
 
@@ -65,3 +65,4 @@ pub fn create_account_entry(env: &Env, pubkey: &str) {
       Ok(())
   }).unwrap();
 }
+

@@ -5,8 +5,7 @@ mod admin;
 mod contract;
 mod events;
 mod storage;
-mod test;
-mod test_utils;
+mod tests;
 
 pub use crate::contract::CreditsClient;
 
